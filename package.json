@@ -1,0 +1,17 @@
+{
+    "name": "filecoin.js",
+    "version": "0.0.1",
+    "description": "",
+    "main": "index.js",
+    "scripts": {
+        "test": "jest --detectOpenHandles"
+    },
+    "author": "",
+    "license": "ISC",
+    "dependencies": {
+        "rpc-websockets": "^5.2.2"
+    },
+    "devDependencies": {
+        "jest": "^26.1.0"
+    }
+}
