@@ -68,6 +68,11 @@ class LotusWsClient {
     return this.client.call('Filecoin.ChainGetMessage', [cid]);
   }
 
+  async walletList() {
+    await this.whenReady();
+    return this.client.call('Filecoin.WalletList', []);
+  }
+
 }
 
 module.exports = {

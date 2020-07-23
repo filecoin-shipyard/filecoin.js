@@ -10,9 +10,13 @@ it('get version', async () => {
 
 it('push message', async () => {
     expect.assertions(1);
+
+    const walletList = await client.walletList();
+
+    const address = walletList[0];
     const signedMsg = await client.mpoolPushMessge({
-        From:     't3xgaa6yckgihr4tedbwqqj2e3vat667im3kcztc5s6eaft77zu3moztpqwx3nxk7xcakfrn4ajlsjxkikrkkq',
-        To:       't3xgaa6yckgihr4tedbwqqj2e3vat667im3kcztc5s6eaft77zu3moztpqwx3nxk7xcakfrn4ajlsjxkikrkkq',
+        From:     address,
+        To:       address,
         Value:    "1",
         GasLimit: 100000,
         GasPrice: "0",
@@ -24,5 +28,5 @@ it('push message', async () => {
 
     console.log(message);
 
-    expect(signedMsg.Message.From).toEqual("t3xgaa6yckgihr4tedbwqqj2e3vat667im3kcztc5s6eaft77zu3moztpqwx3nxk7xcakfrn4ajlsjxkikrkkq");
+    expect(signedMsg.Message.From).toEqual(address);
 });
