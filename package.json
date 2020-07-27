@@ -3,6 +3,9 @@
   "version": "0.0.1",
   "description": "A JavaScript/TypeScript client library for Filecoin.io",
   "main": "dist/index.js",
+  "browser": {
+    "node-fetch": false
+  },
   "typings": "dist/index.d.ts",
   "scripts": {
     "prebuild": "rimraf dist",
@@ -16,11 +19,14 @@
   "license": "ISC",
   "dependencies": {
     "bignumber.js": "^9.0.0",
-    "rpc-websockets": "^5.2.2"
+    "node-fetch": "^2.6.0",
+    "rpc-websockets": "^5.2.2",
+    "websocket": "^1.0.31"
   },
   "devDependencies": {
     "@microsoft/api-extractor": "^7.9.2",
     "@types/jest": "25.2.3",
+    "@types/node-fetch": "^2.5.7",
     "@types/supertest": "^2.0.8",
     "@typescript-eslint/eslint-plugin": "3.0.2",
     "@typescript-eslint/parser": "3.0.2",
@@ -32,6 +38,7 @@
     "prettier": "^1.19.1",
     "supertest": "^4.0.2",
     "ts-jest": "26.1.0",
+    "ts-node": "^8.10.2",
     "tsconfig-paths": "^3.9.0",
     "typescript": "^3.9.7"
   },
