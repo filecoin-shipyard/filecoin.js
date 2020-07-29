@@ -5,4 +5,10 @@ var http = require('http'),
 //
 let fullUrl = 'ws://localhost:4502';
 console.log(`forwarding websockets to: ${fullUrl}`);
-httpProxy.createProxyServer({target: fullUrl, ws: true}).listen(8000); // See (†)
+
+httpProxy.createProxyServer(
+    {
+        target: fullUrl,
+        ws: true,
+    }
+).listen(8000);
