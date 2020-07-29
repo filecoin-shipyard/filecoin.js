@@ -4,6 +4,33 @@
 
 ```ts
 
+// @public (undocumented)
+export class JsonRpcProvider {
+    constructor(url: string);
+    // Warning: (ae-forgotten-export) The symbol "Connector" needs to be exported by the entry point index.d.ts
+    //
+    // (undocumented)
+    conn: Connector;
+    // (undocumented)
+    getBlock(blockCid: Cid): Promise<TipSet>;
+    // (undocumented)
+    getBlockMessages(blockCid: Cid): Promise<any>;
+    // Warning: (ae-forgotten-export) The symbol "TipSet" needs to be exported by the entry point index.d.ts
+    //
+    // (undocumented)
+    getHead(): Promise<TipSet>;
+    // Warning: (ae-forgotten-export) The symbol "Cid" needs to be exported by the entry point index.d.ts
+    //
+    // (undocumented)
+    readObj(cid: Cid): Promise<string>;
+    // (undocumented)
+    url: string;
+    // Warning: (ae-forgotten-export) The symbol "Version" needs to be exported by the entry point index.d.ts
+    //
+    // (undocumented)
+    version(): Promise<Version>;
+}
+
 
 // (No @packageDocumentation comment for this package)
 
