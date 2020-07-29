@@ -1,0 +1,20 @@
+{
+  "metadata": {
+    "toolPackage": "@microsoft/api-extractor",
+    "toolVersion": "7.9.2",
+    "schemaVersion": 1003,
+    "oldestForwardsCompatibleVersion": 1001
+  },
+  "kind": "Package",
+  "canonicalReference": "filecoin.js!",
+  "docComment": "",
+  "name": "filecoin.js",
+  "members": [
+    {
+      "kind": "EntryPoint",
+      "canonicalReference": "filecoin.js!",
+      "name": "",
+      "members": []
+    }
+  ]
+}
