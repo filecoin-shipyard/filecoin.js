@@ -18,9 +18,9 @@ free_port() {
     python -c "import socket; s = socket.socket(); s.bind(('', 0)); print(s.getsockname()[1])"
 }
 
-bootstrap_daemon_port=$(free_port)
-bootstrap_miner_port=$(free_port)
-client_daemon_port=$(free_port)
+bootstrap_daemon_port=4500
+bootstrap_miner_port=4501
+client_daemon_port=4502
 
 genesis_miner_addr="t01000"
 build_dir="/localnet.test"

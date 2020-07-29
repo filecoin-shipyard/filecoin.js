@@ -13,9 +13,9 @@ class LotusWsClient {
     this.client = new Client(fullUrl);
     this.client.on('open', () => {
       this.ready = true;
-      // console.log('Lotus connection established!\n');
+      console.log('Lotus connection established!\n');
     });
-    this.client.on('error', () => console.log(`Couldn't connect to Lotus`));
+    this.client.on('error', (e) => console.log(`Couldn't connect to Lotus`, e));
     this.client.on('close', () => {
       this.ready = false;
       console.log('Lotus connection closed!\n');
@@ -31,6 +31,17 @@ class LotusWsClient {
       this.instance = new LotusWsClient(
         process.env.LOTUS_URL,
         process.env.LOTUS_AUTH_TOKEN,
+      );
+    }
+
+    return this.instance;
+  }
+
+  static sharedWithValues(lotusUrl, lotusAuthToken) {
+    if (!this.instance) {
+      this.instance = new LotusWsClient(
+        lotusUrl,
+        lotusAuthToken,
       );
     }
 

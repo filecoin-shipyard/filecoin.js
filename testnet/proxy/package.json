@@ -1,5 +1,5 @@
 {
-    "name": "filecoin.js",
+    "name": "filecoin.js.proxy",
     "version": "0.0.1",
     "description": "",
     "main": "index.js",
@@ -9,10 +9,7 @@
     "author": "",
     "license": "ISC",
     "dependencies": {
-        "dotenv": "^8.2.0",
-        "rpc-websockets": "^5.2.2"
+        "http-proxy": "^1.18.1"
     },
-    "devDependencies": {
-        "jest": "^26.1.0"
-    }
+    "devDependencies": {}
 }

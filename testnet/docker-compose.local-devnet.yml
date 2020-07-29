@@ -7,19 +7,6 @@ version: '3'
 volumes:
   filecoin_js_node_modules_volume:
 services:
-  filecoin_js_infra:
-    container_name: 'filecoin_js_infra'
-    build:
-      context: .
-    ports:
-      - 8000:8000
-      - 4502:4502
-
-    command: tail -F anything
-    volumes:
-      - ../:/src:delegated
-      - ./:/lotus:delegated
-      - filecoin_js_node_modules_volume:/src/node_modules
-
-
+  filecoin_js_infra_lotus_devnet:
+    image: textile/lotus-devnet:ntwk-calibration-7.21.1-4
 
