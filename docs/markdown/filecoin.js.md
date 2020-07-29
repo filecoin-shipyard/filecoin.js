@@ -4,3 +4,9 @@
 
 ## filecoin.js package
 
+## Classes
+
+|  Class | Description |
+|  --- | --- |
+|  [JsonRpcProvider](./filecoin.js.jsonrpcprovider.md) |  |
+
