@@ -1,4 +1,17 @@
 "use strict";
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -35,79 +48,73 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.JsonRpcProvider = void 0;
-var HttpJsonRpc_1 = require("../connectors/HttpJsonRpc");
-var JsonRpcProvider = (function () {
-    function JsonRpcProvider(url) {
-        this.url = url;
-        this.conn = new HttpJsonRpc_1.HttpConnector(url);
+exports.HttpConnector = exports.JsonRpcResponse = void 0;
+var node_fetch_1 = __importDefault(require("node-fetch"));
+var events_1 = require("events");
+var JsonRpcResponse = (function () {
+    function JsonRpcResponse() {
     }
-    JsonRpcProvider.prototype.version = function () {
-        return __awaiter(this, void 0, void 0, function () {
-            var ret;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0: return [4, this.conn.exec('Filecoin.Version')];
-                    case 1:
-                        ret = _a.sent();
-                        return [2, ret.result];
-                }
-            });
-        });
-    };
-    JsonRpcProvider.prototype.readObj = function (cid) {
-        return __awaiter(this, void 0, void 0, function () {
-            var ret;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0: return [4, this.conn.exec('Filecoin.ChainReadObj', [cid])];
-                    case 1:
-                        ret = _a.sent();
-                        return [2, ret.result];
-                }
-            });
-        });
-    };
-    JsonRpcProvider.prototype.getBlockMessages = function (blockCid) {
-        return __awaiter(this, void 0, void 0, function () {
-            var ret;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0: return [4, this.conn.exec('Filecoin.ChainGetBlockMessages', [blockCid])];
-                    case 1:
-                        ret = _a.sent();
-                        return [2, ret.result];
-                }
-            });
-        });
-    };
-    JsonRpcProvider.prototype.getHead = function () {
-        return __awaiter(this, void 0, void 0, function () {
-            var ret;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0: return [4, this.conn.exec('Filecoin.ChainHead')];
-                    case 1:
-                        ret = _a.sent();
-                        return [2, ret.result];
-                }
-            });
-        });
-    };
-    JsonRpcProvider.prototype.getBlock = function (blockCid) {
-        return __awaiter(this, void 0, void 0, function () {
-            var ret;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0: return [4, this.conn.exec('Filecoin.ChainGetBlock', [blockCid])];
-                    case 1:
-                        ret = _a.sent();
-                        return [2, ret.result];
-                }
-            });
-        });
-    };
-    return JsonRpcProvider;
+    return JsonRpcResponse;
 }());
-exports.JsonRpcProvider = JsonRpcProvider;
+exports.JsonRpcResponse = JsonRpcResponse;
+var HttpConnector = (function (_super) {
+    __extends(HttpConnector, _super);
+    function HttpConnector(url) {
+        var _this = _super.call(this) || this;
+        _this.url = url;
+        _this.reqId = 0;
+        return _this;
+    }
+    HttpConnector.prototype.connect = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                this.emit('connected');
+                return [2];
+            });
+        });
+    };
+    HttpConnector.prototype.disconnect = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                this.emit('disconnected');
+                return [2];
+            });
+        });
+    };
+    HttpConnector.prototype.exec = function (method, params) {
+        return __awaiter(this, void 0, void 0, function () {
+            var message, resp;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        message = {
+                            jsonrpc: "2.0",
+                            method: method,
+                            params: params || null,
+                            id: this.reqId++,
+                        };
+                        return [4, node_fetch_1.default(this.url, {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json'
+                                },
+                                body: JSON.stringify(message),
+                            })];
+                    case 1:
+                        resp = _a.sent();
+                        return [4, resp.json()];
+                    case 2: return [2, _a.sent()];
+                }
+            });
+        });
+    };
+    HttpConnector.prototype.on = function (event, listener) {
+        return _super.prototype.on.call(this, event, listener);
+    };
+    return HttpConnector;
+}(events_1.EventEmitter));
+exports.HttpConnector = HttpConnector;

@@ -36,27 +36,46 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var http_1 = require("./connectors/http");
+var JsonRpcProvider_1 = require("./providers/JsonRpcProvider");
 (function () { return __awaiter(void 0, void 0, void 0, function () {
-    var con, _a, _b, e_1;
-    return __generator(this, function (_c) {
-        switch (_c.label) {
+    var con, _a, _b, _c, _d, _e, _f, head, _g, _h, _j, _k, _l, e_1;
+    return __generator(this, function (_m) {
+        switch (_m.label) {
             case 0:
-                _c.trys.push([0, 3, , 4]);
-                con = new http_1.HttpConnector('http://lotus-2a.testnet.s.interplanetary.one:1234/rpc/v0');
-                return [4, con.connect()];
-            case 1:
-                _c.sent();
+                _m.trys.push([0, 7, , 8]);
+                con = new JsonRpcProvider_1.JsonRpcProvider('http://lotus-2a.testnet.s.interplanetary.one:1234/rpc/v0');
                 _b = (_a = console).error;
-                return [4, con.exec('Filecoin.Version')];
+                return [4, con.version()];
+            case 1:
+                _b.apply(_a, [_m.sent()]);
+                _d = (_c = console).error;
+                return [4, con.readObj({ '/': 'bafy2bzacecqlzny34omms3qvyrqerdqy6jbxg77bje2h3upd4kxjnxkn2zf6y' })];
             case 2:
-                _b.apply(_a, [_c.sent()]);
-                return [3, 4];
+                _d.apply(_c, [_m.sent()]);
+                _f = (_e = console).error;
+                return [4, con.getBlockMessages({ '/': 'bafy2bzacecpkzzq7fbulsp2k6ej5bcxpjrtpbmneyha7yb746qwbp4qejsdf6' })];
             case 3:
-                e_1 = _c.sent();
+                _f.apply(_e, [_m.sent()]);
+                return [4, con.getHead()];
+            case 4:
+                head = _m.sent();
+                console.error(head);
+                console.error('111111111111', head.Blocks[0]);
+                _h = (_g = console).error;
+                _j = ['222222222222'];
+                return [4, con.getBlock(head.Cids[0])];
+            case 5:
+                _h.apply(_g, _j.concat([_m.sent()]));
+                _l = (_k = console).error;
+                return [4, con.readObj(head.Blocks[0].Parents[0])];
+            case 6:
+                _l.apply(_k, [_m.sent()]);
+                return [3, 8];
+            case 7:
+                e_1 = _m.sent();
                 console.error(e_1);
-                return [3, 4];
-            case 4: return [2];
+                return [3, 8];
+            case 8: return [2];
         }
     });
 }); })();
