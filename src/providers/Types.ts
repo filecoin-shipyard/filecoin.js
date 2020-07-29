@@ -88,6 +88,11 @@ export interface SignedMessage {
   Signature: string;
 }
 
+/**
+ * Interface to be implemented by all providers.
+ *
+ * @public
+ */
 export interface Provider {
 
   /**
