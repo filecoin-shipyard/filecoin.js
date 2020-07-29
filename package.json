@@ -6,14 +6,17 @@
   "browser": {
     "node-fetch": false
   },
-  "typings": "dist/index.d.ts",
+  "typings": "dist/filecoin.js.d.ts",
   "scripts": {
     "prebuild": "rimraf dist",
     "build": "tsc -b",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
     "test": "jest",
-    "test:cov": "jest --coverage"
+    "test:cov": "jest --coverage",
+    "api-extractor:local": "api-extractor run --local --verbose",
+    "api-extractor": "api-extractor run --verbose",
+    "generate-docs": "api-documenter markdown --input-folder docs/input --output-folder docs/markdown"
   },
   "author": "",
   "license": "ISC",
@@ -24,6 +27,7 @@
     "websocket": "^1.0.31"
   },
   "devDependencies": {
+    "@microsoft/api-documenter": "^7.8.21",
     "@microsoft/api-extractor": "^7.9.2",
     "@types/jest": "25.2.3",
     "@types/node-fetch": "^2.5.7",
