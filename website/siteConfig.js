@@ -35,13 +35,15 @@ const siteConfig = {
   // For top-level user or org sites, the organization is still the same.
   // e.g., for the https://JoelMarcey.github.io site, it would be set like...
   //   organizationName: 'JoelMarcey'
-
+  stylesheets: [
+    'https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,400i,700',
+  ],
   // For no header links in the top nav bar -> headerLinks: [],
   headerLinks: [
-    {page: 'help', label: 'Docs'},
+    {doc: 'introduction', label: 'Docs'},
     {doc: 'api/filecoin.js', label: 'API Reference'},
     {page: 'help', label: 'Help'},
-    { href: 'https://www.github.com', label: "GitHub" },
+    {href: 'https://www.github.com', label: "GitHub"},
     {blog: true, label: 'Blog'},
   ],
 
@@ -49,14 +51,14 @@ const siteConfig = {
   users,
 
   /* path to images for header/footer */
-  headerIcon: 'img/favicon.ico',
-  footerIcon: 'img/favicon.ico',
+  headerIcon: 'img/logo.svg',
+  footerIcon: 'img/logo.svg',
   favicon: 'img/favicon.ico',
 
   /* Colors for website */
   colors: {
-    primaryColor: '#192004',
-    secondaryColor: '#111602',
+    primaryColor: '#27293D',
+    secondaryColor: '#ff0000',
   },
 
   /* Custom fonts for website */
@@ -74,7 +76,7 @@ const siteConfig = {
   */
 
   // This copyright info is used in /core/Footer.js and blog RSS/Atom feeds.
-  copyright: `Copyright © ${new Date().getFullYear()} Your Name or Your Company Name`,
+  copyright: `Copyright © ${new Date().getFullYear()} Filecoin`,
 
   highlight: {
     // Highlight.js theme to use for syntax highlighting in code blocks.
