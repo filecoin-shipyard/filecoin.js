@@ -14,8 +14,8 @@ services:
     ports:
       - 8000:8000
       - 4502:4502
+    entrypoint: /lotus/entrypoint.sh
 
-    command: tail -F anything
     volumes:
       - ../:/src:delegated
       - ./:/lotus:delegated
