@@ -79,3 +79,5 @@ var JsonRpcProvider_1 = require("./providers/JsonRpcProvider");
         }
     });
 }); })();
+var JsonRpcProvider_2 = require("./providers/JsonRpcProvider");
+Object.defineProperty(exports, "JsonRpcProvider", { enumerable: true, get: function () { return JsonRpcProvider_2.JsonRpcProvider; } });
