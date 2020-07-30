@@ -1,16 +1,9 @@
 ##Local testing env
 
 1. docker-compose up
-2. docker exec -it filecoin_js_infra /bin/bash
 
-Inside the container:
-1. ./lotus/build_lotus.sh
-2. ./lotus/start_testnet.sh
-3. source /filecoin_miner/scripts/env-client.bash
-4. . /lotus/set_env.sh
+Wait a while, and everything should be up and running.
 
-5. cd /src
-6. npm install
-7. npm run test
+After everything is set up you should have in the testnet folder a .env file that contains **LOTUS_AUTH_TOKEN** and **LOTUS_URL**.
 
-8. enjoy ?
+**LOTUS_URL** url is relevant if you want to connect to the lotus api from inside the container that runs the network. If you want to connect to the lotus api from outside the container you should use `localhost:8000/rpc/v0`
