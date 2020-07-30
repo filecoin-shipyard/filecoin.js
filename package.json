@@ -14,14 +14,13 @@
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
     "test": "jest",
     "test:cov": "jest --coverage",
-    "api-extractor:local": "api-extractor run --local --verbose",
-    "api-extractor": "api-extractor run --verbose",
-    "generate-docs": "api-documenter markdown --input-folder docs/input --output-folder docs/markdown"
+    "doc": "node scripts/make-docs.js"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
     "bignumber.js": "^9.0.0",
+    "fs-extra": "^9.0.1",
     "node-fetch": "^2.6.0",
     "rpc-websockets": "^5.2.2",
     "websocket": "^1.0.31"
