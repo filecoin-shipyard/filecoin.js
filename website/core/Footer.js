@@ -30,8 +30,9 @@ class Footer extends React.Component {
               <img
                 src={this.props.config.baseUrl + this.props.config.footerIcon}
                 alt={this.props.config.title}
-                width="66"
-                height="58"
+                style={{
+                  width: '100%'
+                }}
               />
             )}
           </a>
@@ -104,19 +105,6 @@ class Footer extends React.Component {
             )}
           </div>
         </section>
-
-        <a
-          href="https://opensource.facebook.com/"
-          target="_blank"
-          rel="noreferrer noopener"
-          className="fbOpenSource">
-          <img
-            src={`${this.props.config.baseUrl}img/oss_logo.png`}
-            alt="Facebook Open Source"
-            width="170"
-            height="45"
-          />
-        </a>
         <section className="copyright">{this.props.config.copyright}</section>
       </footer>
     );
