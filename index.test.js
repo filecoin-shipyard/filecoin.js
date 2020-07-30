@@ -1,6 +1,12 @@
 const { LotusWsClient } = require('./LotusWsClient');
+require('dotenv').config({ path: './testnet/.env' })
 
-const client = LotusWsClient.shared();
+//const client = LotusWsClient.shared();
+const client = LotusWsClient.sharedWithValues('ws://localhost:8000/rpc/v0',process.env.LOTUS_AUTH_TOKEN);
+
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
 
 it('get version', async () => {
     expect.assertions(1);
@@ -26,7 +32,11 @@ it('push message', async () => {
 
     const message = await client.chainGetMessage(messageCid);
 
-    console.log(message);
+    //await sleep(2000);
+
+    //await client.mpoolPush(signedMsg);
+
+    //console.log(message);
 
     expect(signedMsg.Message.From).toEqual(address);
 });

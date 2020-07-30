@@ -1,6 +1,6 @@
 FROM ubuntu:20.10
 
-RUN rm /bin/sh && ln -s /bin/bash /bin/sh
+#RUN rm /bin/sh && ln -s /bin/bash /bin/sh
 
 RUN apt update
 RUN apt-get install -y software-properties-common
@@ -8,9 +8,11 @@ RUN apt install -y --no-install-recommends build-essential git jq python netcat 
 RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
 
 #install node
+ENV NVM_DIR="/usr/local"
 RUN curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.3/install.sh | bash
-ENV NVM_DIR=/root/.nvm
-RUN . "$NVM_DIR/nvm.sh" && nvm install stable
+
+RUN . "$NVM_DIR/nvm.sh" && nvm install v14.7.0
+ENV PATH="/usr/local/versions/node/v14.7.0/bin:${PATH}"
 
 #install go
 RUN wget  https://dl.google.com/go/go1.14.3.linux-amd64.tar.gz

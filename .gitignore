@@ -1,2 +1,5 @@
 
 testnet/nohup.out
+testnet/proxy/node_modules
+node_modules
+testnet/.env

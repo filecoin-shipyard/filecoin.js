@@ -13,7 +13,7 @@ echo $port
 export LOTUS_AUTH_TOKEN=$auth_token
 export LOTUS_URL=ws://localhost:$port/rpc/v0
 
-export IPFS_ROOT=/filecoin_client
-export ENCRYPTION_KEY=83f101bcfe79d34c1d327024fc5ccafe11d7b9ec4d29e13e08c5b291bf5a3b73
-export COPY_NUMBER=2
-export PRICE=5000000000
+cat > ".env" <<EOF
+LOTUS_AUTH_TOKEN=$auth_token
+LOTUS_URL=ws://localhost:$port/rpc/v0
+EOF

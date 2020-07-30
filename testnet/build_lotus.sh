@@ -22,8 +22,11 @@ deps=(printf paste jq python nc)
 #lotus_git_sha="bead3bf412954c02ac82e5367e6e9c498a8a897b" #interop branch top19 jun
 #lotus_git_sha="e5fdae45b78ac6dd6533b26a23ac263284831cbf" #master top 3 jul
 lotus_git_sha="3f017688c7ae180d12d4ee28f732298299ee351f" #master top 13 jul
+#lotus_git_sha="b84030b3bdf19b953cbf330710453d20f3f3abfd" #calibration 20 jul
 
-
+if grep -q "$lotus_git_sha" "${base_dir}/version/build_commit.txt"; then
+  exit 0
+fi
 
 copy_binaries_from_dir=""
 other_args=()
@@ -45,6 +48,11 @@ rm -r "${base_dir}"
 mkdir -p "${base_dir}"
 mkdir -p "${base_dir}/scripts"
 mkdir -p "${base_dir}/bin"
+mkdir -p "${base_dir}/version"
+
+cat > "${base_dir}/version/build_commit.txt" <<EOF
+${lotus_git_sha}
+EOF
 
 cat > "${base_dir}/scripts/build.bash" <<EOF
 #!/usr/bin/env bash
