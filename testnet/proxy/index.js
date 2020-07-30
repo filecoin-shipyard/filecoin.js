@@ -1,14 +1,24 @@
 var http = require('http'),
     httpProxy = require('http-proxy');
 //
-// Create your proxy server and set the target in the options.
+// Setup our server to proxy standard HTTP requests
 //
-let fullUrl = 'ws://localhost:4502';
-console.log(`forwarding websockets to: ${fullUrl}`);
-
-httpProxy.createProxyServer(
-    {
-        target: fullUrl,
-        ws: true,
+var proxy = new httpProxy.createProxyServer({
+    target: {
+      host: 'localhost',
+      port: 4502
     }
-).listen(8000);
+  });
+  var proxyServer = http.createServer(function (req, res) {
+    proxy.web(req, res);
+  });
+
+  //
+  // Listen to the `upgrade` event and proxy the
+  // WebSocket requests as well.
+  //
+  proxyServer.on('upgrade', function (req, socket, head) {
+    proxy.ws(req, socket, head);
+  });
+
+  proxyServer.listen(8000);
