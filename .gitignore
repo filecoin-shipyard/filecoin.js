@@ -4,3 +4,4 @@ testnet/proxy/node_modules
 node_modules
 testnet/.env
 .idea
+temp
