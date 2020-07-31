@@ -18,3 +18,6 @@ import { JsonRpcProvider } from './providers/JsonRpcProvider';
     console.error(e);
   }
 })();
+
+export { JsonRpcProvider } from './providers/JsonRpcProvider';
+// export * from './providers/Types';
