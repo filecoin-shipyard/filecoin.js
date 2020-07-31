@@ -1,7 +1,14 @@
-node_modules/
+.vscode
+.DS_Store
+node_modules
+
+dist
+dist-esm
+_bundles
+
 testnet/nohup.out
 testnet/proxy/node_modules
-node_modules
 testnet/.env
+
 .idea
 temp
