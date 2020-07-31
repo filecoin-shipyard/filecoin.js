@@ -9,7 +9,7 @@
   "typings": "dist/filecoin.js.d.ts",
   "scripts": {
     "prebuild": "rimraf dist",
-    "build": "tsc -b",
+    "build": "tsc && tsc -m es6 --outDir dist-esm",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
     "test": "jest",
