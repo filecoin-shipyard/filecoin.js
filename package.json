@@ -8,8 +8,10 @@
   },
   "typings": "dist/filecoin.js.d.ts",
   "scripts": {
-    "prebuild": "rimraf dist",
+    "prebuild": "rimraf dist dist-esm",
     "build": "tsc && tsc -m es6 --outDir dist-esm",
+    "prebundle": "rimraf _bundles",
+    "bundle": "webpack",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
     "test": "jest",
@@ -19,10 +21,12 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "axios": "^0.19.2",
     "bignumber.js": "^9.0.0",
     "fs-extra": "^9.0.1",
     "node-fetch": "^2.6.0",
     "rpc-websockets": "^5.2.2",
+    "webpack": "^4.44.1",
     "websocket": "^1.0.31"
   },
   "devDependencies": {
@@ -41,9 +45,11 @@
     "prettier": "^1.19.1",
     "supertest": "^4.0.2",
     "ts-jest": "26.1.0",
+    "ts-loader": "^8.0.2",
     "ts-node": "^8.10.2",
     "tsconfig-paths": "^3.9.0",
-    "typescript": "^3.9.7"
+    "typescript": "^3.9.7",
+    "webpack-cli": "^3.3.12"
   },
   "jest": {
     "moduleFileExtensions": [
