@@ -3,10 +3,13 @@
   "version": "0.0.1",
   "description": "A JavaScript/TypeScript client library for Filecoin.io",
   "main": "dist/index.js",
+  "typings": "dist/index.d.ts",
+  "jsnext:main": "dist-esm/index.js",
+  "module": "dist-esm/index.js",
   "browser": {
     "node-fetch": false
   },
-  "typings": "dist/filecoin.js.d.ts",
+  "files": ["/dist", "/dist-esm"],
   "scripts": {
     "prebuild": "rimraf dist dist-esm",
     "build": "tsc && tsc -m es6 --outDir dist-esm",
