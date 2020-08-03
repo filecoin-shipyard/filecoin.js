@@ -1,8 +1,0 @@
-.*
-**/tsconfig.json
-**/webpack.config.js
-
-node_modules
-src
-website
-index.js
