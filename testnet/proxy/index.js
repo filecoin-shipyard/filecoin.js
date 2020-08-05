@@ -9,6 +9,19 @@ var proxy = new httpProxy.createProxyServer({
       port: 4502
     }
   });
+
+  proxy.on('proxyReq', function(proxyReq, req, res, options) {
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+    res.setHeader('Access-Control-Allow-Methods', 'GET,PATCH,POST,PUT,DELETE');
+
+    if (proxyReq.method === 'OPTIONS'){
+      res.statusCode = 200;
+      res.end();
+      return;
+    }
+  });
+
   var proxyServer = http.createServer(function (req, res) {
     proxy.web(req, res);
   });
