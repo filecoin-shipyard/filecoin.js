@@ -2,22 +2,22 @@ var path = require("path");
 var webpack = require("webpack");
 
 var PATHS = {
-  entryPoint: './src/index.ts',
-  bundles: path.resolve(__dirname, '_bundles'),
+  entryPoint: './tests/src.ts/index.ts',
+  bundles: path.resolve(__dirname, 'tests/_bundles'),
 }
 
 var config = {
   mode: 'production',
   devtool: 'source-map',
   entry: {
-    'tests-js': [PATHS.entryPoint],
-    'test-js.min': [PATHS.entryPoint]
+    'tests-js-umd': [PATHS.entryPoint],
+    'tests-js-umd.min': [PATHS.entryPoint]
   },
   output: {
     path: PATHS.bundles,
     filename: '[name].js',
     libraryTarget: 'umd',
-    library: 'FilecoinJs',
+    library: 'FilecoinJsTests',
     umdNamedDefine: true
   },
   resolve: {
@@ -31,6 +31,9 @@ var config = {
         test: /\.ts?$/,
         loader: 'ts-loader',
         exclude: /(node_modules|__tests__)/,
+        options: {
+          configFile: 'tsconfig.tests.json'
+        },
       },
     ],
   }
