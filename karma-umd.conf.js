@@ -7,11 +7,11 @@ module.exports = function(config) {
         "./_bundles/filecoin-js.js",
         "./tests/_bundles/tests-js-umd.js",
     ],
-    // reporters: [ 'karma' ],
+    reporters: [ 'karma' ],
     plugins: [
       'karma-mocha',
       'karma-chrome-launcher',
-      // require('./packages/tests/karma-reporter')
+      require('./tests/karma-reporter')
     ],
     port: 9876,
     logLevel: config.LOG_INFO,
