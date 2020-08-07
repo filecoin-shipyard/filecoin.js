@@ -1,4 +1,4 @@
-import fetch from 'node-fetch';
+import nodeFetch from 'node-fetch';
 import { EventEmitter } from 'events';
 import { Connector } from './Connector';
 
@@ -33,16 +33,28 @@ export class HttpConnector extends EventEmitter implements Connector {
       params: params || null,
       id: this.reqId++,
     };
+    let resp;
 
-    const resp = await fetch(this.url, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(message),
-    });
+    if (typeof window === 'undefined') {
+      resp = await nodeFetch(this.url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(message),
+      });
+    } else {
+      resp = await fetch(this.url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(message),
+      });
+    }
 
     return await resp.json();
+
   }
 
   public on(event: 'connected' | 'disconnected', listener: (...args: any[]) => void): this {

@@ -3,32 +3,45 @@
   "version": "0.0.1",
   "description": "A JavaScript/TypeScript client library for Filecoin.io",
   "main": "dist/index.js",
+  "typings": "dist/index.d.ts",
+  "jsnext:main": "dist-esm/index.js",
+  "module": "dist-esm/index.js",
   "browser": {
     "node-fetch": false
   },
-  "typings": "dist/filecoin.js.d.ts",
+  "files": [
+    "/dist",
+    "/dist-esm"
+  ],
   "scripts": {
-    "prebuild": "rimraf dist",
-    "build": "tsc -b",
+    "prebuild": "rimraf dist dist-esm",
+    "build": "tsc && tsc -m es6 --outDir dist-esm",
+    "_build_tests": "tsc --project tsconfig.tests.json",
+    "prebundle": "rimraf _bundles",
+    "bundle": "webpack",
+    "_bundle-tests": "webpack --config webpack.tests.config.js",
+    "_test-browser-umd": "karma start --single-run --browsers HeadlessLittleLiar karma-umd.conf.js",
+    "_test-node": "mocha --no-colors --reporter ./tests/reporter ./tests/dist/tests/src.ts/test-*.js",
+    "test-browser-umd": "npm run _bundle-tests && npm run _test-browser-umd",
+    "test": "npm run _build_tests && npm run _test-node",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
-    "test": "jest",
-    "test:cov": "jest --coverage",
     "doc": "node scripts/make-docs.js"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "axios": "^0.19.2",
     "bignumber.js": "^9.0.0",
     "fs-extra": "^9.0.1",
     "node-fetch": "^2.6.0",
     "rpc-websockets": "^5.2.2",
+    "webpack": "^4.44.1",
     "websocket": "^1.0.31"
   },
   "devDependencies": {
     "@microsoft/api-documenter": "^7.8.21",
     "@microsoft/api-extractor": "^7.9.2",
-    "@types/jest": "25.2.3",
     "@types/node-fetch": "^2.5.7",
     "@types/supertest": "^2.0.8",
     "@typescript-eslint/eslint-plugin": "3.0.2",
@@ -37,26 +50,19 @@
     "eslint-config-prettier": "^6.10.0",
     "eslint-plugin-import": "^2.20.1",
     "eslint-plugin-tsdoc": "^0.2.6",
-    "jest": "^26.1.0",
     "prettier": "^1.19.1",
     "supertest": "^4.0.2",
-    "ts-jest": "26.1.0",
+    "ts-loader": "^8.0.2",
     "ts-node": "^8.10.2",
     "tsconfig-paths": "^3.9.0",
-    "typescript": "^3.9.7"
-  },
-  "jest": {
-    "moduleFileExtensions": [
-      "js",
-      "json",
-      "ts"
-    ],
-    "rootDir": "src",
-    "testRegex": ".spec.ts$",
-    "transform": {
-      "^.+\\.(t|j)s$": "ts-jest"
-    },
-    "coverageDirectory": "../coverage",
-    "testEnvironment": "node"
+    "typescript": "^3.9.7",
+    "webpack-cli": "^3.3.12",
+    "@types/assert": "^1.4.1",
+    "@types/mocha": "^5.2.0",
+    "@types/node": "^12.7.4",
+    "karma": "5.1.0",
+    "karma-chrome-launcher": "3.1.0",
+    "karma-mocha": "2.0.1",
+    "mocha": "^7.1.1"
   }
 }
