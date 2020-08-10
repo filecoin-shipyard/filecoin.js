@@ -1,39 +1,38 @@
-import { HttpConnector } from '../connectors/HttpJsonRpc';
+import { HttpJsonRpcConnector } from '../connectors/HttpJsonRpc';
 import { Version, Cid, TipSet } from './Types';
-import { Connector } from '../connectors/Connector';
 
 export class JsonRpcProvider {
 
-  public conn: Connector;
+  public conn: HttpJsonRpcConnector;
 
   constructor(
     public url: string,
   ) {
-    this.conn = new HttpConnector(url);
+    this.conn = new HttpJsonRpcConnector(url);
   }
 
   public async version(): Promise<Version> {
-    const ret = await this.conn.exec('Filecoin.Version');
+    const ret = await this.conn.request({ method: 'Filecoin.Version' });
     return ret.result;
   }
 
   public async readObj(cid: Cid): Promise<string> {
-    const ret = await this.conn.exec('Filecoin.ChainReadObj', [cid]);
+    const ret = await this.conn.request({ method: 'Filecoin.ChainReadObj', params: [cid] });
     return ret.result;
   }
 
   public async getBlockMessages(blockCid: Cid): Promise<any> {
-    const ret = await this.conn.exec('Filecoin.ChainGetBlockMessages', [blockCid]);
+    const ret = await this.conn.request({ method: 'Filecoin.ChainGetBlockMessages', params: [blockCid] });
     return ret.result;
   }
 
   public async getHead(): Promise<TipSet> {
-    const ret = await this.conn.exec('Filecoin.ChainHead');
+    const ret = await this.conn.request({ method: 'Filecoin.ChainHead' });
     return ret.result;
   }
 
   public async getBlock(blockCid: Cid): Promise<TipSet> {
-    const ret = await this.conn.exec('Filecoin.ChainGetBlock', [blockCid]);
+    const ret = await this.conn.request({ method: 'Filecoin.ChainGetBlock', params: [blockCid] });
     return ret.result;
   }
 

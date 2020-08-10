@@ -1,6 +1,6 @@
 import nodeFetch from 'node-fetch';
 import { EventEmitter } from 'events';
-import { Connector } from './Connector';
+import { Connector, RequestArguments } from './Connector';
 
 export class JsonRpcResponse {
   public jsonrpc!: string;
@@ -8,14 +8,24 @@ export class JsonRpcResponse {
   id!: number;
 }
 
-export class HttpConnector extends EventEmitter implements Connector {
+export type JsonRpcConnectionOptions = { url: string, token?: string };
+
+export class HttpJsonRpcConnector extends EventEmitter implements Connector {
 
   protected reqId = 0;
+  private url: string;
+  private token: string | undefined;
 
   constructor(
-    protected url: string,
+    protected options: string | JsonRpcConnectionOptions,
   ) {
     super();
+    if (typeof options === 'string') {
+      this.url = options;
+    } else {
+      this.url = options.url;
+      this.token = options.token;
+    }
   }
 
   public async connect(): Promise<any> {
@@ -26,11 +36,11 @@ export class HttpConnector extends EventEmitter implements Connector {
     this.emit('disconnected');
   }
 
-  public async exec(method: string, params?: any[]): Promise<JsonRpcResponse> {
+  public async request(req: RequestArguments): Promise<JsonRpcResponse> {
     const message = {
       jsonrpc: "2.0",
-      method: method,
-      params: params || null,
+      method: req.method,
+      params: req.params || null,
       id: this.reqId++,
     };
     let resp;
@@ -59,6 +69,13 @@ export class HttpConnector extends EventEmitter implements Connector {
 
   public on(event: 'connected' | 'disconnected', listener: (...args: any[]) => void): this {
     return super.on(event, listener);
+  }
+
+  private headers() {
+    return {
+      'Content-Type': 'application/json',
+      ...(this.token ? { 'Authorization': `Bearer ${this.token}` } : {})
+    }
   }
 
 }

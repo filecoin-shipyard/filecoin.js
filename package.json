@@ -31,8 +31,10 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@zondax/filecoin-signing-tools": "^0.6.3",
     "axios": "^0.19.2",
     "bignumber.js": "^9.0.0",
+    "btoa-lite": "^1.0.0",    
     "fs-extra": "^9.0.1",
     "node-fetch": "^2.6.0",
     "rpc-websockets": "^5.2.2",
@@ -42,6 +44,7 @@
   "devDependencies": {
     "@microsoft/api-documenter": "^7.8.21",
     "@microsoft/api-extractor": "^7.9.2",
+    "@types/btoa-lite": "^1.0.0",    
     "@types/node-fetch": "^2.5.7",
     "@types/supertest": "^2.0.8",
     "@typescript-eslint/eslint-plugin": "3.0.2",
