@@ -96,8 +96,18 @@
         token: LOTUS_AUTH_TOKEN
       });
 
+      const getPass = () => {
+        let password;
+        return () => {
+          if (password) return password;
+          password = prompt('Mnemonic wallet password?');
+          setTimeout(() => password = undefined, 10000);
+          return password;
+        }
+      }
+
       const signer = new FilecoinJs.MnemonicSigner(
-        'equip will roof matter pink blind book anxiety banner elbow sun young', '', `m/44'/1'/0/0/1`
+        'equip will roof matter pink blind book anxiety banner elbow sun young', getPass(), `m/44'/1'/0/0/1`
       );
 
       const sendLotus = async (from, toId, filId) => {
