@@ -13,6 +13,6 @@ hide_title: true
 |  Class | Description |
 |  --- | --- |
 |  [HttpJsonRpcWalletProvider](./filecoin.js.httpjsonrpcwalletprovider.md) |  |
-|  [JsonRpcProvider](./filecoin.js.jsonrpcprovider.md) | The Log class provides static methods for logging messages at different levels (verbose, info, warning, error) and with context information. Context information helps identify which component generated the messages and makes the messages useful and filterable. |
+|  [JsonRpcProvider](./filecoin.js.jsonrpcprovider.md) |  |
 |  [MnemonicSigner](./filecoin.js.mnemonicsigner.md) |  |
 |  [MnemonicWalletProvider](./filecoin.js.mnemonicwalletprovider.md) |  |
