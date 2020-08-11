@@ -1,5 +1,10 @@
 import { BigNumber } from 'bignumber.js';
 
+export enum SigType {
+  SigTypeSecp256k1 = 1,
+  SigTypeBLS = 2,
+}
+
 export class Cid {
   '/'!: string;
 }
@@ -38,26 +43,20 @@ export class BlockHeader {
 
   Messages!: Cid;
 
-  BLSAggregate!: {
-    Type: number;
-    Data: string;
-  };
+  BLSAggregate!: Signature;
 
   Timestamp!: number;
 
-  BlockSig!: {
-    Type: number;
-    Data: string;
-  };
+  BlockSig!: Signature;
 
   ForkSignaling!: number;
-}
+};
 
 export class TipSet {
   Cids!: Cid[];
   Blocks!: BlockHeader[];
   Height!: number;
-}
+};
 
 export class Version {
   Version!: string;
@@ -66,27 +65,34 @@ export class Version {
 };
 
 export class Message {
-  Version!: bigint;
+  Version!: number;
 
   To!: string;
 
   From!: string;
 
-  Nonce!: bigint;
+  Nonce!: number;
 
   Value!: BigNumber;
 
   GasPrice!: BigNumber;
 
-  Method!: bigint;
+  GasLimit!: number;
 
-  Params!: ArrayBuffer;
+  Method!: number;
+
+  Params!: string;
+};
+
+export interface Signature {
+  Data: string;
+  Type: number;
 };
 
 export interface SignedMessage {
   Message: Message;
-  Signature: string;
-}
+  Signature: Signature;
+};
 
 /**
  * Interface to be implemented by all providers.
@@ -103,9 +109,5 @@ export interface Provider {
   sendMessage(message: Message): Promise<SignedMessage>;
   sendMessageSigned(message: SignedMessage): Promise<string>;
   getMessage(cid: string): Promise<Message>;
-
-}
-
-export interface Signer {
 
 }

@@ -3,34 +3,27 @@
     <head>
         <title>Filecoin.js Test Suite</title>
         <meta charset="UTF-8">
-        <link href="../../../node_modules/mocha/mocha.css" rel="stylesheet" />
+        <link href="../node_modules/mocha/mocha.css" rel="stylesheet" />
         <style type="text/css">
         </style>
     </head>
-
     <body>
         <div id="mocha"></div>
-        <script src="../../../node_modules/mocha/mocha.js"></script>
-
+        <script src="../node_modules/mocha/mocha.js"></script>
         <!-- Inject the mocha describe and it functions -->
         <script type="text/javascript">
             // Inject the mocha describe and it functions
             mocha.setup({ ui: 'bdd' });
         </script>
-
         <!-- Load the browser dist ethers package -->
-        <script type="text/javascript" src="../../../_bundles/filecoin-js.js"></script>
-
+        <script type="text/javascript" src="../_bundles/filecoin-js.js"></script>
         <!-- Our test cases; compiled by browserify -->
-        <script src="../../../_bundles_tests/tests-js-umd.js" type="text/javascript"></script>
-
+        <script src="./_bundles/tests-js-umd.js" type="text/javascript"></script>
         <!-- Run the test cases! -->
         <script type="text/javascript">
             //mocha.reporter(testing.Reporter);
-
             // Use this to focus on specific test cases
             //mocha.grep(new RegExp('easyseed-es')).run();
-
             mocha.run();
         </script>
     </body>

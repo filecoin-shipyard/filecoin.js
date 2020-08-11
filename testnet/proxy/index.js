@@ -12,7 +12,7 @@ var proxy = new httpProxy.createProxyServer({
 
   proxy.on('proxyReq', function(proxyReq, req, res, options) {
     res.setHeader('Access-Control-Allow-Origin', '*');
-    res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type,Authorization');
     res.setHeader('Access-Control-Allow-Methods', 'GET,PATCH,POST,PUT,DELETE');
 
     if (proxyReq.method === 'OPTIONS'){

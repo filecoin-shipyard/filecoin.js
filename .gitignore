@@ -4,6 +4,7 @@ node_modules
 
 dist
 dist-esm
+dist-tests
 _bundles
 
 testnet/nohup.out
@@ -12,3 +13,7 @@ testnet/.env
 
 .idea
 temp
+
+testnet/credentials.ts
+
+testnet/credentials_web.js
