@@ -31,6 +31,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@ledgerhq/hw-transport-webusb": "^5.22.0",
     "@zondax/filecoin-signing-tools": "^0.6.3",
     "axios": "^0.19.2",
     "bignumber.js": "^9.0.0",
@@ -38,6 +39,7 @@
     "fs-extra": "^9.0.1",
     "node-fetch": "^2.6.0",
     "rpc-websockets": "^5.2.2",
+    "secp256k1": "^4.0.2",
     "webpack": "^4.44.1",
     "websocket": "^1.0.31"
   },
