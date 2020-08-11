@@ -7,13 +7,18 @@ export class MnemonicSigner implements Signer {
   constructor(
     private mnemonic: string,
     private password: string,
-    private path: string = `m/44'/461'/0/0/0`,
+    private path: string = `m/44'/461'/0/0/1`,
   ) { }
 
   public async sign(message: Message): Promise<SignedMessage> {
     const key = filecoin_signer.keyDerive(this.mnemonic, this.path, this.password);
     const signedTx = filecoin_signer.transactionSignLotus(this.messageToSigner(message), key.private_hexstring);
     return signedTx;
+  }
+
+  public async getDefaultAccount(): Promise<string> {
+    const keypair = filecoin_signer.keyDerive(this.mnemonic, this.path, this.password);
+    return keypair.address;
   }
 
   private messageToSigner(message: Message): {

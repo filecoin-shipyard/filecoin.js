@@ -1,13 +1,11 @@
-import { HttpJsonRpcConnector } from '../connectors/HttpJsonRpc';
+import { HttpJsonRpcConnector, JsonRpcConnectionOptions } from '../connectors/HttpJsonRpc';
 import { Version, Cid, TipSet } from './Types';
 
 export class JsonRpcProvider {
 
   public conn: HttpJsonRpcConnector;
 
-  constructor(
-    public url: string,
-  ) {
+  constructor(url: string | JsonRpcConnectionOptions) {
     this.conn = new HttpJsonRpcConnector(url);
   }
 

@@ -1,0 +1,75 @@
+<!doctype html>
+<html>
+
+<head>
+  <title>Filecoin.js Wallet Example</title>
+  <meta charset="UTF-8">
+  <link href="../node_modules/mocha/mocha.css" rel="stylesheet" />
+  <style type="text/css">
+  </style>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+    integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+</head>
+
+<body>
+
+  <div class="container">
+    <div class="row row-cols-4">
+      <div class="col"></div>
+      <div class="col">
+        <div id="mnemonicAddress"></div>
+      </div>
+      <div class="col">
+        <input type="text" class="form-control" placeholder="to address">
+      </div>
+      <div class="col">
+        <button type="submit" class="btn btn-primary">Send</button>
+      </div>
+
+      <div class="col"></div>
+      <div class="col">
+        <div id="rpcAddress"></div>
+      </div>
+      <div class="col">
+        <input type="text" class="form-control" placeholder="to address">
+      </div>
+      <div class="col">
+        <button type="submit" class="btn btn-primary">Send</button>
+      </div>
+    </div>
+  </div>
+
+  <script type="text/javascript" src="../_bundles/filecoin-js.js"></script>
+  <script type="text/javascript">
+    const main = async () => {
+
+      const walletLotus = new FilecoinJs.HttpJsonRpcWalletProvider({
+        url: 'http://localhost:8000/rpc/v0',
+        token: `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBbGxvdyI6WyJyZWFkIiwid3JpdGUiLCJzaWduIiwiYWRtaW4iXX0.tuOseTvUIfuookn_RMdqIwION29mzz0SpMZ_N04E9lA`
+      });
+
+      const signer = new FilecoinJs.MnemonicSigner(
+        'equip will roof matter pink blind book anxiety banner elbow sun young', '', `m/44'/1'/0/0/1`
+      );
+
+      const updateAddresses = async () => {
+        const mnemonicAddress = await signer.getDefaultAccount();
+        const rpcAddress = await walletLotus.getDefaultAccount();
+        const mnemonicBalance = await walletLotus.getBalance(mnemonicAddress);
+        const rpcBalance = await walletLotus.getBalance(rpcAddress);
+
+        document.getElementById('mnemonicAddress').innerHTML = `${mnemonicAddress} (${mnemonicBalance})`;
+        document.getElementById('rpcAddress').innerHTML = `${rpcAddress} (${rpcBalance})`;
+      }
+
+      await updateAddresses();
+
+      console.error(await walletLotus.getAccounts());
+      console.log('yy', FilecoinJs.JsonRpcProvider);
+
+    };
+    main().then(console.log).catch(console.error);
+  </script>
+</body>
+
+</html>

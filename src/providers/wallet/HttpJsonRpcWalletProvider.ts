@@ -1,4 +1,4 @@
-import { Message, SignedMessage, Signature } from '../Types';
+import { Message, SignedMessage, Signature, Cid } from '../Types';
 import { WalletProvider } from './WalletProvider';
 import { HttpJsonRpcConnector, JsonRpcConnectionOptions } from '../../connectors/HttpJsonRpc';
 import { toBase64 } from '../../utils/data';
@@ -11,12 +11,14 @@ export class HttpJsonRpcWalletProvider implements WalletProvider {
     this.conn = new HttpJsonRpcConnector(url);
   }
 
-  public async chainId() {
-    // chain id ???
+  public async newAccount(type = 1): Promise<string[]> {
+    const ret = await this.conn.request({ method: 'Filecoin.WalletNew', params: [type] });
+    return ret.result;
   }
 
-  public async getId() {
-    // network id ???
+  public async getNonce(address: string): Promise<number> {
+    const ret = await this.conn.request({ method: 'Filecoin.MpoolGetNonce', params: [address] });
+    return ret.result;
   }
 
   public async getAccounts(): Promise<string[]> {
@@ -25,7 +27,7 @@ export class HttpJsonRpcWalletProvider implements WalletProvider {
   }
 
   public async getBalance(address: string): Promise<any> {
-    const ret = await this.conn.request({ method: 'Filecoin.WalletGetBalance', params: [address] });
+    const ret = await this.conn.request({ method: 'Filecoin.WalletBalance', params: [address] });
     return ret.result;
   }
 
@@ -39,8 +41,14 @@ export class HttpJsonRpcWalletProvider implements WalletProvider {
     return ret.result;
   }
 
-  public async sendMessage(msg: Message): Promise<any> {
+  public async sendMessage(msg: Message): Promise<SignedMessage> {
+    const ret = await this.conn.request({ method: 'Filecoin.MpoolPushMessage', params: [msg] });
+    return ret.result;
+  }
 
+  public async sendSignedMessage(msg: SignedMessage): Promise<Cid> {
+    const ret = await this.conn.request({ method: 'Filecoin.MpoolPush', params: [msg] });
+    return ret.result;
   }
 
   public async signMessage(msg: Message): Promise<SignedMessage> {

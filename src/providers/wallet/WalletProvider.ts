@@ -2,9 +2,8 @@ import { Message, SignedMessage, Signature } from '../Types';
 
 export interface WalletProvider {
   getAccounts(): Promise<string[]>;
-  chainId(): Promise<any>; // number??
-  getId(): Promise<any>; // number?
-  sendMessage(msg: Message): Promise<any>;
+  //sendMessage(msg: Message): Promise<SignedMessage>;
   signMessage(msg: Message): Promise<SignedMessage>;
   sign(data: string): Promise<Signature>;
+  verify(data: string | ArrayBuffer, sign: Signature): Promise<boolean>;
 }

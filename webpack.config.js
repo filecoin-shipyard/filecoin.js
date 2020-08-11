@@ -10,8 +10,8 @@ var config = {
   mode: 'production',
   devtool: 'source-map',
   entry: {
-    'tests-js': [PATHS.entryPoint],
-    'test-js.min': [PATHS.entryPoint]
+    'filecoin-js': [PATHS.entryPoint],
+    'filecoin-js.min': [PATHS.entryPoint]
   },
   output: {
     path: PATHS.bundles,

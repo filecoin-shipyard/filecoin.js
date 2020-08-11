@@ -48,17 +48,13 @@ export class HttpJsonRpcConnector extends EventEmitter implements Connector {
     if (typeof window === 'undefined') {
       resp = await nodeFetch(this.url, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
+        headers: this.headers(),
         body: JSON.stringify(message),
       });
     } else {
       resp = await fetch(this.url, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
+        headers: this.headers(),
         body: JSON.stringify(message),
       });
     }
