@@ -11,28 +11,31 @@ const CompLibrary = require('../../core/CompLibrary.js');
 
 const Container = CompLibrary.Container;
 const GridBlock = CompLibrary.GridBlock;
+const MarkdownBlock = CompLibrary.MarkdownBlock;
 
 function Help(props) {
   const {config: siteConfig, language = ''} = props;
-  const {baseUrl, docsUrl} = siteConfig;
+  const {baseUrl, docsUrl, repoUrl} = siteConfig;
   const docsPart = `${docsUrl ? `${docsUrl}/` : ''}`;
   const langPart = `${language ? `${language}/` : ''}`;
   const docUrl = doc => `${baseUrl}${docsPart}${langPart}${doc}`;
 
   const supportLinks = [
     {
-      content: `Learn more using the [documentation on this site.](${docUrl(
-        'doc1.html',
-      )})`,
-      title: 'Browse Docs',
+      content: `Find what you're looking for in our detailed documentation and guides. <br/><br/>
+        - Learn how to [get started](/docs/en/getting-started.html) with filecoin.js. <br/>
+        - Look at the full [API Reference](/docs/en/api.html).`,
+      title: 'Browse the docs',
     },
     {
-      content: 'Ask questions about the documentation and project',
+      content: `Ask questions and find answers from other filecoin.js users. <br><br>
+        - Many members of the community use Slack. Join [our community]("https://filecoinproject.slack.com/")<br>
+        - Join the [discussion forum]("https://discuss.filecoin.io/")`,
       title: 'Join the community',
     },
     {
-      content: "Find out what's new with this project",
-      title: 'Stay up to date',
+      content: `View filecoin.js on [GitHub](${repoUrl}).`,
+      title: 'GitHub',
     },
   ];
 
@@ -43,7 +46,6 @@ function Help(props) {
           <header className="postHeader">
             <h1>Need help?</h1>
           </header>
-          <p>This project is maintained by a dedicated group of people.</p>
           <GridBlock contents={supportLinks} layout="threeColumn" />
         </div>
       </Container>
