@@ -112,6 +112,14 @@ faucet="http://127.0.0.1:7777"
 owner=\$(lotus wallet new bls)
 msg_cid=\$(curl -D - -XPOST -F "sectorSize=2048" -F "address=\$owner" \$faucet/send | tail -1)
 lotus state wait-msg \$msg_cid
+
+owner=\$(lotus wallet new secp256k1)
+msg_cid=\$(curl -D - -XPOST -F "sectorSize=2048" -F "address=\$owner" \$faucet/send | tail -1)
+lotus state wait-msg \$msg_cid
+
+owner=\$(lotus wallet new secp256k1)
+msg_cid=\$(curl -D - -XPOST -F "sectorSize=2048" -F "address=\$owner" \$faucet/send | tail -1)
+lotus state wait-msg \$msg_cid
 EOF
 
 cat > "${base_dir}/scripts/propose_storage_deal.bash" <<EOF

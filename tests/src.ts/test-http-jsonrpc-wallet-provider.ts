@@ -1,9 +1,10 @@
 import assert, { deepEqual } from 'assert';
+import { LOTUS_AUTH_TOKEN } from "../../testnet/credentials";
 import { HttpJsonRpcWalletProvider } from '../../src/providers/wallet/HttpJsonRpcWalletProvider';
 import { MnemonicSigner } from '../../src/signers/MnemonicSigner';
 import BigNumber from 'bignumber.js';
 
-const walletLotus = new HttpJsonRpcWalletProvider({ url: 'http://localhost:8000/rpc/v0', token: `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBbGxvdyI6WyJyZWFkIiwid3JpdGUiLCJzaWduIiwiYWRtaW4iXX0.pcwhwp5JPD3c1cPw5B101GDJQ-l7ui_GuryDvux4m40` });
+const walletLotus = new HttpJsonRpcWalletProvider({ url: 'http://localhost:8000/rpc/v0', token: LOTUS_AUTH_TOKEN });
 const signer = new MnemonicSigner('equip will roof matter pink blind book anxiety banner elbow sun young', '', `m/44'/1'/0/0/1`)
 
 describe("RPC Wallet", function () {

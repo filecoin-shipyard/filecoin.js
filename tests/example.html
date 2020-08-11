@@ -4,9 +4,6 @@
 <head>
   <title>Filecoin.js Wallet Example</title>
   <meta charset="UTF-8">
-  <link href="../node_modules/mocha/mocha.css" rel="stylesheet" />
-  <style type="text/css">
-  </style>
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
     integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
 </head>
@@ -14,23 +11,53 @@
 <body>
 
   <div class="container">
-    <div class="row row-cols-4">
-      <div class="col"></div>
-      <div class="col">
+    <div class="row row-cols-12" style="padding-bottom: 10px;  font-weight: bold;">
+      <div class="col-8">
+        Mnemonic Address
+      </div>
+    </div>
+    <div class="row row-cols-12" style="padding-bottom: 10px;">
+      <div class="col-8">
         <div id="mnemonicAddress"></div>
       </div>
-      <div class="col">
+
+      <div class="col-3">
         <input type="text" class="form-control" placeholder="to address">
       </div>
       <div class="col">
         <button type="submit" class="btn btn-primary">Send</button>
       </div>
+    </div>
 
-      <div class="col"></div>
-      <div class="col">
+    <div class="row row-cols-12" style="padding-bottom: 10px; font-weight: bold;">
+      <div class="col-8">
+        Default Address
+      </div>
+    </div>
+    <div class="row row-cols-12" style="padding-bottom: 10px;">
+      <div class="col-8">
         <div id="rpcAddress"></div>
       </div>
+
+      <div class="col-3">
+        <input type="text" class="form-control" placeholder="to address">
+      </div>
       <div class="col">
+        <button type="submit" class="btn btn-primary">Send</button>
+      </div>
+    </div>
+
+    <div class="row row-cols-12" style="padding-bottom: 10px; font-weight: bold;">
+      <div class="col-8">
+        Secp256k1 Address
+      </div>
+    </div>
+    <div class="row row-cols-12" style="padding-bottom: 10px;">
+      <div class="col-8">
+        <div id="rpcAddressSecp"></div>
+      </div>
+
+      <div class="col-3">
         <input type="text" class="form-control" placeholder="to address">
       </div>
       <div class="col">
@@ -39,13 +66,17 @@
     </div>
   </div>
 
+
+
   <script type="text/javascript" src="../_bundles/filecoin-js.js"></script>
+  <script type="text/javascript" src="../testnet/credentials_web.js"></script>
+
   <script type="text/javascript">
     const main = async () => {
 
       const walletLotus = new FilecoinJs.HttpJsonRpcWalletProvider({
         url: 'http://localhost:8000/rpc/v0',
-        token: `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBbGxvdyI6WyJyZWFkIiwid3JpdGUiLCJzaWduIiwiYWRtaW4iXX0.tuOseTvUIfuookn_RMdqIwION29mzz0SpMZ_N04E9lA`
+        token: LOTUS_AUTH_TOKEN
       });
 
       const signer = new FilecoinJs.MnemonicSigner(
@@ -53,20 +84,23 @@
       );
 
       const updateAddresses = async () => {
+        const availableAccounts = await walletLotus.getAccounts();
         const mnemonicAddress = await signer.getDefaultAccount();
         const rpcAddress = await walletLotus.getDefaultAccount();
+        const rpcAddressSecp = availableAccounts[0];
+
         const mnemonicBalance = await walletLotus.getBalance(mnemonicAddress);
         const rpcBalance = await walletLotus.getBalance(rpcAddress);
+        const rpcSecpBalance = await walletLotus.getBalance(rpcAddressSecp);
 
-        document.getElementById('mnemonicAddress').innerHTML = `${mnemonicAddress} (${mnemonicBalance})`;
-        document.getElementById('rpcAddress').innerHTML = `${rpcAddress} (${rpcBalance})`;
+
+        document.getElementById('mnemonicAddress').innerHTML = `${mnemonicAddress} <br/> (${mnemonicBalance})`;
+        document.getElementById('rpcAddress').innerHTML = `${rpcAddress} <br/> (${rpcBalance})`;
+        document.getElementById('rpcAddressSecp').innerHTML = `${rpcAddressSecp} <br/> (${rpcSecpBalance})`;
       }
 
+      console.log(window);
       await updateAddresses();
-
-      console.error(await walletLotus.getAccounts());
-      console.log('yy', FilecoinJs.JsonRpcProvider);
-
     };
     main().then(console.log).catch(console.error);
   </script>

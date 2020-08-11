@@ -13,3 +13,7 @@ testnet/.env
 
 .idea
 temp
+
+testnet/credentials.ts
+
+testnet/credentials_web.js
