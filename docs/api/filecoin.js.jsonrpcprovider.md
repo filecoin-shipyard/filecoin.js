@@ -9,6 +9,8 @@ hide_title: true
 
 ## JsonRpcProvider class
 
+The Log class provides static methods for logging messages at different levels (verbose, info, warning, error) and with context information. Context information helps identify which component generated the messages and makes the messages useful and filterable.
+
 <b>Signature:</b>
 
 ```typescript
@@ -25,8 +27,7 @@ export declare class JsonRpcProvider
 
 |  Property | Modifiers | Type | Description |
 |  --- | --- | --- | --- |
-|  [conn](./filecoin.js.jsonrpcprovider.conn.md) |  | Connector |  |
-|  [url](./filecoin.js.jsonrpcprovider.url.md) |  | string |  |
+|  [conn](./filecoin.js.jsonrpcprovider.conn.md) |  | HttpJsonRpcConnector |  |
 
 ## Methods
 
