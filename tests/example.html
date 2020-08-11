@@ -6,6 +6,9 @@
   <meta charset="UTF-8">
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
     integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/bignumber.js/9.0.0/bignumber.min.js"
+    integrity="sha512-vg7OeB3i21ZSV8k2kyAXnbFL24Rwoz+nRC6xVAddaoEQIIboCtONdpuQQ+tl56RBDEf8fT0DtcVQeip2asslmg=="
+    crossorigin="anonymous"></script>
 </head>
 
 <body>
@@ -16,16 +19,20 @@
         Mnemonic Address
       </div>
     </div>
+
     <div class="row row-cols-12" style="padding-bottom: 10px;">
-      <div class="col-8">
+      <div class="col-7">
         <div id="mnemonicAddress"></div>
       </div>
 
       <div class="col-3">
-        <input type="text" class="form-control" placeholder="to address">
+        <input type="text" class="form-control" placeholder="to address" id="toMnemonic">
+      </div>
+      <div class="col-1">
+        <input type="text" class="form-control" placeholder="FIL" id="filMnemonic">
       </div>
       <div class="col">
-        <button type="submit" class="btn btn-primary">Send</button>
+        <button type="submit" class="btn btn-primary" id="sendMnemonic">Send</button>
       </div>
     </div>
 
@@ -34,16 +41,20 @@
         Default Address
       </div>
     </div>
+
     <div class="row row-cols-12" style="padding-bottom: 10px;">
-      <div class="col-8">
+      <div class="col-7">
         <div id="rpcAddress"></div>
       </div>
 
       <div class="col-3">
-        <input type="text" class="form-control" placeholder="to address">
+        <input type="text" class="form-control" placeholder="to address" id="toDefault">
+      </div>
+      <div class="col-1">
+        <input type="text" class="form-control" placeholder="FIL" id="filDefault">
       </div>
       <div class="col">
-        <button type="submit" class="btn btn-primary">Send</button>
+        <button type="submit" class="btn btn-primary" id="sendDefault">Send</button>
       </div>
     </div>
 
@@ -52,27 +63,33 @@
         Secp256k1 Address
       </div>
     </div>
+
     <div class="row row-cols-12" style="padding-bottom: 10px;">
-      <div class="col-8">
+      <div class="col-7">
         <div id="rpcAddressSecp"></div>
       </div>
 
       <div class="col-3">
-        <input type="text" class="form-control" placeholder="to address">
+        <input type="text" class="form-control" placeholder="to address" id="toSecp">
+      </div>
+      <div class="col-1">
+        <input type="text" class="form-control" placeholder="FIL" id="filSecp">
       </div>
       <div class="col">
-        <button type="submit" class="btn btn-primary">Send</button>
+        <button type="submit" class="btn btn-primary" id="sendSecp">Send</button>
       </div>
     </div>
   </div>
-
-
 
   <script type="text/javascript" src="../_bundles/filecoin-js.js"></script>
   <script type="text/javascript" src="../testnet/credentials_web.js"></script>
 
   <script type="text/javascript">
     const main = async () => {
+
+      let mnemonicAddress = '';
+      let rpcAddress = '';
+      let rpcAddressSecp = '';
 
       const walletLotus = new FilecoinJs.HttpJsonRpcWalletProvider({
         url: 'http://localhost:8000/rpc/v0',
@@ -83,21 +100,60 @@
         'equip will roof matter pink blind book anxiety banner elbow sun young', '', `m/44'/1'/0/0/1`
       );
 
+      const sendLotus = async (from, toId, filId) => {
+        const to = document.getElementById(toId).value;
+        const amount = document.getElementById(filId).value;
+
+        await walletLotus.sendMessage({
+          From: from,
+          To: to,
+          GasLimit: 25000,
+          GasPrice: new BigNumber(2500),
+          Value: new BigNumber(amount),
+          Method: 0,
+          Params: '',
+          Version: 0,
+          Nonce: 0,
+        });
+      }
+
+      const sendSigner = async (from, toId, filId) => {
+        const to = document.getElementById(toId).value;
+        const amount = document.getElementById(filId).value;
+
+        const signedMessage = await signer.sign({
+          To: to,
+          From: from,
+          GasLimit: 25000,
+          GasPrice: new BigNumber(2500),
+          Value: new BigNumber(amount),
+          Method: 0,
+          Params: '',
+          Version: 0,
+          Nonce: await walletLotus.getNonce(from),
+        });
+
+        await walletLotus.sendSignedMessage(JSON.parse(signedMessage));
+      }
+
       const updateAddresses = async () => {
         const availableAccounts = await walletLotus.getAccounts();
-        const mnemonicAddress = await signer.getDefaultAccount();
-        const rpcAddress = await walletLotus.getDefaultAccount();
-        const rpcAddressSecp = availableAccounts[0];
+        mnemonicAddress = await signer.getDefaultAccount();
+        rpcAddress = await walletLotus.getDefaultAccount();
+        rpcAddressSecp = availableAccounts[0];
 
         const mnemonicBalance = await walletLotus.getBalance(mnemonicAddress);
         const rpcBalance = await walletLotus.getBalance(rpcAddress);
         const rpcSecpBalance = await walletLotus.getBalance(rpcAddressSecp);
 
-
         document.getElementById('mnemonicAddress').innerHTML = `${mnemonicAddress} <br/> (${mnemonicBalance})`;
         document.getElementById('rpcAddress').innerHTML = `${rpcAddress} <br/> (${rpcBalance})`;
         document.getElementById('rpcAddressSecp').innerHTML = `${rpcAddressSecp} <br/> (${rpcSecpBalance})`;
       }
+
+      document.getElementById('sendDefault').onclick = () => sendLotus(rpcAddress, "toDefault", "filDefault");
+      document.getElementById('sendSecp').onclick = () => sendLotus(rpcAddressSecp, "toSecp", "filSecp");
+      document.getElementById('sendMnemonic').onclick = () => sendSigner(mnemonicAddress, "toMnemonic", "filMnemonic");
 
       console.log(window);
       await updateAddresses();
