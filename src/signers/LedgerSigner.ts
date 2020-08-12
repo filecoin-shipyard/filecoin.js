@@ -52,10 +52,17 @@ export class LedgerSigner implements Signer {
 
     const responseRequest = await wasm.transactionSignRawWithDevice(messageBuffer, this.path, transport);
 
-    const signatureDER = responseRequest.signature_der;
-    const signature = secp256k1.signatureImport(signatureDER);
-    console.log(`DER   : ${responseRequest.signature_der.toString("hex")}`);
-    console.log(toBase64(responseRequest.signature_der));
+
+    console.log(responseRequest);
+    console.log(responseRequest.signature_compact);
+    console.log(responseRequest.signature_der);
+    const v = Buffer.from([1]);
+console.log(v);
+var list = [responseRequest.signature_compact, v];
+console.log(list);
+    const RSVsig = Buffer.concat(list);
+    console.log(RSVsig);
+
     return {
       Message: {
         From: messageContent.from,
@@ -65,11 +72,10 @@ export class LedgerSigner implements Signer {
         Nonce: messageContent.nonce,
         Params: messageContent.params,
         To: messageContent.to,
-        Value: new BigNumber(messageContent.value),
-        Version: 0,
+        Value: new BigNumber(messageContent.value)
       },
       Signature: {
-        Data: toBase64(responseRequest.signature_der),
+        Data: toBase64(RSVsig),
         Type: 1
       }
     }

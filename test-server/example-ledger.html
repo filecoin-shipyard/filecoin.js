@@ -6,6 +6,9 @@
   <meta charset="UTF-8">
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
     integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bignumber.js/9.0.0/bignumber.min.js"
+    integrity="sha512-vg7OeB3i21ZSV8k2kyAXnbFL24Rwoz+nRC6xVAddaoEQIIboCtONdpuQQ+tl56RBDEf8fT0DtcVQeip2asslmg=="
+    crossorigin="anonymous"></script>
 </head>
 
 <body>
@@ -102,7 +105,20 @@
       );
 
       const initLedger = async () => {
-        await signer.getDefaultAccount();
+        const signedMessage = await signer.sign({
+          To: 'to',
+          From: 'from',
+          GasLimit: 25000,
+          GasPrice: new BigNumber(2500),
+          Value: new BigNumber(1),
+          Method: 0,
+          Params: '',
+          Version: 0,
+          Nonce: 0,
+        });
+
+        const res = await walletLotus.sendSignedMessage(signedMessage).catch( e => console.log(e));
+        console.log(res);
       }
 
       const updateAddresses = async () => {
