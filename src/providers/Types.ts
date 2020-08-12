@@ -65,7 +65,7 @@ export class Version {
 };
 
 export class Message {
-  Version!: number;
+  Version?: number;
 
   To!: string;
 

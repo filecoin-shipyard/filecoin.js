@@ -1,0 +1,101 @@
+<!doctype html>
+<html>
+
+<head>
+  <title>Filecoin.js Wallet Example</title>
+  <meta charset="UTF-8">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+    integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/bignumber.js/9.0.0/bignumber.min.js"
+    integrity="sha512-vg7OeB3i21ZSV8k2kyAXnbFL24Rwoz+nRC6xVAddaoEQIIboCtONdpuQQ+tl56RBDEf8fT0DtcVQeip2asslmg=="
+    crossorigin="anonymous"></script>
+</head>
+
+<body>
+
+  <div class="container">
+
+    <div class="row row-cols-12" style="padding-bottom: 10px; font-weight: bold;">
+      <div class="col-8">
+        <button type="submit" class="btn btn-primary" id="connectLedger">Connect</button>
+      </div>
+    </div>
+
+    <div class="row row-cols-12" style="padding-bottom: 10px; font-weight: bold;">
+      <div class="col-8">
+        Ledger Address
+      </div>
+    </div>
+
+
+    <div class="row row-cols-12" style="padding-bottom: 10px;">
+      <div class="col-7">
+        <div id="ledgerAddress"></div>
+      </div>
+
+      <div class="col-3">
+        <input type="text" class="form-control" placeholder="to address" id="toLedger">
+      </div>
+      <div class="col-1">
+        <input type="text" class="form-control" placeholder="FIL" id="filLedger">
+      </div>
+      <div class="col">
+        <button type="submit" class="btn btn-primary" id="sendLedger">Send</button>
+      </div>
+    </div>
+
+  </div>
+
+  <script type="text/javascript" src="filecoin-js.js"></script>
+  <script type="text/javascript" src="credentials_web.js"></script>
+
+  <script type="text/javascript">
+    const main = async () => {
+
+      let ledgerAddress;
+
+      const walletLotus = new FilecoinJs.HttpJsonRpcWalletProvider({
+        url: 'http://localhost:8000/rpc/v0',
+        token: LOTUS_AUTH_TOKEN
+      });
+
+      const signer = new FilecoinJs.LedgerSigner(
+        `m/44'/1'/0/0/1`
+      );
+
+      const updateAddresses = async () => {
+        ledgerAddress = await signer.getDefaultAccount();
+        console.log('ledger addr:', ledgerAddress);
+        const ledgerBalance = await walletLotus.getBalance(ledgerAddress);
+        document.getElementById('ledgerAddress').innerHTML = `${ledgerAddress} <br/> (${ledgerBalance})`;
+      }
+
+      const sendLedger = async (from, toId, filId) => {
+        const to = document.getElementById(toId).value;
+        const amount = document.getElementById(filId).value;
+
+        const signedMessage = await signer.sign({
+          To: to,
+          From: from,
+          GasLimit: 25000,
+          GasPrice: new BigNumber(2500),
+          Value: new BigNumber(amount),
+          Method: 0,
+          Params: '',
+          Version: 0,
+          Nonce: await walletLotus.getNonce(from),
+        });
+
+        await walletLotus.sendSignedMessage(signedMessage);
+      }
+
+      document.getElementById('sendLedger').onclick = () => sendLedger(ledgerAddress, "toLedger", "filLedger");
+      document.getElementById('connectLedger').onclick = async () => { await signer.connect(); await updateAddresses(); };
+
+    };
+
+    main().then(console.log).catch(console.error);
+  </script>
+</body>
+
+</html>

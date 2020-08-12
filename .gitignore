@@ -17,3 +17,5 @@ temp
 testnet/credentials.ts
 
 testnet/credentials_web.js
+
+testnet/test.json

@@ -1,0 +1,2 @@
+const LOTUS_AUTH_TOKEN='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBbGxvdyI6WyJyZWFkIiwid3JpdGUiLCJzaWduIiwiYWRtaW4iXX0.JTcbx6hnNBKRR3cFdfOwyQPrqD4bQkzPis7RqTugWWw'
+const LOTUS_URL='ws://localhost:4502/rpc/v0'
