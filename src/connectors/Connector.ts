@@ -3,9 +3,15 @@ export interface RequestArguments {
 	readonly params?: readonly unknown[];
 }
 
+export interface JsonRpcResponse {
+  jsonrpc?: string;
+  result: any;
+  id?: number;
+}
+
 export interface Connector {
   connect(): Promise<any>;
   disconnect(): Promise<any>;
-  request(req: RequestArguments): Promise<unknown>;
+  request(req: RequestArguments): Promise<JsonRpcResponse>;
   on(event: 'connected' | 'disconnected', listener: (...args: any[]) => void): this;
 }

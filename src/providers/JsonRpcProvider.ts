@@ -1,16 +1,17 @@
-import { HttpJsonRpcConnector, JsonRpcConnectionOptions } from '../connectors/HttpJsonRpc';
+import { HttpJsonRpcConnector, JsonRpcConnectionOptions } from '../connectors/HttpJsonRpcConnector';
 import { Version, Cid, TipSet } from './Types';
+import { Connector } from '../connectors/Connector';
 
 export class JsonRpcProvider {
+  public conn: Connector;
 
-  public conn: HttpJsonRpcConnector;
-
-  constructor(url: string | JsonRpcConnectionOptions) {
-    this.conn = new HttpJsonRpcConnector(url);
+  constructor(connector: Connector) {
+    this.conn = connector;
   }
 
   public async version(): Promise<Version> {
     const ret = await this.conn.request({ method: 'Filecoin.Version' });
+
     return ret.result;
   }
 
@@ -33,6 +34,4 @@ export class JsonRpcProvider {
     const ret = await this.conn.request({ method: 'Filecoin.ChainGetBlock', params: [blockCid] });
     return ret.result;
   }
-
-
 }
