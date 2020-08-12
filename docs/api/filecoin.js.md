@@ -12,4 +12,7 @@ hide_title: true
 
 |  Class | Description |
 |  --- | --- |
+|  [HttpJsonRpcWalletProvider](./filecoin.js.httpjsonrpcwalletprovider.md) |  |
 |  [JsonRpcProvider](./filecoin.js.jsonrpcprovider.md) |  |
+|  [MnemonicSigner](./filecoin.js.mnemonicsigner.md) |  |
+|  [MnemonicWalletProvider](./filecoin.js.mnemonicwalletprovider.md) |  |

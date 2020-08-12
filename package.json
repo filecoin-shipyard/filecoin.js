@@ -49,6 +49,7 @@
     "@types/assert": "^1.4.1",
     "@types/btoa-lite": "^1.0.0",
     "@types/dotenv": "^8.2.0",
+    "@types/ledgerhq__hw-transport-webusb": "^4.70.0",
     "@types/mocha": "^5.2.0",
     "@types/node": "^12.7.4",
     "@types/node-fetch": "^2.5.7",

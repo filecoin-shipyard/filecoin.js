@@ -25,8 +25,7 @@ export declare class JsonRpcProvider
 
 |  Property | Modifiers | Type | Description |
 |  --- | --- | --- | --- |
-|  [conn](./filecoin.js.jsonrpcprovider.conn.md) |  | Connector |  |
-|  [url](./filecoin.js.jsonrpcprovider.url.md) |  | string |  |
+|  [conn](./filecoin.js.jsonrpcprovider.conn.md) |  | HttpJsonRpcConnector |  |
 
 ## Methods
 
