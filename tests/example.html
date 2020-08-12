@@ -79,6 +79,7 @@
         <button type="submit" class="btn btn-primary" id="sendSecp">Send</button>
       </div>
     </div>
+
   </div>
 
   <script type="text/javascript" src="../_bundles/filecoin-js.js"></script>
@@ -101,7 +102,7 @@
         return () => {
           if (password) return password;
           password = prompt('Mnemonic wallet password?');
-          setTimeout(() => password = undefined, 10000);
+          setTimeout(() => password = undefined, 100000);
           return password;
         }
       }

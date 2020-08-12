@@ -3,46 +3,33 @@ import { Message, SignedMessage } from '../providers/Types';
 import { Signer } from './Signer';
 import { import_wasm } from "../utils/import_wasm";
 import { toBase64 } from "../utils/data";
-
 import TransportWebUSB from "@ledgerhq/hw-transport-webusb";
-import BigNumber from 'bignumber.js';
-const secp256k1 = require('secp256k1/elliptic');
 
 export class LedgerSigner implements Signer {
+
+  private transport: any;
+  private wasm: any;
 
   constructor(
     private path: string = `m/44'/1'/0/0/1`,
   ) { }
 
-  public async sign(message: Message): Promise<SignedMessage> {
-    let transport;
+  public async connect() {
     try {
-      transport = await TransportWebUSB.create(10000);
-      // We need this scramble key
-      // TODO: move this to the Rust implementation for the specific coin (not ledger-rs)
-      transport.setScrambleKey("FIL");
+      this.transport = await TransportWebUSB.create(10000);
+      this.transport.setScrambleKey("FIL");
     } catch (e) {
       console.log(e);
     }
     console.log("\n...Got transport...\n");
-    const wasm = await import_wasm().catch(console.error);
-    //const resp = await wasm.keyRetrieveFromDevice(this.path, transport);
+    this.wasm = await import_wasm().catch(console.error);
+  }
 
-    const responsePk = await wasm.keyRetrieveFromDevice(this.path, transport);
+  public async sign(message: Message): Promise<SignedMessage> {
+    const responsePk = await this.wasm.keyRetrieveFromDevice(this.path, this.transport);
     console.log(responsePk)
 
-    const messageContent = {
-      from: responsePk.addrString,
-      to: "t1t5gdjfb6jojpivbl5uek6vf6svlct7dph5q2jwa",
-      value: "1000",
-      method: 0,
-      gasprice: "1",
-      gaslimit: 1000,
-      nonce: 0,
-      params: ""
-    };
-
-    const serializedMessage = filecoin_signer.transactionSerialize(messageContent);
+    const serializedMessage = filecoin_signer.transactionSerialize(this.messageToSigner(message));
     console.log(serializedMessage);
 
     const messageBuffer = Buffer.from(
@@ -50,30 +37,13 @@ export class LedgerSigner implements Signer {
       "hex",
     );
 
-    const responseRequest = await wasm.transactionSignRawWithDevice(messageBuffer, this.path, transport);
+    const responseRequest = await this.wasm.transactionSignRawWithDevice(messageBuffer, this.path, this.transport);
 
-
-    console.log(responseRequest);
-    console.log(responseRequest.signature_compact);
-    console.log(responseRequest.signature_der);
     const v = Buffer.from([1]);
-console.log(v);
-var list = [responseRequest.signature_compact, v];
-console.log(list);
-    const RSVsig = Buffer.concat(list);
-    console.log(RSVsig);
+    const RSVsig = Buffer.concat([responseRequest.signature_compact, v]);
 
     return {
-      Message: {
-        From: messageContent.from,
-        GasLimit: messageContent.gaslimit,
-        GasPrice: new BigNumber(messageContent.gasprice),
-        Method: messageContent.method,
-        Nonce: messageContent.nonce,
-        Params: messageContent.params,
-        To: messageContent.to,
-        Value: new BigNumber(messageContent.value)
-      },
+      Message: message,
       Signature: {
         Data: toBase64(RSVsig),
         Type: 1
@@ -82,48 +52,8 @@ console.log(list);
   }
 
   public async getDefaultAccount(): Promise<string> {
-    let transport;
-    try {
-      transport = await TransportWebUSB.create(10000);
-      // We need this scramble key
-      // TODO: move this to the Rust implementation for the specific coin (not ledger-rs)
-      transport.setScrambleKey("FIL");
-    } catch (e) {
-      console.log(e);
-    }
-    console.log("\n...Got transport...\n");
-    const wasm = await import_wasm().catch(console.error);
-    //const resp = await wasm.keyRetrieveFromDevice(this.path, transport);
-
-    const responsePk = await wasm.keyRetrieveFromDevice(this.path, transport);
-    console.log(responsePk)
-
-    const messageContent = {
-      from: responsePk.addrString,
-      to: "t1t5gdjfb6jojpivbl5uek6vf6svlct7dph5q2jwa",
-      value: "1000",
-      method: 0,
-      gasprice: "1",
-      gaslimit: 1000,
-      nonce: 0,
-      params: ""
-    };
-
-    const serializedMessage = filecoin_signer.transactionSerialize(messageContent);
-    console.log(serializedMessage);
-
-    const messageBuffer = Buffer.from(
-      serializedMessage,
-      "hex",
-    );
-
-    const responseRequest = await wasm.transactionSignRawWithDevice(messageBuffer, this.path, transport);
-
-    const signatureDER = responseRequest.signature_der;
-    const signature = secp256k1.signatureImport(signatureDER);
-    console.log(`DER   : ${responseRequest.signature_der.toString("hex")}`);
-console.log(toBase64(responseRequest.signature_der));
-    return 'tests';
+    const responsePk = await this.wasm.keyRetrieveFromDevice(this.path, this.transport);
+    return responsePk.addrString;
   }
 
   private messageToSigner(message: Message): {
