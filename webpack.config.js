@@ -3,7 +3,7 @@ var webpack = require("webpack");
 
 var PATHS = {
   entryPoint: './src/index.ts',
-  bundles: path.resolve(__dirname, '_bundles'),
+  bundles: path.resolve(__dirname, 'builds/bundle'),
 }
 
 var config = {
