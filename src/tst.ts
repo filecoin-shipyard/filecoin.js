@@ -1,4 +1,4 @@
-import { HttpJsonRpcConnector } from './connectors/HttpJsonRpc';
+import { HttpJsonRpcConnector } from './connectors/HttpJsonRpcConnector';
 import { JsonRpcProvider } from './providers/JsonRpcProvider';
 import { MnemonicSigner } from './signers/MnemonicSigner';
 import BigNumber from 'bignumber.js';
@@ -8,7 +8,7 @@ import { HttpJsonRpcWalletProvider } from './providers/wallet/HttpJsonRpcWalletP
   try {
     const lotusUrl = 'http://localhost:8000/rpc/v0';
     //const con = new JsonRpcProvider('http://lotus-2a.testnet.s.interplanetary.one:1234/rpc/v0');
-    const con = new JsonRpcProvider(lotusUrl);
+    const con = new JsonRpcProvider(new HttpJsonRpcConnector(lotusUrl));
 
 
     console.error(`======================= start ==========================`);
