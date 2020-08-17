@@ -1,19 +1,6 @@
 import nodeFetch from 'node-fetch';
 import { EventEmitter } from 'events';
-import { Connector, RequestArguments } from './Connector';
-
-export class JsonRpcErrorResponse {
-  public code!: number;
-  public message!: string;
-  public data?: any;
-}
-
-export class JsonRpcResponse {
-  public id!: number;
-  public jsonrpc!: string;
-  public result?: any;
-  public error?: JsonRpcErrorResponse;
-}
+import { Connector, JsonRpcResponse, JsonRpcErrorResponse, RequestArguments } from './Connector';
 
 export type JsonRpcConnectionOptions = { url: string, token?: string };
 

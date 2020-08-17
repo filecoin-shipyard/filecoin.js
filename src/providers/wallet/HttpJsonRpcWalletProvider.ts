@@ -1,6 +1,6 @@
 import { Message, SignedMessage, Signature, Cid } from '../Types';
 import { WalletProvider } from './WalletProvider';
-import { HttpJsonRpcConnector, JsonRpcConnectionOptions } from '../../connectors/HttpJsonRpc';
+import { HttpJsonRpcConnector, JsonRpcConnectionOptions } from '../../connectors/HttpJsonRpcConnector';
 import { toBase64 } from '../../utils/data';
 
 export class HttpJsonRpcWalletProvider implements WalletProvider {

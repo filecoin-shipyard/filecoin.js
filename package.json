@@ -39,7 +39,7 @@
     "btoa-lite": "^1.0.0",
     "events": "^3.2.0",
     "node-fetch": "^2.6.0",
-    "rpc-websockets": "^5.2.2",
+    "rpc-websockets": "^5.3.1",
     "websocket": "^1.0.31"
   },
   "devDependencies": {
@@ -55,6 +55,7 @@
     "@types/supertest": "^2.0.8",
     "@typescript-eslint/eslint-plugin": "3.9.0",
     "@typescript-eslint/parser": "3.9.0",
+    "@types/websocket": "^1.0.1",
     "dotenv": "^8.2.0",
     "eslint": "7.7.0",
     "eslint-config-prettier": "^6.10.0",
