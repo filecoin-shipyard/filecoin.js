@@ -35,7 +35,6 @@
   "dependencies": {
     "@ledgerhq/hw-transport-webusb": "^5.22.0",
     "@zondax/filecoin-signing-tools": "^0.6.3",
-    "axios": "^0.19.2",
     "bignumber.js": "^9.0.0",
     "btoa-lite": "^1.0.0",
     "events": "^3.2.0",
