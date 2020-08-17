@@ -1,0 +1,6 @@
+{
+  "public": "./",
+  "cleanUrls": false,
+  "trailingSlash": false,
+  "renderSingle": false
+}
