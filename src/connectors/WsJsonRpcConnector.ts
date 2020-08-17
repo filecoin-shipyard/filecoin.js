@@ -1,5 +1,5 @@
 import { EventEmitter } from 'events';
-import { Connector, JsonRpcResponse, RequestArguments } from './Connector';
+import { Connector, JsonRpcResponse, RequestArguments, JsonRpcError } from './Connector';
 import * as WebSocket from 'rpc-websockets';
 
 export type WsJsonRpcConnectionOptions = string | { url: string, token?: string };
@@ -44,11 +44,13 @@ export class WsJsonRpcConnector extends EventEmitter implements Connector {
     this.client?.close();
   }
 
-  public async request(req: RequestArguments): Promise<JsonRpcResponse> {
-    const result = await this.client?.call(req.method, undefined);
-
-    return {
-      result,
+  public async request(req: RequestArguments): Promise<unknown> {
+    try {
+      const ret = await this.client?.call(req.method, undefined);
+      return ret;
+    } catch (e) {
+      /* TODO: does this actualy expose jsonrpc codes? */
+      throw new JsonRpcError({ code: 0, message: e.message });
     }
   }
 

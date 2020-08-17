@@ -1,6 +1,6 @@
 import { HttpJsonRpcConnector, JsonRpcConnectionOptions } from '../connectors/HttpJsonRpcConnector';
 import { Version, Cid, TipSet } from './Types';
-import { Connector } from '../connectors/Connector';
+import { Connector, JsonRpcResponse, JsonRpcError } from '../connectors/Connector';
 
 export class JsonRpcProvider {
   public conn: Connector;
@@ -11,27 +11,21 @@ export class JsonRpcProvider {
 
   public async version(): Promise<Version> {
     const ret = await this.conn.request({ method: 'Filecoin.Version' });
-
-    return ret.result;
+    return ret as Version;
   }
 
   public async readObj(cid: Cid): Promise<string> {
     const ret = await this.conn.request({ method: 'Filecoin.ChainReadObj', params: [cid] });
-    return ret.result;
-  }
-
-  public async getBlockMessages(blockCid: Cid): Promise<any> {
-    const ret = await this.conn.request({ method: 'Filecoin.ChainGetBlockMessages', params: [blockCid] });
-    return ret.result;
+    return ret as string;
   }
 
   public async getHead(): Promise<TipSet> {
     const ret = await this.conn.request({ method: 'Filecoin.ChainHead' });
-    return ret.result;
+    return ret as TipSet;
   }
 
   public async getBlock(blockCid: Cid): Promise<TipSet> {
     const ret = await this.conn.request({ method: 'Filecoin.ChainGetBlock', params: [blockCid] });
-    return ret.result;
+    return ret as TipSet;
   }
 }

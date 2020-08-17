@@ -1,6 +1,6 @@
-import nodeFetch from 'node-fetch';
+import nodeFetch, { Response as ResponseNode } from 'node-fetch';
 import { EventEmitter } from 'events';
-import { Connector, JsonRpcResponse, JsonRpcErrorResponse, RequestArguments } from './Connector';
+import { Connector, JsonRpcResponse, JsonRpcErrorResponse, RequestArguments, ConnectionError, ResponseError, JsonRpcError } from './Connector';
 
 export type JsonRpcConnectionOptions = { url: string, token?: string };
 
@@ -30,8 +30,8 @@ export class HttpJsonRpcConnector extends EventEmitter implements Connector {
     this.emit('disconnected');
   }
 
-  public async request(req: RequestArguments): Promise<JsonRpcResponse> {
-    const f = (typeof window === 'undefined') ? nodeFetch : fetch;
+  public async request(req: RequestArguments): Promise<unknown> {
+    const call = (typeof window === 'undefined') ? nodeFetch : fetch;
 
     const message = {
       jsonrpc: "2.0",
@@ -40,13 +40,30 @@ export class HttpJsonRpcConnector extends EventEmitter implements Connector {
       id: this.reqId++,
     };
 
-    const resp = await f(this.url, {
-      method: 'POST',
-      headers: this._headers(),
-      body: JSON.stringify(message),
-    });
+    let resp: ResponseNode | Response;
 
-    return await resp.json();
+    try {
+      resp = await call(this.url, {
+        method: 'POST',
+        headers: this._headers(),
+        body: JSON.stringify(message),
+      });
+
+    } catch (e) {
+      throw new ConnectionError(e);
+    }
+
+    if (resp.ok === false) {
+      throw new ResponseError(resp.status, resp.statusText);
+    }
+
+    const decoded: JsonRpcResponse = await resp.json();
+
+    if (decoded.error) {
+      throw new JsonRpcError(decoded.error);
+    }
+
+    return decoded.result;
   }
 
   public on(event: 'connected' | 'disconnected', listener: (...args: any[]) => void): this {
