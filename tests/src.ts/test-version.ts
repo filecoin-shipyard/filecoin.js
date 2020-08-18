@@ -31,16 +31,27 @@ describe("Connection test", function () {
 
   it("should get messages in block [http]", async function() {
     const con = new JsonRpcProvider(httpConnector);
-    const messages = await con.getBlockMessages({'/': 'bafy2bzaceaiwhoa7h5dxkmd4z4vgubwtvazjmqfpftc2ao5r5vjfwdu7qnq7g'});
-    const keys = Object.keys(messages).toString();
-    assert.strictEqual(keys, "BlsMessages,SecpkMessages,Cids", "wrong block messages");
+    const messages = await con.getBlockMessages({'/': 'bafy2bzaceaiwhoa7h5dxkmd4z4vgubwtvazjmqfpftc2ao5r5vjfwdu7qnq7g'});;
+    assert.strictEqual(JSON.stringify(Object.keys(messages)), JSON.stringify(['BlsMessages', 'SecpkMessages', 'Cids']), "wrong block messages");
   });
 
   it("should get messages in block [ws]", async function() {
     const provider = new WebSocketProvider('ws://lotus-2a.testnet.s.interplanetary.one:1234/rpc/v0');
     const messages = await provider.getBlockMessages({'/': 'bafy2bzaceaiwhoa7h5dxkmd4z4vgubwtvazjmqfpftc2ao5r5vjfwdu7qnq7g'});
-    const keys = Object.keys(messages).toString();
-    assert.strictEqual(keys, "BlsMessages,SecpkMessages,Cids", "wrong block messages");
+    assert.strictEqual(JSON.stringify(Object.keys(messages)), JSON.stringify(['BlsMessages', 'SecpkMessages', 'Cids']), "wrong block messages");
+    await provider.release();
+  });
+
+  it("should get head [http]", async function() {
+    const con = new JsonRpcProvider(httpConnector);
+    const head = await con.getHead();
+    assert.strictEqual(JSON.stringify(Object.keys(head)), JSON.stringify(['Cids', 'Blocks', 'Height']), "wrong chain head");
+  });
+
+  it("should get chain head [ws]", async function() {
+    const provider = new WebSocketProvider('ws://lotus-2a.testnet.s.interplanetary.one:1234/rpc/v0');
+    const head = await provider.getHead();
+    assert.strictEqual(JSON.stringify(Object.keys(head)), JSON.stringify(['Cids', 'Blocks', 'Height']), "wrong chain head");
     await provider.release();
   });
 });
