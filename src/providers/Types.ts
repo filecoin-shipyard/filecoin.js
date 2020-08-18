@@ -95,6 +95,14 @@ export class BlockMessages {
   Cids!: Cid[];
 }
 
+export type ExitCode = number;
+
+export class MessageReceipt {
+  ExitCode!: ExitCode;
+  Return!: any;
+  GasUsed!:  number;
+}
+
 export interface Signature {
   Data: string;
   Type: number;

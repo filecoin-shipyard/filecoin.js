@@ -1,5 +1,5 @@
 import { HttpJsonRpcConnector, JsonRpcConnectionOptions } from '../connectors/HttpJsonRpcConnector';
-import { Version, Cid, TipSet, HeadChange, BlockMessages, Message } from './Types';
+import { Version, Cid, TipSet, HeadChange, BlockMessages, Message, MessageReceipt } from './Types';
 import { Connector } from '../connectors/Connector';
 import { WsJsonRpcConnector } from '../connectors/WsJsonRpcConnector';
 
@@ -79,5 +79,14 @@ export class WebSocketProvider {
   public async getMessage(messageCid: Cid): Promise<Message> {
     const ret = await this.connector.request({ method: 'Filecoin.ChainGetBlock', params: [messageCid] });
     return ret as Message;
+  }
+
+  /**
+   * returns receipts for messages in parent tipset of the specified block
+   * @param blockCid
+   */
+  public async getParentReceipts(blockCid: Cid): Promise<MessageReceipt[]> {
+    const ret = await this.connector.request({ method: 'Filecoin.ChainGetParentReceipts', params: [blockCid] });
+    return ret as MessageReceipt[];
   }
 }
