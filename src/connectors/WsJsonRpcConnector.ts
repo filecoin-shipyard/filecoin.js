@@ -1,19 +1,33 @@
 import { EventEmitter } from 'events';
-import { Connector, JsonRpcResponse, RequestArguments, JsonRpcError } from './Connector';
+import { Connector, JsonRpcResponse, RequestArguments, JsonRpcError, ConnectionError } from './Connector';
 import * as WebSocket from 'rpc-websockets';
 
 export type WsJsonRpcConnectionOptions = string | { url: string, token?: string };
+type WebSocketRequestCallback = (error?: Error, result?: any) => void;
+type WebSocketChannel = {
+  key: string,
+  cb: (data: any) => void,
+}
+
+type WebSocketRequest = {
+  req: RequestArguments,
+  cb: WebSocketRequestCallback,
+  channel?: WebSocketChannel,
+}
 
 export class WsJsonRpcConnector extends EventEmitter implements Connector {
   private url: string;
   private token?: string;
   private connected: boolean;
   private client?: WebSocket.Client;
+  private requests: WebSocketRequest[];
 
   constructor(
     protected options: WsJsonRpcConnectionOptions,
   ) {
     super();
+    this.connected = false;
+    this.requests = [];
 
     if (typeof options === 'string') {
       this.url = options;
@@ -21,22 +35,22 @@ export class WsJsonRpcConnector extends EventEmitter implements Connector {
       this.url = options.url;
       this.token = options.token;
     }
-
-    this.connected = false;
   }
 
   public async connect(): Promise<any> {
-    return new Promise((resolve) => {
-      this.client = new WebSocket.Client(this.fullUrl());
+    this.client = new WebSocket.Client(this.fullUrl());
 
-      this.client.on('open', () => {
-        this.emit('connected');
-        resolve();
-      });
-      this.client.on('error', (error: any) => { this.emit('error', error) });
-      this.client.on('close', () => {
-        this.emit('disconnected');
-      });
+    this.client.on('open', () => {
+      this.connected = true;
+      this.emit('connected');
+      this.handleWaitingRequests();
+    });
+    this.client.on('error', (error: any) => {
+      this.emit('error', new ConnectionError(error));
+    });
+    this.client.on('close', () => {
+      this.connected = false;
+      this.emit('disconnected');
     });
   }
 
@@ -44,23 +58,90 @@ export class WsJsonRpcConnector extends EventEmitter implements Connector {
     this.client?.close();
   }
 
+  private handleWaitingRequests() {
+    for (let i = this.requests.length - 1; i >= 0; --i) {
+      if (!this.connected) {
+        continue;
+      }
+      const { req, cb, channel } = this.requests[i];
+      const { params, method } = req;
+
+      this.requests.splice(i, 1);
+      this.performRequest({
+        params,
+        method
+      })
+        .then(result => {
+          cb(undefined, result);
+
+          if (channel) {
+            this.client?.on(channel.key, channel.cb);
+          }
+        })
+        .catch(error => cb(error, undefined))
+    }
+  }
+
   public async request(req: RequestArguments): Promise<unknown> {
+    if (this.connected) {
+      return this.performRequest(req);
+    } else {
+      return new Promise((resolve, reject) => {
+        const cb = (error?: Error, result?: any) => {
+          if (error) {
+            reject(error);
+          } else {
+            resolve(result);
+          }
+        }
+
+        this.requests.push({
+          req,
+          cb,
+        });
+      });
+    }
+  }
+
+  public async requestWithChannel(req: RequestArguments, channelKey: string, channelCb: (data: any) => void ) {
+    if (this.connected) {
+      const id = await this.performRequest(req);
+      this.client?.on(channelKey, channelCb);
+    } else {
+      return new Promise((resolve, reject) => {
+        const channel: WebSocketChannel = {
+          key: channelKey,
+          cb: channelCb,
+        };
+        const cb = (error?: Error, result?: any) => {
+          if (error) {
+            reject(error);
+          } else {
+            resolve(result);
+          }
+        }
+
+        this.requests.push({
+          req,
+          cb,
+          channel,
+        });
+      })
+    }
+  }
+
+  public on(event: 'connected' | 'disconnected' | 'error', listener: (...args: any[]) => void): this {
+    return super.on(event, listener);
+  }
+
+  private async performRequest(req: RequestArguments): Promise<unknown> {
     try {
-      const ret = await this.client?.call(req.method, undefined);
+      const ret = await this.client?.call(req.method, req.params);
       return ret;
     } catch (e) {
       /* TODO: does this actualy expose jsonrpc codes? */
       throw new JsonRpcError({ code: 0, message: e.message });
     }
-  }
-
-  public requestWithCallback(req: RequestArguments, cbKey: string, cb: (data: any) => void ) {
-    this.client?.call(req.method, req.params);
-    this.client?.on(cbKey, cb);
-  }
-
-  public on(event: 'connected' | 'disconnected' | 'error', listener: (...args: any[]) => void): this {
-    return super.on(event, listener);
   }
 
   private fullUrl() {
