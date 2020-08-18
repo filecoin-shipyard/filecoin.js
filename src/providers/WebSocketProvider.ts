@@ -4,19 +4,22 @@ import { Connector } from '../connectors/Connector';
 import { WsJsonRpcConnector } from '../connectors/WsJsonRpcConnector';
 
 export class WebSocketProvider {
-  public connector: WsJsonRpcConnector;
+  private connector: WsJsonRpcConnector;
 
   constructor(url: string, token?: string) {
     this.connector = new WsJsonRpcConnector({
       url,
       token
     });
+    this.connector.connect();
   }
 
+  public async release() {
+    return this.connector.disconnect();
+  }
   public async version(): Promise<Version> {
     const ret = await this.connector.request({ method: 'Filecoin.Version' });
-
-    return ret.result;
+    return ret as Version;
   }
 
   /**
@@ -25,7 +28,7 @@ export class WebSocketProvider {
    */
   public async readObj(cid: Cid): Promise<string> {
     const ret = await this.connector.request({ method: 'Filecoin.ChainReadObj', params: [cid] });
-    return ret.result;
+    return ret as string;
   }
 
   /**
@@ -34,7 +37,7 @@ export class WebSocketProvider {
    */
   public async getBlockMessages(blockCid: Cid): Promise<any> {
     const ret = await this.connector.request({ method: 'Filecoin.ChainGetBlockMessages', params: [blockCid] });
-    return ret.result;
+    return ret;
   }
 
   /**
@@ -42,7 +45,7 @@ export class WebSocketProvider {
    */
   public async getHead(): Promise<TipSet> {
     const ret = await this.connector.request({ method: 'Filecoin.ChainHead' });
-    return ret.result;
+    return ret as TipSet;
   }
 
   /**
@@ -51,16 +54,21 @@ export class WebSocketProvider {
    */
   public async getBlock(blockCid: Cid): Promise<TipSet> {
     const ret = await this.connector.request({ method: 'Filecoin.ChainGetBlock', params: [blockCid] });
-    return ret.result;
+    return ret as TipSet;
   }
 
   /**
    * returns channel with chain head updates
    * @param cb
    */
-  public chainNotify(cb: (data: HeadChange[]) => void) {
-    this.connector.requestWithCallback({ method: 'Filecoin.ChainNotify' }, 'xrpc.ch.val', (data) => {
-      cb(data[1]);
-    });
+  public chainNotify(cb: (headChange: HeadChange[]) => void) {
+    this.connector.requestWithChannel(
+      {
+        method: 'Filecoin.ChainNotify',
+      },
+      'xrpc.ch.val',
+      data => {
+        cb(data[1]);
+      });
   }
 }
