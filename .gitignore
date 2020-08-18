@@ -2,20 +2,20 @@
 .DS_Store
 node_modules
 
-dist
-dist-esm
-dist-tests
-_bundles
-
-testnet/nohup.out
-testnet/proxy/node_modules
-testnet/.env
+builds/dist
+builds/dist-esm
+builds/dist-tests
+builds/bundle
+builds/tests
+builds/examples
 
 .idea
 temp
 
+testnet/nohup.out
+testnet/proxy/node_modules
+
+testnet/.env
 testnet/credentials.ts
-
 testnet/credentials_web.js
-
 testnet/test.json

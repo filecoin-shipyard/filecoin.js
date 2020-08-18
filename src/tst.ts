@@ -15,7 +15,7 @@ import { HttpJsonRpcWalletProvider } from './providers/wallet/HttpJsonRpcWalletP
 
     console.error(await con.version());
     console.error(await con.readObj({ '/': 'bafy2bzacecqlzny34omms3qvyrqerdqy6jbxg77bje2h3upd4kxjnxkn2zf6y' }));
-    console.error(await con.getBlockMessages({ '/': 'bafy2bzacecpkzzq7fbulsp2k6ej5bcxpjrtpbmneyha7yb746qwbp4qejsdf6' }));
+    //console.error(await con.getBlockMessages({ '/': 'bafy2bzacecpkzzq7fbulsp2k6ej5bcxpjrtpbmneyha7yb746qwbp4qejsdf6' }));
     const head = await con.getHead();
     console.error(head);
     console.error('111111111111', head.Blocks[0]);
