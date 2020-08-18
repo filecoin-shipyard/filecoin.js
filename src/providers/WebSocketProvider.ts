@@ -98,4 +98,13 @@ export class WebSocketProvider {
     const ret = await this.connector.request({ method: 'Filecoin.ChainGetParentMessages', params: [blockCid] });
     return ret as WrappedMessage[];
   }
+
+  /**
+   * checks if a given CID exists in the chain blockstore
+   * @param cid
+   */
+  public async hasObj(cid: Cid): Promise<boolean> {
+    const ret = await this.connector.request({ method: 'Filecoin.ChainHasObj', params: [cid] });
+    return ret as boolean;
+  }
 }

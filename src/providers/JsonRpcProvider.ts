@@ -75,4 +75,13 @@ export class JsonRpcProvider {
     const ret = await this.conn.request({ method: 'Filecoin.ChainGetParentMessages', params: [blockCid] });
     return ret as WrappedMessage[];
   }
+
+  /**
+   * checks if a given CID exists in the chain blockstore
+   * @param cid
+   */
+  public async hasObj(cid: Cid): Promise<boolean> {
+    const ret = await this.conn.request({ method: 'Filecoin.ChainHasObj', params: [cid] });
+    return ret as boolean;
+  }
 }
