@@ -20,8 +20,7 @@ export class JsonRpcProvider {
    */
   public async readObj(cid: Cid): Promise<string> {
     const ret = await this.conn.request({ method: 'Filecoin.ChainReadObj', params: [cid] });
-
-    return ret.result;
+    return ret as string;
   }
 
   /**
@@ -30,7 +29,7 @@ export class JsonRpcProvider {
    */
   public async getBlockMessages(blockCid: Cid): Promise<any> {
     const ret = await this.conn.request({ method: 'Filecoin.ChainGetBlockMessages', params: [blockCid] });
-    return ret.result;
+    return ret;
   }
 
   /**
@@ -48,14 +47,5 @@ export class JsonRpcProvider {
   public async getBlock(blockCid: Cid): Promise<TipSet> {
     const ret = await this.conn.request({ method: 'Filecoin.ChainGetBlock', params: [blockCid] });
     return ret as TipSet;
-  }
-
-  /**
-   * returns channel with chain head updates
-   *
-   */
-  public async notify() {
-    const data = await this.conn.request({ method: 'Filecoin.ChainNotify' });
-    return data.result;
   }
 }
