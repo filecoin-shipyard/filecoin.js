@@ -6,8 +6,8 @@ export type WsJsonRpcConnectionOptions = string | { url: string, token?: string 
 
 export class WsJsonRpcConnector extends EventEmitter implements Connector {
   private url: string;
-  private connected: boolean;
   private token?: string;
+  private connected: boolean;
   private client?: WebSocket.Client;
 
   constructor(
@@ -52,6 +52,11 @@ export class WsJsonRpcConnector extends EventEmitter implements Connector {
       /* TODO: does this actualy expose jsonrpc codes? */
       throw new JsonRpcError({ code: 0, message: e.message });
     }
+  }
+
+  public requestWithCallback(req: RequestArguments, cbKey: string, cb: (data: any) => void ) {
+    this.client?.call(req.method, req.params);
+    this.client?.on(cbKey, cb);
   }
 
   public on(event: 'connected' | 'disconnected' | 'error', listener: (...args: any[]) => void): this {

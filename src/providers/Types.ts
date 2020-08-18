@@ -84,6 +84,11 @@ export class Message {
   Params!: string;
 };
 
+export class HeadChange {
+  Type!: 'current' | string;
+  Val!: TipSet;
+}
+
 export interface Signature {
   Data: string;
   Type: number;
