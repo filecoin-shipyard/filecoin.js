@@ -103,6 +103,12 @@ export class MessageReceipt {
   GasUsed!:  number;
 }
 
+// TODO: Find more appropiate naming
+export class WrappedMessage {
+  Cid!: Cid;
+  Message!: Message;
+}
+
 export interface Signature {
   Data: string;
   Type: number;
