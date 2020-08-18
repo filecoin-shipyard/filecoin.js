@@ -1,5 +1,5 @@
 import { HttpJsonRpcConnector, JsonRpcConnectionOptions } from '../connectors/HttpJsonRpcConnector';
-import { Version, Cid, TipSet, BlockMessages } from './Types';
+import { Version, Cid, TipSet, BlockMessages, Message } from './Types';
 import { Connector, JsonRpcResponse, JsonRpcError } from '../connectors/Connector';
 
 export class JsonRpcProvider {
@@ -47,5 +47,14 @@ export class JsonRpcProvider {
   public async getBlock(blockCid: Cid): Promise<TipSet> {
     const ret = await this.conn.request({ method: 'Filecoin.ChainGetBlock', params: [blockCid] });
     return ret as TipSet;
+  }
+
+  /**
+   * reads a message referenced by the specified CID from the chain blockstore
+   * @param messageCid
+   */
+  public async getMessage(messageCid: Cid): Promise<Message> {
+    const ret = await this.conn.request({ method: 'Filecoin.ChainGetBlock', params: [messageCid] });
+    return ret as Message;
   }
 }

@@ -1,5 +1,5 @@
 import { HttpJsonRpcConnector, JsonRpcConnectionOptions } from '../connectors/HttpJsonRpcConnector';
-import { Version, Cid, TipSet, HeadChange, BlockMessages } from './Types';
+import { Version, Cid, TipSet, HeadChange, BlockMessages, Message } from './Types';
 import { Connector } from '../connectors/Connector';
 import { WsJsonRpcConnector } from '../connectors/WsJsonRpcConnector';
 
@@ -70,5 +70,14 @@ export class WebSocketProvider {
       data => {
         cb(data[1]);
       });
+  }
+
+  /**
+   * reads a message referenced by the specified CID from the chain blockstore
+   * @param messageCid
+   */
+  public async getMessage(messageCid: Cid): Promise<Message> {
+    const ret = await this.connector.request({ method: 'Filecoin.ChainGetBlock', params: [messageCid] });
+    return ret as Message;
   }
 }
