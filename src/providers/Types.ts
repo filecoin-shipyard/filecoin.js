@@ -89,6 +89,12 @@ export class HeadChange {
   Val!: TipSet;
 }
 
+export class BlockMessages {
+  BlsMessages!: Message[];
+  SecpkMessages!: SignedMessage[];
+  Cids!: Cid[];
+}
+
 export interface Signature {
   Data: string;
   Type: number;

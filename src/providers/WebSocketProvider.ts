@@ -1,5 +1,5 @@
 import { HttpJsonRpcConnector, JsonRpcConnectionOptions } from '../connectors/HttpJsonRpcConnector';
-import { Version, Cid, TipSet, HeadChange } from './Types';
+import { Version, Cid, TipSet, HeadChange, BlockMessages } from './Types';
 import { Connector } from '../connectors/Connector';
 import { WsJsonRpcConnector } from '../connectors/WsJsonRpcConnector';
 
@@ -35,9 +35,9 @@ export class WebSocketProvider {
    * returns messages stored in the specified block.
    * @param blockCid
    */
-  public async getBlockMessages(blockCid: Cid): Promise<any> {
+  public async getBlockMessages(blockCid: Cid): Promise<BlockMessages> {
     const ret = await this.connector.request({ method: 'Filecoin.ChainGetBlockMessages', params: [blockCid] });
-    return ret;
+    return ret as BlockMessages;
   }
 
   /**
