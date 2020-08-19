@@ -10,13 +10,13 @@ describe("Connection test", function () {
   it("check version [http]", async function () {
     const con = new JsonRpcProvider(httpConnector);
     const version = await con.version();
-    assert.equal(version.APIVersion, 2816, 'wrong api version');
+    assert.equal(version.APIVersion, 1536, 'wrong api version');
   });
 
   it("should get version [ws]", async function () {
     const provider = new WebSocketProvider('ws://localhost:8000/rpc/v0');
     const version = await provider.version();
-    assert.strictEqual(version.APIVersion, 2816, 'wrong api version');
+    assert.strictEqual(version.APIVersion, 1536, 'wrong api version');
     await provider.release();
   });
 
