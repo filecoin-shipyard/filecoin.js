@@ -71,11 +71,15 @@ export class WsJsonRpcConnector extends EventEmitter implements Connector {
         params,
         method
       })
-        .then(result => {
+        .then((result: any) => {
           cb(undefined, result);
 
           if (channel) {
-            this.client?.on(channel.key, channel.cb);
+            this.client?.on(channel.key, (response) => {
+              if (response[0] === result) {
+                channel.cb(response);
+              }
+            });
           }
         })
         .catch(error => cb(error, undefined))
@@ -106,7 +110,11 @@ export class WsJsonRpcConnector extends EventEmitter implements Connector {
   public async requestWithChannel(req: RequestArguments, channelKey: string, channelCb: (data: any) => void ) {
     if (this.connected) {
       const id = await this.performRequest(req);
-      this.client?.on(channelKey, channelCb);
+      this.client?.on(channelKey, (response) => {
+        if (response[0] === id) {
+          channelCb(response);
+        }
+      });
     } else {
       return new Promise((resolve, reject) => {
         const channel: WebSocketChannel = {
