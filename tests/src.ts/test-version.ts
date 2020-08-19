@@ -3,7 +3,6 @@ import { LOTUS_AUTH_TOKEN } from "../../testnet/credentials";
 import { JsonRpcProvider } from '../../src/providers/JsonRpcProvider';
 import { HttpJsonRpcConnector } from '../../src/connectors/HttpJsonRpcConnector';
 import { WebSocketProvider } from '../../src/providers/WebSocketProvider';
-import { Cid, Message, SignedMessage } from '../../src/providers/Types';
 const httpConnector = new HttpJsonRpcConnector({ url: 'http://localhost:8000/rpc/v0', token: LOTUS_AUTH_TOKEN });
 
 describe("Connection test", function () {
