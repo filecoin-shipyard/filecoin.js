@@ -84,6 +84,31 @@ export class Message {
   Params!: string;
 };
 
+export class HeadChange {
+  Type!: 'current' | string;
+  Val!: TipSet;
+}
+
+export class BlockMessages {
+  BlsMessages!: Message[];
+  SecpkMessages!: SignedMessage[];
+  Cids!: Cid[];
+}
+
+export type ExitCode = number;
+
+export class MessageReceipt {
+  ExitCode!: ExitCode;
+  Return!: any;
+  GasUsed!:  number;
+}
+
+// TODO: Find more appropiate naming
+export class WrappedMessage {
+  Cid!: Cid;
+  Message!: Message;
+}
+
 export interface Signature {
   Data: string;
   Type: number;
