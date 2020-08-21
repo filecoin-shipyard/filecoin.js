@@ -13,12 +13,10 @@ echo $port
 export LOTUS_AUTH_TOKEN=$auth_token
 export LOTUS_URL=ws://localhost:$port/rpc/v0
 
-cat > "credentials_web.js" <<EOF
+cat > "../credentials/credentials_web.js" <<EOF
 const LOTUS_AUTH_TOKEN='$auth_token'
-const LOTUS_URL='ws://localhost:$port/rpc/v0'
 EOF
 
-cat > "credentials.ts" <<EOF
+cat > "../credentials/credentials.ts" <<EOF
 export const LOTUS_AUTH_TOKEN:string = '$auth_token'
-export const LOTUS_URL:string = 'ws://localhost:$port/rpc/v0'
 EOF

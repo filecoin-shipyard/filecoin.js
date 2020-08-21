@@ -1,22 +1,5 @@
 #!/usr/bin/env bash
-
-# USAGE:
-#
-# Option 1: Build and run tests using specific lotus Git SHA:
-#
-# > ./test-storage-and-retrieval-local-dev-net.sh --lotus-git-sha=492ffac913287c732cc5d54d0deddc44e41b642f
-#
-# Option 2: Build and run using binaries you've built previously (much faster)
-#
-# > cd $LOTUS_CHECKOUT_DIR && make clean deps debug lotus-shed fountain
-# > ./test-storage-and-retrieval-local-dev-net.sh --copy-binaries-from-dir=$LOTUS_CHECKOUT_DIR
-#
-
 set -Exo pipefail
-
-free_port() {
-    python -c "import socket; s = socket.socket(); s.bind(('', 0)); print(s.getsockname()[1])"
-}
 
 bootstrap_daemon_port=4500
 bootstrap_miner_port=4501
@@ -41,26 +24,6 @@ for dep in ${deps[@]}; do
     fi
 done
 
-rm -r "${base_dir}"
-
-
-cp -r "${build_dir}" "${base_dir}"
-
-cat > "${base_dir}/scripts/env-bootstrap.bash" <<EOF
-export RUST_LOG=info
-export PATH=${base_dir}/bin:\$PATH
-export LOTUS_PATH=${base_dir}/.bootstrap-lotus
-export LOTUS_STORAGE_PATH=${base_dir}/.bootstrap-lotusstorage
-export LOTUS_GENESIS_SECTORS=${base_dir}/.genesis-sectors
-EOF
-
-cat > "${base_dir}/scripts/env-client.bash" <<EOF
-export RUST_LOG=info
-export PATH=${base_dir}/bin:\$PATH
-export LOTUS_PATH=${base_dir}/.client-lotus
-export LOTUS_STORAGE_PATH=${base_dir}/.client-lotusstorage
-EOF
-
 cat > "${base_dir}/scripts/create_genesis_block.bash" <<EOF
 #!/usr/bin/env bash
 set -xe
@@ -76,7 +39,7 @@ cat > "${base_dir}/scripts/create_miner.bash" <<EOF
 set -xe
 
 lotus wallet import "\$LOTUS_GENESIS_SECTORS/pre-seal-${genesis_miner_addr}.key"
-lotus-storage-miner init --genesis-miner --actor="${genesis_miner_addr}" --sector-size=2048 --pre-sealed-sectors=\$LOTUS_GENESIS_SECTORS --pre-sealed-metadata="\$LOTUS_GENESIS_SECTORS/pre-seal-${genesis_miner_addr}.json" --nosync
+lotus-miner init --genesis-miner --actor="${genesis_miner_addr}" --sector-size=2048 --pre-sealed-sectors=\$LOTUS_GENESIS_SECTORS --pre-sealed-metadata="\$LOTUS_GENESIS_SECTORS/pre-seal-${genesis_miner_addr}.json" --nosync
 EOF
 
 cat > "${base_dir}/scripts/start_faucet.bash" <<EOF
@@ -89,7 +52,7 @@ while [ "\$wallet" = "" ]; do
   wallet=\$(lotus wallet list)
 done
 
-fountain run --from=\$wallet
+lotus-fountain run --from=\$wallet
 EOF
 
 cat > "${base_dir}/scripts/hit_faucet.bash" <<EOF
@@ -175,7 +138,7 @@ set -xe
 source ${base_dir}/scripts/env-bootstrap.bash
 while ! nc -z 127.0.0.1 ${bootstrap_daemon_port} </dev/null; do sleep 5; done
 ${base_dir}/scripts/create_miner.bash
-lotus-storage-miner run --api=${bootstrap_miner_port} --nosync 2>&1 | tee -a ${base_dir}/miner.log
+lotus-miner run --api=${bootstrap_miner_port} --nosync 2>&1 | tee -a ${base_dir}/miner.log
 EOF
 
 cat > "${base_dir}/scripts/dump_networking_and_genesis_daemon.bash" <<EOF
@@ -183,7 +146,7 @@ cat > "${base_dir}/scripts/dump_networking_and_genesis_daemon.bash" <<EOF
 set -xe
 source ${base_dir}/scripts/env-bootstrap.bash
 while ! nc -z 127.0.0.1 ${bootstrap_miner_port} </dev/null; do sleep 5; done
-lotus-storage-miner net listen | grep 127 > ${base_dir}/.bootstrap-miner-multiaddr
+lotus-miner net listen | grep 127 > ${base_dir}/.bootstrap-miner-multiaddr
 EOF
 
 cat > "${base_dir}/scripts/start_bootstrap_faucet.bash" <<EOF

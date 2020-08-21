@@ -75,9 +75,11 @@ export class Message {
 
   Value!: BigNumber;
 
-  GasPrice!: BigNumber;
-
   GasLimit!: number;
+
+  GasFeeCap!: BigNumber;
+
+  GasPremium!: BigNumber;
 
   Method!: number;
 

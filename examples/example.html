@@ -82,8 +82,8 @@
 
   </div>
 
-  <script type="text/javascript" src="./filecoin-js.js"></script>
-  <script type="text/javascript" src="../../testnet/credentials_web.js"></script>
+  <script type="text/javascript" src="../builds/bundle/filecoin-js.js"></script>
+  <script type="text/javascript" src="../testnet/credentials/credentials_web.js"></script>
 
   <script type="text/javascript">
     const main = async () => {
@@ -118,13 +118,14 @@
         await walletLotus.sendMessage({
           From: from,
           To: to,
-          GasLimit: 25000,
-          GasPrice: new BigNumber(2500),
-          Value: new BigNumber(amount),
+          GasLimit: 0,
+          GasFeeCap: new BigNumber(0),
+          GasPremium: new BigNumber(0),
+          Value: new BigNumber(1),
           Method: 0,
           Params: '',
           Version: 0,
-          Nonce: 0,
+          Nonce: 0
         });
       }
 

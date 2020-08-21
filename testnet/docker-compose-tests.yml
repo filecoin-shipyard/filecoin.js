@@ -1,9 +1,5 @@
 version: '3'
 
-# mount an empty named volume over /app/node_modules
-# this achieves 2 things: 1) ignore host's node_modules (if present);
-# 2) keep node_modules persistent between docker-compose up runs
-# @see https://stackoverflow.com/questions/29181032/add-a-volume-to-docker-but-exclude-a-sub-folder
 volumes:
   filecoin_js_node_modules_volume:
 services:

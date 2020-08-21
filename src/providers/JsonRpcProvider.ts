@@ -53,7 +53,7 @@ export class JsonRpcProvider {
    * @param messageCid
    */
   public async getMessage(messageCid: Cid): Promise<Message> {
-    const ret = await this.conn.request({ method: 'Filecoin.ChainGetBlock', params: [messageCid] });
+    const ret = await this.conn.request({ method: 'Filecoin.ChainGetMessage', params: [messageCid] });
     return ret as Message;
   }
 
@@ -81,6 +81,15 @@ export class JsonRpcProvider {
    */
   public async hasObj(cid: Cid): Promise<boolean> {
     const ret = await this.conn.request({ method: 'Filecoin.ChainHasObj', params: [cid] });
+    return ret as boolean;
+  }
+
+   /**
+   * looks back for a tipset at the specified epoch.
+   * @param epochNumber
+   */
+  public async getTipSetByHeight(epochNumber: number): Promise<boolean> {
+    const ret = await this.conn.request({ method: 'Filecoin.ChainGetTipSetByHeight', params: [epochNumber, []] });
     return ret as boolean;
   }
 }

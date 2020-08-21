@@ -61,8 +61,9 @@ export class LedgerSigner implements Signer {
     from: string,
     nonce: number,
     value: string,
-    gasprice: string,
-    gaslimit: number,
+    gaslimit: string,
+    gasfeecap: string,
+    gaspremium: string,
     method: number,
     params: string
   } {
@@ -71,8 +72,9 @@ export class LedgerSigner implements Signer {
       from: message.From,
       nonce: message.Nonce,
       value: message.Value.toString(),
-      gasprice: message.GasPrice.toString(),
-      gaslimit: message.GasLimit,
+      gaslimit: message.GasLimit.toString(),
+      gasfeecap: message.GasFeeCap.toString(),
+      gaspremium: message.GasPremium.toString(),
       method: message.Method,
       params: message.Params,
     }

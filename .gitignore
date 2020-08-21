@@ -19,3 +19,11 @@ testnet/.env
 testnet/credentials.ts
 testnet/credentials_web.js
 testnet/test.json
+
+testnet/bin_local/credentials.ts
+
+testnet/bin_local/credentials_web.js
+
+testnet/credentials/credentials.ts
+
+testnet/credentials/credentials_web.js

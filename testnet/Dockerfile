@@ -20,17 +20,19 @@ RUN tar -xvf go1.14.3.linux-amd64.tar.gz
 RUN mv go /usr/local
 ENV PATH="/usr/local/go/bin:${PATH}"
 
-RUN mkdir lotus
+RUN mkdir /credentials
 
-WORKDIR /lotus
-#RUN git clone https://gist.github.com/fd93f162b78e551e22aec3178bbf33b6.git
+WORKDIR /testnet
 
-#RUN mv fd93f162b78e551e22aec3178bbf33b6/test-storage-and-retrieval-local-dev-net.sh ./test-storage-and-retrieval-local-dev-net.sh && rm -r fd93f162b78e551e22aec3178bbf33b6
-#RUN chmod 700 ./test-storage-and-retrieval-local-dev-net.sh
-#RUN ./test-storage-and-retrieval-local-dev-net.sh --lotus-git-sha=492ffac913287c732cc5d54d0deddc44e41b642f
+COPY ./bin/start_testnet.sh ./
+COPY ./bin/build_lotus.sh ./
+COPY ./bin/init_testnet.sh ./
+COPY ./bin/set_env.sh ./
+COPY ./bin/entrypoint.sh ./
 
-#COPY ./start_testnet.sh ./
-#COPY ./test-storage-and-retrieval-local-dev-net-infra.sh ./
-#RUN chmod 700 ./test-storage-and-retrieval-local-dev-net-infra.sh
-#RUN chmod 700 ./start_testnet.sh
-#RUN ./test-storage-and-retrieval-local-dev-net-infra.sh
+COPY ./proxy ./proxy
+RUN chmod +x ./build_lotus.sh
+RUN chmod +x ./init_testnet.sh
+
+RUN ./build_lotus.sh
+RUN ./init_testnet.sh

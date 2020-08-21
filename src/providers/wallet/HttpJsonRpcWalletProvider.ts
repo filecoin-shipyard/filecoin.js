@@ -42,7 +42,7 @@ export class HttpJsonRpcWalletProvider implements WalletProvider {
   }
 
   public async sendMessage(msg: Message): Promise<SignedMessage> {
-    const ret = await this.conn.request({ method: 'Filecoin.MpoolPushMessage', params: [msg] });
+    const ret = await this.conn.request({ method: 'Filecoin.MpoolPushMessage', params: [msg, { MaxFee: "30000" }] });
     return ret as SignedMessage;
   }
 

@@ -1,5 +1,5 @@
 import assert, { deepEqual } from 'assert';
-import { LOTUS_AUTH_TOKEN } from "../../testnet/credentials";
+import { LOTUS_AUTH_TOKEN } from "../../testnet/credentials/credentials";
 import { HttpJsonRpcWalletProvider } from '../../src/providers/wallet/HttpJsonRpcWalletProvider';
 import { MnemonicSigner } from '../../src/signers/MnemonicSigner';
 import BigNumber from 'bignumber.js';
@@ -30,9 +30,10 @@ describe("RPC Wallet", function () {
     await walletLotus.sendMessage({
       From: defaultAccount,
       To: mnemonicAddress,
-      GasLimit: 25000,
-      GasPrice: new BigNumber(2500),
-      Value: new BigNumber(1000000000000000000),
+      GasLimit: 0,
+      GasFeeCap: new BigNumber(0),
+      GasPremium: new BigNumber(0),
+      Value: new BigNumber(300000000000),
       Method: 0,
       Params: '',
       Version: 0,
@@ -42,17 +43,20 @@ describe("RPC Wallet", function () {
     const signedMessage = await signer.sign({
       To: secpAddress,
       From: mnemonicAddress,
-      GasLimit: 25000,
-      GasPrice: new BigNumber(2500),
-      Value: new BigNumber(1000000000000000000),
+      GasLimit: 0,
+      GasFeeCap: new BigNumber(0),
+      GasPremium: new BigNumber(0),
+      Value: new BigNumber(100000000000),
       Method: 0,
       Params: '',
       Version: 0,
       Nonce: await walletLotus.getNonce(mnemonicAddress),
     });
 
-    console.error('~~~~~~~~~~~~', signedMessage);
-    await walletLotus.sendSignedMessage(JSON.parse(signedMessage as any));
+    const parsedSignedMessage = JSON.parse(signedMessage as any);
+    console.error('~~~~~~~~~~~~>', parsedSignedMessage);
+
+    await walletLotus.sendSignedMessage(parsedSignedMessage);
 
 
     console.error('Main Balance:', await walletLotus.getBalance(defaultAccount));
