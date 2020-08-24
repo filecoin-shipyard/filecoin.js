@@ -51,6 +51,6 @@ export class ConnectionError extends Error {
 export interface Connector {
   connect(): Promise<any>;
   disconnect(): Promise<any>;
-  request(req: RequestArguments): Promise<unknown>;
+  request(req: RequestArguments): Promise<any>;
   on(event: 'connected' | 'disconnected', listener: (...args: any[]) => void): this;
 }

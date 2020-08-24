@@ -135,6 +135,134 @@ export class WrappedMessage {
   Message!: Message;
 }
 
+export type TipSetKey = Cid[];
+
+export class InvocResult {
+  Msg!: Message;
+  MsgRct!: MessageReceipt;
+  ExecutionTrace!: ExecutionTrace;
+  Error!: string;
+  Duration!: number;
+}
+
+export class Loc {
+  File!: string;
+  Line!: number;
+  Function!: string;
+}
+
+export class GasTrace {
+  Name!: string;
+  Location!: Loc[];
+  TotalGas!: number;
+  ComputeGas!: number;
+  StorageGas!: number;
+  TotalVirtualGas!: number;
+  VirtualComputeGas!: number;
+  VirtualStorageGas!: number;
+  TimeTaken!: number;
+  Extra!: any;
+  Callers!: number[];
+}
+
+export class ExecutionTrace {
+  Msg!: Message;
+  MsgRct!: MessageReceipt;
+  Error!: string;
+  Duration!: number;
+  GasCharges!: GasTrace[];
+  Subcalls!: ExecutionTrace[];
+}
+
+export class Actor {
+  Code!:  Cid;
+  Head!: Cid;
+  Nonce!: number;
+  Balance!: BigNumber;
+}
+
+export class ActorState {
+  Balance!: string;
+  State: any;
+}
+
+export type NetworkName = string;
+export type SectorNumber = number;
+export type RegisteredProof = number;
+export type RegisteredSealProof = RegisteredProof;
+export type DealID = number;
+export type ChainEpoch = number;
+export type DealWeight = number;
+export type TokenAmount = number;
+
+/**
+ * Information stored on-chain for a proven sector.
+ */
+export class SectorOnChainInfo {
+  SectorNumber!: SectorNumber;
+
+  /**
+   * The seal proof type implies the PoSt proof/s
+   */
+  SealProof!: RegisteredSealProof;
+
+  /**
+   * CommR
+   */
+  SealedCID!: Cid;
+  DealIDs!: DealID[];
+
+  /**
+   * Epoch during which the sector proof was accepted
+   */
+  Activation!: ChainEpoch;
+
+  /**
+   * Epoch during which the sector expires
+   */
+  Expiration!: ChainEpoch;
+
+  /**
+   * Integral of active deals over sector lifetime
+   */
+  DealWeight!: DealWeight;
+
+  /**
+   * Integral of active verified deals over sector lifetime
+   */
+  VerifiedDealWeight!: DealWeight;
+
+  /**
+   * Pledge collected to commit this sector
+   */
+  InitialPledge!: TokenAmount;
+
+  /**
+   * Expected one day projection of reward for sector computed at activation time
+   */
+  ExpectedDayReward!: TokenAmount;
+
+  /**
+   * Expected twenty day projection of reward for sector computed at activation time
+   */
+  ExpectedStoragePledge!: TokenAmount;
+
+  /**
+   * Age of sector this sector replaced or zero
+   */
+  ReplacedSectorAge!: ChainEpoch;
+
+  /**
+   * Day reward of sector this sector replace or zero
+   */
+  ReplacedDayReward!: TokenAmount;
+}
+
+export class ChainSectorInfo {
+  Info!: SectorOnChainInfo;
+  ID!: SectorNumber;
+}
+
 export interface Signature {
   Data: string;
   Type: number;

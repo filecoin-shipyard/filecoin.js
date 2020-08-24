@@ -1,4 +1,14 @@
-import { Version, Cid, TipSet, BlockMessages, Message, MessageReceipt, WrappedMessage } from './Types';
+import {
+  Version,
+  Cid,
+  TipSet,
+  BlockMessages,
+  Message,
+  MessageReceipt,
+  WrappedMessage,
+  InvocResult,
+  TipSetKey, Actor, ActorState, NetworkName, ChainSectorInfo,
+} from './Types';
 import { Connector } from '../connectors/Connector';
 
 export class JsonRpcProvider {
@@ -91,5 +101,78 @@ export class JsonRpcProvider {
   public async getTipSetByHeight(epochNumber: number): Promise<boolean> {
     const ret = await this.conn.request({ method: 'Filecoin.ChainGetTipSetByHeight', params: [epochNumber, []] });
     return ret as boolean;
+  }
+
+  /**
+   * State
+   * The State methods are used to query, inspect, and interact with chain state.
+   * All methods take a TipSetKey as a parameter. The state looked up is the state at that tipset.
+   * If TipSetKey is not provided as a param, the heaviest tipset in the chain to be used.
+   */
+
+  /**
+   * runs the given message and returns its result without any persisted changes.
+   */
+  public async stateCall(message: Message, tipSetKey?: TipSet): Promise<InvocResult> {
+    const data = await this.conn.request({ method: 'Filecoin.StateCall', params: [message, tipSetKey] });
+    return data as InvocResult;
+  }
+
+  /**
+   * returns the result of executing the indicated message, assuming it was executed in the indicated tipset
+   */
+  public async stateReplay(tipSetKey: TipSetKey, cid: Cid): Promise<InvocResult> {
+    const data = await this.conn.request({ method: 'Filecoin.StateReplay', params: [] });
+    return data as InvocResult;
+  }
+
+  /**
+   * returns the indicated actor's nonce and balance
+   * @param address
+   * @param tipSetKey
+   */
+  public async getActor(address: string, tipSetKey?: TipSetKey): Promise<Actor> {
+    const data = await this.conn.request({ method: 'Filecoin.StateGetActor', params: [address, tipSetKey] });
+    return data as Actor;
+  }
+
+  /**
+   * returns the indicated actor's state
+   * @param address
+   * @param tipSetKey
+   */
+  public async readState(address: string, tipSetKey?: TipSetKey): Promise<ActorState> {
+    const data = await this.conn.request({ method: 'Filecoin.StateReadState', params: [address, tipSetKey] });
+    return data as ActorState;
+  }
+
+  /**
+   * looks back and returns all messages with a matching to or from address, stopping at the given height.
+   * @param filter
+   * @param tipSetKey
+   * @param toHeight
+   */
+  public async listMessages(filter: { To?: string, From?: string }, tipSetKey?: TipSetKey, toHeight?: number):Promise<Cid[]> {
+    const messages: Cid[] = await this.conn.request({ method: 'Filecoin.StateListMessages', params: [filter, tipSetKey, toHeight] });
+
+    return messages ? messages : [];
+  }
+
+  /**
+   * returns the name of the network the node is synced to
+   */
+  public async networkName(): Promise<NetworkName> {
+    const network: string = await this.conn.request({ method: 'Filecoin.StateNetworkName', params: [] });
+    return network;
+  }
+
+  /**
+   * returns info about the given miner's sectors
+   * @param address
+   * @param tipSetKey
+   */
+  public async minerSectors(address: string, tipSetKey?: TipSetKey): Promise<ChainSectorInfo[]> {
+    const sectorsInfo = await this.conn.request({ method: 'Filecoin.StateMinerSectors', params: [address, undefined, true, tipSetKey] })
+    return sectorsInfo as ChainSectorInfo[];
   }
 }
