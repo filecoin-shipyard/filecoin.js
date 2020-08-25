@@ -188,6 +188,13 @@ describe("Connection test", function () {
     const con = new JsonRpcProvider(httpConnector);
     const sectors = await con.minerActiveSectors('t01000');
     const valid = sectors.reduce((acc, sector) => acc === false ? acc : typeof sector.Info.SectorNumber === 'number', true);
-    assert.strictEqual(valid, true, 'invalid sectors info');
+    assert.strictEqual(valid, true, 'invalid active sectors info');
+  });
+
+  it("should get miner proving deadline", async function () {
+    const con = new JsonRpcProvider(httpConnector);
+    const provingDeadline = await con.minerProvingDeadline('t01000');
+    assert.strictEqual(typeof provingDeadline.Index === 'number', true, 'invalid miner proving deadline');
+  });
   });
 });

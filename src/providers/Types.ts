@@ -263,6 +263,47 @@ export class ChainSectorInfo {
   ID!: SectorNumber;
 }
 
+/**
+ * Deadline calculations with respect to a current epoch. "Deadline" refers to the window during which proofs may be submitted.
+ * Windows are non-overlapping ranges [Open, Close), but the challenge epoch for a window occurs before the window opens.
+ * The current epoch may not necessarily lie within the deadline or proving period represented here.
+ */
+export class DeadlineInfo {
+  /**
+   * Epoch at which this info was calculated.
+   */
+  CurrentEpoch!: ChainEpoch;
+
+  /**
+   * First epoch of the proving period (<= CurrentEpoch).
+   */
+  PeriodStart!: ChainEpoch;
+
+  /**
+   * A deadline index, in [0..WPoStProvingPeriodDeadlines) unless period elapsed.
+   */
+  Index!: number;
+
+  /**
+   * First epoch from which a proof may be submitted (>= CurrentEpoch).
+   */
+  Open!: ChainEpoch; //
+
+  /**
+   * First epoch from which a proof may no longer be submitted (>= Open).
+   */
+  Close!: ChainEpoch;
+
+  /**
+   * Epoch at which to sample the chain for challenge (< Open).
+   */
+  Challenge!: ChainEpoch;
+
+  /**
+   * First epoch at which a fault declaration is rejected (< Open).
+   */
+  FaultCutoff!: ChainEpoch;
+}
 export interface Signature {
   Data: string;
   Type: number;

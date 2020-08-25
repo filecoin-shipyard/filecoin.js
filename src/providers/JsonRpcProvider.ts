@@ -185,4 +185,14 @@ export class JsonRpcProvider {
     const activeSectors: ChainSectorInfo[] = await this.conn.request({ method: 'Filecoin.StateMinerActiveSectors', params: [address, tipSetKey] });
     return activeSectors;
   }
+
+  /**
+   * calculates the deadline at some epoch for a proving period and returns the deadline-related calculations.
+   * @param address
+   * @param tipSetKey
+   */
+  public async minerProvingDeadline(address: string, tipSetKey?: TipSetKey): Promise<DeadlineInfo> {
+    const provingDeadline: DeadlineInfo = await this.conn.request({ method: 'Filecoin.StateMinerProvingDeadline', params: [address, tipSetKey] });
+    return provingDeadline;
+  }
 }
