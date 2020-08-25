@@ -283,8 +283,10 @@ export class ChainSectorInfo {
 }
 
 /**
- * Deadline calculations with respect to a current epoch. "Deadline" refers to the window during which proofs may be submitted.
- * Windows are non-overlapping ranges [Open, Close), but the challenge epoch for a window occurs before the window opens.
+ * Deadline calculations with respect to a current epoch.
+ *
+ * @remarks
+ * "Deadline" refers to the window during which proofs may be submitted. Windows are non-overlapping ranges [Open, Close), but the challenge epoch for a window occurs before the window opens.
  * The current epoch may not necessarily lie within the deadline or proving period represented here.
  */
 export class DeadlineInfo {
@@ -412,6 +414,125 @@ export class MinerInfo {
    * The next epoch this miner is eligible for certain permissioned actor methods and winning block elections as a result of being reported for a consensus fault.
    */
   ConsensusFaultElapsed!: ChainEpoch;
+}
+
+export type BitField = number[];
+
+export class PowerPair {
+  Raw!: StoragePower;
+  QA!: StoragePower;
+}
+
+export class Deadline {
+  /**
+   * Partitions in this deadline, in order.
+   *
+   * @remarks
+   * The keys of this AMT are always sequential integers beginning with zero.
+   */
+  Partitions!: Cid;
+
+  /**
+   * Maps epochs to partitions that _may_ have sectors that expire in or before that epoch.
+   *
+   * @remarks
+   * Partitions MUST NOT be removed from this queue (until the associated epoch has passed) even if they no longer have sectors expiring at that epoch.
+   * Sectors expiring at this epoch may later be recovered, and this queue will not be updated at that time.
+   */
+  ExpirationsEpochs!: Cid;
+
+  /**
+   * Partitions numbers with PoSt submissions since the proving period started.
+   */
+  PostSubmissions!: BitField;
+
+  /**
+   * Partitions with sectors that terminated early.
+   */
+  EarlyTerminations!: BitField;
+
+  /**
+   * The number of non-terminated sectors in this deadline (incl faulty).
+   */
+  LiveSectors!: number;
+
+  /**
+   * The total number of sectors in this deadline (incl dead).
+   */
+  TotalSectors!: number;
+
+  /**
+   * Memoized sum of faulty power in partitions.
+   */
+  FaultyPower!: PowerPair;
+}
+
+export class Partition {
+  /**
+   * Sector numbers in this partition, including faulty, unproven, and terminated sectors.
+   */
+  Sectors!: BitField;
+
+  /**
+   * Unproven sectors in the partition.
+   *
+   * @remarks
+   * This bitfield will be cleared on a successful window post (or at the end of the partition's next deadline).
+   * At that time, any still unproven sectors will be added tothe faulty sector bitfield.
+   */
+  Unproven!: BitField;
+
+  /**
+   * Subset of sectors detected/declared faulty and not yet recovered (excl. from PoSt).
+   */
+  Faults!: BitField;
+
+  /**
+   * Subset of faulty sectors expected to recover on next PoSt
+   */
+  Recoveries!: BitField;
+
+  /**
+   * Subset of sectors terminated but not yet removed from partition (excl. from PoSt)
+   */
+  Terminated!: BitField;
+
+  /**
+   * Maps epochs sectors that expire in or before that epoch.
+   *
+   * @remarks
+   * An expiration may be an "on-time" scheduled expiration, or early "faulty" expiration. Keys are quantized to last-in-deadline epochs.
+   */
+  ExpirationsEpochs!: Cid;
+
+  /**
+   * Subset of terminated that were before their committed expiration epoch, by termination epoch.
+   *
+   * @remarks
+   * Termination fees have not yet been calculated or paid and associated deals have not yet been canceled but effective power has already been adjusted.
+   */
+  EarlyTerminated!: Cid;
+
+  //
+  /**
+   * Power of not-yet-terminated sectors (incl faulty & unproven).
+   */
+  LivePower!: PowerPair;
+
+  /**
+   * Power of yet-to-be-proved sectors (never faulty).
+   */
+  UnprovenPower!: PowerPair;
+
+  /**
+   * Power of currently-faulty sectors. FaultyPower <= LivePower.
+   */
+  FaultyPower!: PowerPair;
+
+  /**
+   * Power of expected-to-recover sectors. RecoveringPower <= FaultyPower.
+   */
+  RecoveringPower!: PowerPair;
 }
 
 export interface Signature {

@@ -7,7 +7,17 @@ import {
   MessageReceipt,
   WrappedMessage,
   InvocResult,
-  TipSetKey, Actor, ActorState, NetworkName, ChainSectorInfo, DeadlineInfo, MinerPower, MinerInfo,
+  TipSetKey,
+  Actor,
+  ActorState,
+  NetworkName,
+  ChainSectorInfo,
+  DeadlineInfo,
+  MinerPower,
+  MinerInfo,
+  Deadline,
+  Partition,
+  BitField,
 } from './Types';
 import { Connector } from '../connectors/Connector';
 
@@ -214,5 +224,36 @@ export class JsonRpcProvider {
   public async minerInfo(address: string, tipSetKey?: TipSetKey): Promise<MinerInfo> {
     const minerInfo: MinerInfo = await this.conn.request({ method: 'Filecoin.StateMinerInfo', params: [address, tipSetKey] });
     return minerInfo;
+  }
+
+  /**
+   * returns all the proving deadlines for the given miner
+   * @param address
+   * @param tipSetKey
+   */
+  public async minerDeadlines(address: string, tipSetKey?: TipSetKey): Promise<Deadline[]> {
+    const minerDeadlines: Deadline[] = await this.conn.request({ method: 'Filecoin.StateMinerDeadlines', params: [address, tipSetKey] });
+    return minerDeadlines;
+  }
+
+  /**
+   * Loads miner partitions for the specified miner and deadline
+   * @param address
+   * @param idx
+   * @param tipSetKey
+   */
+  public async minerPartitions(address: string, idx?: number, tipSetKey?: TipSetKey): Promise<Partition[]> {
+    const minerPartitions: Partition[] = await this.conn.request({ method: 'Filecoin.StateMinerPartitions', params: [address, idx, tipSetKey] });
+    return minerPartitions;
+  }
+
+  /**
+   * Returns a bitfield indicating the faulty sectors of the given miner
+   * @param address
+   * @param tipSetKey
+   */
+  public async minerFaults(address: string, tipSetKey?: TipSetKey): Promise<BitField> {
+    const minerFaults: BitField = await this.conn.request({ method: 'Filecoin.StateMinerFaults', params: [address, tipSetKey] });
+    return minerFaults;
   }
 }

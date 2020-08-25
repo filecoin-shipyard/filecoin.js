@@ -208,4 +208,24 @@ describe("Connection test", function () {
     const minerInfo = await con.minerInfo('t01000');
     assert.strictEqual(typeof minerInfo.Owner === 'string', true, 'invalid miner info');
   });
+
+  it("should get miner deadlines", async function () {
+    const con = new JsonRpcProvider(httpConnector);
+    const minerDeadlines = await con.minerDeadlines('t01000');
+    const valid = minerDeadlines.reduce((acc, deadline) => acc === false ? false : !!deadline.Partitions, true);
+    assert.strictEqual(valid, true, 'invalid miner deadlines');
+  });
+
+  it("should get miner partitions", async function () {
+    const con = new JsonRpcProvider(httpConnector);
+    const minerPartitions = await con.minerPartitions('t01000', 0);
+    const valid = minerPartitions.reduce((acc, partition) => acc === false ? false : !!partition.Sectors, true);
+    assert.strictEqual(valid, true, 'invalid miner partitions');
+  });
+
+  it("should get the faulty sectors of a miner", async function () {
+    const con = new JsonRpcProvider(httpConnector);
+    const minerFaults = await con.minerFaults('t01000');
+    assert.strictEqual(minerFaults === null || Array.isArray(minerFaults), true, 'invalid miner partitions');
+  });
 });
