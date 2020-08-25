@@ -172,7 +172,17 @@ export class JsonRpcProvider {
    * @param tipSetKey
    */
   public async minerSectors(address: string, tipSetKey?: TipSetKey): Promise<ChainSectorInfo[]> {
-    const sectorsInfo = await this.conn.request({ method: 'Filecoin.StateMinerSectors', params: [address, undefined, true, tipSetKey] })
-    return sectorsInfo as ChainSectorInfo[];
+    const sectorsInfo: ChainSectorInfo[] = await this.conn.request({ method: 'Filecoin.StateMinerSectors', params: [address, undefined, true, tipSetKey] })
+    return sectorsInfo;
+  }
+
+  /**
+   * returns info about sectors that a given miner is actively proving.
+   * @param address
+   * @param tipSetKey
+   */
+  public async minerActiveSectors(address: string, tipSetKey?: TipSetKey): Promise<ChainSectorInfo[]> {
+    const activeSectors: ChainSectorInfo[] = await this.conn.request({ method: 'Filecoin.StateMinerActiveSectors', params: [address, tipSetKey] });
+    return activeSectors;
   }
 }
