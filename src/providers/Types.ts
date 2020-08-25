@@ -194,6 +194,19 @@ export type DealID = number;
 export type ChainEpoch = number;
 export type DealWeight = number;
 export type TokenAmount = number;
+/**
+ * It indicates one of a set of possible sizes in the network.
+ *
+ * @remarks
+ * 1KiB = 1024
+ * 1MiB = 1048576
+ * 1GiB = 1073741824
+ * 1TiB = 1099511627776
+ * 1PiB = 1125899906842624
+ * 1EiB = 1152921504606846976
+ * max  = 18446744073709551615
+ */
+export type SectorSize = number;
 
 // TODO: Storage power should be a number. Keep the response format for the moment
 /**
@@ -326,6 +339,79 @@ export class Claim {
 export class MinerPower {
   MinerPower!: Claim;
   TotalPower!: Claim;
+}
+
+export type Address = string;
+
+export class WorkerKeyChange {
+  NewWorker!:   Address;
+  EffectiveAt!: ChainEpoch;
+}
+
+export type PeerID = string;
+
+// TODO: Find the proper type for Multiaddrs (possible string[])
+export type Multiaddrs = any;
+
+export class MinerInfo {
+  /**
+   * Account that owns the miner.
+   *
+   * @remarks
+   * Income and returned collateral are paid to this address. This address is also allowed to change the worker address for the miner.
+   */
+  Owner!: Address;
+
+  /**
+   * Worker account for the miner.
+   *
+   * @remarks
+   * The associated pubkey-type address is used to sign blocks and messages on behalf of this miner.
+   */
+  Worker!: Address;
+
+  /**
+   * Additional addresses that are permitted to submit messages controlling this actor
+   */
+  ControlAddresses?: Address[];
+
+  PendingWorkerKey!: WorkerKeyChange;
+
+  /**
+   * Libp2p identity that should be used when connecting to this miner.
+   */
+  PeerId!: PeerID;
+
+  /**
+   * Libp2p multi-addresses used for establishing a connection with this miner.
+   */
+  Multiaddrs!: Multiaddrs[] | null;
+
+  /**
+   * The proof type used by this miner for sealing sectors.
+   */
+  SealProofType!: RegisteredSealProof;
+
+  /**
+   * Amount of space in each sector committed by this miner.
+   *
+   * @remarks
+   * This is computed from the proof type and represented here redundantly.
+   */
+  SectorSize!: SectorSize;
+
+  /**
+   * The number of sectors in each Window PoSt partition (proof).
+   *
+   * @remarks
+   * This is computed from the proof type and represented here redundantly.
+   */
+  WindowPoStPartitionSectors!: number;
+
+  /**
+   * The next epoch this miner is eligible for certain permissioned actor methods and winning block elections as a result of being reported for a consensus fault.
+   */
+  ConsensusFaultElapsed!: ChainEpoch;
 }
 
 export interface Signature {

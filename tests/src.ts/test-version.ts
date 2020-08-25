@@ -202,4 +202,10 @@ describe("Connection test", function () {
     const power = await con.minerPower('t01000');
     assert.strictEqual(typeof power.MinerPower.RawBytePower === 'string', true, 'invalid miner power');
   });
+
+  it("should get miner info", async function () {
+    const con = new JsonRpcProvider(httpConnector);
+    const minerInfo = await con.minerInfo('t01000');
+    assert.strictEqual(typeof minerInfo.Owner === 'string', true, 'invalid miner info');
+  });
 });
