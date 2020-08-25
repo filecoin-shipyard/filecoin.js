@@ -145,4 +145,49 @@ describe("Connection test", function () {
     assert.strictEqual(isInChain, true, "CID doesn't exists in the chain blockstore");
     await provider.release();
   });
+
+  // it("should run the given message", async function() {
+  //   const provider = new JsonRpcProvider(httpConnector);
+  //   const data = await provider.stateCall();
+  // });
+
+  it("should get actor [http]", async function() {
+    const con = new JsonRpcProvider(httpConnector);
+    const actor = await con.getActor('t01000');
+    assert.strictEqual( typeof actor.Balance === 'string', true, "invalid actor");
+  });
+
+  it("should get state [http]", async function() {
+    const con = new JsonRpcProvider(httpConnector);
+    const state = await con.readState('t01000');
+    assert.strictEqual(JSON.stringify(Object.keys(state)), JSON.stringify(['Balance', 'State']), 'invalid state');
+  });
+
+  it("should list messages [http]", async function () {
+    const con = new JsonRpcProvider(httpConnector);
+    const messages = await con.listMessages({
+      To: 't01000'
+    });
+    assert.strictEqual(Array.isArray(messages) && messages.length > 0, true, 'invalid list of messages');
+  });
+
+  it("should get network name [http]", async function () {
+    const con = new JsonRpcProvider(httpConnector);
+    const network = await con.networkName();
+    assert.strictEqual(typeof network === 'string', true, 'invalid network name');
+  });
+
+  it("should get miner sectors info [http]", async function () {
+    const con = new JsonRpcProvider(httpConnector);
+    const sectors = await con.minerSectors('t01000');
+    const valid = sectors.reduce((acc, sector) => acc === false ? acc : typeof sector.Info.SectorNumber === 'number', true);
+    assert.strictEqual(valid, true, 'invalid sectors info');
+  });
+
+  it("should get miner active sectors info [http]", async function () {
+    const con = new JsonRpcProvider(httpConnector);
+    const sectors = await con.minerActiveSectors('t01000');
+    const valid = sectors.reduce((acc, sector) => acc === false ? acc : typeof sector.Info.SectorNumber === 'number', true);
+    assert.strictEqual(valid, true, 'invalid sectors info');
+  });
 });
