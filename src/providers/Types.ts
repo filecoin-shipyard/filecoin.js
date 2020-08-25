@@ -195,6 +195,12 @@ export type ChainEpoch = number;
 export type DealWeight = number;
 export type TokenAmount = number;
 
+// TODO: Storage power should be a number. Keep the response format for the moment
+/**
+ * The unit of storage power (measured in bytes)
+ */
+export type StoragePower = string;
+
 /**
  * Information stored on-chain for a proven sector.
  */
@@ -304,6 +310,24 @@ export class DeadlineInfo {
    */
   FaultCutoff!: ChainEpoch;
 }
+
+export class Claim {
+  /**
+   * Sum of raw byte power for a miner's sectors.
+   */
+  RawBytePower!: StoragePower;
+
+  /**
+   * Sum of quality adjusted power for a miner's sectors.
+   */
+  QualityAdjPower!: StoragePower;
+}
+
+export class MinerPower {
+  MinerPower!: Claim;
+  TotalPower!: Claim;
+}
+
 export interface Signature {
   Data: string;
   Type: number;

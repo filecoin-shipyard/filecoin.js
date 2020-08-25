@@ -7,7 +7,7 @@ import {
   MessageReceipt,
   WrappedMessage,
   InvocResult,
-  TipSetKey, Actor, ActorState, NetworkName, ChainSectorInfo,
+  TipSetKey, Actor, ActorState, NetworkName, ChainSectorInfo, DeadlineInfo, MinerPower,
 } from './Types';
 import { Connector } from '../connectors/Connector';
 
@@ -194,5 +194,15 @@ export class JsonRpcProvider {
   public async minerProvingDeadline(address: string, tipSetKey?: TipSetKey): Promise<DeadlineInfo> {
     const provingDeadline: DeadlineInfo = await this.conn.request({ method: 'Filecoin.StateMinerProvingDeadline', params: [address, tipSetKey] });
     return provingDeadline;
+  }
+
+  /**
+   * returns the power of the indicated miner
+   * @param address
+   * @param tipSetKey
+   */
+  public async minerPower(address: string, tipSetKey?: TipSetKey): Promise<MinerPower> {
+    const power: MinerPower = await this.conn.request({ method: 'Filecoin.StateMinerPower', params: [address, tipSetKey] });
+    return power;
   }
 }

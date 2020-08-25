@@ -196,5 +196,10 @@ describe("Connection test", function () {
     const provingDeadline = await con.minerProvingDeadline('t01000');
     assert.strictEqual(typeof provingDeadline.Index === 'number', true, 'invalid miner proving deadline');
   });
+
+  it("should get miner power", async function () {
+    const con = new JsonRpcProvider(httpConnector);
+    const power = await con.minerPower('t01000');
+    assert.strictEqual(typeof power.MinerPower.RawBytePower === 'string', true, 'invalid miner power');
   });
 });
