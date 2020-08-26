@@ -193,7 +193,8 @@ export type RegisteredSealProof = RegisteredProof;
 export type DealID = number;
 export type ChainEpoch = number;
 export type DealWeight = number;
-export type TokenAmount = number;
+// TODO: This should be BigNumber
+export type TokenAmount = string;
 /**
  * It indicates one of a set of possible sizes in the network.
  *
@@ -533,6 +534,133 @@ export class Partition {
    * Power of expected-to-recover sectors. RecoveringPower <= FaultyPower.
    */
   RecoveringPower!: PowerPair;
+}
+
+export class Fault {
+  Miner!: Address;
+  Epoch!: ChainEpoch;
+}
+
+export class SectorPreCommitInfo {
+  SealProof!: RegisteredSealProof;
+  SectorNumber!: SectorNumber;
+  /**
+   * CommR
+   */
+  SealedCID!: Cid;
+  SealRandEpoch!: ChainEpoch;
+  DealIDs!: DealID | null;
+  Expiration!: ChainEpoch;
+  /**
+   * Whether to replace a "committed capacity" no-deal sector
+   *
+   * @remarks
+   * It requires non-empty DealIDs
+   */
+  ReplaceCapacity!: boolean;
+  /**
+   * The committed capacity sector to replace, and it's deadline/partition location
+   */
+  ReplaceSectorDeadline!: number;
+  ReplaceSectorPartition!: number;
+  ReplaceSectorNumber!: SectorNumber;
+}
+
+/**
+ * Information stored on-chain for a pre-committed sector.
+ */
+export class SectorPreCommitOnChainInfo {
+  Info!: SectorPreCommitInfo;
+  PreCommitDeposit!: TokenAmount
+  PreCommitEpoch!: ChainEpoch;
+  /**
+   * Integral of active deals over sector lifetime
+   */
+  DealWeight!: DealWeight;
+  /**
+   * Integral of active verified deals over sector lifetime
+   */
+  VerifiedDealWeight!: DealWeight;
+}
+
+export class SectorExpiration {
+  OnTime!: ChainEpoch;
+  /**
+   * non-zero if sector is faulty, epoch at which it will be permanently removed if it doesn't recover
+   */
+  Early!: ChainEpoch;
+}
+
+export class SectorLocation {
+  Deadline!: number;
+  Partition!: number;
+}
+
+export class MsgLookup {
+  /**
+   * @remarks
+   * Can be different than requested, in case it was replaced, but only gas values changed
+   */
+  Message!: Cid;
+  Receipt!: MessageReceipt;
+  ReturnDec!: any;
+  TipSet!: TipSetKey;
+  Height!: ChainEpoch;
+}
+
+// TODO: Change from string to BigNumber
+export class MarketBalance {
+  Escrow!: string;
+  Locked!: string;
+}
+
+export type PaddedPieceSize = number;
+
+export class DealProposal {
+  PieceCID!: Cid;
+  PieceSize!: PaddedPieceSize;
+  VerifiedDeal!: boolean;
+  Client!: Address;
+  Provider!: Address;
+  /**
+   * An arbitrary client chosen label to apply to the deal
+   */
+  Label!: string;
+
+  /**
+   * Nominal start epoch.
+   * @remarks
+   * Deal payment is linear between StartEpoch and EndEpoch, with total amount StoragePricePerEpoch * (EndEpoch - StartEpoch).
+   * Storage deal must appear in a sealed (proven) sector no later than StartEpoch, otherwise it is invalid.
+   */
+  StartEpoch!: ChainEpoch;
+  EndEpoch!: ChainEpoch;
+  StoragePricePerEpoch!: TokenAmount;
+  ProviderCollateral!: TokenAmount;
+  ClientCollateral!: TokenAmount;
+}
+
+export class DealState {
+  /**
+   * @remarks
+   * -1 if not yet included in proven sector
+   */
+  SectorStartEpoch!: ChainEpoch;
+  /**
+   * @remarks
+   * -1 if deal state never updated
+   */
+  LastUpdatedEpoch!: ChainEpoch;
+  /**
+   * @remarks
+   * -1 if deal never slashed
+   */
+  SlashEpoch!: ChainEpoch;
+}
+
+export class MarketDeal {
+  Proposal!: DealProposal;
+  State!: DealState;
 }
 
 export interface Signature {

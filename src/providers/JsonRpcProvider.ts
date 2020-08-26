@@ -18,6 +18,13 @@ import {
   Deadline,
   Partition,
   BitField,
+  ChainEpoch,
+  Fault,
+  SectorPreCommitInfo,
+  SectorNumber,
+  SectorPreCommitOnChainInfo,
+  SectorOnChainInfo,
+  SectorExpiration, SectorLocation, MsgLookup, Address, MarketBalance, MarketDeal,
 } from './Types';
 import { Connector } from '../connectors/Connector';
 
@@ -104,7 +111,7 @@ export class JsonRpcProvider {
     return ret as boolean;
   }
 
-   /**
+  /**
    * looks back for a tipset at the specified epoch.
    * @param epochNumber
    */
@@ -255,5 +262,191 @@ export class JsonRpcProvider {
   public async minerFaults(address: string, tipSetKey?: TipSetKey): Promise<BitField> {
     const minerFaults: BitField = await this.conn.request({ method: 'Filecoin.StateMinerFaults', params: [address, tipSetKey] });
     return minerFaults;
+  }
+
+  /**
+   * returns all non-expired Faults that occur within lookback epochs of the given tipset
+   * @param epoch
+   * @param tipSetKey
+   */
+  public async allMinerFaults(epoch: ChainEpoch, tipSetKey?: TipSetKey): Promise<Fault[]> {
+    const allFaults: Fault[] = await this.conn.request({ method: 'Filecoin.StateAllMinerFaults', params: [epoch, tipSetKey] });
+    return allFaults;
+  }
+
+  /**
+   * returns a bitfield indicating the recovering sectors of the given miner
+   * @param address
+   * @param tipSetKey
+   */
+  public async minerRecoveries(address: string, tipSetKey?: TipSetKey): Promise<BitField> {
+    const recoveries: BitField = await this.conn.request({ method: 'Filecoin.StateMinerRecoveries', params: [address, tipSetKey] });
+    return recoveries;
+  }
+
+  // TODO: this should be BigNumber instead of string
+  /**
+   * returns the precommit deposit for the specified miner's sector
+   * @param address
+   * @param sectorPreCommitInfo
+   * @param tipSetKey
+   */
+  public async minerPreCommitDepositForPower(address: string, sectorPreCommitInfo: SectorPreCommitInfo, tipSetKey?: TipSetKey): Promise<string> {
+    const deposit: string = await this.conn.request({
+      method: 'Filecoin.StateMinerPreCommitDepositForPower',
+      params: [address, sectorPreCommitInfo, tipSetKey]
+    });
+    return deposit;
+  }
+
+  /**
+   * returns the initial pledge collateral for the specified miner's sector
+   * @param address
+   * @param sectorPreCommitInfo
+   * @param tipSetKey
+   */
+  public async minerInitialPledgeCollateral(address: string, sectorPreCommitInfo: SectorPreCommitInfo, tipSetKey?: TipSetKey): Promise<string> {
+    const deposit: string = await this.conn.request({
+      method: 'Filecoin.StateMinerInitialPledgeCollateral',
+      params: [address, sectorPreCommitInfo, tipSetKey]
+    });
+    return deposit;
+  }
+
+  /**
+   * returns the portion of a miner's balance that can be withdrawn or spent
+   * @param address
+   * @param tipSetKey
+   */
+  public async minerAvailableBalance(address: string, tipSetKey?: TipSetKey): Promise<string> {
+    const balance: string = await this.conn.request({
+      method: 'Filecoin.StateMinerAvailableBalance',
+      params: [address, tipSetKey]
+    });
+    return balance;
+  }
+
+  /**
+   * returns the PreCommit info for the specified miner's sector
+   * @param address
+   * @param sector
+   * @param tipSetKey
+   */
+  public async sectorPreCommitInfo(address: string, sector: SectorNumber, tipSetKey?: TipSetKey): Promise<SectorPreCommitOnChainInfo> {
+    const preCommitInfo: SectorPreCommitOnChainInfo = await this.conn.request({
+      method: 'Filecoin.StateSectorPreCommitInfo',
+      params: [address, sector, tipSetKey]
+    });
+    return preCommitInfo;
+  }
+
+  /**
+   * StateSectorGetInfo returns the on-chain info for the specified miner's sector
+   * @param address
+   * @param sector
+   * @param tipSetKey
+   *
+   * @remarks
+   * NOTE: returned Expiration may not be accurate in some cases, use StateSectorExpiration to get accurate expiration epoch
+   */
+  public async sectorGetInfo(address: string, sector: SectorNumber, tipSetKey?: TipSetKey): Promise<SectorOnChainInfo> {
+    const sectorInfo: SectorOnChainInfo = await this.conn.request({
+      method: 'Filecoin.StateSectorGetInfo',
+      params: [address, sector, tipSetKey]
+    });
+    return sectorInfo;
+  }
+
+  /**
+   * returns epoch at which given sector will expire
+   * @param address
+   * @param sector
+   * @param tipSetKey
+   */
+  public async sectorExpiration(address: string, sector: SectorNumber, tipSetKey?: TipSetKey): Promise<SectorExpiration> {
+    const sectorExpiration: SectorExpiration = await this.conn.request({
+      method: 'Filecoin.StateSectorExpiration',
+      params: [address, sector, tipSetKey]
+    });
+    return sectorExpiration;
+  }
+
+  /**
+   * finds deadline/partition with the specified sector
+   * @param address
+   * @param sector
+   * @param tipSetKey
+   */
+  public async sectorPartition(address: string, sector: SectorNumber, tipSetKey?: TipSetKey): Promise<SectorLocation> {
+    const sectorLocation: SectorLocation = await this.conn.request({
+      method: 'Filecoin.StateSectorPartition',
+      params: [address, sector, tipSetKey]
+    });
+    return sectorLocation;
+  }
+
+  /**
+   * searches for a message in the chain and returns its receipt and the tipset where it was executed
+   * @param cid
+   */
+  public async searchMsg(cid: Cid): Promise<MsgLookup> {
+    const lookup: MsgLookup = await this.conn.request({ method: 'Filecoin.StateSearchMsg', params: [cid] });
+    return lookup;
+  }
+
+  /**
+   * looks back in the chain for a message. If not found, it blocks until the message arrives on chain, and gets to the indicated confidence depth.
+   * @param cid
+   * @param confidence
+   */
+  public async waitMsg(cid: Cid, confidence: number): Promise<MsgLookup> {
+    const lookup: MsgLookup = await this.conn.request({ method: 'Filecoin.StateWaitMsg', params: [cid, confidence] });
+    return lookup;
+  }
+
+  /**
+   * returns the addresses of every miner that has claimed power in the Power Actor
+   * @param tipSetKey
+   */
+  public async listMiners(tipSetKey?: TipSetKey): Promise<Address[]> {
+    const miners: Address[] = await this.conn.request({ method: 'Filecoin.StateListMiners', params: [tipSetKey] });
+    return miners;
+  }
+
+  /**
+   * returns the addresses of every actor in the state
+   * @param tipSetKey
+   */
+  public async listActors(tipSetKey?: TipSetKey): Promise<Address[]> {
+    const miners: Address[] = await this.conn.request({ method: 'Filecoin.StateListActors', params: [tipSetKey] });
+    return miners;
+  }
+
+  /**
+   * looks up the Escrow and Locked balances of the given address in the Storage Market
+   * @param address
+   * @param tipSetKey
+   */
+  public async marketBalance(address: Address, tipSetKey?: TipSetKey): Promise<MarketBalance> {
+    const marketBalance: MarketBalance = await this.conn.request({ method: 'Filecoin.StateMarketBalance', params: [address, tipSetKey] });
+    return marketBalance;
+  }
+
+  /**
+   * returns the Escrow and Locked balances of every participant in the Storage Market
+   * @param tipSetKey
+   */
+  public async marketParticipants(tipSetKey?: TipSetKey): Promise<{ [k: string]: MarketBalance }> {
+    const marketBalanceMap = await this.conn.request({ method: 'Filecoin.StateMarketParticipants', params: [tipSetKey] });
+    return marketBalanceMap;
+  }
+
+  /**
+   * returns information about every deal in the Storage Market
+   * @param tipSetKey
+   */
+  public async marketDeals(tipSetKey?: TipSetKey): Promise<{ [k: string]: MarketDeal }> {
+    const marketDealsMap = await this.conn.request({ method: 'Filecoin.StateMarketDeals', params: [tipSetKey] });
+    return marketDealsMap;
   }
 }

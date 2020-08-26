@@ -226,6 +226,144 @@ describe("Connection test", function () {
   it("should get the faulty sectors of a miner", async function () {
     const con = new JsonRpcProvider(httpConnector);
     const minerFaults = await con.minerFaults('t01000');
-    assert.strictEqual(minerFaults === null || Array.isArray(minerFaults), true, 'invalid miner partitions');
+    assert.strictEqual(minerFaults === null || Array.isArray(minerFaults), true, 'invalid miner faulty sectors');
   });
+
+  // TODO: Fix test
+  // it("should get all faulty sectors", async function () {
+  //   const con = new JsonRpcProvider(httpConnector);
+  //   const minerFaults = await con.allMinerFaults(182);
+  // });
+
+  it("should get the recovering sectors of a miner", async function () {
+    const con = new JsonRpcProvider(httpConnector);
+    const recoveries = await con.minerRecoveries('t01000');
+    assert.strictEqual(recoveries === null || Array.isArray(recoveries), true, 'invalid miner recovering sectors');
+  });
+
+  it("should get the precommit deposit for the specified miner's sector", async function () {
+    const con = new JsonRpcProvider(httpConnector);
+    const deposit = await con.minerPreCommitDepositForPower('t01000',        {
+      SealProof: 1,
+      SectorNumber: 1,
+      SealedCID: {
+        "/": "bafy2bzacea3wsdh6y3a36tb3skempjoxqpuyompjbmfeyf34fi3uy6uue42v4"
+      },
+      SealRandEpoch: 10101,
+      DealIDs: null,
+      Expiration: 10101,
+      ReplaceCapacity: true,
+      ReplaceSectorDeadline: 42,
+      ReplaceSectorPartition: 42,
+      ReplaceSectorNumber: 9
+    });
+    assert.strictEqual(typeof deposit === 'string', true, "invalid precommit deposit for the specified miner's sector");
+  });
+
+  it("should get the initial pledge collateral for the specified miner's sector", async function () {
+    const con = new JsonRpcProvider(httpConnector);
+    const collateral = await con.minerInitialPledgeCollateral('t01000',        {
+      SealProof: 1,
+      SectorNumber: 1,
+      SealedCID: {
+        "/": "bafy2bzacea3wsdh6y3a36tb3skempjoxqpuyompjbmfeyf34fi3uy6uue42v4"
+      },
+      SealRandEpoch: 10101,
+      DealIDs: null,
+      Expiration: 10101,
+      ReplaceCapacity: true,
+      ReplaceSectorDeadline: 42,
+      ReplaceSectorPartition: 42,
+      ReplaceSectorNumber: 9
+    });
+    assert.strictEqual(typeof collateral === 'string', true, "invalid pledge collateral for the specified miner's sector");
+  });
+
+  it("should get the miner's balance that can be withdrawn or spent", async function () {
+    const con = new JsonRpcProvider(httpConnector);
+    const balance = await con.minerAvailableBalance('t01000');
+    assert.strictEqual(typeof balance === 'string', true, "invalid miner's balance that can be withdrawn or spent");
+  });
+
+  // TODO: It throws an error. Check later
+  // it("should get the PreCommit info for the specified miner's sector", async function () {
+  //   const con = new JsonRpcProvider(httpConnector);
+  //   const preCommitInfo = await con.sectorPreCommitInfo('t01000', 2);
+  //   console.log('preCommitInfo', preCommitInfo);
+  //   // assert.strictEqual(typeof balance === 'string', true, "invalid miner's balance that can be withdrawn or spent");
+  // });
+
+  it("should return info for the specified miner's sector", async function() {
+    const con = new JsonRpcProvider(httpConnector);
+    const info = await con.sectorGetInfo('t01000', 0);
+    assert.strictEqual(info.SectorNumber === 0, true, "invalid info for the specified miner's sector");
+  });
+
+  it("should get epoch at which given sector will expire", async function() {
+    const con = new JsonRpcProvider(httpConnector);
+    const expiration = await con.sectorExpiration('t01000', 0);
+    assert.strictEqual(typeof expiration.OnTime === 'number', true, "invalid epoch at which given sector will expire");
+  });
+
+  it("should get deadline/partition with the specified sector", async function() {
+    const con = new JsonRpcProvider(httpConnector);
+    const partition = await con.sectorPartition('t01000', 0);
+    assert.strictEqual(typeof partition.Partition === 'number', true, "invalid deadline/partition with the specified sector");
+  });
+
+  it("should search for message and return its receipt and the tipset where it was executed", async function() {
+    const con = new JsonRpcProvider(httpConnector);
+    const messages = await con.listMessages({
+      To: 't01000'
+    });
+    const receipt = await con.searchMsg(messages[0]);
+    assert.strictEqual(typeof receipt.Height === 'number', true, "invalid height for searched messages");
+  });
+
+  it("should wait for message", async function() {
+    const con = new JsonRpcProvider(httpConnector);
+    const messages = await con.listMessages({
+      To: 't01000'
+    });
+    const lookup = await con.waitMsg(messages[0], 10);
+    assert.strictEqual(typeof lookup.Height === 'number', true, "invalid lookup info for waited messages");
+  });
+
+  it("should list miners", async function() {
+    const con = new JsonRpcProvider(httpConnector);
+    const miners = await con.listMiners();
+    assert.strictEqual(Array.isArray(miners), true, "invalid list of miners");
+  });
+
+  it("should list actors", async function() {
+    const con = new JsonRpcProvider(httpConnector);
+    const actors = await con.listActors();
+    assert.strictEqual(Array.isArray(actors), true, "invalid list of actors");
+  });
+
+  it("should get market balance", async function() {
+    const con = new JsonRpcProvider(httpConnector);
+    const marketBalance = await con.marketBalance('t01000');
+    assert.strictEqual(typeof marketBalance.Escrow === 'string', true, "invalid market balance");
+  });
+
+  it("should get market participants", async function() {
+    const con = new JsonRpcProvider(httpConnector);
+    const marketBalance = await con.marketParticipants();
+    assert.strictEqual(typeof marketBalance === 'object', true, "invalid market participants");
+  });
+
+  it("should get market deals", async function() {
+    const con = new JsonRpcProvider(httpConnector);
+    const marketDeals = await con.marketDeals();
+    let valid = typeof marketDeals === 'object';
+    const keys = Object.keys(marketDeals);
+
+    if (valid && keys.length > 0) {
+      valid = typeof marketDeals[keys[0]].Proposal.PieceSize === 'number';
+    }
+
+    assert.strictEqual(valid, true, "invalid market deals");
+  });
+
 });
