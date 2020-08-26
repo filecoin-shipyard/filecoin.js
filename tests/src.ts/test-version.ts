@@ -365,5 +365,4 @@ describe("Connection test", function () {
 
     assert.strictEqual(valid, true, "invalid market deals");
   });
-
 });
