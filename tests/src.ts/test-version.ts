@@ -365,4 +365,55 @@ describe("Connection test", function () {
 
     assert.strictEqual(valid, true, "invalid market deals");
   });
+
+  it("should get information about the storage deal", async function() {
+    const con = new JsonRpcProvider(httpConnector);
+    const marketDeal = await con.marketStorageDeal(0);
+    assert.strictEqual(!!marketDeal.Proposal.PieceCID, true, "invalid information about the storage deal");
+  });
+
+  it("should get the ID address of the given address", async function() {
+    const con = new JsonRpcProvider(httpConnector);
+    const id = await con.lookupId('t01000');
+    assert.strictEqual(typeof id === 'string', true, "invalid ID address");
+  });
+
+  it("should get the public key address of the given ID address", async function() {
+    const con = new JsonRpcProvider(httpConnector);
+    const key = await con.accountKey('t01002');
+    assert.strictEqual(typeof key === 'string', true, "public key address of the given ID address");
+  });
+
+  // TODO: Fix error: "failed to load hamt node: cbor input had wrong number of fields" and add assertion
+  // it("should return all the actors whose states change", async function() {
+  //   const con = new JsonRpcProvider(httpConnector);
+  //   const tipSet = await con.getTipSetByHeight(1);
+  //   const tipSet2 = await con.getTipSetByHeight(30);
+  //   const actors = await con.changedActors(tipSet.Cids[0], tipSet2.Cids[0]);
+  // });
+
+  it("should return the message receipt for the given message", async function() {
+    const con = new JsonRpcProvider(httpConnector);
+    const messages = await con.listMessages({
+      To: 't01000'
+    });
+    const receipt = await con.getReceipt(messages[0]);
+    assert.strictEqual(typeof receipt.ExitCode === 'number', true, "invalid message receipt");
+  });
+
+  it("should return the number of sectors in a miner's sector set", async function() {
+    const con = new JsonRpcProvider(httpConnector);
+    const sectors = await con.minerSectorCount('t01000');
+    assert.strictEqual(typeof sectors.Sectors === 'number', true, "invalid number of sectors");
+  });
+
+  it("should apply the messages", async function() {
+    const con = new JsonRpcProvider(httpConnector);
+    const messages = await con.listMessages({
+      To: 't01000'
+    });
+    const message = await con.getMessage(messages[0]);
+    const state = await con.compute(10, [message]);
+    assert.strictEqual(!!state.Root['/'], true, "invalid state after compute");
+  });
 });

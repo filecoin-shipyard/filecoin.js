@@ -129,6 +129,16 @@ export class MessageReceipt {
   GasUsed!:  number;
 }
 
+export class MinerSectors {
+  Sectors!: number;
+  Active!: number;
+}
+
+export class ComputeStateOutput {
+  Root!: Cid;
+  Trace!: InvocResult[];
+}
+
 // TODO: Find more appropiate naming
 export class WrappedMessage {
   Cid!: Cid;

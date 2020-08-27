@@ -24,7 +24,15 @@ import {
   SectorNumber,
   SectorPreCommitOnChainInfo,
   SectorOnChainInfo,
-  SectorExpiration, SectorLocation, MsgLookup, Address, MarketBalance, MarketDeal,
+  SectorExpiration,
+  SectorLocation,
+  MsgLookup,
+  Address,
+  MarketBalance,
+  MarketDeal,
+  DealID,
+  MinerSectors,
+  ComputeStateOutput,
 } from './Types';
 import { Connector } from '../connectors/Connector';
 
@@ -115,9 +123,9 @@ export class JsonRpcProvider {
    * looks back for a tipset at the specified epoch.
    * @param epochNumber
    */
-  public async getTipSetByHeight(epochNumber: number): Promise<boolean> {
-    const ret = await this.conn.request({ method: 'Filecoin.ChainGetTipSetByHeight', params: [epochNumber, []] });
-    return ret as boolean;
+  public async getTipSetByHeight(epochNumber: number): Promise<TipSet> {
+    const ret: TipSet = await this.conn.request({ method: 'Filecoin.ChainGetTipSetByHeight', params: [epochNumber, []] });
+    return ret;
   }
 
   /**
@@ -448,5 +456,100 @@ export class JsonRpcProvider {
   public async marketDeals(tipSetKey?: TipSetKey): Promise<{ [k: string]: MarketDeal }> {
     const marketDealsMap = await this.conn.request({ method: 'Filecoin.StateMarketDeals', params: [tipSetKey] });
     return marketDealsMap;
+  }
+
+  /**
+   * returns information about the indicated deal
+   * @param dealId
+   * @param tipSetKey
+   */
+  public async marketStorageDeal(dealId: DealID, tipSetKey?: TipSetKey): Promise<MarketDeal> {
+    const marketDeal: MarketDeal = await this.conn.request({
+      method: 'Filecoin.StateMarketStorageDeal',
+      params: [dealId, tipSetKey]
+    });
+    return marketDeal;
+  }
+
+  /**
+   * retrieves the ID address of the given address
+   * @param address
+   * @param tipSetKey
+   */
+  public async lookupId(address: Address, tipSetKey?: TipSetKey): Promise<Address> {
+    const id: Address = await this.conn.request({
+      method: 'Filecoin.StateLookupID',
+      params: [address, tipSetKey]
+    });
+    return id;
+  }
+
+  /**
+   * returns the public key address of the given ID address
+   * @param address
+   * @param tipSetKey
+   */
+  public async accountKey(address: Address, tipSetKey?: TipSetKey): Promise<Address> {
+    const key: Address = await this.conn.request({
+      method: 'Filecoin.StateAccountKey',
+      params: [address, tipSetKey]
+    });
+    return key;
+  }
+
+  /**
+   * returns all the actors whose states change between the two given state CIDs
+   * @param cid1
+   * @param cid2
+   */
+  public async changedActors(cid1?: Cid, cid2?: Cid): Promise<{[k: string]: Actor}> {
+    const actors = await this.conn.request({
+      method: 'Filecoin.StateChangedActors',
+      params: [cid1, cid2]
+    });
+    return actors;
+  }
+
+  /**
+   * returns the message receipt for the given message
+   * @param cid
+   * @param tipSetKey
+   */
+  public async getReceipt(cid: Cid, tipSetKey?: TipSetKey): Promise<MessageReceipt> {
+    const receipt = await this.conn.request({
+      method: 'Filecoin.StateGetReceipt',
+      params: [cid, tipSetKey]
+    });
+    return receipt;
+  }
+
+  /**
+   * returns the number of sectors in a miner's sector set and proving set
+   * @param address
+   * @param tipSetKey
+   */
+  public async minerSectorCount(address: Address, tipSetKey?: TipSetKey): Promise<MinerSectors> {
+    const sectors = await this.conn.request({
+      method: 'Filecoin.StateMinerSectorCount',
+      params: [address, tipSetKey]
+    });
+    return sectors;
+  }
+
+  /**
+   * Applies the given messages on the given tipset.
+   * @param epoch
+   * @param messages
+   * @param tipSetKey
+   *
+   * @remarks
+   * The messages are run as though the VM were at the provided height.
+   */
+  public async compute(epoch: ChainEpoch, messages: Message[], tipSetKey?: TipSetKey): Promise<ComputeStateOutput> {
+    const state = await this.conn.request({
+      method: 'Filecoin.StateCompute',
+      params: [epoch, messages, tipSetKey],
+    });
+    return state;
   }
 }
