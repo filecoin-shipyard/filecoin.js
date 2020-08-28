@@ -133,7 +133,7 @@
         'equip will roof matter pink blind book anxiety banner elbow sun young', getPass(), `m/44'/1'/0/0/1`
       );
 
-      const walletMetamask = new FilecoinJs.MetamaskWalletProvider({
+      const metamaskSigner = new FilecoinJs.MetamaskSigner({
         url: 'http://localhost:8000/rpc/v0',
         token: LOTUS_AUTH_TOKEN
       })
@@ -169,10 +169,32 @@
           Method: 0,
           Params: '',
           Version: 0,
-          Nonce: await walletLotus.getNonce(from),
+          Nonce: await walletLotus.getNonce(from) + 1,
         });
 
         const res = await walletLotus.sendSignedMessage(JSON.parse(signedMessage));
+      }
+
+      const sendMetamask = async (from, toId, filId) => {
+        const to = document.getElementById(toId).value;
+        const amount = document.getElementById(filId).value;
+
+        const signedMessage = await metamaskSigner.sign({
+          From: from,
+          To: to,
+          GasLimit: 0,
+          GasFeeCap: new BigNumber(0),
+          GasPremium: new BigNumber(0),
+          Value: new BigNumber(amount),
+          Method: 0,
+          Params: '',
+          Version: 0,
+          Nonce: 0,
+          Nonce: await walletLotus.getNonce(from) + 1,
+        });
+
+        console.log(signedMessage);
+        //const res = await walletLotus.sendSignedMessage(JSON.parse(signedMessage));
       }
 
       const updateAddresses = async () => {
@@ -180,12 +202,12 @@
         mnemonicAddress = await signer.getDefaultAccount();
         rpcAddress = await walletLotus.getDefaultAccount();
         rpcAddressSecp = availableAccounts[0];
-        metamaskAddress = await walletMetamask.getDefaultAccount();
+        metamaskAddress = await metamaskSigner.getDefaultAccount();
 
         const mnemonicBalance = await walletLotus.getBalance(mnemonicAddress);
         const rpcBalance = await walletLotus.getBalance(rpcAddress);
         const rpcSecpBalance = await walletLotus.getBalance(rpcAddressSecp);
-        const metamaskBalance = await walletLotus.getBalance(metamaskAddress);;
+        const metamaskBalance = await walletLotus.getBalance(metamaskAddress);
 
         document.getElementById('mnemonicAddress').innerHTML = `${mnemonicAddress} <br/> (${mnemonicBalance})`;
         document.getElementById('rpcAddress').innerHTML = `${rpcAddress} <br/> (${rpcBalance})`;
@@ -196,7 +218,7 @@
       document.getElementById('sendDefault').onclick = () => sendLotus(rpcAddress, "toDefault", "filDefault");
       document.getElementById('sendSecp').onclick = () => sendLotus(rpcAddressSecp, "toSecp", "filSecp");
       document.getElementById('sendMnemonic').onclick = () => sendSigner(mnemonicAddress, "toMnemonic", "filMnemonic");
-      document.getElementById('sendMetamask').onclick = () => sendSigner(mnemonicAddress, "toMnemonic", "filMnemonic");
+      document.getElementById('sendMetamask').onclick = () => sendMetamask(metamaskAddress, "toMetamask", "filMetamask");
 
 
       await updateAddresses();

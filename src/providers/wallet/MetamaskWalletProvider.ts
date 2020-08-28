@@ -1,12 +1,9 @@
 import { Message, SignedMessage, Signature } from "../Types";
 import { WalletProvider } from "./WalletProvider";
-import { MnemonicSigner } from "../../signers/MnemonicSigner";
-import { SnapRpcMethodRequest, FilecoinSnapApi } from "@nodefactory/filsnap-types";
+import { FilecoinSnapApi } from "@nodefactory/filsnap-types";
 import { enableFilecoinSnap } from "@nodefactory/filsnap-adapter";
 import { MetamaskFilecoinSnap } from "@nodefactory/filsnap-adapter";
 import { JsonRpcConnectionOptions } from "../../connectors/HttpJsonRpcConnector";
-import BigNumber from "bignumber.js";
-import { connection } from "websocket";
 
 export class MetamaskWalletProvider implements WalletProvider {
 

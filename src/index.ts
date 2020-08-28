@@ -5,6 +5,8 @@ import { MetamaskWalletProvider } from './providers/wallet/MetamaskWalletProvide
 
 import { MnemonicSigner } from './signers/MnemonicSigner';
 import { LedgerSigner } from './signers/LedgerSigner';
+import { MetamaskSigner } from './signers/MetamaskSigner';
+
 
 
 export {
@@ -13,5 +15,6 @@ export {
   HttpJsonRpcWalletProvider,
   MetamaskWalletProvider,
   MnemonicSigner,
-  LedgerSigner
+  LedgerSigner,
+  MetamaskSigner
 }
