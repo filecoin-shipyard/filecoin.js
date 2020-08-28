@@ -146,10 +146,16 @@ describe("Connection test", function () {
     await provider.release();
   });
 
-  // it("should run the given message", async function() {
-  //   const provider = new JsonRpcProvider(httpConnector);
-  //   const data = await provider.stateCall();
-  // });
+  it("should run the given message", async function() {
+    const provider = new JsonRpcProvider(httpConnector);
+    const messages = await provider.listMessages({
+      To: 't01000'
+    });
+    const message = await provider.getMessage(messages[0])
+    const result = await provider.stateCall(message);
+    const valid = !!result.ExecutionTrace && !!result.Msg && !!result.MsgRct;
+    assert.strictEqual(valid, true, "failed to run message");
+  });
 
   it("should get actor [http]", async function() {
     const con = new JsonRpcProvider(httpConnector);
