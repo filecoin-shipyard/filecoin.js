@@ -416,4 +416,26 @@ describe("Connection test", function () {
     const state = await con.compute(10, [message]);
     assert.strictEqual(!!state.Root['/'], true, "invalid state after compute");
   });
+
+  it("should return the data cap for the given address", async function() {
+    const con = new JsonRpcProvider(httpConnector);
+    const status = await con.verifiedClientStatus('t01000');
+    assert.strictEqual(status === null || typeof status === 'string', true, "invalid data cap");
+  });
+
+  it("should return min and max collateral a storage provider can issue", async function() {
+    const con = new JsonRpcProvider(httpConnector);
+    const collateralBounds = await con.dealProviderCollateralBounds(Math.pow(1024, 2), true);
+    const valid = typeof collateralBounds.Min === 'string' && typeof collateralBounds.Max === 'string'
+    assert.strictEqual(valid, true, "invalid collateral a storage provider can issue");
+  });
+
+  it("the circulating supply of Filecoin at the given tipset", async function() {
+    const con = new JsonRpcProvider(httpConnector);
+    const supply = await con.circulatingSupply();
+    const valid = Object
+      .keys(supply)
+      .reduce((acc, key) => acc === false ? acc : typeof key === 'string', true);
+    assert.strictEqual(valid, true, "invalid circulating supply of Filecoin");
+  });
 });

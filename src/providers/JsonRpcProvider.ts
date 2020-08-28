@@ -32,7 +32,7 @@ import {
   MarketDeal,
   DealID,
   MinerSectors,
-  ComputeStateOutput,
+  ComputeStateOutput, DataCap, PaddedPieceSize, DealCollateralBounds, CirculatingSupply,
 } from './Types';
 import { Connector } from '../connectors/Connector';
 
@@ -551,5 +551,47 @@ export class JsonRpcProvider {
       params: [epoch, messages, tipSetKey],
     });
     return state;
+  }
+
+  /**
+   * returns the data cap for the given address.
+   * @param address
+   * @param tipSetKey
+   *
+   * @remarks
+   * Returns nil if there is no entry in the data cap table for the address.
+   */
+  public async verifiedClientStatus(address: Address, tipSetKey?: TipSetKey): Promise<DataCap | null> {
+    const cap: DataCap = await this.conn.request({
+      method: 'Filecoin.StateVerifiedClientStatus',
+      params: [address, tipSetKey],
+    });
+    return cap;
+  }
+
+  /**
+   * returns the min and max collateral a storage provider can issue
+   * @param size
+   * @param verified
+   * @param tipSetKey
+   */
+  public async dealProviderCollateralBounds(size: PaddedPieceSize, verified: boolean, tipSetKey?: TipSetKey): Promise<DealCollateralBounds> {
+    const collateral: DealCollateralBounds = await this.conn.request({
+      method: 'Filecoin.StateDealProviderCollateralBounds',
+      params: [size, verified, tipSetKey],
+    });
+    return collateral;
+  }
+
+  /**
+   * returns the circulating supply of Filecoin at the given tipset
+   * @param tipSetKey
+   */
+  public async circulatingSupply(tipSetKey?: TipSetKey): Promise<CirculatingSupply> {
+    const supply: CirculatingSupply = await this.conn.request({
+      method: 'Filecoin.StateCirculatingSupply',
+      params: [tipSetKey],
+    });
+    return supply;
   }
 }

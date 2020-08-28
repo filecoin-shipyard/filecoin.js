@@ -673,6 +673,27 @@ export class MarketDeal {
   State!: DealState;
 }
 
+/**
+ * DataCap is an integer number of bytes.
+ *
+ * @remarks
+ * This can be replaced in the future due to policy changes
+ */
+export type DataCap = StoragePower;
+
+export class DealCollateralBounds {
+  Min!: TokenAmount;
+  Max!: TokenAmount;
+}
+
+export class CirculatingSupply {
+  FilVested!: TokenAmount;
+  FilMined!: TokenAmount;
+  FilBurnt!: TokenAmount;
+  FilLocked!: TokenAmount;
+  FilCirculating!: TokenAmount;
+}
+
 export interface Signature {
   Data: string;
   Type: number;
