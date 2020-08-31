@@ -2,12 +2,12 @@ import assert from "assert";
 import { LOTUS_AUTH_TOKEN } from "../../testnet/credentials/credentials";
 import { JsonRpcProvider } from '../../src/providers/JsonRpcProvider';
 import { HttpJsonRpcConnector } from '../../src/connectors/HttpJsonRpcConnector';
-import { WebSocketProvider } from '../../src/providers/WebSocketProvider';
 import { HttpJsonRpcWalletProvider } from '../../src/providers/wallet/HttpJsonRpcWalletProvider';
-import BigNumber from 'bignumber.js';
-import { Cid } from "../../src/providers/Types";
+import { WsJsonRpcConnector } from '../../src/connectors/WsJsonRpcConnector';
+import Timer = NodeJS.Timer;
 
 const httpConnector = new HttpJsonRpcConnector({ url: 'http://localhost:8000/rpc/v0', token: LOTUS_AUTH_TOKEN });
+const wsConnector = new WsJsonRpcConnector({ url: 'ws://localhost:8000/rpc/v0' });
 const walletLotus = new HttpJsonRpcWalletProvider({ url: 'http://localhost:8000/rpc/v0', token: LOTUS_AUTH_TOKEN });
 
 describe("Connection test", function () {
@@ -15,13 +15,13 @@ describe("Connection test", function () {
   it("check version [http]", async function () {
     const con = new JsonRpcProvider(httpConnector);
     const version = await con.version();
-    assert.equal(version.APIVersion, 3328, 'wrong api version');
+    assert.strictEqual(typeof version.APIVersion === 'number', true, 'wrong api version');
   });
 
   it("should get version [ws]", async function () {
-    const provider = new WebSocketProvider('ws://localhost:8000/rpc/v0');
+    const provider = new JsonRpcProvider(wsConnector);
     const version = await provider.version();
-    assert.strictEqual(version.APIVersion, 3328, 'wrong api version');
+    assert.strictEqual(typeof version.APIVersion === 'number', true, 'wrong api version');
     await provider.release();
   });
 
@@ -73,11 +73,27 @@ describe("Connection test", function () {
 
   it("should be notified on chain head change [ws]", function(done) {
     this.timeout(4000);
-    const provider = new WebSocketProvider('ws://localhost:8000/rpc/v0');
+    const provider = new JsonRpcProvider(wsConnector);
     provider.chainNotify(headChange => {
       const type = headChange[0].Type;
       assert.equal(typeof(type), "string", "wrong chain head type");
       provider.release().then(() => { done() });
+    })
+  });
+
+  it("should be notified on chain head change [http]", function(done) {
+    this.timeout(4000);
+    let intervalId: Timer | undefined;
+    const provider = new JsonRpcProvider(httpConnector);
+    provider.chainNotify(headChange => {
+      const type = headChange[0].Type;
+      assert.strictEqual(typeof(type), "string", "wrong chain head type");
+      if (intervalId) {
+        provider.stopChainNotify(intervalId);
+      }
+      done();
+    }).then(intervalIdResponse => {
+      intervalId = intervalIdResponse;
     })
   });
 
@@ -88,7 +104,7 @@ describe("Connection test", function () {
   });
 
   it("should get chain head [ws]", async function() {
-    const provider = new WebSocketProvider('ws://localhost:8000/rpc/v0');
+    const provider = new JsonRpcProvider(wsConnector);
     const head = await provider.getHead();
     assert.strictEqual(JSON.stringify(Object.keys(head)), JSON.stringify(['Cids', 'Blocks', 'Height']), "wrong chain head");
     await provider.release();
@@ -101,7 +117,7 @@ describe("Connection test", function () {
   });
 
   it("should get messages in block [ws]", async function() {
-    const provider = new WebSocketProvider('ws://localhost:8000/rpc/v0');
+    const provider = new JsonRpcProvider(wsConnector);
     const messages = await provider.getBlockMessages(blocksWithMessages[0]);
     assert.strictEqual(JSON.stringify(Object.keys(messages)), JSON.stringify(['BlsMessages', 'SecpkMessages', 'Cids']), "wrong block messages");
     await provider.release();
@@ -114,7 +130,7 @@ describe("Connection test", function () {
   });
 
   it("should get block parent receipts [ws]", async function() {
-    const provider = new WebSocketProvider('ws://localhost:8000/rpc/v0');
+    const provider = new JsonRpcProvider(wsConnector);
     const receipts = await provider.getParentReceipts(blocksWithMessages[0]);
     assert.strictEqual(typeof receipts[0].GasUsed, "number", "invalid receipts");
     await provider.release();
@@ -127,7 +143,7 @@ describe("Connection test", function () {
   });
 
   it("should get block parent messages [ws]", async function() {
-    const provider = new WebSocketProvider('ws://localhost:8000/rpc/v0');
+    const provider = new JsonRpcProvider(wsConnector);
     const messages = await provider.getParentMessages(blocksWithMessages[0]);
     assert.strictEqual(typeof messages[0].Message.Nonce, "number", "invalid message");
     await provider.release();
@@ -140,7 +156,7 @@ describe("Connection test", function () {
   });
 
   it("should check obj exists in the chain [ws]", async function() {
-    const provider = new WebSocketProvider('ws://localhost:8000/rpc/v0');
+    const provider = new JsonRpcProvider(wsConnector);
     const isInChain = await provider.hasObj(blocksWithMessages[0]);
     assert.strictEqual(isInChain, true, "CID doesn't exists in the chain blockstore");
     await provider.release();

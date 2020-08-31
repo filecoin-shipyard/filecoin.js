@@ -32,16 +32,30 @@ import {
   MarketDeal,
   DealID,
   MinerSectors,
-  ComputeStateOutput, DataCap, PaddedPieceSize, DealCollateralBounds, CirculatingSupply,
+  ComputeStateOutput, DataCap, PaddedPieceSize, DealCollateralBounds, CirculatingSupply, HeadChange,
 } from './Types';
 import { Connector } from '../connectors/Connector';
+import { WsJsonRpcConnector } from '../connectors/WsJsonRpcConnector';
+import { HttpJsonRpcConnector } from '../connectors/HttpJsonRpcConnector';
+import Timeout = NodeJS.Timeout;
+
+const CHAIN_NOTIFY_INTERVAL = 2000;
 
 export class JsonRpcProvider {
   public conn: Connector;
+  private intervals: {[key: string]: NodeJS.Timeout};
 
   constructor(connector: Connector) {
+    this.intervals = {};
     this.conn = connector;
+
+    this.conn.connect();
   }
+
+  public async release() {
+    return this.conn.disconnect();
+  }
+
 
   public async version(): Promise<Version> {
     const ret = await this.conn.request({ method: 'Filecoin.Version' });
@@ -72,6 +86,40 @@ export class JsonRpcProvider {
   public async getHead(): Promise<TipSet> {
     const ret = await this.conn.request({ method: 'Filecoin.ChainHead' });
     return ret as TipSet;
+  }
+
+  /**
+   * call back on chain head updates.
+   * @param cb
+   * @return interval id
+   */
+  public async chainNotify(cb: (headChange: HeadChange[]) => void) {
+    if (this.conn instanceof WsJsonRpcConnector) {
+      await this.conn.requestWithChannel(
+        {
+          method: 'Filecoin.ChainNotify',
+        },
+        'xrpc.ch.val',
+        data => {
+          cb(data[1]);
+        });
+    } else if (this.conn instanceof HttpJsonRpcConnector) {
+      let head: TipSet;
+
+      return setInterval(async () => {
+        const currentHead = await this.getHead();
+        if (head !== currentHead) {
+          head = currentHead;
+          cb([{ Type: '', Val: currentHead }])
+        }
+      }, CHAIN_NOTIFY_INTERVAL);
+    }
+  }
+
+  public stopChainNotify(intervalId: Timeout) {
+    if (this.conn instanceof HttpJsonRpcConnector) {
+      clearInterval(intervalId);
+    }
   }
 
   /**
