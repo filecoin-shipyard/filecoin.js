@@ -296,7 +296,7 @@ describe("Connection test", function () {
   //   const con = new JsonRpcProvider(httpConnector);
   //   const preCommitInfo = await con.sectorPreCommitInfo('t01000', 2);
   //   console.log('preCommitInfo', preCommitInfo);
-  //   // assert.strictEqual(typeof balance === 'string', true, "invalid miner's balance that can be withdrawn or spent");
+  //   // assert.strictEqual(typeof balance === 'string', true, "invalid PreCommit info for the specified miner's sector");
   // });
 
   it("should return info for the specified miner's sector", async function() {
