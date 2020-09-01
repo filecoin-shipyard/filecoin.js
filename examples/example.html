@@ -142,7 +142,7 @@
         const to = document.getElementById(toId).value;
         const amount = document.getElementById(filId).value;
 
-        await walletLotus.sendMessage({
+        const msg = await walletLotus.sendMessage({
           From: from,
           To: to,
           GasLimit: 0,
@@ -154,47 +154,49 @@
           Version: 0,
           Nonce: 0
         });
+        console.log(msg);
       }
 
       const sendSigner = async (from, toId, filId) => {
-        const to = document.getElementById(toId).value;
-        const amount = document.getElementById(filId).value;
+        try {
+          const to = document.getElementById(toId).value;
+          const amount = document.getElementById(filId).value;
 
-        const signedMessage = await signer.sign({
-          To: to,
-          From: from,
-          GasLimit: 25000,
-          GasPrice: new BigNumber(2500),
-          Value: new BigNumber(amount),
-          Method: 0,
-          Params: '',
-          Version: 0,
-          Nonce: await walletLotus.getNonce(from) + 1,
-        });
+          const message = await walletLotus.createMessage({
+            To: to,
+            From: from,
+            Value: new BigNumber(amount),
+          });
 
-        const res = await walletLotus.sendSignedMessage(JSON.parse(signedMessage));
+          const signedMessage = await signer.sign(message);
+
+          const res = await walletLotus.sendSignedMessage(JSON.parse(signedMessage));
+        } catch (e) {
+          alert(e.message);
+        }
+
       }
 
       const sendMetamask = async (from, toId, filId) => {
         const to = document.getElementById(toId).value;
         const amount = document.getElementById(filId).value;
 
-        const signedMessage = await metamaskSigner.sign({
-          From: from,
-          To: to,
-          GasLimit: 0,
-          GasFeeCap: new BigNumber(0),
-          GasPremium: new BigNumber(0),
-          Value: new BigNumber(amount),
-          Method: 0,
-          Params: '',
-          Version: 0,
-          Nonce: 0,
-          Nonce: await walletLotus.getNonce(from) + 1,
-        });
+        try {
+          const to = document.getElementById(toId).value;
+          const amount = document.getElementById(filId).value;
 
-        console.log(signedMessage);
-        //const res = await walletLotus.sendSignedMessage(JSON.parse(signedMessage));
+          const message = await walletLotus.createMessage({
+            To: to,
+            From: from,
+            Value: new BigNumber(amount),
+          });
+
+          const signedMessage = await metamaskSigner.sign(message);
+          console.log(signedMessage);
+          const res = await walletLotus.sendSignedMessage(JSON.parse(signedMessage));
+        } catch (e) {
+          alert(e.message);
+        }
       }
 
       const updateAddresses = async () => {

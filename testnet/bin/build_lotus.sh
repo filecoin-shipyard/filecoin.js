@@ -21,9 +21,12 @@ deps=(printf paste jq python nc)
 #lotus_git_sha="edcf899be1deb710811f8f9161fe82ef8cd4be91" #master branch top 19 jun
 #lotus_git_sha="bead3bf412954c02ac82e5367e6e9c498a8a897b" #interop branch top19 jun
 #lotus_git_sha="e5fdae45b78ac6dd6533b26a23ac263284831cbf" #master top 3 jul
-lotus_git_sha="3f017688c7ae180d12d4ee28f732298299ee351f" #master top 13 jul
+#lotus_git_sha="3f017688c7ae180d12d4ee28f732298299ee351f" #master top 13 jul
 #lotus_git_sha="b84030b3bdf19b953cbf330710453d20f3f3abfd" #calibration 20 jul
 #lotus_git_sha="009e14b679edf5f5d66481b0802427063ea47ee2" #calibration 18 aug
+lotus_git_sha="4f45c623a5896637a9239d16b1836fdb635bb8f9" #master top 31 aug
+
+
 
 if grep -q "$lotus_git_sha" "${base_dir}/version/build_commit.txt"; then
   exit 0

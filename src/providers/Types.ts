@@ -86,6 +86,28 @@ export class Message {
   Params!: string;
 };
 
+export class MessagePartial {
+  Version?: number;
+
+  To!: string;
+
+  From!: string;
+
+  Nonce?: number;
+
+  Value?: BigNumber;
+
+  GasLimit?: number;
+
+  GasFeeCap?: BigNumber;
+
+  GasPremium?: BigNumber;
+
+  Method?: number;
+
+  Params?: string;
+};
+
 export class HeadChange {
   Type!: 'current' | string;
   Val!: TipSet;

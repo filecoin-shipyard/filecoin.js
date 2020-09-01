@@ -1,7 +1,8 @@
-import { Message, SignedMessage, Signature, Cid } from '../Types';
+import { Message, SignedMessage, Signature, Cid, MessagePartial } from '../Types';
 import { WalletProvider } from './WalletProvider';
 import { HttpJsonRpcConnector, JsonRpcConnectionOptions } from '../../connectors/HttpJsonRpcConnector';
 import { toBase64 } from '../../utils/data';
+import BigNumber from 'bignumber.js';
 
 export class HttpJsonRpcWalletProvider implements WalletProvider {
 
@@ -42,7 +43,7 @@ export class HttpJsonRpcWalletProvider implements WalletProvider {
   }
 
   public async sendMessage(msg: Message): Promise<SignedMessage> {
-    const ret = await this.conn.request({ method: 'Filecoin.MpoolPushMessage', params: [msg, { MaxFee: "30000" }] });
+    const ret = await this.conn.request({ method: 'Filecoin.MpoolPushMessage', params: [msg, { MaxFee: "30000000000000" }] });
     return ret as SignedMessage;
   }
 
@@ -50,6 +51,31 @@ export class HttpJsonRpcWalletProvider implements WalletProvider {
     const ret = await this.conn.request({ method: 'Filecoin.MpoolPush', params: [msg] });
     return ret as Cid;
   }
+
+  public async estimateMessageGas(message: Message): Promise<Message> {
+    const ret = await this.conn.request({ method: 'Filecoin.GasEstimateMessageGas', params: [message, { MaxFee: "30000000000000" }, []] });
+    return ret as Message;
+  }
+
+  public async createMessage(message: MessagePartial): Promise<Message> {
+    let msg: Message = {
+      To: message.To,
+      From: message.From,
+      Value: message.Value ? message.Value : new BigNumber(0),
+      GasLimit: message.GasLimit ? message.GasLimit : 0,
+      GasFeeCap: message.GasFeeCap ? message.GasFeeCap : new BigNumber(0),
+      GasPremium: message.GasPremium ? message.GasPremium : new BigNumber(0),
+      Method: message.Method ? message.Method : 0,
+      Params: message.Params ? message.Params : '',
+      Version: message.Version ? message.Version : 0,
+      Nonce: message.Nonce ? message.Nonce : await this.getNonce(message.From),
+    }
+
+    if (msg.GasLimit === 0) msg = await this.estimateMessageGas(msg);
+
+    return msg;
+  }
+
 
   public async signMessage(msg: Message): Promise<SignedMessage> {
     const address = await this.getDefaultAccount();
