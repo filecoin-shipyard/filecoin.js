@@ -9,7 +9,7 @@ volumes:
 services:
   filecoin_js_infra:
     container_name: 'filecoin_js_infra'
-    image: smoothop/filecoin.js-testing-framework:calibration-latest
+    image: smoothop/filecoin.js-testing-framework:4f45c623a5896637a9239d16b1836fdb635bb8f9
     ports:
       - 8000:8000
       - 4502:4502
