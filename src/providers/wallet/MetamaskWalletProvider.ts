@@ -1,44 +1,15 @@
 import { Message, SignedMessage, Signature } from "../Types";
-import { WalletProvider } from "./WalletProvider";
-import { FilecoinSnapApi } from "@nodefactory/filsnap-types";
-import { enableFilecoinSnap } from "@nodefactory/filsnap-adapter";
-import { MetamaskFilecoinSnap } from "@nodefactory/filsnap-adapter";
+import { HttpJsonRpcWalletProvider } from "./HttpJsonRpcWalletProvider";
+import { MetamaskSigner } from "../../signers/MetamaskSigner";
 import { JsonRpcConnectionOptions } from "../../connectors/HttpJsonRpcConnector";
 
-export class MetamaskWalletProvider implements WalletProvider {
+export class MetamaskWalletProvider extends HttpJsonRpcWalletProvider {
 
-  constructor(
-    connection: JsonRpcConnectionOptions,
-  ) {
-    this.connection = connection;
-  }
+  private signer: MetamaskSigner;
 
-  private connection: JsonRpcConnectionOptions;
-  private isInstalled: boolean = false;
-  private snap: MetamaskFilecoinSnap | undefined;
-  private filecoinApi: FilecoinSnapApi | undefined;
-
-  public async installFilecoinSnap() {
-    try {
-      console.log("installing snap");
-      // enable filecoin snap with default testnet network
-      const metamaskFilecoinSnap = await enableFilecoinSnap({
-        derivationPath: "m/44'/1'/0/0/1",
-        //@ts-ignore
-        network: 'local',
-        rpc: {
-          token: this.connection.token!,
-          url: this.connection.url!,
-        }
-      });
-      this.isInstalled = true;
-      this.snap = metamaskFilecoinSnap;
-      return true;
-    } catch (e) {
-      console.log(e);
-      this.isInstalled = false;
-      return false;
-    }
+  constructor(url: JsonRpcConnectionOptions) {
+    super(url);
+    this.signer = new MetamaskSigner(url);
   }
 
   public async getAccounts(): Promise<string[]> {
@@ -46,32 +17,19 @@ export class MetamaskWalletProvider implements WalletProvider {
   }
 
   public async getDefaultAccount(): Promise<string> {
-    if (this.isInstalled && this.snap) {
-      this.filecoinApi = await this.snap.getFilecoinSnapApi();
-    } else {
-      await this.installFilecoinSnap();
-      if (this.isInstalled && this.snap) {
-        this.filecoinApi = await this.snap.getFilecoinSnapApi();
-      }
-    }
-    if (!this.filecoinApi) return 'error';
-
-    return this.filecoinApi.getAddress();
+    return await this.signer.getDefaultAccount();
   }
 
   public async signMessage(msg: Message): Promise<SignedMessage> {
-    const test: SignedMessage = {
-      Message: msg,
-      Signature: {
-        Data: '',
-        Type: 1
-      }
-    };
-    return test;
+    return await this.signer.sign(msg);
   }
 
   public async sign(data: string | ArrayBuffer): Promise<Signature> {
     return undefined as any;
+  }
+
+  public getSigner(): MetamaskSigner {
+    return this.signer;
   }
 
   public async verify(data: string | ArrayBuffer, sign: Signature): Promise<boolean> {

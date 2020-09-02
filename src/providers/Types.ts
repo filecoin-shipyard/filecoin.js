@@ -1,5 +1,7 @@
 import { BigNumber } from 'bignumber.js';
 
+export type StringGetter = () => Promise<string>;
+
 export enum SigType {
   SigTypeSecp256k1 = 1,
   SigTypeBLS = 2,
