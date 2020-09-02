@@ -135,7 +135,7 @@
           token: LOTUS_AUTH_TOKEN
         },
         'equip will roof matter pink blind book anxiety banner elbow sun young',
-        getPass(),
+        '',
         `m/44'/1'/0/0/1`
       );
 
@@ -176,7 +176,7 @@
 
           const signedMessage = await mnemonicWalletProvider.signMessage(message);
 
-          const res = await mnemonicWalletProvider.sendSignedMessage(JSON.parse(signedMessage));
+          const res = await mnemonicWalletProvider.sendSignedMessage(signedMessage);
         } catch (e) {
           alert(e.message);
         }
@@ -199,7 +199,7 @@
 
           const signedMessage = await metamaskSigner.sign(message);
           console.log(signedMessage);
-          const res = await lotusWalletProvider.sendSignedMessage(JSON.parse(signedMessage));
+          const res = await lotusWalletProvider.sendSignedMessage(signedMessage);
         } catch (e) {
           alert(e.message);
         }

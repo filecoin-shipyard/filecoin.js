@@ -14,8 +14,7 @@ export class MnemonicSigner implements Signer {
   public async sign(message: Message): Promise<SignedMessage> {
     const key = filecoin_signer.keyDerive(await this.getMenmonic(), this.path, await this.getPassword());
     const signedTx = filecoin_signer.transactionSignLotus(this.messageToSigner(message), key.private_hexstring);
-    console.log(signedTx);
-    return signedTx;
+    return JSON.parse(signedTx);
   }
 
   public async getDefaultAccount(): Promise<string> {
