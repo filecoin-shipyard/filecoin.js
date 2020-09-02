@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-#docker-compose -f ./testnet/docker-compose-tests.yml up -d --force-recreate
+docker-compose -f ./testnet/docker-compose-tests.yml up -d --force-recreate
 echo 'waiting for testnetwork'
 i=0
 pollPeriod=15
