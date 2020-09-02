@@ -2,7 +2,7 @@
 set -Exo pipefail
 
 bootstrap_daemon_port=4500
-bootstrap_miner_port=4501
+bootstrap_miner_port=2345
 client_daemon_port=4502
 
 genesis_miner_addr="t01000"
@@ -138,7 +138,7 @@ set -xe
 source ${base_dir}/scripts/env-bootstrap.bash
 while ! nc -z 127.0.0.1 ${bootstrap_daemon_port} </dev/null; do sleep 5; done
 ${base_dir}/scripts/create_miner.bash
-lotus-miner run --api=${bootstrap_miner_port} --nosync 2>&1 | tee -a ${base_dir}/miner.log
+lotus-miner run --nosync 2>&1 | tee -a ${base_dir}/miner.log
 EOF
 
 cat > "${base_dir}/scripts/dump_networking_and_genesis_daemon.bash" <<EOF

@@ -80,14 +80,36 @@
       </div>
     </div>
 
+    <div class="row row-cols-12" style="padding-bottom: 10px; font-weight: bold;">
+      <div class="col-8">
+        Metamask Address
+      </div>
+    </div>
+
+    <div class="row row-cols-12" style="padding-bottom: 10px;">
+      <div class="col-7">
+        <div id="metamaskAddress"></div>
+      </div>
+
+      <div class="col-3">
+        <input type="text" class="form-control" placeholder="to address" id="toMetamask">
+      </div>
+      <div class="col-1">
+        <input type="text" class="form-control" placeholder="FIL" id="filMetamask">
+      </div>
+      <div class="col">
+        <button type="submit" class="btn btn-primary" id="sendMetamask">Send</button>
+      </div>
+    </div>
+
   </div>
 
   <script type="text/javascript" src="../builds/bundle/filecoin-js.js"></script>
+
   <script type="text/javascript" src="../testnet/credentials/credentials_web.js"></script>
 
   <script type="text/javascript">
     const main = async () => {
-
       let mnemonicAddress = '';
       let rpcAddress = '';
       let rpcAddressSecp = '';
@@ -111,42 +133,70 @@
         'equip will roof matter pink blind book anxiety banner elbow sun young', getPass(), `m/44'/1'/0/0/1`
       );
 
+      const metamaskSigner = new FilecoinJs.MetamaskSigner({
+        url: 'http://localhost:8000/rpc/v0',
+        token: LOTUS_AUTH_TOKEN
+      })
+
       const sendLotus = async (from, toId, filId) => {
         const to = document.getElementById(toId).value;
         const amount = document.getElementById(filId).value;
 
-        await walletLotus.sendMessage({
+        const msg = await walletLotus.sendMessage({
           From: from,
           To: to,
           GasLimit: 0,
           GasFeeCap: new BigNumber(0),
           GasPremium: new BigNumber(0),
-          Value: new BigNumber(1),
+          Value: new BigNumber(amount),
           Method: 0,
           Params: '',
           Version: 0,
           Nonce: 0
         });
+        console.log(msg);
       }
 
       const sendSigner = async (from, toId, filId) => {
+        try {
+          const to = document.getElementById(toId).value;
+          const amount = document.getElementById(filId).value;
+
+          const message = await walletLotus.createMessage({
+            To: to,
+            From: from,
+            Value: new BigNumber(amount),
+          });
+
+          const signedMessage = await signer.sign(message);
+
+          const res = await walletLotus.sendSignedMessage(JSON.parse(signedMessage));
+        } catch (e) {
+          alert(e.message);
+        }
+
+      }
+
+      const sendMetamask = async (from, toId, filId) => {
         const to = document.getElementById(toId).value;
         const amount = document.getElementById(filId).value;
 
-        const signedMessage = await signer.sign({
-          To: to,
-          From: from,
-          GasLimit: 25000,
-          GasPrice: new BigNumber(2500),
-          Value: new BigNumber(amount),
-          Method: 0,
-          Params: '',
-          Version: 0,
-          Nonce: await walletLotus.getNonce(from),
-        });
+        try {
+          const to = document.getElementById(toId).value;
+          const amount = document.getElementById(filId).value;
 
-        const res = await walletLotus.sendSignedMessage(JSON.parse(signedMessage));
-        console.log(res);
+          const message = await walletLotus.createMessage({
+            To: to,
+            From: from,
+            Value: new BigNumber(amount),
+          });
+
+          const signedMessage = await metamaskSigner.sign(message);
+          console.log(signedMessage);
+          const res = await walletLotus.sendSignedMessage(JSON.parse(signedMessage));
+        } catch (e) {
+          alert(e.message);
+        }
       }
 
       const updateAddresses = async () => {
@@ -154,23 +204,28 @@
         mnemonicAddress = await signer.getDefaultAccount();
         rpcAddress = await walletLotus.getDefaultAccount();
         rpcAddressSecp = availableAccounts[0];
+        metamaskAddress = await metamaskSigner.getDefaultAccount();
 
         const mnemonicBalance = await walletLotus.getBalance(mnemonicAddress);
         const rpcBalance = await walletLotus.getBalance(rpcAddress);
         const rpcSecpBalance = await walletLotus.getBalance(rpcAddressSecp);
+        const metamaskBalance = await walletLotus.getBalance(metamaskAddress);
 
         document.getElementById('mnemonicAddress').innerHTML = `${mnemonicAddress} <br/> (${mnemonicBalance})`;
         document.getElementById('rpcAddress').innerHTML = `${rpcAddress} <br/> (${rpcBalance})`;
         document.getElementById('rpcAddressSecp').innerHTML = `${rpcAddressSecp} <br/> (${rpcSecpBalance})`;
+        document.getElementById('metamaskAddress').innerHTML = `${metamaskAddress} <br/> (${metamaskBalance})`;
       }
 
       document.getElementById('sendDefault').onclick = () => sendLotus(rpcAddress, "toDefault", "filDefault");
       document.getElementById('sendSecp').onclick = () => sendLotus(rpcAddressSecp, "toSecp", "filSecp");
       document.getElementById('sendMnemonic').onclick = () => sendSigner(mnemonicAddress, "toMnemonic", "filMnemonic");
+      document.getElementById('sendMetamask').onclick = () => sendMetamask(metamaskAddress, "toMetamask", "filMetamask");
 
-      console.log(window);
+
       await updateAddresses();
     };
+
     main().then(console.log).catch(console.error);
   </script>
 </body>

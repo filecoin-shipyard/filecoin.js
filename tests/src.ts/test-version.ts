@@ -11,16 +11,17 @@ const httpConnector = new HttpJsonRpcConnector({ url: 'http://localhost:8000/rpc
 const walletLotus = new HttpJsonRpcWalletProvider({ url: 'http://localhost:8000/rpc/v0', token: LOTUS_AUTH_TOKEN });
 
 describe("Connection test", function () {
+
   it("check version [http]", async function () {
     const con = new JsonRpcProvider(httpConnector);
     const version = await con.version();
-    assert.equal(version.APIVersion, 2816, 'wrong api version');
+    assert.equal(version.APIVersion, 3328, 'wrong api version');
   });
 
   it("should get version [ws]", async function () {
     const provider = new WebSocketProvider('ws://localhost:8000/rpc/v0');
     const version = await provider.version();
-    assert.strictEqual(version.APIVersion, 2816, 'wrong api version');
+    assert.strictEqual(version.APIVersion, 3328, 'wrong api version');
     await provider.release();
   });
 
@@ -29,45 +30,46 @@ describe("Connection test", function () {
   it("get blocks with messages [http]", async function() {
     const con = new JsonRpcProvider(httpConnector);
     const res: any = await con.getTipSetByHeight(30);
+
     let parentCid = res.Blocks[0].Parents[0];
     let crtBlock = res.Cids[0];
     while (parentCid) {
-      const block: any = await con.getBlock(parentCid);
-      const messages = await con.getBlockMessages(parentCid);
-      if (messages.BlsMessages.length > 0) blocksWithMessages.push (crtBlock);
-      crtBlock = parentCid;
-      parentCid = block.Parents? block.Parents[0] : null;
+      let block: any = undefined;
+      try {
+        block = await con.getBlock(parentCid);
+      } catch(e) {};
+
+      if (block){
+        const messages = await con.getBlockMessages(parentCid);
+        if (messages.BlsMessages.length > 0) blocksWithMessages.push (crtBlock);
+        crtBlock = parentCid;
+        parentCid = block.Parents? block.Parents[0] : null;
+      } else {
+        parentCid = undefined;
+      }
     }
+
   });
 
-  /*
-  it("should send signed message [http]", async function(done) {
+  it("should send signed message [http]", async function() {
+    const con = new JsonRpcProvider(httpConnector);
     const accounts = await walletLotus.getAccounts();
 
     const secpAddress = accounts[0];
     const defaultAccount = await walletLotus.getDefaultAccount();
 
-    const message = {
+    const message = await walletLotus.createMessage({
       From: defaultAccount,
       To: secpAddress,
-      GasLimit: 584085,
-      GasFeeCap: new BigNumber(5840850000000),
-      GasPremium: new BigNumber(1000),
       Value: new BigNumber(1),
-      Method: 0,
-      Params: '',
-      Version: 0,
-      Nonce: await walletLotus.getNonce(defaultAccount)
-    };
+    });
 
-    //const signedMessage1 = await walletLotus.sendMessage(message);
-    //console.log(signedMessage1);
-    const signedMessage2 = await walletLotus.signMessage(message);
-    console.log(signedMessage2);
-    const msgCid = await walletLotus.sendSignedMessage(signedMessage2);
-    console.log (msgCid);
+    const signedMessage = await walletLotus.signMessage(message);
+    const msgCid = await walletLotus.sendSignedMessage(signedMessage);
+
+    const isMined = await con.hasObj(msgCid);
+    assert.strictEqual(isMined, true, 'message not mined');
   });
-  */
 
   it("should be notified on chain head change [ws]", function(done) {
     this.timeout(4000);
@@ -143,5 +145,4 @@ describe("Connection test", function () {
     assert.strictEqual(isInChain, true, "CID doesn't exists in the chain blockstore");
     await provider.release();
   });
-
 });

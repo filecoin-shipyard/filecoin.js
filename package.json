@@ -34,7 +34,9 @@
   "license": "ISC",
   "dependencies": {
     "@ledgerhq/hw-transport-webusb": "^5.22.0",
-    "@zondax/filecoin-signing-tools": "^0.6.3",
+    "@zondax/filecoin-signing-tools": "^0.7.1",
+    "@nodefactory/filsnap-adapter": "^0.1.0",
+    "@nodefactory/filsnap-types": "^0.1.0",
     "bignumber.js": "^9.0.0",
     "btoa-lite": "^1.0.0",
     "events": "^3.2.0",
