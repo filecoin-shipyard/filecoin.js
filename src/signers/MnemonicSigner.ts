@@ -1,8 +1,7 @@
 import * as filecoin_signer from '@zondax/filecoin-signing-tools/js';
 import { Message, SignedMessage } from '../providers/Types';
 import { Signer } from './Signer';
-
-export type StringGetter = () => Promise<string>;
+import { StringGetter } from '../providers/Types'
 
 export class MnemonicSigner implements Signer {
 

@@ -6,8 +6,6 @@ import { MetamaskFilecoinSnap } from '@nodefactory/filsnap-adapter/build/snap';
 import { FilecoinSnapApi } from '@nodefactory/filsnap-types';
 import { enableFilecoinSnap } from '@nodefactory/filsnap-adapter';
 
-export type StringGetter = () => Promise<string>;
-
 export class MetamaskSigner implements Signer {
 
   constructor(

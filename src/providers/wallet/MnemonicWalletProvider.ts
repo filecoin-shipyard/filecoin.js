@@ -1,13 +1,21 @@
 import { Message, SignedMessage, Signature } from "../Types";
-import { WalletProvider } from "./WalletProvider";
+import { HttpJsonRpcWalletProvider } from "./HttpJsonRpcWalletProvider";
 import { MnemonicSigner } from "../../signers/MnemonicSigner";
-import { toBase64 } from "../../utils/data";
+import { JsonRpcConnectionOptions } from "../../connectors/HttpJsonRpcConnector";
+import { StringGetter } from "../Types";
 
-export class MnemonicWalletProvider implements WalletProvider {
+export class MnemonicWalletProvider extends HttpJsonRpcWalletProvider {
 
-  constructor(
-    protected readonly signer: MnemonicSigner,
-  ) { }
+  private signer:MnemonicSigner;
+
+  constructor(url: JsonRpcConnectionOptions,
+    mnemonic: string | StringGetter,
+    password: string | StringGetter,
+    path: string = `m/44'/461'/0/0/1`,
+  ) {
+    super(url);
+    this.signer = new MnemonicSigner(mnemonic, password, path);
+  }
 
   public async getAccounts(): Promise<string[]> {
     return [await this.getDefaultAccount()];
@@ -18,11 +26,15 @@ export class MnemonicWalletProvider implements WalletProvider {
   }
 
   public async signMessage(msg: Message): Promise<SignedMessage> {
-    return this.signer.sign(msg);
+    return await this.signer.sign(msg);
   }
 
   public async sign(data: string | ArrayBuffer): Promise<Signature> {
     return undefined as any;
+  }
+
+  public getSigner(): MnemonicSigner {
+    return this.signer;
   }
 
   public async verify(data: string | ArrayBuffer, sign: Signature): Promise<boolean> {

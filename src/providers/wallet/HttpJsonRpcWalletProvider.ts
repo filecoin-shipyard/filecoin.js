@@ -8,7 +8,7 @@ export class HttpJsonRpcWalletProvider implements WalletProvider {
 
   private conn: HttpJsonRpcConnector;
 
-  constructor(url: string | JsonRpcConnectionOptions) {
+  constructor(url: JsonRpcConnectionOptions) {
     this.conn = new HttpJsonRpcConnector(url);
   }
 
