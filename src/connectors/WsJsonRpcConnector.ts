@@ -138,6 +138,12 @@ export class WsJsonRpcConnector extends EventEmitter implements Connector {
     }
   }
 
+  public removeChannelListener(channelKey: string) {
+    if (this.connected) {
+      this.client?.removeListener(channelKey);
+    }
+  }
+
   public on(event: 'connected' | 'disconnected' | 'error', listener: (...args: any[]) => void): this {
     return super.on(event, listener);
   }
