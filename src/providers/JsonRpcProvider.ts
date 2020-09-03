@@ -116,9 +116,11 @@ export class JsonRpcProvider {
     }
   }
 
-  public stopChainNotify(intervalId: Timeout) {
-    if (this.conn instanceof HttpJsonRpcConnector) {
+  public stopChainNotify(intervalId?: Timeout) {
+    if (this.conn instanceof HttpJsonRpcConnector && intervalId) {
       clearInterval(intervalId);
+    } else if (this.conn instanceof WsJsonRpcConnector) {
+      this.conn.removeChannelListener('xrpc.ch.val');
     }
   }
 
