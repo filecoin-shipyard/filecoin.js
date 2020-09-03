@@ -5,6 +5,7 @@ import { HttpJsonRpcConnector } from '../../src/connectors/HttpJsonRpcConnector'
 import { HttpJsonRpcWalletProvider } from '../../src/providers/wallet/HttpJsonRpcWalletProvider';
 import { WsJsonRpcConnector } from '../../src/connectors/WsJsonRpcConnector';
 import Timer = NodeJS.Timer;
+import BigNumber from 'bignumber.js';
 
 const httpConnector = new HttpJsonRpcConnector({ url: 'http://localhost:8000/rpc/v0', token: LOTUS_AUTH_TOKEN });
 const wsConnector = new WsJsonRpcConnector({ url: 'ws://localhost:8000/rpc/v0' });
@@ -251,7 +252,7 @@ describe("Connection test", function () {
     assert.strictEqual(minerFaults === null || Array.isArray(minerFaults), true, 'invalid miner faulty sectors');
   });
 
-  // TODO: Fix test
+  // TODO: test on hold. The method has a bug
   // it("should get all faulty sectors", async function () {
   //   const con = new JsonRpcProvider(httpConnector);
   //   const minerFaults = await con.allMinerFaults(182);
@@ -307,12 +308,10 @@ describe("Connection test", function () {
     assert.strictEqual(typeof balance === 'string', true, "invalid miner's balance that can be withdrawn or spent");
   });
 
-  // TODO: It throws an error. Check later
+  // TODO: It throws an error: precommit not found
   // it("should get the PreCommit info for the specified miner's sector", async function () {
   //   const con = new JsonRpcProvider(httpConnector);
-  //   const preCommitInfo = await con.sectorPreCommitInfo('t01000', 2);
-  //   console.log('preCommitInfo', preCommitInfo);
-  //   // assert.strictEqual(typeof balance === 'string', true, "invalid PreCommit info for the specified miner's sector");
+  //   const preCommitInfo = await con.sectorPreCommitInfo('t01000', 0);
   // });
 
   it("should return info for the specified miner's sector", async function() {

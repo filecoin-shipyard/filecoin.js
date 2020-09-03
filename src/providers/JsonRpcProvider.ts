@@ -320,6 +320,7 @@ export class JsonRpcProvider {
     return minerFaults;
   }
 
+  // TODO: This method is not working on Lotus. See issue here: https://github.com/filecoin-project/lotus/issues/3063
   /**
    * returns all non-expired Faults that occur within lookback epochs of the given tipset
    * @param epoch
