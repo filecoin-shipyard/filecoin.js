@@ -6,9 +6,38 @@ import { HttpJsonRpcWalletProvider } from '../../src/providers/wallet/HttpJsonRp
 import { WsJsonRpcConnector } from '../../src/connectors/WsJsonRpcConnector';
 import Timer = NodeJS.Timer;
 import BigNumber from 'bignumber.js';
+import { ObjStat } from '../../src/providers/Types';
 
 const httpConnector = new HttpJsonRpcConnector({ url: 'http://localhost:8000/rpc/v0', token: LOTUS_AUTH_TOKEN });
 const wsConnector = new WsJsonRpcConnector({ url: 'ws://localhost:8000/rpc/v0', token: LOTUS_AUTH_TOKEN });
+
+describe("Chain methods", function() {
+  it("statistics about the graph", async () => {
+    const provider = new JsonRpcProvider(httpConnector);
+    const tipset1 = await provider.getTipSetByHeight(1);
+    const tipset2 = await provider.getTipSetByHeight(10);
+    const stat = await provider.statObj(tipset2.Cids[0]);
+    const diffStat = await provider.statObj(tipset2.Cids[0], tipset1.Cids[0]);
+    const isStatValid = (stat: ObjStat) => typeof stat.Size === 'number' && typeof stat.Links === 'number';
+    assert.strictEqual(isStatValid(stat) && isStatValid(diffStat), true, 'invalid obj statistics');
+  });
+
+  it("get genesis", async () => {
+    const provider = new JsonRpcProvider(httpConnector);
+    const genesisTipSet = await provider.getGenesis();
+    const valid =
+      Array.isArray(genesisTipSet.Cids) &&
+      Array.isArray(genesisTipSet.Blocks) &&
+      typeof genesisTipSet.Height === 'number';
+    assert.strictEqual(valid, true, 'invalid genesis tipSet');
+  });
+
+  it("get tipSet weight", async () => {
+    const provider = new JsonRpcProvider(httpConnector);
+    const tipSetWeight = await provider.getTipSetWeight();
+    assert.strictEqual(typeof tipSetWeight === 'string', true, 'invalid tipSet weight');
+  });
+});
 
 describe("Connection test", function () {
 

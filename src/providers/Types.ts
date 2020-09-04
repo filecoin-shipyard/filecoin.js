@@ -694,6 +694,11 @@ export class CirculatingSupply {
   FilCirculating!: TokenAmount;
 }
 
+export class ObjStat {
+  Size!: number;
+  Links!: number;
+}
+
 export interface Signature {
   Data: string;
   Type: number;
