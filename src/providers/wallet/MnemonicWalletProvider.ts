@@ -1,19 +1,19 @@
 import { Message, SignedMessage, Signature } from "../Types";
 import { HttpJsonRpcWalletProvider } from "./HttpJsonRpcWalletProvider";
 import { MnemonicSigner } from "../../signers/MnemonicSigner";
-import { JsonRpcConnectionOptions } from "../../connectors/HttpJsonRpcConnector";
 import { StringGetter } from "../Types";
+import { Connector } from "../../connectors/Connector";
 
 export class MnemonicWalletProvider extends HttpJsonRpcWalletProvider {
 
   private signer:MnemonicSigner;
 
-  constructor(url: JsonRpcConnectionOptions,
+  constructor(connector: Connector,
     mnemonic: string | StringGetter,
     password: string | StringGetter,
     path: string = `m/44'/461'/0/0/1`,
   ) {
-    super(url);
+    super(connector);
     this.signer = new MnemonicSigner(mnemonic, password, path);
   }
 

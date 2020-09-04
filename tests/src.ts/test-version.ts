@@ -9,7 +9,6 @@ import BigNumber from 'bignumber.js';
 
 const httpConnector = new HttpJsonRpcConnector({ url: 'http://localhost:8000/rpc/v0', token: LOTUS_AUTH_TOKEN });
 const wsConnector = new WsJsonRpcConnector({ url: 'ws://localhost:8000/rpc/v0' });
-const walletLotus = new HttpJsonRpcWalletProvider({ url: 'http://localhost:8000/rpc/v0', token: LOTUS_AUTH_TOKEN });
 
 describe("Connection test", function () {
 
@@ -50,26 +49,6 @@ describe("Connection test", function () {
       }
     }
 
-  });
-
-  it("should send signed message [http]", async function() {
-    const con = new JsonRpcProvider(httpConnector);
-    const accounts = await walletLotus.getAccounts();
-
-    const secpAddress = accounts[0];
-    const defaultAccount = await walletLotus.getDefaultAccount();
-
-    const message = await walletLotus.createMessage({
-      From: defaultAccount,
-      To: secpAddress,
-      Value: new BigNumber(1),
-    });
-
-    const signedMessage = await walletLotus.signMessage(message);
-    const msgCid = await walletLotus.sendSignedMessage(signedMessage);
-
-    const isMined = await con.hasObj(msgCid);
-    assert.strictEqual(isMined, true, 'message not mined');
   });
 
   it("should be notified on chain head change [ws]", function(done) {

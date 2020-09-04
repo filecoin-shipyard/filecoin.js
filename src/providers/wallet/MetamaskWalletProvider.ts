@@ -1,15 +1,18 @@
 import { Message, SignedMessage, Signature } from "../Types";
 import { HttpJsonRpcWalletProvider } from "./HttpJsonRpcWalletProvider";
 import { MetamaskSigner } from "../../signers/MetamaskSigner";
-import { JsonRpcConnectionOptions } from "../../connectors/HttpJsonRpcConnector";
+import { Connector } from "../../connectors/Connector";
 
 export class MetamaskWalletProvider extends HttpJsonRpcWalletProvider {
 
   private signer: MetamaskSigner;
 
-  constructor(url: JsonRpcConnectionOptions) {
-    super(url);
-    this.signer = new MetamaskSigner(url);
+  constructor(connector: Connector) {
+    super(connector);
+    this.signer = new MetamaskSigner({
+      url: connector.url,
+      token: connector.url
+    });
   }
 
   public async getAccounts(): Promise<string[]> {

@@ -3,13 +3,19 @@ import { WalletProvider } from './WalletProvider';
 import { HttpJsonRpcConnector, JsonRpcConnectionOptions } from '../../connectors/HttpJsonRpcConnector';
 import { toBase64 } from '../../utils/data';
 import BigNumber from 'bignumber.js';
+import { Connector } from '../../connectors/Connector';
 
 export class HttpJsonRpcWalletProvider implements WalletProvider {
 
-  private conn: HttpJsonRpcConnector;
+  private conn: Connector;
 
-  constructor(url: JsonRpcConnectionOptions) {
-    this.conn = new HttpJsonRpcConnector(url);
+  constructor(connector: Connector) {
+    this.conn = connector;
+    this.conn.connect();
+  }
+
+  public async release() {
+    return this.conn.disconnect();
   }
 
   public async newAccount(type = 1): Promise<string[]> {

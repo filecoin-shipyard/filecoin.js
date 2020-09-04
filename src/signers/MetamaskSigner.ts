@@ -30,14 +30,15 @@ export class MetamaskSigner implements Signer {
         this.isInstalled = true;
         this.snap = metamaskFilecoinSnap;
       } catch (e) {
-        console.log(e);
         this.isInstalled = false;
+        return e;
       }
     }
 
     if (this.isInstalled && this.snap) {
       this.filecoinApi = await this.snap.getFilecoinSnapApi();
     }
+    return null;
   }
 
   private isInstalled: boolean = false;
@@ -45,7 +46,10 @@ export class MetamaskSigner implements Signer {
   private filecoinApi: FilecoinSnapApi | undefined;
 
   public async sign(message: Message): Promise<SignedMessage> {
-    await this.installFilecoinSnap();
+    const err = await this.installFilecoinSnap();
+    if (err) {
+      throw err;
+    }
     if (this.filecoinApi) {
       return this.messageFromSigner(await this.filecoinApi.signMessage(this.messageToSigner(message)));
     }
@@ -59,7 +63,10 @@ export class MetamaskSigner implements Signer {
   }
 
   public async getDefaultAccount(): Promise<string> {
-    await this.installFilecoinSnap();
+    const err = await this.installFilecoinSnap();
+    if (err) {
+      throw err;
+    }
     if (this.filecoinApi) {
       return this.filecoinApi.getAddress();
     }
