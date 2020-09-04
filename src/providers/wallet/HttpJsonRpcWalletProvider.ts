@@ -18,21 +18,36 @@ export class HttpJsonRpcWalletProvider implements WalletProvider {
     return this.conn.disconnect();
   }
 
+  /**
+   * create new wallet
+   * @param type
+   */
   public async newAccount(type = 1): Promise<string[]> {
     const ret = await this.conn.request({ method: 'Filecoin.WalletNew', params: [type] });
     return ret as string[];
   }
 
+  /**
+   * get nonce for address
+   * @param address
+   */
   public async getNonce(address: string): Promise<number> {
     const ret = await this.conn.request({ method: 'Filecoin.MpoolGetNonce', params: [address] });
     return ret as number;
   }
 
+  /**
+   * get wallet list
+   */
   public async getAccounts(): Promise<string[]> {
     const ret = await this.conn.request({ method: 'Filecoin.WalletList' });
     return ret as string[];
   }
 
+  /**
+   * get balance for address
+   * @param address
+   */
   public async getBalance(address: string): Promise<any> {
     const ret = await this.conn.request({ method: 'Filecoin.WalletBalance', params: [address] });
     return ret as string;
@@ -43,26 +58,45 @@ export class HttpJsonRpcWalletProvider implements WalletProvider {
     return ret as undefined;
   }
 
+  /**
+   * get default address
+   */
   public async getDefaultAccount(): Promise<string> {
     const ret = await this.conn.request({ method: 'Filecoin.WalletDefaultAddress' });
     return ret as string;
   }
 
+  /**
+   * send message, signed with default lotus wallet
+   * @param msg
+   */
   public async sendMessage(msg: Message): Promise<SignedMessage> {
     const ret = await this.conn.request({ method: 'Filecoin.MpoolPushMessage', params: [msg, { MaxFee: "30000000000000" }] });
     return ret as SignedMessage;
   }
 
+  /**
+   * send signed message
+   * @param msg
+   */
   public async sendSignedMessage(msg: SignedMessage): Promise<Cid> {
     const ret = await this.conn.request({ method: 'Filecoin.MpoolPush', params: [msg] });
     return ret as Cid;
   }
 
+  /**
+   * estimate gas to succesufully send message, and have it included in the next 10 blocks
+   * @param msg
+   */
   public async estimateMessageGas(message: Message): Promise<Message> {
     const ret = await this.conn.request({ method: 'Filecoin.GasEstimateMessageGas', params: [message, { MaxFee: "30000000000000" }, []] });
     return ret as Message;
   }
 
+  /**
+   * prepare a message for signing, add defaults, and populate nonce and gas related parameters if not provided
+   * @param msg
+   */
   public async createMessage(message: MessagePartial): Promise<Message> {
     let msg: Message = {
       To: message.To,
@@ -82,13 +116,20 @@ export class HttpJsonRpcWalletProvider implements WalletProvider {
     return msg;
   }
 
-
+  /**
+   * sign message
+   * @param msg
+   */
   public async signMessage(msg: Message): Promise<SignedMessage> {
     const address = await this.getDefaultAccount();
     const ret = await this.conn.request({ method: 'Filecoin.WalletSignMessage', params: [address, msg] });
     return ret as SignedMessage;
   }
 
+  /**
+   * sign raw message
+   * @param data
+   */
   public async sign(data: string | ArrayBuffer): Promise<Signature> {
     const address = await this.getDefaultAccount();
     data = toBase64(data);
@@ -96,6 +137,11 @@ export class HttpJsonRpcWalletProvider implements WalletProvider {
     return ret as Signature;
   }
 
+  /**
+   * verify message signature
+   * @param data
+   * @param sign
+   */
   public async verify(data: string | ArrayBuffer, sign: Signature): Promise<boolean> {
     const address = await this.getDefaultAccount();
     data = toBase64(data);
