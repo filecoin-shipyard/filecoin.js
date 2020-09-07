@@ -9,6 +9,8 @@ hide_title: true
 
 ## JsonRpcProvider.getHead() method
 
+returns the current head of the chain
+
 <b>Signature:</b>
 
 ```typescript

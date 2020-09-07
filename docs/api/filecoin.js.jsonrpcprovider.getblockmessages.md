@@ -9,10 +9,12 @@ hide_title: true
 
 ## JsonRpcProvider.getBlockMessages() method
 
+returns messages stored in the specified block.
+
 <b>Signature:</b>
 
 ```typescript
-getBlockMessages(blockCid: Cid): Promise<any>;
+getBlockMessages(blockCid: Cid): Promise<BlockMessages>;
 ```
 
 ## Parameters
@@ -23,4 +25,4 @@ getBlockMessages(blockCid: Cid): Promise<any>;
 
 <b>Returns:</b>
 
-Promise&lt;any&gt;
+Promise&lt;BlockMessages&gt;

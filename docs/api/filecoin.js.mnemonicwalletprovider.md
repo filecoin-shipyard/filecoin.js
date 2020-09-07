@@ -12,21 +12,15 @@ hide_title: true
 <b>Signature:</b>
 
 ```typescript
-export declare class MnemonicWalletProvider implements WalletProvider 
+export declare class MnemonicWalletProvider extends HttpJsonRpcWalletProvider 
 ```
-<b>Implements:</b> WalletProvider
+<b>Extends:</b> [HttpJsonRpcWalletProvider](./filecoin.js.httpjsonrpcwalletprovider.md)
 
 ## Constructors
 
 |  Constructor | Modifiers | Description |
 |  --- | --- | --- |
-|  [(constructor)(signer)](./filecoin.js.mnemonicwalletprovider._constructor_.md) |  | Constructs a new instance of the <code>MnemonicWalletProvider</code> class |
-
-## Properties
-
-|  Property | Modifiers | Type | Description |
-|  --- | --- | --- | --- |
-|  [signer](./filecoin.js.mnemonicwalletprovider.signer.md) |  | [MnemonicSigner](./filecoin.js.mnemonicsigner.md) |  |
+|  [(constructor)(url, mnemonic, password, path)](./filecoin.js.mnemonicwalletprovider._constructor_.md) |  | Constructs a new instance of the <code>MnemonicWalletProvider</code> class |
 
 ## Methods
 
@@ -34,6 +28,7 @@ export declare class MnemonicWalletProvider implements WalletProvider
 |  --- | --- | --- |
 |  [getAccounts()](./filecoin.js.mnemonicwalletprovider.getaccounts.md) |  |  |
 |  [getDefaultAccount()](./filecoin.js.mnemonicwalletprovider.getdefaultaccount.md) |  |  |
+|  [getSigner()](./filecoin.js.mnemonicwalletprovider.getsigner.md) |  |  |
 |  [sign(data)](./filecoin.js.mnemonicwalletprovider.sign.md) |  |  |
 |  [signMessage(msg)](./filecoin.js.mnemonicwalletprovider.signmessage.md) |  |  |
 |  [verify(data, sign)](./filecoin.js.mnemonicwalletprovider.verify.md) |  |  |

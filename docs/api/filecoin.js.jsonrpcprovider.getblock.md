@@ -9,6 +9,8 @@ hide_title: true
 
 ## JsonRpcProvider.getBlock() method
 
+returns the block specified by the given CID
+
 <b>Signature:</b>
 
 ```typescript

@@ -14,11 +14,14 @@ Constructs a new instance of the `MnemonicWalletProvider` class
 <b>Signature:</b>
 
 ```typescript
-constructor(signer: MnemonicSigner);
+constructor(url: JsonRpcConnectionOptions, mnemonic: string | StringGetter, password: string | StringGetter, path?: string);
 ```
 
 ## Parameters
 
 |  Parameter | Type | Description |
 |  --- | --- | --- |
-|  signer | [MnemonicSigner](./filecoin.js.mnemonicsigner.md) |  |
+|  url | JsonRpcConnectionOptions |  |
+|  mnemonic | string &#124; StringGetter |  |
+|  password | string &#124; StringGetter |  |
+|  path | string |  |

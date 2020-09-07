@@ -26,6 +26,8 @@ export declare class HttpJsonRpcWalletProvider implements WalletProvider
 
 |  Method | Modifiers | Description |
 |  --- | --- | --- |
+|  [createMessage(message)](./filecoin.js.httpjsonrpcwalletprovider.createmessage.md) |  |  |
+|  [estimateMessageGas(message)](./filecoin.js.httpjsonrpcwalletprovider.estimatemessagegas.md) |  |  |
 |  [getAccounts()](./filecoin.js.httpjsonrpcwalletprovider.getaccounts.md) |  |  |
 |  [getBalance(address)](./filecoin.js.httpjsonrpcwalletprovider.getbalance.md) |  |  |
 |  [getDefaultAccount()](./filecoin.js.httpjsonrpcwalletprovider.getdefaultaccount.md) |  |  |
