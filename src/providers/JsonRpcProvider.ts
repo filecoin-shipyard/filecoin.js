@@ -128,9 +128,9 @@ export class JsonRpcProvider {
    * returns the block specified by the given CID
    * @param blockCid
    */
-  public async getBlock(blockCid: Cid): Promise<TipSet> {
+  public async getBlock(blockCid: Cid): Promise<BlockHeader> {
     const ret = await this.conn.request({ method: 'Filecoin.ChainGetBlock', params: [blockCid] });
-    return ret as TipSet;
+    return ret as BlockHeader;
   }
 
   /**
