@@ -32,7 +32,14 @@ import {
   MarketDeal,
   DealID,
   MinerSectors,
-  ComputeStateOutput, DataCap, PaddedPieceSize, DealCollateralBounds, CirculatingSupply, HeadChange, ObjStat,
+  ComputeStateOutput,
+  DataCap,
+  PaddedPieceSize,
+  DealCollateralBounds,
+  CirculatingSupply,
+  HeadChange,
+  ObjStat,
+  BlockHeader,
 } from './Types';
 import { Connector } from '../connectors/Connector';
 import { WsJsonRpcConnector } from '../connectors/WsJsonRpcConnector';
@@ -214,6 +221,29 @@ export class JsonRpcProvider {
   public async getTipSetByHeight(epochNumber: number): Promise<TipSet> {
     const ret: TipSet = await this.conn.request({ method: 'Filecoin.ChainGetTipSetByHeight', params: [epochNumber, []] });
     return ret;
+  }
+
+  /**
+   * Returns a set of revert/apply operations needed to get from
+   * @param from
+   * @param to
+   */
+  public async getPath(from: TipSetKey, to: TipSetKey): Promise<HeadChange[]> {
+    const path: HeadChange[] = await this.conn.request({ method: 'Filecoin.ChainGetPath', params: [from, to] });
+    return path;
+  }
+
+  // TODO: Fix error: 500 Internal Server Error
+  /**
+   * Returns a stream of bytes with CAR dump of chain data.
+   * @param nroots
+   * @param tipSetKey
+   *
+   * @remarks The exported chain data includes the header chain from the given tipset back to genesis, the entire genesis state, and the most recent 'nroots' state trees.
+   */
+  public async export(nroots: ChainEpoch, tipSetKey: TipSetKey): Promise<any> {
+    const path: HeadChange[] = await this.conn.request({ method: 'Filecoin.ChainExport', params: [nroots, tipSetKey] });
+    return path;
   }
 
   /**
