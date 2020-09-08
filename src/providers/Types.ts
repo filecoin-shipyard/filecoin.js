@@ -709,6 +709,18 @@ export interface SignedMessage {
   Signature: Signature;
 };
 
+export type StoreID = number;
+
+export class FileRef {
+  Path!: string;
+  IsCAR!: boolean;
+}
+
+export class ImportRes {
+  Root!: Cid;
+  ImportID!: StoreID;
+}
+
 /**
  * Interface to be implemented by all providers.
  *

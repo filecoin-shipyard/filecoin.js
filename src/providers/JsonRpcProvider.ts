@@ -40,6 +40,9 @@ import {
   HeadChange,
   ObjStat,
   BlockHeader,
+  FileRef,
+  ImportRes,
+  StoreID,
 } from './Types';
 import { Connector } from '../connectors/Connector';
 import { WsJsonRpcConnector } from '../connectors/WsJsonRpcConnector';
@@ -712,5 +715,34 @@ export class JsonRpcProvider {
       params: [tipSetKey],
     });
     return supply;
+  }
+
+  /**
+   * Client
+   * The Client methods all have to do with interacting with the storage and retrieval markets as a client.
+   */
+
+  /**
+   * Imports file under the specified path into filestore.
+   * @param fileRef
+   */
+  public async import(fileRef: FileRef): Promise<ImportRes> {
+    const result: ImportRes = await this.conn.request({
+      method: 'Filecoin.ClientImport',
+      params: [fileRef],
+    });
+    return result;
+  }
+
+  /**
+   * Removes file import
+   * @param importId
+   */
+  public async removeImport(importId: StoreID) {
+    const result: ImportRes = await this.conn.request({
+      method: 'Filecoin.ClientRemoveImport',
+      params: [importId],
+    });
+    return result;
   }
 }

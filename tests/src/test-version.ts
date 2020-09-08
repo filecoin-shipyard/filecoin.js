@@ -424,3 +424,24 @@ describe("Connection test", function () {
     assert.strictEqual(valid, true, "invalid circulating supply of Filecoin");
   });
 });
+
+describe("Client tests", function() {
+  it("should import file", async function() {
+    const provider = new JsonRpcProvider(httpConnector);
+    const result = await provider.import({
+      Path: "/filecoin_miner/original-data.txt",
+      IsCAR: false,
+    });
+    const valid = typeof result.Root["/"] === 'string' && typeof result.ImportID === 'number';
+    assert.strictEqual(valid, true, 'import file failed');
+  });
+
+  it("should delete imported file", async function() {
+    const provider = new JsonRpcProvider(httpConnector);
+    const importResult = await provider.import({
+      Path: "/filecoin_miner/original-data.txt",
+      IsCAR: false,
+    });
+    const removeResult = await provider.removeImport(importResult.ImportID);
+  });
+});
