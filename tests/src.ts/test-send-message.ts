@@ -64,8 +64,8 @@ describe("Send message", function () {
   });
 
   it("should send signed message, mnemonic wallet [http]", async function () {
-    this.timeout(6000);
-    await sleep(4000);
+    this.timeout(10000);
+    await sleep(8000);
 
     const httpConnector = new HttpJsonRpcConnector({ url: 'http://localhost:8000/rpc/v0', token: LOTUS_AUTH_TOKEN });
 
