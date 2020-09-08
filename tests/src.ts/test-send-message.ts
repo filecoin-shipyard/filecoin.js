@@ -10,6 +10,9 @@ import { WsJsonRpcConnector } from "../../src/connectors/WsJsonRpcConnector";
 
 const testMnemonic = 'equip will roof matter pink blind book anxiety banner elbow sun young';
 
+function sleep(ms: any) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
 
 describe("Send message", function () {
   it("should send signed message, lotus default wallet [http]", async function () {
@@ -61,6 +64,9 @@ describe("Send message", function () {
   });
 
   it("should send signed message, mnemonic wallet [http]", async function () {
+    this.timeout(6000);
+    await sleep(4000);
+
     const httpConnector = new HttpJsonRpcConnector({ url: 'http://localhost:8000/rpc/v0', token: LOTUS_AUTH_TOKEN });
 
     const mnemonicWalletProvider = new MnemonicWalletProvider( httpConnector, testMnemonic, '');
