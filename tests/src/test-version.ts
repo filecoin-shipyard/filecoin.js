@@ -567,5 +567,26 @@ describe("Client tests", function() {
   //     IsCAR: false,
   //   });
   // });
+
+  it("should perform query ask ", async function() {
+    const provider = new JsonRpcProvider(httpConnector);
+    const minerInfo = await provider.minerInfo('t01000');
+    const queryOffer = await provider.queryAsk(minerInfo.PeerId, 't01000');
+    assert.strictEqual(!!queryOffer.Ask && !!queryOffer.Signature, true, 'failed query ask');
+  });
+
+  it("should compute commP", async function() {
+    const provider = new JsonRpcProvider(httpConnector);
+    const { Root, Size } = await provider.calcCommP("/filecoin_miner/original-data.txt");
+    assert.strictEqual(!!Root && !!Size, true, 'failed to compute commP');
+  });
+
+  it("should generate CAR file", async function() {
+    const provider = new JsonRpcProvider(httpConnector);
+    const car = await provider.genCar({
+      IsCAR: false,
+      Path: "/filecoin_miner/original-data.txt",
+    }, "/filecoin_miner/car.txt");
+  });
   });
 });

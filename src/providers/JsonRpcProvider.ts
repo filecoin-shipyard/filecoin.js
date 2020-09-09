@@ -827,4 +827,45 @@ export class JsonRpcProvider {
       params: [order, ref],
     });
   }
+
+  /**
+   * returns a signed StorageAsk from the specified miner.
+   * @param peerId
+   * @param miner
+   */
+  public async queryAsk(peerId: PeerID, miner: Address): Promise<SignedStorageAsk> {
+    const queryAsk: SignedStorageAsk = await this.conn.request({
+      method: 'Filecoin.ClientQueryAsk',
+      params: [peerId, miner],
+    });
+
+    return queryAsk;
+  }
+
+  /**
+   * calculates the CommP for a specified file
+   * @param path
+   */
+  public async calcCommP(path: string): Promise<CommPRet> {
+    const commP: CommPRet = await this.conn.request({
+      method: 'Filecoin.ClientCalcCommP',
+      params: [path],
+    });
+
+    return commP;
+  }
+
+  /**
+   * generates a CAR file for the specified file.
+   * @param ref
+   * @param outpath
+   */
+  public async genCar(ref: FileRef, outpath: string) {
+    const car = await this.conn.request({
+      method: 'Filecoin.ClientGenCar',
+      params: [ref, outpath],
+    });
+
+    return car;
+  }
 }
