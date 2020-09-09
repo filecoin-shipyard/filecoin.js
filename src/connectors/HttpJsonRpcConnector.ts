@@ -7,8 +7,8 @@ export type JsonRpcConnectionOptions = { url: string, token?: string };
 export class HttpJsonRpcConnector extends EventEmitter implements Connector {
 
   protected reqId = 0;
-  private url: string;
-  private token: string | undefined;
+  public url: string;
+  public token?: string | undefined;
 
   constructor(
     protected options: string | JsonRpcConnectionOptions,

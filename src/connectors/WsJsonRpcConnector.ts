@@ -16,8 +16,8 @@ type WebSocketRequest = {
 }
 
 export class WsJsonRpcConnector extends EventEmitter implements Connector {
-  private url: string;
-  private token?: string;
+  public url: string;
+  public token?: string | undefined;
   private connected: boolean;
   private client?: WebSocket.Client;
   private requests: WebSocketRequest[];
