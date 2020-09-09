@@ -114,7 +114,10 @@
       let rpcAddress = '';
       let rpcAddressSecp = '';
       let metamaskAddress = '';
-      console.log(FilecoinJs);
+
+      const metamaskHelper = new FilecoinJs.MetamaskSnapHelper({ url: 'http://localhost:8000/rpc/v0', token: LOTUS_AUTH_TOKEN });
+      const err = await metamaskHelper.installFilecoinSnap();
+
       const httpConnector = new FilecoinJs.HttpJsonRpcConnector({ url: 'http://localhost:8000/rpc/v0', token: LOTUS_AUTH_TOKEN });
 
       const lotusWalletProvider = new FilecoinJs.HttpJsonRpcWalletProvider(httpConnector);
@@ -136,7 +139,7 @@
         `m/44'/1'/0/0/1`
       );
 
-      const metamaskSigner = new FilecoinJs.MetamaskSigner(httpConnector)
+      const metamaskWalletProvider = new FilecoinJs.MetamaskWalletProvider(httpConnector, metamaskHelper.filecoinApi)
 
       const sendLotus = async (from, toId, filId) => {
         const to = document.getElementById(toId).value;
@@ -162,7 +165,7 @@
           const to = document.getElementById(toId).value;
           const amount = document.getElementById(filId).value;
 
-          const message = await lotusWalletProvider.createMessage({
+          const message = await mnemonicWalletProvider.createMessage({
             To: to,
             From: from,
             Value: new BigNumber(amount),
@@ -185,15 +188,14 @@
           const to = document.getElementById(toId).value;
           const amount = document.getElementById(filId).value;
 
-          const message = await lotusWalletProvider.createMessage({
+          const message = await metamaskWalletProvider.createMessage({
             To: to,
             From: from,
             Value: new BigNumber(amount),
           });
 
-          const signedMessage = await metamaskSigner.sign(message);
-          console.log(signedMessage);
-          const res = await lotusWalletProvider.sendSignedMessage(signedMessage);
+          const signedMessage = await metamaskWalletProvider.signMessage(message);
+          const res = await metamaskWalletProvider.sendSignedMessage(signedMessage);
         } catch (e) {
           alert(e.message);
         }
@@ -205,7 +207,7 @@
         rpcAddress = await lotusWalletProvider.getDefaultAccount();
         rpcAddressSecp = availableAccounts[0];
         try {
-          metamaskAddress = await metamaskSigner.getDefaultAccount();
+          metamaskAddress = await metamaskWalletProvider.getDefaultAccount();
         } catch (e) {
           console.log('metamask error',e);
         }
@@ -216,7 +218,7 @@
         const rpcSecpBalance = await lotusWalletProvider.getBalance(rpcAddressSecp);
         let metamaskBalance = '';
         try {
-          metamaskBalance = await lotusWalletProvider.getBalance(metamaskAddress);
+          metamaskBalance = await metamaskWalletProvider.getBalance(metamaskAddress);
         } catch (e) {
           console.log('metamask error',e);
         }
