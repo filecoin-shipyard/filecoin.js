@@ -43,6 +43,15 @@ import {
   FileRef,
   ImportRes,
   StoreID,
+  DealInfo,
+  StartDealParams,
+  QueryOffer,
+  RetrievalOrder,
+  PeerID,
+  SignedStorageAsk,
+  CommPRet,
+  DataSize,
+  DataTransferChannel, Import,
 } from './Types';
 import { Connector } from '../connectors/Connector';
 import { WsJsonRpcConnector } from '../connectors/WsJsonRpcConnector';
