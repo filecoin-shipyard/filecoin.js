@@ -781,4 +781,38 @@ export class JsonRpcProvider {
     return deals;
   }
 
+  public async hasLocal(cid: Cid): Promise<boolean> {
+    const hasLocal: boolean = await this.conn.request({
+      method: 'Filecoin.ClientHasLocal',
+      params: [cid],
+    });
+    return hasLocal;
+  }
+
+  /**
+   * Identifies peers that have a certain file, and returns QueryOffers (one per peer).
+   * @param cid
+   * @param pieceCid
+   */
+  public async findData(cid: Cid, pieceCid?: Cid): Promise<QueryOffer[]> {
+    const data: QueryOffer[] = await this.conn.request({
+      method: 'Filecoin.ClientFindData',
+      params: [cid, pieceCid],
+    });
+    return data;
+  }
+
+  /**
+   * returns a QueryOffer for the specific miner and file.
+   * @param miner
+   * @param root
+   * @param pieceCid
+   */
+  public async minerQueryOffer(miner: Address, root: Cid, pieceCid?: Cid): Promise<QueryOffer> {
+    const queryOffer: QueryOffer = await this.conn.request({
+      method: 'Filecoin.ClientMinerQueryOffer',
+      params: [miner, root, pieceCid],
+    });
+    return queryOffer;
+  }
 }

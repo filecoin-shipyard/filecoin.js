@@ -488,5 +488,47 @@ describe("Client tests", function() {
     const deals = await provider.listDeals();
     assert.strictEqual(Array.isArray(deals), true, 'invalid deals list');
   });
+
+  it("should verify if has local", async function() {
+    const provider = new JsonRpcProvider(httpConnector);
+    const importResult = await provider.import({
+      Path: "/filecoin_miner/original-data.txt",
+      IsCAR: false,
+    });
+    const hasLocal = await provider.hasLocal(importResult.Root);
+    assert.strictEqual(hasLocal, true, 'invalid has local');
+  });
+
+  it("should find data", async function() {
+    const provider = new JsonRpcProvider(httpConnector);
+    const importResult = await provider.import({
+      Path: "/filecoin_miner/original-data.txt",
+      IsCAR: false,
+    });
+    await provider.startDeal({
+      Data: {
+        TransferType: 'graphsync',
+        Root: importResult.Root,
+      },
+      Miner: 't01000',
+      Wallet: await walletLotus.getDefaultAccount(),
+      EpochPrice: '1000',
+      MinBlocksDuration: 800,
+    });
+    const queryOffers = await provider.findData(importResult.Root);
+    const isValid = queryOffers.reduce((acc, offer, idx) => acc === false ? acc : offer.Root["/"] === importResult.Root["/"], true);
+    assert.strictEqual(isValid, true, 'invalid found data');
+  });
+
+  it("should get miner query offer", async function() {
+    const provider = new JsonRpcProvider(httpConnector);
+    const importResult = await provider.import({
+      Path: "/filecoin_miner/original-data.txt",
+      IsCAR: false,
+    });
+    const queryOffer = await provider.minerQueryOffer('t01000', importResult.Root);
+    const isValid = importResult.Root["/"] === queryOffer.Root["/"];
+    assert.strictEqual(isValid, true, 'invalid miner query offer');
+  });
   });
 });
