@@ -530,5 +530,42 @@ describe("Client tests", function() {
     const isValid = importResult.Root["/"] === queryOffer.Root["/"];
     assert.strictEqual(isValid, true, 'invalid miner query offer');
   });
+
+  // Sealing takes too much
+  // it.only("should retrieve file", async function() {
+  //   const provider = new JsonRpcProvider(httpConnector);
+  //   const importResult = await provider.import({
+  //     Path: "/filecoin_miner/original-data.txt",
+  //     IsCAR: false,
+  //   });
+  //   const dealCid = await provider.startDeal({
+  //     Data: {
+  //       TransferType: 'graphsync',
+  //       Root: importResult.Root,
+  //     },
+  //     Miner: 't01000',
+  //     Wallet: await walletLotus.getDefaultAccount(),
+  //     EpochPrice: '1000',
+  //     MinBlocksDuration: 700000,
+  //   });
+  //   const queryOffer = await provider.minerQueryOffer('t01000', importResult.Root);
+  //   await provider.retrieve({
+  //     Root: queryOffer.Root,
+  //     Size: queryOffer.Size,
+  //     Total: queryOffer.MinPrice,
+  //     UnsealPrice: "0",
+  //     PaymentInterval: queryOffer.PaymentInterval,
+  //     PaymentIntervalIncrease: queryOffer.PaymentIntervalIncrease,
+  //     Client: queryOffer.Miner,
+  //     Miner: queryOffer.Miner,
+  //     MinerPeer: {
+  //       Address: queryOffer.MinerPeer.Address,
+  //       ID: queryOffer.MinerPeer.ID
+  //     },
+  //   }, {
+  //     Path: "/filecoin_miner/original-data-retrieved.txt",
+  //     IsCAR: false,
+  //   });
+  // });
   });
 });

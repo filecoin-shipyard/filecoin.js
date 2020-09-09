@@ -815,4 +815,16 @@ export class JsonRpcProvider {
     });
     return queryOffer;
   }
+
+  /**
+   * initiates the retrieval of a file, as specified in the order.
+   * @param order
+   * @param ref
+   */
+  public async retrieve(order: RetrievalOrder, ref: FileRef) {
+    await this.conn.request({
+      method: 'Filecoin.ClientRetrieve',
+      params: [order, ref],
+    });
+  }
 }
