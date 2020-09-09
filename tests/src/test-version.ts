@@ -588,5 +588,34 @@ describe("Client tests", function() {
       Path: "/filecoin_miner/original-data.txt",
     }, "/filecoin_miner/car.txt");
   });
+
+  it("should calculate deal size", async function() {
+    const provider = new JsonRpcProvider(httpConnector);
+    const importResult = await provider.import({
+      Path: "/filecoin_miner/original-data.txt",
+      IsCAR: false,
+    });
+    const { PayloadSize, PieceSize } = await provider.dealSize(importResult.Root);
+    const isValid = typeof PayloadSize === 'number' && typeof PieceSize === 'number';
+    assert.strictEqual(isValid, true, 'invalid deal size');
+  });
+
+  it("should get transfers status", async function() {
+    const provider = new JsonRpcProvider(httpConnector);
+    const transfers = await provider.listDataTransfers();
+    assert.strictEqual(Array.isArray(transfers), true, 'invalid transfers status');
+  });
+
+  it("should list imports", async function() {
+    const provider = new JsonRpcProvider(httpConnector);
+    const importResult = await provider.import({
+      Path: "/filecoin_miner/original-data.txt",
+      IsCAR: false,
+    });
+    const imports = await provider.listImports();
+    const isValid = imports.filter(importItem => (
+      importItem.Root && importItem.Root['/'] === importResult.Root['/'] && importItem.Key === importResult.ImportID
+    )).length > 0;
+    assert.strictEqual(isValid, true, 'invalid imports list');
   });
 });

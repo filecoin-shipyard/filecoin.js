@@ -868,4 +868,52 @@ export class JsonRpcProvider {
 
     return car;
   }
+
+  /**
+   * calculates real deal data size
+   * @param root
+   */
+  public async dealSize(root: Cid): Promise<DataSize> {
+    const dataSize: DataSize = await this.conn.request({
+      method: 'Filecoin.ClientDealSize',
+      params: [root],
+    });
+
+    return dataSize;
+  }
+
+  /**
+   * returns the status of all ongoing transfers of data
+   */
+  public async listDataTransfers(): Promise<DataTransferChannel[]> {
+    const transfers: DataTransferChannel[] = await this.conn.request({
+      method: 'Filecoin.ClientListDataTransfers',
+      params: [],
+    });
+
+    return transfers;
+  }
+
+  /**
+   * attempts to restart stalled retrievals on a given payment channel which are stuck due to insufficient funds.
+   * @param paymentChannel
+   */
+  public async retrieveTryRestartInsufficientFunds(paymentChannel: Address) {
+    await this.conn.request({
+      method: 'Filecoin.ClientRetrieveTryRestartInsufficientFunds',
+      params: [paymentChannel],
+    });
+  }
+
+  /**
+   * lists imported files and their root CIDs
+   */
+  public async listImports(): Promise<Import[]> {
+    const imports: Import[] = await this.conn.request({
+      method: 'Filecoin.ClientListImports',
+      params: [],
+    });
+
+    return imports;
+  }
 }
