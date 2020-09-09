@@ -442,7 +442,9 @@ describe("Client tests", function() {
       Path: "/filecoin_miner/original-data.txt",
       IsCAR: false,
     });
-    const removeResult = await provider.removeImport(importResult.ImportID);
+    await provider.removeImport(importResult.ImportID);
+  });
+
   it("should start deal", async function() {
     const provider = new JsonRpcProvider(httpConnector);
     const importResult = await provider.import({
