@@ -745,4 +745,40 @@ export class JsonRpcProvider {
     });
     return result;
   }
+
+  /**
+   * Proposes a deal with a miner.
+   * @param dealParams
+   */
+  public async startDeal(dealParams: StartDealParams): Promise<Cid> {
+    const cid: Cid = await this.conn.request({
+      method: 'Filecoin.ClientStartDeal',
+      params: [dealParams],
+    });
+    return cid;
+  }
+
+  /**
+   * Returns the latest information about a given deal.
+   * @param dealCid
+   */
+  public async getDealInfo(dealCid: Cid): Promise<DealInfo> {
+    const dealInfo: DealInfo = await this.conn.request({
+      method: 'Filecoin.ClientGetDealInfo',
+      params: [dealCid],
+    });
+    return dealInfo;
+  }
+
+  /**
+   * Returns information about the deals made by the local client.
+   */
+  public async listDeals(): Promise<DealInfo[]> {
+    const deals: DealInfo[] = await this.conn.request({
+      method: 'Filecoin.ClientListDeals',
+      params: [],
+    });
+    return deals;
+  }
+
 }

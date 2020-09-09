@@ -443,5 +443,50 @@ describe("Client tests", function() {
       IsCAR: false,
     });
     const removeResult = await provider.removeImport(importResult.ImportID);
+  it("should start deal", async function() {
+    const provider = new JsonRpcProvider(httpConnector);
+    const importResult = await provider.import({
+      Path: "/filecoin_miner/original-data.txt",
+      IsCAR: false,
+    });
+    const dealCid = await provider.startDeal({
+      Data: {
+        TransferType: 'graphsync',
+        Root: importResult.Root,
+      },
+      Miner: 't01000',
+      Wallet: await walletLotus.getDefaultAccount(),
+      EpochPrice: '1000',
+      MinBlocksDuration: 800,
+    });
+    assert.strictEqual(typeof dealCid["/"] === 'string', true, 'deal start failed');
+  });
+
+  it("should get deal info", async function() {
+    const provider = new JsonRpcProvider(httpConnector);
+    const importResult = await provider.import({
+      Path: "/filecoin_miner/original-data.txt",
+      IsCAR: false,
+    });
+    const dealCid = await provider.startDeal({
+      Data: {
+        TransferType: 'graphsync',
+        Root: importResult.Root,
+      },
+      Miner: 't01000',
+      Wallet: await walletLotus.getDefaultAccount(),
+      EpochPrice: '1000',
+      MinBlocksDuration: 800,
+    });
+    const dealInfo = await provider.getDealInfo(dealCid);
+    const valid = !!dealInfo.Provider && !!dealInfo.State;
+    assert.strictEqual(valid, true, 'invalid deal info');
+  });
+
+  it("should list all deals", async function() {
+    const provider = new JsonRpcProvider(httpConnector);
+    const deals = await provider.listDeals();
+    assert.strictEqual(Array.isArray(deals), true, 'invalid deals list');
+  });
   });
 });
