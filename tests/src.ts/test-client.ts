@@ -5,7 +5,7 @@ import { LOTUS_AUTH_TOKEN } from '../../testnet/credentials/credentials';
 import { WsJsonRpcConnector } from '../../src/connectors/WsJsonRpcConnector';
 
 const httpConnector = new HttpJsonRpcConnector({ url: 'http://localhost:8000/rpc/v0', token: LOTUS_AUTH_TOKEN });
-const walletLotus = new HttpJsonRpcWalletProvider({ url: 'http://localhost:8000/rpc/v0', token: LOTUS_AUTH_TOKEN });
+const walletLotus = new HttpJsonRpcWalletProvider(httpConnector);
 
 describe.only("Client tests", function() {
   it("should import file", async function() {

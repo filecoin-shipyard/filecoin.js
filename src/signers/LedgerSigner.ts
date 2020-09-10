@@ -1,10 +1,11 @@
 import * as filecoin_signer from '@zondax/filecoin-signing-tools/js';
 import { Message, SignedMessage } from '../providers/Types';
 import { Signer } from './Signer';
-import { import_wasm } from "../utils/import_wasm";
+//import { import_wasm } from "../utils/import_wasm";
 import { toBase64 } from "../utils/data";
 import TransportWebUSB from "@ledgerhq/hw-transport-webusb";
 
+const import_wasm = () => { return { 'catch': (e: any) => {} } } //dummy to avoid including the zondax wasm package
 export class LedgerSigner implements Signer {
 
   private transport: any;
