@@ -12,7 +12,7 @@ function sleep(ms: any) {
 }
 
 describe("Send message", async function () {
-  it("should send signed message, lotus default wallet [http]", async function () {
+  it("Payment channel test [http]", async function () {
     this.timeout(120000);
     const httpConnector = new HttpJsonRpcConnector({ url: 'http://localhost:8000/rpc/v0', token: LOTUS_AUTH_TOKEN });
 

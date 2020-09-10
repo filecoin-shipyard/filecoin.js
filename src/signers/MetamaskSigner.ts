@@ -9,47 +9,10 @@ import { enableFilecoinSnap } from '@nodefactory/filsnap-adapter';
 export class MetamaskSigner implements Signer {
 
   constructor(
-    private connection: JsonRpcConnectionOptions,
+    private filecoinApi: FilecoinSnapApi,
   ) { }
 
-  private async installFilecoinSnap() {
-    if (!this.isInstalled) {
-      try {
-        console.log("installing snap");
-        console.log(this.connection);
-        // enable filecoin snap with default testnet network
-        const metamaskFilecoinSnap = await enableFilecoinSnap({
-          derivationPath: "m/44'/1'/0/0/1",
-          //@ts-ignore
-          network: 'local',
-          rpc: {
-            token: this.connection.token!,
-            url: this.connection.url!,
-          }
-        });
-        this.isInstalled = true;
-        this.snap = metamaskFilecoinSnap;
-      } catch (e) {
-        this.isInstalled = false;
-        return e;
-      }
-    }
-
-    if (this.isInstalled && this.snap) {
-      this.filecoinApi = await this.snap.getFilecoinSnapApi();
-    }
-    return null;
-  }
-
-  private isInstalled: boolean = false;
-  private snap: MetamaskFilecoinSnap | undefined;
-  private filecoinApi: FilecoinSnapApi | undefined;
-
   public async sign(message: Message): Promise<SignedMessage> {
-    const err = await this.installFilecoinSnap();
-    if (err) {
-      throw err;
-    }
     if (this.filecoinApi) {
       return this.messageFromSigner(await this.filecoinApi.signMessage(this.messageToSigner(message)));
     }
@@ -63,10 +26,6 @@ export class MetamaskSigner implements Signer {
   }
 
   public async getDefaultAccount(): Promise<string> {
-    const err = await this.installFilecoinSnap();
-    if (err) {
-      throw err;
-    }
     if (this.filecoinApi) {
       return this.filecoinApi.getAddress();
     }

@@ -10,6 +10,8 @@ import { MetamaskSigner } from './signers/MetamaskSigner';
 import { HttpJsonRpcConnector} from './connectors/HttpJsonRpcConnector'
 import { WsJsonRpcConnector} from './connectors/WsJsonRpcConnector'
 
+import { MetamaskSnapHelper } from './utils/metamask'
+
 export {
   JsonRpcProvider,
   MnemonicWalletProvider,
@@ -19,5 +21,6 @@ export {
   LedgerSigner,
   MetamaskSigner,
   HttpJsonRpcConnector,
-  WsJsonRpcConnector
+  WsJsonRpcConnector,
+  MetamaskSnapHelper
 }

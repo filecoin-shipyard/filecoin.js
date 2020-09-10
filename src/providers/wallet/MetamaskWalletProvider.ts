@@ -2,17 +2,15 @@ import { Message, SignedMessage, Signature } from "../Types";
 import { HttpJsonRpcWalletProvider } from "./HttpJsonRpcWalletProvider";
 import { MetamaskSigner } from "../../signers/MetamaskSigner";
 import { Connector } from "../../connectors/Connector";
+import { FilecoinSnapApi } from "@nodefactory/filsnap-types";
 
 export class MetamaskWalletProvider extends HttpJsonRpcWalletProvider {
 
   private signer: MetamaskSigner;
 
-  constructor(connector: Connector) {
+  constructor(connector: Connector, filecoinApi: FilecoinSnapApi) {
     super(connector);
-    this.signer = new MetamaskSigner({
-      url: connector.url,
-      token: connector.url
-    });
+    this.signer = new MetamaskSigner(filecoinApi);
   }
 
   public async getAccounts(): Promise<string[]> {
