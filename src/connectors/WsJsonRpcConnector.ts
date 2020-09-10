@@ -77,7 +77,7 @@ export class WsJsonRpcConnector extends EventEmitter implements Connector {
           if (channel) {
             this.client?.on(channel.key, (response) => {
               if (response[0] === result) {
-                channel.cb(response);
+                channel.cb(response[1]);
               }
             });
           }
@@ -112,7 +112,7 @@ export class WsJsonRpcConnector extends EventEmitter implements Connector {
       const id = await this.performRequest(req);
       this.client?.on(channelKey, (response) => {
         if (response[0] === id) {
-          channelCb(response);
+          channelCb(response[1]);
         }
       });
     } else {

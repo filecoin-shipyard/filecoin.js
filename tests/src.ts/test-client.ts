@@ -5,9 +5,10 @@ import { LOTUS_AUTH_TOKEN } from '../../testnet/credentials/credentials';
 import { WsJsonRpcConnector } from '../../src/connectors/WsJsonRpcConnector';
 
 const httpConnector = new HttpJsonRpcConnector({ url: 'http://localhost:8000/rpc/v0', token: LOTUS_AUTH_TOKEN });
+const wsConnector = new WsJsonRpcConnector({ url: 'http://localhost:8000/rpc/v0', token: LOTUS_AUTH_TOKEN });
 const walletLotus = new HttpJsonRpcWalletProvider(httpConnector);
 
-describe.only("Client tests", function() {
+describe("Client tests", function() {
   it("should import file", async function() {
     const provider = new JsonRpcProvider(httpConnector);
     const result = await provider.import({
@@ -201,5 +202,31 @@ describe.only("Client tests", function() {
       importItem.Root && importItem.Root['/'] === importResult.Root['/'] && importItem.Key === importResult.ImportID
     )).length > 0;
     assert.strictEqual(isValid, true, 'invalid imports list');
+  });
+
+  it("should get updated deals", function(done) {
+    this.timeout(10000);
+    const con = new JsonRpcProvider(wsConnector);
+    walletLotus.getDefaultAccount().then((account: string) => {
+      con.import({
+        Path: "/filecoin_miner/original-data.txt",
+        IsCAR: false,
+      }).then((importResult) => {
+        con.startDeal({
+          Data: {
+            TransferType: 'graphsync',
+            Root: importResult.Root,
+          },
+          Miner: 't01000',
+          Wallet: account,
+          EpochPrice: '1004',
+          MinBlocksDuration: 800,
+        });
+      });
+    });
+    con.getDealUpdates((dealInfo) => {
+      assert.strictEqual(typeof dealInfo.State === 'number', true, 'invalid updated deal info');
+      con.release().then(() => { done() });
+    });
   });
 });

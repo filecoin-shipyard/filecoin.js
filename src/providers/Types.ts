@@ -880,6 +880,20 @@ export class Import {
 }
 
 /**
+ * DealStatus is the status of a retrieval deal returned by a provider in a DealResponse
+ */
+export type DealStatus = number;
+export type ClientEvent = number;
+
+export class RetrievalEvent {
+  Event!: ClientEvent;
+  Status!: DealStatus;
+  BytesReceived!: number;
+  FundsSpent!: TokenAmount;
+  Err!: string;
+}
+
+/**
  * Interface to be implemented by all providers.
  *
  * @public

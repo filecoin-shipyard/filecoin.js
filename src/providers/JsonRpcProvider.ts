@@ -51,7 +51,7 @@ import {
   SignedStorageAsk,
   CommPRet,
   DataSize,
-  DataTransferChannel, Import,
+  DataTransferChannel, Import, RetrievalEvent,
 } from './Types';
 import { Connector } from '../connectors/Connector';
 import { WsJsonRpcConnector } from '../connectors/WsJsonRpcConnector';
@@ -924,5 +924,53 @@ export class JsonRpcProvider {
     });
 
     return imports;
+  }
+
+  /**
+   * returns the status of updated deals
+   */
+  public async getDealUpdates(cb: (data: DealInfo) => void) {
+    if (this.conn instanceof WsJsonRpcConnector) {
+      await this.conn.requestWithChannel(
+        {
+          method: 'Filecoin.ClientGetDealUpdates',
+        },
+        'xrpc.ch.val',
+        data => {
+          cb(data);
+        });
+    }
+  }
+
+  /**
+   * initiates the retrieval of a file, as specified in the order, and provides a channel of status updates.
+   * @param order
+   * @param ref
+   * @param cb
+   */
+  public async retrieveWithEvents(order: RetrievalOrder, ref: FileRef, cb: (data: RetrievalEvent) => void) {
+    if (this.conn instanceof WsJsonRpcConnector) {
+      await this.conn.requestWithChannel(
+        {
+          method: 'Filecoin.ClientRetrieveWithEvents',
+        },
+        'xrpc.ch.val',
+        data => {
+          cb(data);
+        });
+    }
+  }
+
+  public async dataTransferUpdates(cb: (data: DataTransferChannel) => void) {
+    if (this.conn instanceof WsJsonRpcConnector) {
+      await this.conn.requestWithChannel(
+        {
+          method: 'Filecoin.ClientDataTransferUpdates',
+        },
+        'xrpc.ch.val',
+        data => {
+          cb(data);
+        });
+    }
   }
 }
