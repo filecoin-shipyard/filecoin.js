@@ -14,5 +14,8 @@ hide_title: true
 |  --- | --- |
 |  [HttpJsonRpcWalletProvider](./filecoin.js.httpjsonrpcwalletprovider.md) |  |
 |  [JsonRpcProvider](./filecoin.js.jsonrpcprovider.md) |  |
+|  [LedgerSigner](./filecoin.js.ledgersigner.md) |  |
+|  [MetamaskSigner](./filecoin.js.metamasksigner.md) |  |
+|  [MetamaskWalletProvider](./filecoin.js.metamaskwalletprovider.md) |  |
 |  [MnemonicSigner](./filecoin.js.mnemonicsigner.md) |  |
 |  [MnemonicWalletProvider](./filecoin.js.mnemonicwalletprovider.md) |  |

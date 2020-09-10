@@ -14,11 +14,11 @@ Constructs a new instance of the `JsonRpcProvider` class
 <b>Signature:</b>
 
 ```typescript
-constructor(url: string | JsonRpcConnectionOptions);
+constructor(connector: Connector);
 ```
 
 ## Parameters
 
 |  Parameter | Type | Description |
 |  --- | --- | --- |
-|  url | string &#124; JsonRpcConnectionOptions |  |
+|  connector | Connector |  |

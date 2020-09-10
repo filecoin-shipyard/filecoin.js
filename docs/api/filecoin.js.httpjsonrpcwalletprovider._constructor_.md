@@ -14,11 +14,11 @@ Constructs a new instance of the `HttpJsonRpcWalletProvider` class
 <b>Signature:</b>
 
 ```typescript
-constructor(url: string | JsonRpcConnectionOptions);
+constructor(url: JsonRpcConnectionOptions);
 ```
 
 ## Parameters
 
 |  Parameter | Type | Description |
 |  --- | --- | --- |
-|  url | string &#124; JsonRpcConnectionOptions |  |
+|  url | JsonRpcConnectionOptions |  |

@@ -9,6 +9,8 @@ hide_title: true
 
 ## JsonRpcProvider.readObj() method
 
+reads ipld nodes referenced by the specified CID from chain blockstore and returns raw bytes.
+
 <b>Signature:</b>
 
 ```typescript

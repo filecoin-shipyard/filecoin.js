@@ -91,7 +91,7 @@ export class JsonRpcProvider {
   /**
    * call back on chain head updates.
    * @param cb
-   * @return interval id
+   * @returns interval id
    */
   public async chainNotify(cb: (headChange: HeadChange[]) => void) {
     if (this.conn instanceof WsJsonRpcConnector) {
