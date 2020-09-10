@@ -120,7 +120,7 @@ export class JsonRpcProvider {
         },
         'xrpc.ch.val',
         data => {
-          cb(data[1]);
+          cb(data);
         });
     } else if (this.conn instanceof HttpJsonRpcConnector) {
       let head: TipSet;
