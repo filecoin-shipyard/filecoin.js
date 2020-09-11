@@ -10,8 +10,8 @@ var config = {
   mode: 'production',
   devtool: 'source-map',
   entry: {
-    'tests-js-umd': [PATHS.entryPoint],
-    'tests-js-umd.min': [PATHS.entryPoint]
+    'tests-umd': [PATHS.entryPoint],
+    'tests-umd.min': [PATHS.entryPoint]
   },
   output: {
     path: PATHS.bundles,
