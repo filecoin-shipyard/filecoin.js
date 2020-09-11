@@ -89,7 +89,7 @@ Sending some FIL to `someAddress`:
     );
 ```
 
-Check out the [tests](./tree/master/tests) or [examples](./tree/master/examples) folder for more usage examples.
+Check out the [tests](./tests/) or [examples](./examples/) folder for more usage examples.
 
 ## Documentation
 
@@ -97,8 +97,8 @@ As with the rest of the library, the documentation is WIP. As it evolves the [do
 
 ## Contributing
 
-Feel free to join in. All welcome. [Open an issue!](./issues)
+Feel free to join in. All welcome. [Open an issue!](https://github.com/Digital-MOB-Filecoin/filecoin.js/issues)
 
 ## License
 
-Dual-licensed under MIT + Apache 2.0
+Dual-licensed under [MIT](./LICENSE-MIT) + [Apache 2.0](./LICENSE-APACHE)
