@@ -1,8 +1,6 @@
 A JavaScript (and TypeScript) library for interacting with the [Filecoin's](https://filecoin.io) [Lotus](https://github.com/filecoin-project/lotus) node, with support for external signers.
 
-## Warning
-
-:warning: The library is currently ALPHA quality: things will not work or work incorectly, will break and the API will change! :warning:
+:warning: The library is currently in ALPHA: things will not work or work incorectly, will break and the API will change! :warning:
 
 ## Installing
 
@@ -91,7 +89,7 @@ Sending some FIL to `someAddress`:
     );
 ```
 
-Checkout the [tests](./tests) or [examples](./examples) folder for more usage examples.
+Check out the [tests](./tests) or [examples](./examples) folder for more usage examples.
 
 ## Documentation
 
