@@ -28,7 +28,7 @@
     "build:examples": "rimraf builds/examples && mkdirp builds/examples/ && cp -r examples/* builds/examples && cp -r builds/bundle/* builds/examples"
   },
   "author": "",
-  "license": "ISC",
+  "license": "(Apache-2.0 AND MIT)",
   "dependencies": {
     "@ledgerhq/hw-transport-webusb": "^5.22.0",
     "@zondax/filecoin-signing-tools": "^0.7.1",
