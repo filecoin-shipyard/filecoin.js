@@ -1,11 +1,8 @@
 import assert from "assert";
-import { LOTUS_AUTH_TOKEN } from "../../testnet/credentials/credentials";
+import { LOTUS_AUTH_TOKEN } from "../tools/testnet/credentials/credentials";
 import { JsonRpcProvider } from '../../src/providers/JsonRpcProvider';
 import { HttpJsonRpcConnector } from '../../src/connectors/HttpJsonRpcConnector';
 import { HttpJsonRpcWalletProvider } from '../../src/providers/wallet/HttpJsonRpcWalletProvider';
-import { MnemonicWalletProvider } from '../../src/providers/wallet/MnemonicWalletProvider';
-
-import BigNumber from 'bignumber.js';
 
 function sleep(ms: any) {
   return new Promise(resolve => setTimeout(resolve, ms));
@@ -24,7 +21,6 @@ describe("Send message", async function () {
     const secpAddress = accounts[0];
 
     let pch = await walletLotusHttp.getPaymentChannel(defaultAccount, secpAddress,"300");
-    pch = await walletLotusHttp.getPaymentChannel(defaultAccount, secpAddress,"300");
     const waitSentinel = pch.WaitSentinel;
     console.log(pch);
 

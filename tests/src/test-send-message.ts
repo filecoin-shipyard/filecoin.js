@@ -1,5 +1,5 @@
 import assert from "assert";
-import { LOTUS_AUTH_TOKEN } from "../../testnet/credentials/credentials";
+import { LOTUS_AUTH_TOKEN } from "../tools/testnet/credentials/credentials";
 import { JsonRpcProvider } from '../../src/providers/JsonRpcProvider';
 import { HttpJsonRpcConnector } from '../../src/connectors/HttpJsonRpcConnector';
 import { HttpJsonRpcWalletProvider } from '../../src/providers/wallet/HttpJsonRpcWalletProvider';

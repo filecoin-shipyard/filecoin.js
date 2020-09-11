@@ -1,0 +1,1 @@
+export const LOTUS_AUTH_TOKEN:string = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBbGxvdyI6WyJyZWFkIiwid3JpdGUiLCJzaWduIiwiYWRtaW4iXX0.pQcEtfZMChV4MWskz3m0r8s63uex17AQxfzUYWRz8oI'
