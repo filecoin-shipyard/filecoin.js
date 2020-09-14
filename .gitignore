@@ -1,6 +1,7 @@
 .vscode
 .DS_Store
 node_modules
+stats.json
 
 builds/dist
 builds/dist-esm
