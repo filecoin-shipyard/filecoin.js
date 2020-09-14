@@ -1,8 +1,7 @@
 import { EventEmitter } from 'events';
 import { Connector, JsonRpcResponse, RequestArguments, JsonRpcError, ConnectionError } from './Connector';
-import * as WebSocket from 'rpc-websockets';
+import WebSocket, { OpenEvent } from 'ws';
 
-export type WsJsonRpcConnectionOptions = string | { url: string, token?: string };
 type WebSocketRequestCallback = (error?: Error, result?: any) => void;
 type WebSocketChannel = {
   key: string,
@@ -13,6 +12,137 @@ type WebSocketRequest = {
   req: RequestArguments,
   cb: WebSocketRequestCallback,
   channel?: WebSocketChannel,
+}
+
+type InflightRequest = {
+  payload: string,
+  callback: (error: Error | undefined, result: any) => void,
+}
+
+type Subscription = {
+  tag: string,
+  callback: (payload: any) => void,
+}
+
+export type WebSocketConnectionOptions = { url: string, token?: string };
+
+let id = 1;
+
+// See https://developer.mozilla.org/en-US/docs/Web/API/CloseEvent#Status_codes
+const WEBSOCKET_CLOSE_CODE = 1000;
+
+export class WebSocketRpcConnector extends EventEmitter implements Connector {
+  private readonly websocket: WebSocket;
+  private readonly subscriptionIds: { [tag: string]: Promise<string> };
+  private readonly subscriptions: { [name: string]: Subscription };
+  private requests: {[id: string]: InflightRequest };
+  private websocketReady: boolean;
+
+  constructor(options: WebSocketConnectionOptions) {
+    super();
+
+
+    this.websocket = new WebSocket(this.fullUrl(options.url, options.token));
+    this.requests = {};
+    this.websocketReady = false;
+
+    this.websocket.onopen = () => {
+      this.websocketReady = true;
+      Object.keys(this.requests).forEach((id) => {
+        this.websocket.send(this.requests[id].payload);
+      });
+    };
+
+    this.websocket.onclose = () => {
+      this.websocketReady = false;
+      this.requests = {};
+    };
+
+    this.websocket.onmessage = (event) => {
+      const { data } = event;
+      const result = JSON.parse(data as string);
+
+      if (!result.id) {
+        return;
+      }
+
+      const id = `${result.id}`;
+      const request = this.requests[id];
+      delete this.requests[id];
+
+      if (!request) { return; }
+
+      if (result.result) {
+        request.callback(undefined, result.result);
+      } else {
+        if (result.error) {
+          const error = new JsonRpcError({
+            code: result.error.code || null,
+            message: result.error.message,
+            data: data,
+          });
+          request.callback(error, undefined);
+        } else {
+          throw new JsonRpcError({ code: 0, message: "unknown error" });
+        }
+      }
+    }
+  }
+
+  public async request(args: RequestArguments): Promise<any> {
+    const currentId = id++;
+    const { params, method } = args;
+
+    return new Promise((resolve, reject) => {
+      function callback(error: Error | undefined, result: any) {
+        if (error) { return reject(error); }
+        return resolve(result);
+      }
+
+      const payload = JSON.stringify({
+        method,
+        params,
+        id: currentId,
+        jsonrpc: "2.0",
+      });
+
+      this.requests[`${currentId}`] = {
+        payload,
+        callback,
+      }
+
+      if (this.websocketReady) {
+        this.websocket.send(payload);
+      }
+    });
+  }
+
+  public async subscribe(args: RequestArguments, channelKey: string, channelCb: (data: any) => void ) {
+    // make request: return id, listen with this id
+    // 1. Check if already subscribed
+  }
+
+  async disconnect(): Promise<any> {
+    if (this.websocket.readyState === WebSocket.CONNECTING) {
+      await new Promise((resolve) => {
+        this.websocket.onopen = function() {
+          resolve(true);
+        }
+
+        this.websocket.onerror = function() {
+          resolve(false);
+        }
+      });
+    }
+
+    this.websocket.close(WEBSOCKET_CLOSE_CODE);
+  }
+
+  private fullUrl(url: string, token?: string) {
+    return token ? `${url}?token=${token}` : `${url}`;
+  }
+
+
 }
 
 export class WsJsonRpcConnector extends EventEmitter implements Connector {
@@ -156,15 +286,5 @@ export class WsJsonRpcConnector extends EventEmitter implements Connector {
       /* TODO: does this actualy expose jsonrpc codes? */
       throw new JsonRpcError({ code: 0, message: e.message });
     }
-  }
-
-  private fullUrl() {
-    let url = this.url;
-
-    if (this.token) {
-      url = `${url}?token=${this.token}`
-    }
-
-    return url;
   }
 }
