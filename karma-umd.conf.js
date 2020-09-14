@@ -5,7 +5,7 @@ module.exports = function(config) {
     frameworks: [ 'mocha' ],
     files: [
         "./builds/bundle/filecoin-js.js",
-        "./builds/tests/bundle/tests-js-umd.js",
+        "./builds/tests/bundle/tests-umd.js",
     ],
     reporters: [ 'karma' ],
     plugins: [

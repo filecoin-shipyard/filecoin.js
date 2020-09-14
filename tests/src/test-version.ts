@@ -8,7 +8,7 @@ import Timer = NodeJS.Timer;
 import BigNumber from 'bignumber.js';
 
 const httpConnector = new HttpJsonRpcConnector({ url: 'http://localhost:8000/rpc/v0', token: LOTUS_AUTH_TOKEN });
-const wsConnector = new WsJsonRpcConnector({ url: 'ws://localhost:8000/rpc/v0' });
+const wsConnector = new WsJsonRpcConnector({ url: 'ws://localhost:8000/rpc/v0', token: LOTUS_AUTH_TOKEN });
 
 describe("Connection test", function () {
 
