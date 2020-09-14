@@ -23,7 +23,7 @@ async function runApiExtractor() {
 async function runApiDocumenter() {
   return new Promise((resolve, reject) => {
     exec(
-      'api-documenter markdown --input-folder temp --output-folder docs/api',
+      'api-documenter markdown --input-folder temp --output-folder documentation/src/api',
       (err, stdout, stderr) => {
         console.log(stdout);
         console.error(stderr);
@@ -41,7 +41,7 @@ async function main() {
   await runApiExtractor();
   await runApiDocumenter();
 
-  const dir = "./docs/api";
+  const dir = "./documentation/src/api";
   const docFiles = await readdir(dir);
 
   for (const docFile of docFiles) {
