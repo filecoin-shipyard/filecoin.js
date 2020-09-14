@@ -18,7 +18,7 @@
     "_build_tests": "npm run prebuild && tsc --project tsconfig.tests.json",
     "prebundle": "rimraf builds/bundle",
     "bundle": "webpack",
-    "bundle:analyze": "webpack-bundle-analyzer",
+    "bundle:analyze": "npm run bundle:analyze stats.json",
     "_bundle-tests": "webpack --config webpack.tests.config.js",
     "_test-browser-umd": "karma start --single-run --browsers HeadlessLittleLiar karma-umd.conf.js",
     "_test-node": "mocha --no-colors --reporter ./tests/reporter ./builds/dist-tests/tests/src.ts/test-*.js",
