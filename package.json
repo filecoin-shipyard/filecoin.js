@@ -1,17 +1,16 @@
 {
   "name": "filecoin.js",
-  "version": "0.0.1",
-  "description": "A JavaScript/TypeScript client library for Filecoin.io",
+  "version": "0.0.2-alpha",
+  "description": "A JavaScript/TypeScript client library for Filecoin.io's Lotus",
   "main": "builds/dist/index.js",
-  "typings": "builds/dist/index.d.ts",
+  "types": "builds/dist/index.d.ts",
   "jsnext:main": "builds/dist-esm/index.js",
   "module": "builds/dist-esm/index.js",
-  "browser": {
-    "node-fetch": false
-  },
+  "browser": "builds/bundle/filecoin.js",
   "files": [
-    "builds/dist",
-    "builds/dist-esm"
+    "builds/",
+    "LICENSE-APACHE",
+    "LICENSE-MIT"
   ],
   "scripts": {
     "prebuild": "rimraf builds/dist builds/dist-esm builds/dist-tests builds/examples",
@@ -31,7 +30,7 @@
     "build:examples": "rimraf builds/examples && mkdirp builds/examples/ && cp -r examples/* builds/examples && cp -r builds/bundle/* builds/examples"
   },
   "author": "",
-  "license": "ISC",
+  "license": "(Apache-2.0 AND MIT)",
   "dependencies": {
     "@ledgerhq/hw-transport-webusb": "^5.22.0",
     "@zondax/filecoin-signing-tools": "^0.7.1",
