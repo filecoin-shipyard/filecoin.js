@@ -28,3 +28,7 @@ testnet/bin_local/credentials_web.js
 testnet/credentials/credentials.ts
 
 testnet/credentials/credentials_web.js
+
+tests/tools/testnet/credentials/credentials.ts
+
+tests/tools/testnet/credentials/credentials_web.js

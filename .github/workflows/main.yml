@@ -31,7 +31,7 @@ jobs:
         node-version: ${{ matrix.node-version }}
     - run: npm install
 
-    - run: testnet/bin/run_tests_ci.sh
+    - run: tests/tools/testnet/bin/run_tests_ci.sh
     - run: npm run test
     - run: npm run test-browser-umd
 

@@ -2,7 +2,7 @@ var path = require("path");
 var webpack = require("webpack");
 
 var PATHS = {
-  entryPoint: './tests/src.ts/index.ts',
+  entryPoint: './tests/src/index.ts',
   bundles: path.resolve(__dirname, 'builds/tests/bundle'),
 }
 

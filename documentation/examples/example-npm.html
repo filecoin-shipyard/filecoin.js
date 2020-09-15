@@ -1,0 +1,244 @@
+<!doctype html>
+<html>
+
+<head>
+  <title>Filecoin.js Wallet Example</title>
+  <meta charset="UTF-8">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+    integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/bignumber.js/9.0.0/bignumber.min.js"
+    integrity="sha512-vg7OeB3i21ZSV8k2kyAXnbFL24Rwoz+nRC6xVAddaoEQIIboCtONdpuQQ+tl56RBDEf8fT0DtcVQeip2asslmg=="
+    crossorigin="anonymous"></script>
+</head>
+
+<body>
+
+  <div class="container">
+    <div class="row row-cols-12" style="padding-bottom: 10px;  font-weight: bold;">
+      <div class="col-8">
+        Mnemonic Address
+      </div>
+    </div>
+
+    <div class="row row-cols-12" style="padding-bottom: 10px;">
+      <div class="col-7">
+        <div id="mnemonicAddress"></div>
+      </div>
+
+      <div class="col-3">
+        <input type="text" class="form-control" placeholder="to address" id="toMnemonic">
+      </div>
+      <div class="col-1">
+        <input type="text" class="form-control" placeholder="FIL" id="filMnemonic">
+      </div>
+      <div class="col">
+        <button type="submit" class="btn btn-primary" id="sendMnemonic">Send</button>
+      </div>
+    </div>
+
+    <div class="row row-cols-12" style="padding-bottom: 10px; font-weight: bold;">
+      <div class="col-8">
+        Default Address
+      </div>
+    </div>
+
+    <div class="row row-cols-12" style="padding-bottom: 10px;">
+      <div class="col-7">
+        <div id="rpcAddress"></div>
+      </div>
+
+      <div class="col-3">
+        <input type="text" class="form-control" placeholder="to address" id="toDefault">
+      </div>
+      <div class="col-1">
+        <input type="text" class="form-control" placeholder="FIL" id="filDefault">
+      </div>
+      <div class="col">
+        <button type="submit" class="btn btn-primary" id="sendDefault">Send</button>
+      </div>
+    </div>
+
+    <div class="row row-cols-12" style="padding-bottom: 10px; font-weight: bold;">
+      <div class="col-8">
+        Secp256k1 Address
+      </div>
+    </div>
+
+    <div class="row row-cols-12" style="padding-bottom: 10px;">
+      <div class="col-7">
+        <div id="rpcAddressSecp"></div>
+      </div>
+
+      <div class="col-3">
+        <input type="text" class="form-control" placeholder="to address" id="toSecp">
+      </div>
+      <div class="col-1">
+        <input type="text" class="form-control" placeholder="FIL" id="filSecp">
+      </div>
+      <div class="col">
+        <button type="submit" class="btn btn-primary" id="sendSecp">Send</button>
+      </div>
+    </div>
+
+    <div class="row row-cols-12" style="padding-bottom: 10px; font-weight: bold;">
+      <div class="col-8">
+        Metamask Address
+      </div>
+    </div>
+
+    <div class="row row-cols-12" style="padding-bottom: 10px;">
+      <div class="col-7">
+        <div id="metamaskAddress"></div>
+      </div>
+
+      <div class="col-3">
+        <input type="text" class="form-control" placeholder="to address" id="toMetamask">
+      </div>
+      <div class="col-1">
+        <input type="text" class="form-control" placeholder="FIL" id="filMetamask">
+      </div>
+      <div class="col">
+        <button type="submit" class="btn btn-primary" id="sendMetamask">Send</button>
+      </div>
+    </div>
+
+  </div>
+
+  <script type="text/javascript" src="https://unpkg.com/filecoin-publish-test.js@0.0.1-alpha/builds/bundle/filecoin.js"></script>
+
+  <script type="text/javascript" src="../../tests/tools/testnet/credentials/credentials_web.js"></script>
+
+  <script type="text/javascript">
+    const main = async () => {
+      let mnemonicAddress = '';
+      let rpcAddress = '';
+      let rpcAddressSecp = '';
+      let metamaskAddress = '';
+
+      const metamaskHelper = new FilecoinJs.MetamaskSnapHelper({ url: 'http://localhost:8000/rpc/v0', token: LOTUS_AUTH_TOKEN });
+      const err = await metamaskHelper.installFilecoinSnap();
+
+      const httpConnector = new FilecoinJs.HttpJsonRpcConnector({ url: 'http://localhost:8000/rpc/v0', token: LOTUS_AUTH_TOKEN });
+
+      const lotusWalletProvider = new FilecoinJs.HttpJsonRpcWalletProvider(httpConnector);
+
+      const getPass = () => {
+        let password;
+        return () => {
+          if (password) return password;
+          password = prompt('Mnemonic wallet password?');
+          setTimeout(() => password = undefined, 100000);
+          return password;
+        }
+      }
+
+      const mnemonicWalletProvider = new FilecoinJs.MnemonicWalletProvider(
+        httpConnector,
+        'equip will roof matter pink blind book anxiety banner elbow sun young',
+        '',
+        `m/44'/1'/0/0/1`
+      );
+
+      const metamaskWalletProvider = new FilecoinJs.MetamaskWalletProvider(httpConnector, metamaskHelper.filecoinApi)
+
+      const sendLotus = async (from, toId, filId) => {
+        const to = document.getElementById(toId).value;
+        const amount = document.getElementById(filId).value;
+
+        const msg = await lotusWalletProvider.sendMessage({
+          From: from,
+          To: to,
+          GasLimit: 0,
+          GasFeeCap: new BigNumber(0),
+          GasPremium: new BigNumber(0),
+          Value: new BigNumber(amount),
+          Method: 0,
+          Params: '',
+          Version: 0,
+          Nonce: 0
+        });
+        console.log(msg);
+      }
+
+      const sendSigner = async (from, toId, filId) => {
+        try {
+          const to = document.getElementById(toId).value;
+          const amount = document.getElementById(filId).value;
+
+          const message = await mnemonicWalletProvider.createMessage({
+            To: to,
+            From: from,
+            Value: new BigNumber(amount),
+          });
+
+          const signedMessage = await mnemonicWalletProvider.signMessage(message);
+
+          const res = await mnemonicWalletProvider.sendSignedMessage(signedMessage);
+        } catch (e) {
+          alert(e.message);
+        }
+
+      }
+
+      const sendMetamask = async (from, toId, filId) => {
+        const to = document.getElementById(toId).value;
+        const amount = document.getElementById(filId).value;
+
+        try {
+          const to = document.getElementById(toId).value;
+          const amount = document.getElementById(filId).value;
+
+          const message = await metamaskWalletProvider.createMessage({
+            To: to,
+            From: from,
+            Value: new BigNumber(amount),
+          });
+
+          const signedMessage = await metamaskWalletProvider.signMessage(message);
+          const res = await metamaskWalletProvider.sendSignedMessage(signedMessage);
+        } catch (e) {
+          alert(e.message);
+        }
+      }
+
+      const updateAddresses = async () => {
+        const availableAccounts = await lotusWalletProvider.getAccounts();
+        mnemonicAddress = await mnemonicWalletProvider.getDefaultAccount();
+        rpcAddress = await lotusWalletProvider.getDefaultAccount();
+        rpcAddressSecp = availableAccounts[0];
+        try {
+          metamaskAddress = await metamaskWalletProvider.getDefaultAccount();
+        } catch (e) {
+          console.log('metamask error',e);
+        }
+
+        console.log(metamaskAddress);
+        const mnemonicBalance = await mnemonicWalletProvider.getBalance(mnemonicAddress);
+        const rpcBalance = await lotusWalletProvider.getBalance(rpcAddress);
+        const rpcSecpBalance = await lotusWalletProvider.getBalance(rpcAddressSecp);
+        let metamaskBalance = '';
+        try {
+          metamaskBalance = await metamaskWalletProvider.getBalance(metamaskAddress);
+        } catch (e) {
+          console.log('metamask error',e);
+        }
+
+        document.getElementById('mnemonicAddress').innerHTML = `${mnemonicAddress} <br/> (${mnemonicBalance})`;
+        document.getElementById('rpcAddress').innerHTML = `${rpcAddress} <br/> (${rpcBalance})`;
+        document.getElementById('rpcAddressSecp').innerHTML = `${rpcAddressSecp} <br/> (${rpcSecpBalance})`;
+        document.getElementById('metamaskAddress').innerHTML = `${metamaskAddress} <br/> (${metamaskBalance})`;
+      }
+
+      document.getElementById('sendDefault').onclick = () => sendLotus(rpcAddress, "toDefault", "filDefault");
+      document.getElementById('sendSecp').onclick = () => sendLotus(rpcAddressSecp, "toSecp", "filSecp");
+      document.getElementById('sendMnemonic').onclick = () => sendSigner(mnemonicAddress, "toMnemonic", "filMnemonic");
+      document.getElementById('sendMetamask').onclick = () => sendMetamask(metamaskAddress, "toMetamask", "filMetamask");
+
+      await updateAddresses();
+    };
+
+    main().then(console.log).catch(console.error);
+  </script>
+</body>
+
+</html>
