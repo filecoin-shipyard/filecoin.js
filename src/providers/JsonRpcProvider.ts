@@ -32,7 +32,14 @@ import {
   MarketDeal,
   DealID,
   MinerSectors,
-  ComputeStateOutput, DataCap, PaddedPieceSize, DealCollateralBounds, CirculatingSupply, HeadChange,
+  ComputeStateOutput,
+  DataCap,
+  PaddedPieceSize,
+  DealCollateralBounds,
+  CirculatingSupply,
+  HeadChange,
+  ObjStat,
+  BlockHeader,
 } from './Types';
 import { Connector } from '../connectors/Connector';
 import { WsJsonRpcConnector } from '../connectors/WsJsonRpcConnector';
@@ -128,9 +135,9 @@ export class JsonRpcProvider {
    * returns the block specified by the given CID
    * @param blockCid
    */
-  public async getBlock(blockCid: Cid): Promise<TipSet> {
+  public async getBlock(blockCid: Cid): Promise<BlockHeader> {
     const ret = await this.conn.request({ method: 'Filecoin.ChainGetBlock', params: [blockCid] });
-    return ret as TipSet;
+    return ret as BlockHeader;
   }
 
   /**
@@ -170,12 +177,73 @@ export class JsonRpcProvider {
   }
 
   /**
+   * returns statistics about the graph referenced by 'obj'.
+   *
+   * @remarks
+   * If 'base' is also specified, then the returned stat will be a diff between the two objects.
+   */
+  public async statObj(obj: Cid, base?: Cid): Promise<ObjStat> {
+    const stat: ObjStat = await this.conn.request({ method: 'Filecoin.ChainStatObj', params: [obj, base] });
+    return stat;
+  }
+
+  /**
+   * Forcefully sets current chain head. Use with caution.
+   * @param tipSetKey
+   */
+  public async setHead(tipSetKey: TipSetKey) {
+    await this.conn.request({ method: 'Filecoin.ChainSetHead', params: [tipSetKey] });
+  }
+
+  /**
+   * Returns the genesis tipset.
+   * @param tipSet
+   */
+  public async getGenesis(): Promise<TipSet> {
+    const genesis: TipSet = await this.conn.request({ method: 'Filecoin.ChainGetGenesis', params: [] });
+    return genesis;
+  }
+
+  // TODO: Go API method signature returns BigInt. Replace string with BN
+  /**
+   * Computes weight for the specified tipset.
+   * @param tipSetKey
+   */
+  public async getTipSetWeight(tipSetKey?: TipSetKey): Promise<string> {
+    const weight: string = await this.conn.request({ method: 'Filecoin.ChainTipSetWeight', params: [tipSetKey] });
+    return weight;
+  }
+
+  /**
    * looks back for a tipset at the specified epoch.
    * @param epochNumber
    */
   public async getTipSetByHeight(epochNumber: number): Promise<TipSet> {
     const ret: TipSet = await this.conn.request({ method: 'Filecoin.ChainGetTipSetByHeight', params: [epochNumber, []] });
     return ret;
+  }
+
+  /**
+   * Returns a set of revert/apply operations needed to get from
+   * @param from
+   * @param to
+   */
+  public async getPath(from: TipSetKey, to: TipSetKey): Promise<HeadChange[]> {
+    const path: HeadChange[] = await this.conn.request({ method: 'Filecoin.ChainGetPath', params: [from, to] });
+    return path;
+  }
+
+  // TODO: Fix error: 500 Internal Server Error
+  /**
+   * Returns a stream of bytes with CAR dump of chain data.
+   * @param nroots
+   * @param tipSetKey
+   *
+   * @remarks The exported chain data includes the header chain from the given tipset back to genesis, the entire genesis state, and the most recent 'nroots' state trees.
+   */
+  public async export(nroots: ChainEpoch, tipSetKey: TipSetKey): Promise<any> {
+    const path: HeadChange[] = await this.conn.request({ method: 'Filecoin.ChainExport', params: [nroots, tipSetKey] });
+    return path;
   }
 
   /**

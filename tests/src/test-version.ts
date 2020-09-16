@@ -2,10 +2,8 @@ import assert from "assert";
 import { LOTUS_AUTH_TOKEN } from "../tools/testnet/credentials/credentials";
 import { JsonRpcProvider } from '../../src/providers/JsonRpcProvider';
 import { HttpJsonRpcConnector } from '../../src/connectors/HttpJsonRpcConnector';
-import { HttpJsonRpcWalletProvider } from '../../src/providers/wallet/HttpJsonRpcWalletProvider';
 import { WsJsonRpcConnector } from '../../src/connectors/WsJsonRpcConnector';
 import Timer = NodeJS.Timer;
-import BigNumber from 'bignumber.js';
 
 const httpConnector = new HttpJsonRpcConnector({ url: 'http://localhost:8000/rpc/v0', token: LOTUS_AUTH_TOKEN });
 const wsConnector = new WsJsonRpcConnector({ url: 'ws://localhost:8000/rpc/v0', token: LOTUS_AUTH_TOKEN });
@@ -126,19 +124,6 @@ describe("Connection test", function () {
     const provider = new JsonRpcProvider(wsConnector);
     const messages = await provider.getParentMessages(blocksWithMessages[0]);
     assert.strictEqual(typeof messages[0].Message.Nonce, "number", "invalid message");
-    await provider.release();
-  });
-
-  it("should check obj exists in the chain [http]", async function() {
-    const con = new JsonRpcProvider(httpConnector);
-    const isInChain = await con.hasObj(blocksWithMessages[0]);
-    assert.strictEqual(isInChain, true, "CID doesn't exists in the chain blockstore");
-  });
-
-  it("should check obj exists in the chain [ws]", async function() {
-    const provider = new JsonRpcProvider(wsConnector);
-    const isInChain = await provider.hasObj(blocksWithMessages[0]);
-    assert.strictEqual(isInChain, true, "CID doesn't exists in the chain blockstore");
     await provider.release();
   });
 
