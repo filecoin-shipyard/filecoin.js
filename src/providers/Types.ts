@@ -625,6 +625,7 @@ export class MarketBalance {
 }
 
 export type PaddedPieceSize = number;
+export type UnpaddedPieceSize = number;
 
 export class DealProposal {
   PieceCID!: Cid;
@@ -708,6 +709,189 @@ export interface SignedMessage {
   Message: Message;
   Signature: Signature;
 };
+
+export type StoreID = number;
+
+export class FileRef {
+  Path!: string;
+  IsCAR!: boolean;
+}
+
+export class ImportRes {
+  Root!: Cid;
+  ImportID!: StoreID;
+}
+
+/**
+ * StorageDealStatus is the local status of a StorageDeal.
+ *
+ * @remarks This status has meaning in the context of this module only - it is not recorded on chain
+ */
+export type StorageDealStatus = number;
+
+/**
+ * DataRef is a reference for how data will be transferred for a given storage deal
+ */
+export class DataRef {
+  TransferType!: string;
+  Root!: Cid;
+  /**
+   * Optional for non-manual transfer, will be recomputed from the data if not given
+   */
+  PieceCid?: Cid;
+  /**
+   * Optional for non-manual transfer, will be recomputed from the data if not given
+   */
+  PieceSize?: UnpaddedPieceSize;
+}
+export class DealInfo {
+  ProposalCid!: Cid;
+  State!: StorageDealStatus;
+  /**
+   * More information about deal state, particularly errors
+   */
+  Message!: string;
+  Provider!: Address;
+  DataRef!: DataRef;
+  PieceCID!: Cid;
+  Size!: number;
+// TODO: Type string
+  PricePerEpoch!: any;
+  Duration!: number;
+
+  DealID!: DealID;
+  CreationTime!: string;
+}
+
+export class StartDealParams {
+  Data!: DataRef;
+  Wallet!: Address;
+  Miner!: Address;
+  EpochPrice!: string;
+  MinBlocksDuration!: number;
+  ProviderCollateral?: string;
+  DealStartEpoch?: ChainEpoch;
+  FastRetrieval?: boolean;
+  VerifiedDeal?: boolean;
+}
+
+/**
+ * ID is a libp2p peer identity
+ */
+export type ID = string;
+
+/**
+ * RetrievalPeer is a provider address/peer.ID pair (everything needed to make deals for with a miner)
+ */
+export class RetrievalPeer {
+  Address!: Address;
+  ID?: ID;
+  PieceCID?: Cid;
+}
+
+export class QueryOffer {
+  Err!: string;
+  Root!: Cid;
+  Piece!: Cid;
+  Size!: number;
+  MinPrice!: string;
+  UnsealPrice!: string;
+  PaymentInterval!: number;
+  PaymentIntervalIncrease!: number;
+  Miner!: Address;
+  MinerPeer!: RetrievalPeer;
+}
+
+export class RetrievalOrder {
+  Root!: Cid;
+  Piece?:Cid;
+  Size!: number;
+  // TODO: BN val
+  Total!: string;
+  // TODO: BN val
+  UnsealPrice!: string;
+  PaymentInterval!: number;
+  PaymentIntervalIncrease!: number;
+  Client!: Address;
+  Miner!: Address;
+  MinerPeer!: RetrievalPeer;
+}
+
+/**
+ * StorageAsk defines the parameters by which a miner will choose to accept or reject a deal.
+ *
+ * @remarks making a storage deal proposal which matches the miner's ask is a precondition, but not sufficient to ensure the deal is accepted (the storage provider may run its own decision logic).
+ */
+export class StorageAsk {
+  /**
+   * Price per GiB / Epoch
+   */
+  Price!: TokenAmount;
+  VerifiedPrice!: TokenAmount;
+  MinPieceSize!: PaddedPieceSize;
+  MaxPieceSize!: PaddedPieceSize;
+  Miner!: Address;
+  Timestamp!: ChainEpoch;
+  Expiry!: ChainEpoch;
+  SeqNo!: number;
+}
+
+/**
+ * SignedStorageAsk is an ask signed by the miner's private key
+ */
+export class SignedStorageAsk {
+  Ask!: StorageAsk;
+  Signature!: Signature;
+}
+
+export class CommPRet {
+  Root!: Cid;
+  Size!: UnpaddedPieceSize;
+}
+
+export class DataSize {
+  PayloadSize!: number;
+  PieceSize!: PaddedPieceSize;
+}
+
+/**
+ * TransferID is an identifier for a data transfer, shared between request/responder and unique to the requester.
+ */
+export type TransferID = number;
+
+export class DataTransferChannel {
+  TransferID!: TransferID;
+  Status!: number;
+  BaseCID!: Cid;
+  IsInitiator!: boolean;
+  IsSender!: boolean;
+  Voucher!: string;
+  Message!: string;
+  OtherPeer!: PeerID;
+  Transferred!: number;
+}
+
+export class Import {
+  Key!: StoreID;
+  Err!: string;
+  Root!: Cid;
+  Source!: string;
+  FilePath!: string;
+}
+
+/**
+ * DealStatus is the status of a retrieval deal returned by a provider in a DealResponse
+ */
+export type DealStatus = number;
+export type ClientEvent = number;
+
+export class RetrievalEvent {
+  Event!: ClientEvent;
+  Status!: DealStatus;
+  BytesReceived!: number;
+  FundsSpent!: TokenAmount;
+  Err!: string;
+}
 
 /**
  * Interface to be implemented by all providers.

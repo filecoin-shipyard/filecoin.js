@@ -172,6 +172,9 @@ source ${base_dir}/scripts/env-client.bash
 ${base_dir}/scripts/hit_faucet.bash
 EOF
 
+rm "${base_dir}/original-data.txt"
+cat /dev/urandom | env LC_CTYPE=C tr -dc 'a-zA-Z0-9' | fold -w 900 | head -n 1 > "${base_dir}/original-data.txt"
+
 chmod +x "${base_dir}/scripts/start_bootstrap_daemon.bash"
 chmod +x "${base_dir}/scripts/start_networking_and_genesis_daemon.bash"
 chmod +x "${base_dir}/scripts/start_bootstrap_miner_daemon.bash"
