@@ -14,7 +14,7 @@ returns the block specified by the given CID
 <b>Signature:</b>
 
 ```typescript
-getBlock(blockCid: Cid): Promise<TipSet>;
+getBlock(blockCid: Cid): Promise<BlockHeader>;
 ```
 
 ## Parameters
@@ -25,4 +25,4 @@ getBlock(blockCid: Cid): Promise<TipSet>;
 
 <b>Returns:</b>
 
-Promise&lt;TipSet&gt;
+Promise&lt;BlockHeader&gt;
