@@ -20,11 +20,35 @@
       "development-workflow": {
         "title": "Development workflow"
       },
+      "ws-vs-http": {
+        "title": "WS vs HTTP"
+      },
+      "setup-lotus-provider": {
+        "title": "Setup lotus provider"
+      },
+      "setup-mnemonic-provider": {
+        "title": "Setup mnemonic provider"
+      },
+      "setup-metamask-provider": {
+        "title": "Setup metamask provider"
+      },
+      "send-message": {
+        "title": "Send message"
+      },
       "sign-message": {
         "title": "Sign message"
       },
-      "send-fil": {
-        "title": "Send FIL tokens"
+      "verify-message": {
+        "title": "Verify message"
+      },
+      "check-if-mined": {
+        "title": "Check if message is mined"
+      },
+      "payment-channels": {
+        "title": "Payment channels"
+      },
+      "state-methods": {
+        "title": "State methods"
       },
       "api/filecoin.js.httpjsonrpcconnector._constructor_": {
         "title": "HttpJsonRpcConnector.(constructor)"
@@ -462,7 +486,9 @@
     },
     "categories": {
       "Getting started": "Getting started",
-      "Guides": "Guides",
+      "Setup Wallet Providers": "Setup Wallet Providers",
+      "Using a provider": "Using a provider",
+      "Extra": "Extra",
       "Contributing": "Contributing"
     }
   },
