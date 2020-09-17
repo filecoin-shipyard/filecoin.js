@@ -934,7 +934,6 @@ export class JsonRpcProvider {
         {
           method: 'Filecoin.ClientGetDealUpdates',
         },
-        'xrpc.ch.val',
         data => {
           cb(data);
         });
@@ -953,7 +952,6 @@ export class JsonRpcProvider {
         {
           method: 'Filecoin.ClientRetrieveWithEvents',
         },
-        'xrpc.ch.val',
         data => {
           cb(data);
         });
@@ -966,7 +964,6 @@ export class JsonRpcProvider {
         {
           method: 'Filecoin.ClientDataTransferUpdates',
         },
-        'xrpc.ch.val',
         data => {
           cb(data);
         });
