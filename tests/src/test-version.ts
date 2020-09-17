@@ -9,7 +9,6 @@ const httpConnector = new HttpJsonRpcConnector({ url: 'http://localhost:8000/rpc
 const wsConnector = new WsJsonRpcConnector({ url: 'ws://localhost:8000/rpc/v0', token: LOTUS_AUTH_TOKEN });
 
 describe("Connection test", function () {
-
   it("check version [http]", async function () {
     const con = new JsonRpcProvider(httpConnector);
     const version = await con.version();
@@ -56,7 +55,7 @@ describe("Connection test", function () {
       const type = headChange[0].Type;
       assert.equal(typeof(type), "string", "wrong chain head type");
       provider.release().then(() => { done() });
-    })
+    });
   });
 
   it("should be notified on chain head change [http]", function(done) {
