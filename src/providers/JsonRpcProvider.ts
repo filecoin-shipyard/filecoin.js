@@ -118,7 +118,6 @@ export class JsonRpcProvider {
         {
           method: 'Filecoin.ChainNotify',
         },
-        'xrpc.ch.val',
         data => {
           cb(data);
         });

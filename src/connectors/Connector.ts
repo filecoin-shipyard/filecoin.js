@@ -14,6 +14,8 @@ export class JsonRpcResponse {
   public jsonrpc!: string;
   public result?: any;
   public error?: JsonRpcErrorResponse;
+  public method?: string;
+  public params?: any;
 }
 
 export class JsonRpcError extends Error {
@@ -52,6 +54,7 @@ export interface Connector {
   url: string;
   token?: string | undefined;
   disconnect(): Promise<any>;
+  connect(): Promise<any>;
   request(req: RequestArguments): Promise<any>;
   on(event: 'connected' | 'disconnected', listener: (...args: any[]) => void): this;
 }
