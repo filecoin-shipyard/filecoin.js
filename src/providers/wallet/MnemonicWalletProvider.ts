@@ -25,6 +25,12 @@ export class MnemonicWalletProvider extends HttpJsonRpcWalletProvider {
     return await this.signer.getDefaultAccount();
   }
 
+  public async sendMessage(msg: Message): Promise<SignedMessage> {
+    const signedMessage: SignedMessage = await this.signMessage(msg);
+    await this.sendSignedMessage(signedMessage);
+    return signedMessage as SignedMessage;
+  }
+
   public async signMessage(msg: Message): Promise<SignedMessage> {
     return await this.signer.sign(msg);
   }
@@ -37,7 +43,7 @@ export class MnemonicWalletProvider extends HttpJsonRpcWalletProvider {
     return this.signer;
   }
 
-  public async verify(data: string | ArrayBuffer, sign: Signature): Promise<boolean> {
+  public async verify(address: string, data: string | ArrayBuffer, sign: Signature): Promise<boolean> {
     return undefined as any;
   }
 }

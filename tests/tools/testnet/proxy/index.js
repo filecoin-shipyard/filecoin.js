@@ -1,9 +1,6 @@
 var http = require('http'),
-  httpProxy = require('http-proxy'),
-  fs = require('fs');
-//
-// Setup our server to proxy standard HTTP requests
-//
+    httpProxy = require('http-proxy');
+
 var proxy = new httpProxy.createProxyServer({
   target: {
     host: 'localhost',

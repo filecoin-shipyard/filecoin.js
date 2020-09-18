@@ -62,7 +62,7 @@ const CHAIN_NOTIFY_INTERVAL = 2000;
 
 export class JsonRpcProvider {
   public conn: Connector;
-  private intervals: {[key: string]: NodeJS.Timeout};
+  private intervals: { [key: string]: NodeJS.Timeout };
 
   constructor(connector: Connector) {
     this.intervals = {};
@@ -307,7 +307,7 @@ export class JsonRpcProvider {
    * @param tipSetKey
    * @param toHeight
    */
-  public async listMessages(filter: { To?: string, From?: string }, tipSetKey?: TipSetKey, toHeight?: number):Promise<Cid[]> {
+  public async listMessages(filter: { To?: string, From?: string }, tipSetKey?: TipSetKey, toHeight?: number): Promise<Cid[]> {
     const messages: Cid[] = await this.conn.request({ method: 'Filecoin.StateListMessages', params: [filter, tipSetKey, toHeight] });
 
     return messages ? messages : [];
@@ -633,7 +633,7 @@ export class JsonRpcProvider {
    * @param cid1
    * @param cid2
    */
-  public async changedActors(cid1?: Cid, cid2?: Cid): Promise<{[k: string]: Actor}> {
+  public async changedActors(cid1?: Cid, cid2?: Cid): Promise<{ [k: string]: Actor }> {
     const actors = await this.conn.request({
       method: 'Filecoin.StateChangedActors',
       params: [cid1, cid2]
@@ -972,5 +972,76 @@ export class JsonRpcProvider {
           cb(data);
         });
     }
+  }
+
+  //Payment channel methods
+  /*
+  PaychNewPayment(ctx context.Context, from, to address.Address, vouchers []VoucherSpec) (*PaymentInfo, error)
+  */
+
+  public async getPaymentChannel(from: string, to: string, amount: string): Promise<any> {
+    const ret = await this.conn.request({ method: 'Filecoin.PaychGet', params: [from, to, amount] });
+    return ret;
+  }
+
+  public async getWaitReadyPaymentChannel(cid: Cid): Promise<any> {
+    const ret = await this.conn.request({ method: 'Filecoin.PaychGetWaitReady', params: [cid] });
+    return ret;
+  }
+
+  public async getPaymentChannelList(): Promise<any> {
+    const ret = await this.conn.request({ method: 'Filecoin.PaychList', params: [] });
+    return ret;
+  }
+
+  public async getPaymentChannelStatus(address: string): Promise<any> {
+    const ret = await this.conn.request({ method: 'Filecoin.PaychStatus', params: [address] });
+    return ret;
+  }
+
+  public async PaymentChannelAllocateLane(address: string): Promise<any> {
+    const ret = await this.conn.request({ method: 'Filecoin.PaychAllocateLane', params: [address] });
+    return ret;
+  }
+
+  public async PaymentChannelSettle(address: string): Promise<any> {
+    const ret = await this.conn.request({ method: 'Filecoin.PaychSettle', params: [address] });
+    return ret;
+  }
+
+  public async PaymentChannelCollect(address: string): Promise<any> {
+    const ret = await this.conn.request({ method: 'Filecoin.PaychCollect', params: [address] });
+    return ret;
+  }
+
+  //Payment channel vouchers methods
+  public async PaymentChannelVoucherCreate(address: string, amount: string, lane: number): Promise<any> {
+    const ret = await this.conn.request({ method: 'Filecoin.PaychVoucherCreate', params: [address, amount, lane] });
+    return ret;
+  }
+
+  public async PaymentChannelVoucherList(address: string): Promise<any> {
+    const ret = await this.conn.request({ method: 'Filecoin.PaychVoucherList', params: [address] });
+    return ret;
+  }
+
+  public async PaymentChannelVoucherCheckValid(address: string, signedVoucher: any): Promise<any> {
+    const ret = await this.conn.request({ method: 'Filecoin.PaychVoucherCheckValid', params: [address, signedVoucher] });
+    return ret;
+  }
+
+  public async PaymentChannelVoucherAdd(address: string, signedVoucher: any, proof: any, minDelta: string): Promise<any> {
+    const ret = await this.conn.request({ method: 'Filecoin.PaychVoucherAdd', params: [address, signedVoucher, proof, minDelta] });
+    return ret;
+  }
+
+  public async PaymentChannelVoucherCheckSpendable(address: string, signedVoucher: any, secret: any, proof: any): Promise<any> {
+    const ret = await this.conn.request({ method: 'Filecoin.PaychVoucherCheckSpendable', params: [address, signedVoucher, secret, proof] });
+    return ret;
+  }
+
+  public async PaymentChannelVoucherVoucherSubmit(address: string, signedVoucher: any, secret: any, proof: any): Promise<any> {
+    const ret = await this.conn.request({ method: 'Filecoin.PaychVoucherSubmit', params: [address, signedVoucher, secret, proof] });
+    return ret;
   }
 }

@@ -20,31 +20,31 @@ describe("Send message", async function () {
     const accounts = await walletLotusHttp.getAccounts();
     const secpAddress = accounts[0];
 
-    let pch = await walletLotusHttp.getPaymentChannel(defaultAccount, secpAddress,"300");
+    let pch = await con.getPaymentChannel(defaultAccount, secpAddress,"300");
     const waitSentinel = pch.WaitSentinel;
     console.log(pch);
 
     //don't know how this works
-    const channelAddress = await walletLotusHttp.getWaitReadyPaymentChannel(waitSentinel);
+    const channelAddress = await con.getWaitReadyPaymentChannel(waitSentinel);
     console.log(channelAddress);
 
-    const pchStatus = await walletLotusHttp.getPaymentChannelStatus(channelAddress);
+    const pchStatus = await con.getPaymentChannelStatus(channelAddress);
     console.log(pchStatus);
 
-    const pchLane = await walletLotusHttp.PaymentChannelAllocateLane(channelAddress);
+    const pchLane = await con.PaymentChannelAllocateLane(channelAddress);
     console.log(pchLane);
 
-    const signedVoucher = await walletLotusHttp.PaymentChannelVoucherCreate(channelAddress,'3',0);
+    const signedVoucher = await con.PaymentChannelVoucherCreate(channelAddress,'3',0);
     console.log(signedVoucher);
 
-    const signedVouchersList = await walletLotusHttp.PaymentChannelVoucherList(channelAddress);
+    const signedVouchersList = await con.PaymentChannelVoucherList(channelAddress);
     console.log(signedVouchersList);
 
     //i think this should be called by the recipient
-    const status = await walletLotusHttp.PaymentChannelVoucherAdd(channelAddress, signedVouchersList[0], null, '0');
+    const status = await con.PaymentChannelVoucherAdd(channelAddress, signedVouchersList[0], null, '0');
     console.log(status);
 
-    const signedVouchersList2 = await walletLotusHttp.PaymentChannelVoucherList(channelAddress);
+    const signedVouchersList2 = await con.PaymentChannelVoucherList(channelAddress);
     console.log(signedVouchersList2);
 
 
@@ -52,7 +52,7 @@ describe("Send message", async function () {
     //console.log(await walletLotusHttp.getDefaultAccount());
 
     //this can be called by either sender or recipient and closes the payment channel
-    const settleResult = await walletLotusHttp.PaymentChannelSettle(channelAddress);
+    const settleResult = await con.PaymentChannelSettle(channelAddress);
     console.log(settleResult);
 
     //const collectResult = await walletLotusHttp.PaymentChannelCollect(channelAddress);
