@@ -1,4 +1,4 @@
-import { Message, SignedMessage, Signature, Cid, MessagePartial } from '../Types';
+import { Message, SignedMessage, Signature, Cid, MessagePartial, KeyInfo } from '../Types';
 import { WalletProvider } from './WalletProvider';
 import { HttpJsonRpcConnector, JsonRpcConnectionOptions } from '../../connectors/HttpJsonRpcConnector';
 import { toBase64 } from '../../utils/data';
@@ -22,9 +22,9 @@ export class HttpJsonRpcWalletProvider implements WalletProvider {
    * create new wallet
    * @param type
    */
-  public async newAccount(type = 1): Promise<string[]> {
+  public async newAccount(type = 1): Promise<string> {
     const ret = await this.conn.request({ method: 'Filecoin.WalletNew', params: [type] });
-    return ret as string[];
+    return ret as string;
   }
 
   /**
@@ -53,9 +53,49 @@ export class HttpJsonRpcWalletProvider implements WalletProvider {
     return ret as string;
   }
 
+  /**
+   * delete address from lotus
+   * @param address
+   */
+  public async deleteWallet(address: string): Promise<any> {
+    const ret = await this.conn.request({ method: 'Filecoin.WalletDelete', params: [address] });
+    return ret as boolean;
+  }
+
+  /**
+  * check if address is in keystore
+  * @param address
+  */
+  public async hasWallet(address: string): Promise<any> {
+    const ret = await this.conn.request({ method: 'Filecoin.WalletHas', params: [address] });
+    return ret as boolean;
+  }
+
+  /**
+   * set default address
+   * @param address
+   */
   public async setDefaultAccount(address: string): Promise<undefined> {
     const ret = await this.conn.request({ method: 'Filecoin.WalletSetDefault', params: [address] });
     return ret as undefined;
+  }
+
+  /**
+   * walletExport returns the private key of an address in the wallet.
+   * @param address
+   */
+  public async walletExport(address: string): Promise<KeyInfo> {
+    const ret = await this.conn.request({ method: 'Filecoin.WalletExport', params: [address] });
+    return ret as KeyInfo;
+  }
+
+  /**
+   * walletImport returns the private key of an address in the wallet.
+   * @param keyInfo
+   */
+  public async walletImport(keyInfo: KeyInfo): Promise<string> {
+    const ret = await this.conn.request({ method: 'Filecoin.WalletImport', params: [keyInfo] });
+    return ret as string;
   }
 
   /**
