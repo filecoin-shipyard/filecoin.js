@@ -20,11 +20,35 @@
       "development-workflow": {
         "title": "Development workflow"
       },
+      "ws-vs-http": {
+        "title": "WS vs HTTP"
+      },
+      "setup-lotus-provider": {
+        "title": "Setup lotus provider"
+      },
+      "setup-mnemonic-provider": {
+        "title": "Setup mnemonic provider"
+      },
+      "setup-metamask-provider": {
+        "title": "Setup metamask provider"
+      },
+      "send-message": {
+        "title": "Send message"
+      },
       "sign-message": {
         "title": "Sign message"
       },
-      "send-fil": {
-        "title": "Send FIL tokens"
+      "verify-message": {
+        "title": "Verify message"
+      },
+      "check-if-mined": {
+        "title": "Check if message is mined"
+      },
+      "payment-channels": {
+        "title": "Payment channels"
+      },
+      "state-methods": {
+        "title": "State methods"
       },
       "api/filecoin.js.httpjsonrpcconnector._constructor_": {
         "title": "HttpJsonRpcConnector.(constructor)"
@@ -152,6 +176,9 @@
       "api/filecoin.js.jsonrpcprovider.allminerfaults": {
         "title": "JsonRpcProvider.allMinerFaults() method"
       },
+      "api/filecoin.js.jsonrpcprovider.calccommp": {
+        "title": "JsonRpcProvider.calcCommP() method"
+      },
       "api/filecoin.js.jsonrpcprovider.chainnotify": {
         "title": "JsonRpcProvider.chainNotify() method"
       },
@@ -167,8 +194,23 @@
       "api/filecoin.js.jsonrpcprovider.conn": {
         "title": "JsonRpcProvider.conn property"
       },
+      "api/filecoin.js.jsonrpcprovider.datatransferupdates": {
+        "title": "JsonRpcProvider.dataTransferUpdates() method"
+      },
       "api/filecoin.js.jsonrpcprovider.dealprovidercollateralbounds": {
         "title": "JsonRpcProvider.dealProviderCollateralBounds() method"
+      },
+      "api/filecoin.js.jsonrpcprovider.dealsize": {
+        "title": "JsonRpcProvider.dealSize() method"
+      },
+      "api/filecoin.js.jsonrpcprovider.export": {
+        "title": "JsonRpcProvider.export() method"
+      },
+      "api/filecoin.js.jsonrpcprovider.finddata": {
+        "title": "JsonRpcProvider.findData() method"
+      },
+      "api/filecoin.js.jsonrpcprovider.gencar": {
+        "title": "JsonRpcProvider.genCar() method"
       },
       "api/filecoin.js.jsonrpcprovider.getactor": {
         "title": "JsonRpcProvider.getActor() method"
@@ -178,6 +220,15 @@
       },
       "api/filecoin.js.jsonrpcprovider.getblockmessages": {
         "title": "JsonRpcProvider.getBlockMessages() method"
+      },
+      "api/filecoin.js.jsonrpcprovider.getdealinfo": {
+        "title": "JsonRpcProvider.getDealInfo() method"
+      },
+      "api/filecoin.js.jsonrpcprovider.getdealupdates": {
+        "title": "JsonRpcProvider.getDealUpdates() method"
+      },
+      "api/filecoin.js.jsonrpcprovider.getgenesis": {
+        "title": "JsonRpcProvider.getGenesis() method"
       },
       "api/filecoin.js.jsonrpcprovider.gethead": {
         "title": "JsonRpcProvider.getHead() method"
@@ -191,17 +242,38 @@
       "api/filecoin.js.jsonrpcprovider.getparentreceipts": {
         "title": "JsonRpcProvider.getParentReceipts() method"
       },
+      "api/filecoin.js.jsonrpcprovider.getpath": {
+        "title": "JsonRpcProvider.getPath() method"
+      },
       "api/filecoin.js.jsonrpcprovider.getreceipt": {
         "title": "JsonRpcProvider.getReceipt() method"
       },
       "api/filecoin.js.jsonrpcprovider.gettipsetbyheight": {
         "title": "JsonRpcProvider.getTipSetByHeight() method"
       },
+      "api/filecoin.js.jsonrpcprovider.gettipsetweight": {
+        "title": "JsonRpcProvider.getTipSetWeight() method"
+      },
+      "api/filecoin.js.jsonrpcprovider.haslocal": {
+        "title": "JsonRpcProvider.hasLocal() method"
+      },
       "api/filecoin.js.jsonrpcprovider.hasobj": {
         "title": "JsonRpcProvider.hasObj() method"
       },
+      "api/filecoin.js.jsonrpcprovider.import": {
+        "title": "JsonRpcProvider.import() method"
+      },
       "api/filecoin.js.jsonrpcprovider.listactors": {
         "title": "JsonRpcProvider.listActors() method"
+      },
+      "api/filecoin.js.jsonrpcprovider.listdatatransfers": {
+        "title": "JsonRpcProvider.listDataTransfers() method"
+      },
+      "api/filecoin.js.jsonrpcprovider.listdeals": {
+        "title": "JsonRpcProvider.listDeals() method"
+      },
+      "api/filecoin.js.jsonrpcprovider.listimports": {
+        "title": "JsonRpcProvider.listImports() method"
       },
       "api/filecoin.js.jsonrpcprovider.listmessages": {
         "title": "JsonRpcProvider.listMessages() method"
@@ -257,6 +329,9 @@
       "api/filecoin.js.jsonrpcprovider.minerprovingdeadline": {
         "title": "JsonRpcProvider.minerProvingDeadline() method"
       },
+      "api/filecoin.js.jsonrpcprovider.minerqueryoffer": {
+        "title": "JsonRpcProvider.minerQueryOffer() method"
+      },
       "api/filecoin.js.jsonrpcprovider.minerrecoveries": {
         "title": "JsonRpcProvider.minerRecoveries() method"
       },
@@ -269,6 +344,9 @@
       "api/filecoin.js.jsonrpcprovider.networkname": {
         "title": "JsonRpcProvider.networkName() method"
       },
+      "api/filecoin.js.jsonrpcprovider.queryask": {
+        "title": "JsonRpcProvider.queryAsk() method"
+      },
       "api/filecoin.js.jsonrpcprovider.readobj": {
         "title": "JsonRpcProvider.readObj() method"
       },
@@ -277,6 +355,18 @@
       },
       "api/filecoin.js.jsonrpcprovider.release": {
         "title": "JsonRpcProvider.release() method"
+      },
+      "api/filecoin.js.jsonrpcprovider.removeimport": {
+        "title": "JsonRpcProvider.removeImport() method"
+      },
+      "api/filecoin.js.jsonrpcprovider.retrieve": {
+        "title": "JsonRpcProvider.retrieve() method"
+      },
+      "api/filecoin.js.jsonrpcprovider.retrievetryrestartinsufficientfunds": {
+        "title": "JsonRpcProvider.retrieveTryRestartInsufficientFunds() method"
+      },
+      "api/filecoin.js.jsonrpcprovider.retrievewithevents": {
+        "title": "JsonRpcProvider.retrieveWithEvents() method"
       },
       "api/filecoin.js.jsonrpcprovider.searchmsg": {
         "title": "JsonRpcProvider.searchMsg() method"
@@ -293,11 +383,20 @@
       "api/filecoin.js.jsonrpcprovider.sectorprecommitinfo": {
         "title": "JsonRpcProvider.sectorPreCommitInfo() method"
       },
+      "api/filecoin.js.jsonrpcprovider.sethead": {
+        "title": "JsonRpcProvider.setHead() method"
+      },
+      "api/filecoin.js.jsonrpcprovider.startdeal": {
+        "title": "JsonRpcProvider.startDeal() method"
+      },
       "api/filecoin.js.jsonrpcprovider.statecall": {
         "title": "JsonRpcProvider.stateCall() method"
       },
       "api/filecoin.js.jsonrpcprovider.statereplay": {
         "title": "JsonRpcProvider.stateReplay() method"
+      },
+      "api/filecoin.js.jsonrpcprovider.statobj": {
+        "title": "JsonRpcProvider.statObj() method"
       },
       "api/filecoin.js.jsonrpcprovider.stopchainnotify": {
         "title": "JsonRpcProvider.stopChainNotify() method"
@@ -462,7 +561,9 @@
     },
     "categories": {
       "Getting started": "Getting started",
-      "Guides": "Guides",
+      "Setup Wallet Providers": "Setup Wallet Providers",
+      "Using a provider": "Using a provider",
+      "Extra": "Extra",
       "Contributing": "Contributing"
     }
   },

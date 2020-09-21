@@ -5,5 +5,5 @@ export interface WalletProvider {
   //sendMessage(msg: Message): Promise<SignedMessage>;
   signMessage(msg: Message): Promise<SignedMessage>;
   sign(data: string): Promise<Signature>;
-  verify(data: string | ArrayBuffer, sign: Signature): Promise<boolean>;
+  verify(address: string, data: string | ArrayBuffer, sign: Signature): Promise<boolean>;
 }

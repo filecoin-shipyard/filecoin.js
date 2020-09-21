@@ -32,10 +32,5 @@ import {  } from "filecoin.js";
 For using Filecoin.js library in broswer, include the core library in your HTML file and you're ready to go!
 
 ```html
-<script src="/filecoin.js"></script>
-```
-For deployment use the minified version instead:
-
-```html
-<script src="/filecoin.min.js"></script>
+<script type="text/javascript" src="https://unpkg.com/filecoin.js"></script>
 ```

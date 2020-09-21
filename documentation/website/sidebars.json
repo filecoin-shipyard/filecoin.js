@@ -2,11 +2,24 @@
   "my-docs": {
     "Getting started": [
       "introduction",
-      "installing"
+      "installing",
+      "guides-example",
+      "ws-vs-http"
     ],
-    "Guides": [
+    "Setup Wallet Providers": [
+      "setup-lotus-provider",
+      "setup-mnemonic-provider",
+      "setup-metamask-provider"
+    ],
+    "Using a provider": [
+      "send-message",
       "sign-message",
-      "send-fil"
+      "verify-message",
+      "check-if-mined"
+    ],
+    "Extra": [
+      "payment-channels",
+      "state-methods"
     ],
     "Contributing": [
       "how-to-contribute",
