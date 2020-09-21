@@ -1,6 +1,6 @@
 import { EventEmitter } from 'events';
 import { Connector, JsonRpcResponse, RequestArguments, JsonRpcError, ConnectionError } from './Connector';
-import WebSocket, { OpenEvent } from 'ws';
+import WebSocket from 'isomorphic-ws';
 
 type SubscriptionCallback = (data: any) => void;
 
