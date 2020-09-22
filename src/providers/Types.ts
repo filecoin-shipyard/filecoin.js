@@ -885,6 +885,15 @@ export class Import {
 export type DealStatus = number;
 export type ClientEvent = number;
 
+/**
+ * KeyInfo is used for storing keys in KeyStore
+ */
+export class KeyInfo {
+  Type!: string;
+  PrivateKey!: [];
+}
+
+
 export class RetrievalEvent {
   Event!: ClientEvent;
   Status!: DealStatus;
