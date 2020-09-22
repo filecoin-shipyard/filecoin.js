@@ -1030,7 +1030,12 @@ export class JsonRpcProvider {
     return ret;
   }
 
-  // Auth
+
+  /**
+   * Auth
+   * The Auth method group is used to manage the authorization tokens.
+   */
+
   /**
    * list the permissions for a given authorization token
    * @param token
@@ -1044,8 +1049,8 @@ export class JsonRpcProvider {
    * generate a new authorization token for a given permissions list
    * @param permissions
    */
-  public async authNew(permissions: Permission[]): Promise<any> {
-    const token: any = await this.conn.request({ method: 'Filecoin.AuthNew', params: [permissions] });
+  public async authNew(permissions: Permission[]): Promise<string> {
+    const token: string = await this.conn.request({ method: 'Filecoin.AuthNew', params: [permissions] });
     const tokenAscii = Buffer.from(token, 'base64').toString('ascii');
     return tokenAscii;
   }
