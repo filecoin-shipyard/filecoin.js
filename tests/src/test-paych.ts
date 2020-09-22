@@ -8,7 +8,7 @@ function sleep(ms: any) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-describe("Send message", async function () {
+describe("Payment channel tests", async function () {
   it("Payment channel test [http]", async function () {
     this.timeout(120000);
     const httpConnector = new HttpJsonRpcConnector({ url: 'http://localhost:8000/rpc/v0', token: LOTUS_AUTH_TOKEN });

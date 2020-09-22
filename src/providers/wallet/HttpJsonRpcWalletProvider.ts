@@ -125,8 +125,38 @@ export class HttpJsonRpcWalletProvider implements WalletProvider {
   }
 
   /**
+  * estimate gas fee cap
+  * @param message
+  * @param nblocksincl
+  */
+  public async estimateMessageGasFeeCap(message: Message, nblocksincl: number): Promise<string> {
+    const ret = await this.conn.request({ method: 'Filecoin.GasEstimateFeeCap', params: [message, nblocksincl, []] });
+    return ret as string;
+  }
+
+  /**
+  * estimate gas limit, it fails if message fails to execute.
+  * @param message
+  */
+  public async estimateMessageGasLimit(message: Message): Promise<number> {
+    const ret = await this.conn.request({ method: 'Filecoin.GasEstimateGasLimit', params: [message, []] });
+    return ret as number;
+  }
+
+  /**
+  * estimate gas to succesufully send message, and have it likely be included in the next nblocksincl blocks
+  * @param nblocksincl
+  * @param sender
+  * @param gasLimit
+  */
+  public async estimateMessageGasPremium(nblocksincl: number, sender: string, gasLimit: number): Promise<string> {
+    const ret = await this.conn.request({ method: 'Filecoin.GasEstimateGasPremium', params: [nblocksincl, sender, gasLimit, []] });
+    return ret as string;
+  }
+
+  /**
    * estimate gas to succesufully send message, and have it included in the next 10 blocks
-   * @param msg
+   * @param message
    */
   public async estimateMessageGas(message: Message): Promise<Message> {
     const ret = await this.conn.request({ method: 'Filecoin.GasEstimateMessageGas', params: [message, { MaxFee: "30000000000000" }, []] });
@@ -135,7 +165,7 @@ export class HttpJsonRpcWalletProvider implements WalletProvider {
 
   /**
    * prepare a message for signing, add defaults, and populate nonce and gas related parameters if not provided
-   * @param msg
+   * @param message
    */
   public async createMessage(message: MessagePartial): Promise<Message> {
     let msg: Message = {

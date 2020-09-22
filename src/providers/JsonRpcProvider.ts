@@ -1044,4 +1044,13 @@ export class JsonRpcProvider {
     const ret = await this.conn.request({ method: 'Filecoin.PaychVoucherSubmit', params: [address, signedVoucher, secret, proof] });
     return ret;
   }
+
+  //Mpool
+   /**
+   * returns (a copy of) the current mpool config
+   */
+  public async getMpoolConfig(): Promise<any> {
+    const ret = await this.conn.request({ method: 'Filecoin.MpoolGetConfig', params: [] });
+    return ret;
+  }
 }

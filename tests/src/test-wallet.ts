@@ -53,7 +53,7 @@ describe("Wallet methods", function () {
         const httpConnector = new HttpJsonRpcConnector({ url: 'http://localhost:8000/rpc/v0', token: LOTUS_AUTH_TOKEN });
         const walletLotusHttp = new HttpJsonRpcWalletProvider(httpConnector);
 
-        await walletLotusHttp.getDefaultAccount();
+        const defaultAccount = await walletLotusHttp.getDefaultAccount();
 
         await walletLotusHttp.setDefaultAccount(addressList[1]);
 
@@ -61,11 +61,11 @@ describe("Wallet methods", function () {
 
         assert.strictEqual(newDefault, addressList[1], 'incorrect default address');
 
-        await walletLotusHttp.setDefaultAccount(addressList[0]);
+        await walletLotusHttp.setDefaultAccount(defaultAccount);
 
         newDefault = await walletLotusHttp.getDefaultAccount();
 
-        assert.strictEqual(newDefault, addressList[0], 'incorrect default address');
+        assert.strictEqual(newDefault, defaultAccount, 'incorrect default address');
     });
 
     it("should verifiy signature [http]", async function () {
@@ -82,9 +82,9 @@ describe("Wallet methods", function () {
 
         await walletLotusHttp.deleteWallet(defaultAddress);
 
-        const addresseseAfterDelete = await walletLotusHttp.getAccounts();
+        const addressesAfterDelete = await walletLotusHttp.getAccounts();
 
-        assert.strictEqual(addresseseBeforeDelete.length - 1, addresseseAfterDelete.length, 'wallet not deleted');
+        assert.strictEqual(addresseseBeforeDelete.length - 1, addressesAfterDelete.length, 'wallet not deleted');
 
         await sleep(5000);
 
@@ -95,7 +95,5 @@ describe("Wallet methods", function () {
         const addresseseAfterImport = await walletLotusHttp.getAccounts();
 
         assert.strictEqual(addresseseBeforeDelete.length, addresseseAfterImport.length, 'wallet not imported');
-
-        await walletLotusHttp.setDefaultAccount(defaultAddress);
     });
 });
