@@ -1042,9 +1042,17 @@ export class JsonRpcProvider {
    * @param token
    */
   public async authVerify(token: string): Promise<Permission[]> {
-    const permissions = await this.conn.request({ method: 'Filecoin.AuthVerify', params: [token] });
+    const permissions: Permission[] = await this.conn.request({ method: 'Filecoin.AuthVerify', params: [token] });
     return permissions;
   }
 
-  // AuthNew(ctx context.Context, perms []auth.Permission) ([]byte, error)
+  /**
+   * generate a new authorization token for a given permissions list
+   * @param permissions
+   */
+  public async authNew(permissions: Permission[]): Promise<any> {
+    const token: any = await this.conn.request({ method: 'Filecoin.AuthNew', params: [permissions] });
+    const tokenAscii = Buffer.from(token, 'base64').toString('ascii');
+    return tokenAscii;
+  }
 }
