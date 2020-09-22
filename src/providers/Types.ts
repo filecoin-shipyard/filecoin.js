@@ -893,6 +893,7 @@ export class KeyInfo {
   PrivateKey!: [];
 }
 
+export type Permission = string;
 
 export class RetrievalEvent {
   Event!: ClientEvent;

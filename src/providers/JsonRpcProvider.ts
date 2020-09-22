@@ -51,7 +51,7 @@ import {
   SignedStorageAsk,
   CommPRet,
   DataSize,
-  DataTransferChannel, Import, RetrievalEvent,
+  DataTransferChannel, Import, RetrievalEvent, Permission,
 } from './Types';
 import { Connector } from '../connectors/Connector';
 import { WsJsonRpcConnector } from '../connectors/WsJsonRpcConnector';
@@ -1035,4 +1035,16 @@ export class JsonRpcProvider {
     const ret = await this.conn.request({ method: 'Filecoin.MpoolGetConfig', params: [] });
     return ret;
   }
+
+  // Auth
+  /**
+   * list the permissions for a given authorization token
+   * @param token
+   */
+  public async authVerify(token: string): Promise<Permission[]> {
+    const permissions = await this.conn.request({ method: 'Filecoin.AuthVerify', params: [token] });
+    return permissions;
+  }
+
+  // AuthNew(ctx context.Context, perms []auth.Permission) ([]byte, error)
 }
