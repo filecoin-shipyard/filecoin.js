@@ -9,19 +9,6 @@ const httpConnector = new HttpJsonRpcConnector({ url: 'http://localhost:8000/rpc
 const wsConnector = new WsJsonRpcConnector({ url: 'ws://localhost:8000/rpc/v0', token: LOTUS_AUTH_TOKEN });
 
 describe("Connection test", function () {
-  it("check version [http]", async function () {
-    const con = new JsonRpcProvider(httpConnector);
-    const version = await con.version();
-    assert.strictEqual(typeof version.APIVersion === 'number', true, 'wrong api version');
-  });
-
-  it("should get version [ws]", async function () {
-    const provider = new JsonRpcProvider(wsConnector);
-    const version = await provider.version();
-    assert.strictEqual(typeof version.APIVersion === 'number', true, 'wrong api version');
-    await provider.release();
-  });
-
   const blocksWithMessages: any = [];
 
   it("get blocks with messages [http]", async function() {

@@ -51,7 +51,7 @@ import {
   SignedStorageAsk,
   CommPRet,
   DataSize,
-  DataTransferChannel, Import, RetrievalEvent, Permission,
+  DataTransferChannel, Import, RetrievalEvent, Permission, ID,
 } from './Types';
 import { Connector } from '../connectors/Connector';
 import { WsJsonRpcConnector } from '../connectors/WsJsonRpcConnector';
@@ -73,12 +73,6 @@ export class JsonRpcProvider {
 
   public async release() {
     return this.conn.disconnect();
-  }
-
-
-  public async version(): Promise<Version> {
-    const ret = await this.conn.request({ method: 'Filecoin.Version' });
-    return ret as Version;
   }
 
   /**
@@ -1054,5 +1048,25 @@ export class JsonRpcProvider {
     const token: any = await this.conn.request({ method: 'Filecoin.AuthNew', params: [permissions] });
     const tokenAscii = Buffer.from(token, 'base64').toString('ascii');
     return tokenAscii;
+  }
+
+  /**
+   * Common
+   */
+
+  /**
+   * returns peerID of libp2p node backing this API
+   */
+  public async id(): Promise<ID> {
+    const id: ID = await this.conn.request({ method: 'Filecoin.ID', params: [] });
+    return id;
+  }
+
+  /**
+   * provides information about API provider
+   */
+  public async version(): Promise<Version> {
+    const ret = await this.conn.request({ method: 'Filecoin.Version' });
+    return ret as Version;
   }
 }
