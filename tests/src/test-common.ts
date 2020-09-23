@@ -8,7 +8,7 @@ import { WsJsonRpcConnector } from '../../src/connectors/WsJsonRpcConnector';
 const httpConnector = new HttpJsonRpcConnector({ url: 'http://localhost:8000/rpc/v0', token: LOTUS_AUTH_TOKEN });
 const wsConnector = new WsJsonRpcConnector({ url: 'ws://localhost:8000/rpc/v0', token: LOTUS_AUTH_TOKEN });
 
-describe("Common tests", function() {
+describe.only("Common tests", function() {
   it("should generate auth token with given permissions [http]", async function() {
     const provider = new JsonRpcProvider(httpConnector);
     const peerId = await provider.id();
@@ -32,6 +32,19 @@ describe("Common tests", function() {
     const provider = new JsonRpcProvider(wsConnector);
     const version = await provider.version();
     assert.strictEqual(typeof version.APIVersion === 'number', true, 'wrong api version');
+    await provider.release();
+  });
+
+  it("should get log list [http]", async function () {
+    const provider = new JsonRpcProvider(httpConnector);
+    const list = await provider.logList();
+    assert.strictEqual(Array.isArray(list), true, 'invalid log list');
+  });
+
+  it("should get log list [ws]", async function () {
+    const provider = new JsonRpcProvider(wsConnector);
+    const list = await provider.logList();
+    assert.strictEqual(Array.isArray(list), true, 'invalid log list');
     await provider.release();
   });
 });
