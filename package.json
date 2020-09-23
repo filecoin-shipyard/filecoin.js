@@ -48,7 +48,7 @@
     "bitcore-mnemonic": "^8.22.2",
     "scrypt-async": "^2.0.1",
     "tweetnacl": "^1.0.3",
-    "tweetnacl-util": "^0.15.1"
+    "tweetnacl-util": "^0.15.1",
     "ws": "^7.3.1"
   },
   "devDependencies": {
