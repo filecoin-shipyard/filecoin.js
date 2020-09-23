@@ -11,3 +11,13 @@ export const toBase64 = (data: string | ArrayBuffer): string => {
   }
   return data;
 }
+
+export const leftPadString = (stringToPad: string, padChar: string, length: number) => {
+  let repeatedPadChar = '';
+
+  for (let i = 0; i < length; i++) {
+    repeatedPadChar += padChar;
+  }
+
+  return ((repeatedPadChar + stringToPad).slice(-length));
+}
