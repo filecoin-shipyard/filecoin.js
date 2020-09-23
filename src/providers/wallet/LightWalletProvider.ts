@@ -24,7 +24,19 @@ export class LightWalletProvider extends HttpJsonRpcWalletProvider {
     super(connector);
   }
 
-  public async createLightWallet(mnemonic: string, password: string) {
+  public async createLightWallet(password: string) {
+    this.keystore = new Keystore();
+    const mnemonic = this.keystore.generateRandomSeed();
+    await this.keystore.createVault({
+      hdPathString: this.hdPathString,
+      seedPhrase: mnemonic,
+      password: password,
+    });
+    this.signer = new LightWalletSigner(this.keystore);
+    return mnemonic;
+  }
+
+  public async recoverLightWallet(mnemonic: string, password: string) {
     this.keystore = new Keystore();
     await this.keystore.createVault({
       hdPathString: this.hdPathString,
@@ -32,10 +44,6 @@ export class LightWalletProvider extends HttpJsonRpcWalletProvider {
       password: password,
     });
     this.signer = new LightWalletSigner(this.keystore);
-  }
-
-  public async recoverLightWallet(mnemonic: string, password: string) {
-    await this.createLightWallet(mnemonic, password);
   }
 
   public loadLightWallet(encryptedWallet: string) {

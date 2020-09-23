@@ -238,4 +238,32 @@ export class Keystore {
 
         return this._decryptKey(encPrivateKey, pwDerivedKey);
     };
+
+    generateRandomSeed(extraEntropy?: any) {
+        let seed = '';
+
+        if (extraEntropy === undefined) {
+            seed = new Mnemonic(Mnemonic.Words.ENGLISH);
+        } else if (typeof extraEntropy === 'string') {
+            const entBuf = Buffer.from(extraEntropy);
+            const randBuf = BitCore.crypto.Random.getRandomBuffer(256 / 8);
+            const hashedEnt = this._concatAndSha256(randBuf, entBuf).slice(0, 128 / 8);
+
+            seed = new Mnemonic(hashedEnt, Mnemonic.Words.ENGLISH);
+        } else {
+            throw new Error('generateRandomSeed: extraEntropy is set but not a string.');
+        }
+
+        return seed.toString();
+    };
+
+    _concatAndSha256 = function (entropyBuf0: any, entropyBuf1: any) {
+        const totalEnt = Buffer.concat([entropyBuf0, entropyBuf1]);
+
+        if (totalEnt.length !== entropyBuf0.length + entropyBuf1.length) {
+            throw new Error('generateRandomSeed: Logic error! Concatenation of entropy sources failed.');
+        }
+
+        return BitCore.crypto.Hash.sha256(totalEnt);
+    };
 }

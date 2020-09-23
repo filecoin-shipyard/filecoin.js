@@ -10,6 +10,7 @@ import { JsonRpcProvider } from "../../src/providers/JsonRpcProvider";
 const testMnemonic = 'equip will roof matter pink blind book anxiety banner elbow sun young';
 
 let encryptedWallet = '';
+let mnemonic = '';
 function sleep(ms: any) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
@@ -19,18 +20,21 @@ describe.only("Send message", function () {
     const httpConnector = new HttpJsonRpcConnector({ url: 'http://localhost:8000/rpc/v0', token: LOTUS_AUTH_TOKEN });
 
     const lightWalletHttp = new LightWalletProvider(httpConnector);
-    await lightWalletHttp.createLightWallet( 'equip will roof matter pink blind book anxiety banner elbow sun young', 'test');
+    mnemonic = await lightWalletHttp.createLightWallet('test');
+    console.log(mnemonic);
+    encryptedWallet = lightWalletHttp.keystore.serialize();
 
     const walletLotusHttp = new HttpJsonRpcWalletProvider(httpConnector);
     const con = new JsonRpcProvider(httpConnector);
 
     const defaultAccount = await walletLotusHttp.getDefaultAccount();
     const mnemonicAddress = await lightWalletHttp.getDefaultAccount();
+    console.log(mnemonicAddress);
 
     const message = await walletLotusHttp.createMessage({
       From: defaultAccount,
       To: mnemonicAddress,
-      Value: new BigNumber(1000000000000),
+      Value: new BigNumber(10000000000000000),
     });
 
     const signedMessage = await walletLotusHttp.signMessage(message);
@@ -41,18 +45,18 @@ describe.only("Send message", function () {
   });
 
   it("should create vault and send message [http]", async function () {
-    this.timeout(10000);
-    await sleep(8000);
+    this.timeout(13000);
+    await sleep(12000);
 
     const httpConnector = new HttpJsonRpcConnector({ url: 'http://localhost:8000/rpc/v0', token: LOTUS_AUTH_TOKEN });
     const mnemonicWalletProvider = new MnemonicWalletProvider( httpConnector, testMnemonic, '');
     const con = new JsonRpcProvider(httpConnector);
 
     const lightWalletHttp = new LightWalletProvider(httpConnector);
-    await lightWalletHttp.createLightWallet( 'equip will roof matter pink blind book anxiety banner elbow sun young', 'test');
-    encryptedWallet = lightWalletHttp.keystore.serialize();
+    await lightWalletHttp.recoverLightWallet(mnemonic, 'test');
 
     const defaultAccount = await lightWalletHttp.getDefaultAccount();
+    console.log(defaultAccount);
     const mnemonicAddress = await mnemonicWalletProvider.getDefaultAccount();
 
     const message = await lightWalletHttp.createMessage({
@@ -78,6 +82,7 @@ describe.only("Send message", function () {
     lightWalletHttp.loadLightWallet(encryptedWallet);
 
     const defaultAccount = await lightWalletHttp.getDefaultAccount();
+    console.log(defaultAccount);
     const mnemonicAddress = await mnemonicWalletProvider.getDefaultAccount();
 
     const message = await lightWalletHttp.createMessage({
