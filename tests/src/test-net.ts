@@ -49,4 +49,36 @@ describe.only("Common tests", function() {
   //   const result = await provider.netConnect(peers[0]);
   //   await provider.release();
   // });
+
+  it("should get listen addr info [http]", async function() {
+    const provider = new JsonRpcProvider(httpConnector);
+    const addr = await provider.netAddrsListen();
+    const valid = typeof addr.ID === 'string' && Array.isArray(addr.Addrs);
+    assert.strictEqual(valid, true, 'invalid listen addr info');
+  });
+
+  it("should get listen address [ws]", async function() {
+    const provider = new JsonRpcProvider(wsConnector);
+    const addr = await provider.netAddrsListen();
+    const valid = typeof addr.ID === 'string' && Array.isArray(addr.Addrs);
+    assert.strictEqual(valid, true, 'invalid listen addr info');
+    await provider.release();
+  });
+
+  it("should find peer [http]", async function() {
+    const provider = new JsonRpcProvider(httpConnector);
+    const peers = await provider.netPeers();
+    const addrInfo = await provider.findPeer(peers[0].ID);
+    const valid = typeof addrInfo.ID === 'string' && Array.isArray(addrInfo.Addrs);
+    assert.strictEqual(valid, true, 'invalid listen addr info');
+  });
+
+  it("should find peer [ws]", async function() {
+    const provider = new JsonRpcProvider(wsConnector);
+    const peers = await provider.netPeers();
+    const addrInfo = await provider.findPeer(peers[0].ID);
+    const valid = typeof addrInfo.ID === 'string' && Array.isArray(addrInfo.Addrs);
+    assert.strictEqual(valid, true, 'invalid listen addr info');
+    await provider.release();
+  });
 });

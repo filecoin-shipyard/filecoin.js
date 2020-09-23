@@ -1110,4 +1110,18 @@ export class JsonRpcProvider {
     const result: any = await this.conn.request({ method: 'Filecoin.NetConnect', params: [addrInfo] });
     return result;
   }
+
+  public async netAddrsListen(): Promise<AddrInfo> {
+    const addr: AddrInfo = await this.conn.request({ method: 'Filecoin.NetAddrsListen' });
+    return addr;
+  }
+
+  public async netDisconnect(peerID: PeerID) {
+    await this.conn.request({ method: 'Filecoin.NetDisconnect', params: [peerID] });
+  }
+
+  public async findPeer(peerID: PeerID): Promise<AddrInfo> {
+    const peer: AddrInfo = await this.conn.request({ method: 'Filecoin.NetFindPeer', params: [peerID] });
+    return peer;
+  }
 }
