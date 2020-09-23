@@ -51,7 +51,7 @@ import {
   SignedStorageAsk,
   CommPRet,
   DataSize,
-  DataTransferChannel, Import, RetrievalEvent, Permission, ID,
+  DataTransferChannel, Import, RetrievalEvent, Permission, ID, Connectedness, AddrInfo, PubsubScore, NatInfo, Stats,
 } from './Types';
 import { Connector } from '../connectors/Connector';
 import { WsJsonRpcConnector } from '../connectors/WsJsonRpcConnector';
@@ -1124,4 +1124,26 @@ export class JsonRpcProvider {
     const peer: AddrInfo = await this.conn.request({ method: 'Filecoin.NetFindPeer', params: [peerID] });
     return peer;
   }
+
+  public async netPubsubScores(): Promise<PubsubScore[]> {
+    const score: PubsubScore[] = await this.conn.request({ method: 'Filecoin.NetPubsubScores' });
+    return score;
+  }
+
+  public async netAutoNatStatus(): Promise<NatInfo> {
+    const natInfo: NatInfo = await this.conn.request({ method: 'Filecoin.NetAutoNatStatus' });
+    return natInfo;
+  }
+
+  // TODO: This method throws an error: "method 'Filecoin.NetAgentVersion' not found"
+  // public async netAgentVersion(peerId: PeerID): Promise<string> {
+  //   const agentVersion: string = await this.conn.request({ method: 'Filecoin.NetAgentVersion', params: [peerId] });
+  //   return agentVersion;
+  // }
+
+  // TODO: This method throws an error: "method 'Filecoin.NetBandwidthStats' not found"
+  // public async netBandwidthStats(): Promise<Stats> {
+  //   const stats: Stats = await this.conn.request({ method: 'Filecoin.NetBandwidthStats' });
+  //   return stats;
+  // }
 }

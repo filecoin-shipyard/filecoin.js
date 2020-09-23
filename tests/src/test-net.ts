@@ -81,4 +81,32 @@ describe.only("Common tests", function() {
     assert.strictEqual(valid, true, 'invalid listen addr info');
     await provider.release();
   });
+
+  it("should get pubsub scores [http]", async function() {
+    const provider = new JsonRpcProvider(httpConnector);
+    const scores = await provider.netPubsubScores();
+    assert.strictEqual(Array.isArray(scores), true, 'invalid pubsub scores');
+  });
+
+  it("should get pubsub score [ws]", async function() {
+    const provider = new JsonRpcProvider(wsConnector);
+    const scores = await provider.netPubsubScores();
+    assert.strictEqual(Array.isArray(scores), true, 'invalid pubsub scores');
+    await provider.release();
+  });
+
+  it("should get nat status [http]", async function() {
+    const provider = new JsonRpcProvider(httpConnector);
+    const status = await provider.netAutoNatStatus();
+    const valid = typeof status.Reachability === 'number' && typeof status.PublicAddr === 'string';
+    assert.strictEqual(valid, true, 'invalid nat status');
+  });
+
+  it("should get nat status [ws]", async function() {
+    const provider = new JsonRpcProvider(wsConnector);
+    const status = await provider.netAutoNatStatus();
+    const valid = typeof status.Reachability === 'number' && typeof status.PublicAddr === 'string';
+    assert.strictEqual(valid, true, 'invalid nat status');
+    await provider.release();
+  });
 });
