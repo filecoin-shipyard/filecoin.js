@@ -1,170 +1,148 @@
+import WebSocket from 'isomorphic-ws';
 import { EventEmitter } from 'events';
 import { Connector, JsonRpcResponse, RequestArguments, JsonRpcError, ConnectionError } from './Connector';
-import * as WebSocket from 'rpc-websockets';
 
-export type WsJsonRpcConnectionOptions = string | { url: string, token?: string };
-type WebSocketRequestCallback = (error?: Error, result?: any) => void;
-type WebSocketChannel = {
-  key: string,
-  cb: (data: any) => void,
+type InflightRequest = {
+  payload: string,
+  cb: (error: Error | undefined, result: any) => void,
 }
 
-type WebSocketRequest = {
-  req: RequestArguments,
-  cb: WebSocketRequestCallback,
-  channel?: WebSocketChannel,
-}
+export type SubscriptionId = string;
+export type WebSocketConnectionOptions = { url: string, token?: string };
+let id = 1;
+
+// See https://developer.mozilla.org/en-US/docs/Web/API/CloseEvent#Status_codes
+const WEBSOCKET_CLOSE_CODE = 1000;
 
 export class WsJsonRpcConnector extends EventEmitter implements Connector {
-  public url: string;
-  public token?: string | undefined;
-  private connected: boolean;
-  private client?: WebSocket.Client;
-  private requests: WebSocketRequest[];
+  url: string;
+  token?: string;
+  private websocket!: WebSocket;
+  private requests: {[id: string]: InflightRequest } = {};
+  private websocketReady!: boolean;
 
-  constructor(
-    protected options: WsJsonRpcConnectionOptions,
-  ) {
+  constructor(options: WebSocketConnectionOptions) {
     super();
-    this.connected = false;
-    this.requests = [];
-
-    if (typeof options === 'string') {
-      this.url = options;
-    } else {
-      this.url = options.url;
-      this.token = options.token;
-    }
+    this.websocketReady = false;
+    this.token = options.token;
+    this.url = options.url;
   }
 
-  public async connect(): Promise<any> {
-    this.client = new WebSocket.Client(this.fullUrl());
+  connect(): Promise<any> {
+    this.websocket = new WebSocket(this.fullUrl());
+    this.websocket.onopen = this.onSocketOpen;
+    this.websocket.onclose = this.onSocketClose;
+    this.websocket.onerror = this.onSocketError;
+    this.websocket.onmessage = this.onSocketMessage;
 
-    this.client.on('open', () => {
-      this.connected = true;
-      this.emit('connected');
-      this.handleWaitingRequests();
-    });
-    this.client.on('error', (error: any) => {
-      this.emit('error', new ConnectionError(error));
-    });
-    this.client.on('close', () => {
-      this.connected = false;
-      this.emit('disconnected');
-    });
+    return Promise.resolve();
   }
 
-  public async disconnect(): Promise<any> {
-    this.client?.close();
-  }
+  public async request(args: RequestArguments): Promise<any> {
+    const currentId = id++;
+    const { params, method } = args;
 
-  private handleWaitingRequests() {
-    for (let i = this.requests.length - 1; i >= 0; --i) {
-      if (!this.connected) {
-        continue;
+    return new Promise((resolve, reject) => {
+      function cb(error: Error | undefined, result: any) {
+        if (error) { return reject(error); }
+        return resolve(result);
       }
-      const { req, cb, channel } = this.requests[i];
-      const { params, method } = req;
 
-      this.requests.splice(i, 1);
-      this.performRequest({
+      const payload = JSON.stringify({
+        method,
         params,
-        method
-      })
-        .then((result: any) => {
-          cb(undefined, result);
+        id: currentId,
+        jsonrpc: "2.0",
+      });
 
-          if (channel) {
-            this.client?.on(channel.key, (response) => {
-              if (response[0] === result) {
-                channel.cb(response[1]);
-              }
-            });
-          }
-        })
-        .catch(error => cb(error, undefined))
-    }
+      this.requests[`${currentId}`] = {
+        payload,
+        cb,
+      }
+
+      if (this.websocketReady) {
+        this.websocket.send(payload);
+      }
+    });
   }
 
-  public async request(req: RequestArguments): Promise<unknown> {
-    if (this.connected) {
-      return this.performRequest(req);
-    } else {
-      return new Promise((resolve, reject) => {
-        const cb = (error?: Error, result?: any) => {
-          if (error) {
-            reject(error);
-          } else {
-            resolve(result);
-          }
+  public async closeSubscription(subscriptionId: string) {
+    this.websocket.removeEventListener(subscriptionId);
+  }
+
+  async disconnect(): Promise<any> {
+    if (this.websocket.readyState === WebSocket.CONNECTING) {
+      await new Promise((resolve) => {
+        this.websocket.onopen = function() {
+          resolve(true);
         }
 
-        this.requests.push({
-          req,
-          cb,
-        });
+        this.websocket.onerror = function() {
+          resolve(false);
+        }
       });
     }
-  }
 
-  public async requestWithChannel(req: RequestArguments, channelKey: string, channelCb: (data: any) => void ) {
-    if (this.connected) {
-      const id = await this.performRequest(req);
-      this.client?.on(channelKey, (response) => {
-        if (response[0] === id) {
-          channelCb(response[1]);
-        }
-      });
-    } else {
-      return new Promise((resolve, reject) => {
-        const channel: WebSocketChannel = {
-          key: channelKey,
-          cb: channelCb,
-        };
-        const cb = (error?: Error, result?: any) => {
-          if (error) {
-            reject(error);
-          } else {
-            resolve(result);
-          }
-        }
-
-        this.requests.push({
-          req,
-          cb,
-          channel,
-        });
-      })
-    }
-  }
-
-  public removeChannelListener(channelKey: string) {
-    if (this.connected) {
-      this.client?.removeListener(channelKey);
-    }
-  }
-
-  public on(event: 'connected' | 'disconnected' | 'error', listener: (...args: any[]) => void): this {
-    return super.on(event, listener);
-  }
-
-  private async performRequest(req: RequestArguments): Promise<unknown> {
-    try {
-      const ret = await this.client?.call(req.method, req.params);
-      return ret;
-    } catch (e) {
-      /* TODO: does this actualy expose jsonrpc codes? */
-      throw new JsonRpcError({ code: 0, message: e.message });
-    }
+    this.websocket.close(WEBSOCKET_CLOSE_CODE);
   }
 
   private fullUrl() {
-    let url = this.url;
+    return this.token ? `${this.url}?token=${this.token}` : `${this.url}`;
+  }
 
-    if (this.token) {
-      url = `${url}?token=${this.token}`
+  public on(event: 'connected' | 'disconnected' | 'error' | SubscriptionId, listener: (...args: any[]) => void): this {
+    return super.on(event, listener);
+  }
+
+  private onSocketClose = () => {
+    this.websocketReady = false;
+    this.requests = {};
+  }
+
+  private onSocketError = () => {
+    this.websocketReady = false;
+  }
+
+  private onSocketOpen = () => {
+    this.websocketReady = true;
+
+    Object.keys(this.requests).forEach((id) => {
+      this.websocket.send(this.requests[id].payload);
+    });
+  }
+
+  private onSocketMessage = (event: WebSocket.MessageEvent) => {
+    const { data } = event;
+    const response: JsonRpcResponse = JSON.parse(data as string);
+
+    if (response.id) {
+      const id = `${response.id}`;
+      const request = this.requests[id];
+      if (!request) { return; }
+      delete this.requests[id];
+
+      if (response.result) {
+        request.cb(undefined, response.result);
+      } else {
+        if (response.error && request.cb) {
+          const error = new JsonRpcError({
+            code: response.error.code || 0,
+            message: response.error.message,
+            data: data,
+          });
+
+          request.cb(error, undefined);
+        }
+      }
+    } else {
+      if (response.method === "xrpc.ch.val") {
+        const subscriptionId = response.params[0];
+        const isValid = Number.isInteger(subscriptionId);
+
+        if (isValid) {
+          this.emit(subscriptionId, response.params[1]);
+        }
+      }
     }
-
-    return url;
   }
 }

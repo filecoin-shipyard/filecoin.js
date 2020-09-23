@@ -9,7 +9,6 @@ const httpConnector = new HttpJsonRpcConnector({ url: 'http://localhost:8000/rpc
 const wsConnector = new WsJsonRpcConnector({ url: 'ws://localhost:8000/rpc/v0', token: LOTUS_AUTH_TOKEN });
 
 describe("Connection test", function () {
-
   it("check version [http]", async function () {
     const con = new JsonRpcProvider(httpConnector);
     const version = await con.version();
@@ -47,58 +46,6 @@ describe("Connection test", function () {
       }
     }
 
-  });
-
-  it("should be notified on chain head change [ws]", function(done) {
-    this.timeout(4000);
-    const provider = new JsonRpcProvider(wsConnector);
-    provider.chainNotify(headChange => {
-      const type = headChange[0].Type;
-      assert.equal(typeof(type), "string", "wrong chain head type");
-      provider.release().then(() => { done() });
-    })
-  });
-
-  it("should be notified on chain head change [http]", function(done) {
-    this.timeout(4000);
-    let intervalId: Timer | undefined;
-    const provider = new JsonRpcProvider(httpConnector);
-    provider.chainNotify(headChange => {
-      const type = headChange[0].Type;
-      assert.strictEqual(typeof(type), "string", "wrong chain head type");
-      if (intervalId) {
-        provider.stopChainNotify(intervalId);
-      }
-      done();
-    }).then(intervalIdResponse => {
-      intervalId = intervalIdResponse;
-    })
-  });
-
-  it("should get head [http]", async function() {
-    const con = new JsonRpcProvider(httpConnector);
-    const head = await con.getHead();
-    assert.strictEqual(JSON.stringify(Object.keys(head)), JSON.stringify(['Cids', 'Blocks', 'Height']), "wrong chain head");
-  });
-
-  it("should get chain head [ws]", async function() {
-    const provider = new JsonRpcProvider(wsConnector);
-    const head = await provider.getHead();
-    assert.strictEqual(JSON.stringify(Object.keys(head)), JSON.stringify(['Cids', 'Blocks', 'Height']), "wrong chain head");
-    await provider.release();
-  });
-
-  it("should get messages in block [http]", async function() {
-    const con = new JsonRpcProvider(httpConnector);
-    const messages = await con.getBlockMessages(blocksWithMessages[0]);
-    assert.strictEqual(JSON.stringify(Object.keys(messages)), JSON.stringify(['BlsMessages', 'SecpkMessages', 'Cids']), "wrong block messages");
-  });
-
-  it("should get messages in block [ws]", async function() {
-    const provider = new JsonRpcProvider(wsConnector);
-    const messages = await provider.getBlockMessages(blocksWithMessages[0]);
-    assert.strictEqual(JSON.stringify(Object.keys(messages)), JSON.stringify(['BlsMessages', 'SecpkMessages', 'Cids']), "wrong block messages");
-    await provider.release();
   });
 
   it("should get block parent receipts [http]", async function() {
