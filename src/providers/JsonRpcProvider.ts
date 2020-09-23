@@ -114,13 +114,8 @@ export class JsonRpcProvider {
    */
   public async chainNotify(cb: (headChange: HeadChange[]) => void) {
     if (this.conn instanceof WsJsonRpcConnector) {
-      await this.conn.requestWithChannel(
-        {
-          method: 'Filecoin.ChainNotify',
-        },
-        data => {
-          cb(data);
-        });
+      const subscriptionId = await this.conn.request({ method: 'Filecoin.ChainNotify' });
+      this.conn.on(subscriptionId, cb);
     } else if (this.conn instanceof HttpJsonRpcConnector) {
       let head: TipSet;
 
@@ -134,11 +129,11 @@ export class JsonRpcProvider {
     }
   }
 
-  public stopChainNotify(intervalId?: Timeout) {
-    if (this.conn instanceof HttpJsonRpcConnector && intervalId) {
-      clearInterval(intervalId);
+  public stopChainNotify(id?: any) {
+    if (this.conn instanceof HttpJsonRpcConnector && id) {
+      clearInterval(id);
     } else if (this.conn instanceof WsJsonRpcConnector) {
-      this.conn.removeChannelListener('xrpc.ch.val');
+      this.conn.closeSubscription(id);
     }
   }
 
@@ -930,13 +925,10 @@ export class JsonRpcProvider {
    */
   public async getDealUpdates(cb: (data: DealInfo) => void) {
     if (this.conn instanceof WsJsonRpcConnector) {
-      await this.conn.requestWithChannel(
-        {
-          method: 'Filecoin.ClientGetDealUpdates',
-        },
-        data => {
-          cb(data);
-        });
+      const subscriptionId = await this.conn.request({
+        method: 'Filecoin.ClientGetDealUpdates',
+      });
+      this.conn.on(subscriptionId, cb);
     }
   }
 
@@ -948,25 +940,19 @@ export class JsonRpcProvider {
    */
   public async retrieveWithEvents(order: RetrievalOrder, ref: FileRef, cb: (data: RetrievalEvent) => void) {
     if (this.conn instanceof WsJsonRpcConnector) {
-      await this.conn.requestWithChannel(
-        {
-          method: 'Filecoin.ClientRetrieveWithEvents',
-        },
-        data => {
-          cb(data);
-        });
+      const subscriptionId = await this.conn.request({
+        method: 'Filecoin.ClientRetrieveWithEvents',
+      });
+      this.conn.on(subscriptionId, cb);
     }
   }
 
   public async dataTransferUpdates(cb: (data: DataTransferChannel) => void) {
     if (this.conn instanceof WsJsonRpcConnector) {
-      await this.conn.requestWithChannel(
-        {
-          method: 'Filecoin.ClientDataTransferUpdates',
-        },
-        data => {
-          cb(data);
-        });
+      const subscriptionId = await this.conn.request({
+        method: 'Filecoin.ClientDataTransferUpdates',
+      });
+      this.conn.on(subscriptionId, cb);
     }
   }
 

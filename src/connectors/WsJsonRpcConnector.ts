@@ -1,15 +1,13 @@
+import WebSocket from 'isomorphic-ws';
 import { EventEmitter } from 'events';
 import { Connector, JsonRpcResponse, RequestArguments, JsonRpcError, ConnectionError } from './Connector';
-import WebSocket from 'isomorphic-ws';
-
-type SubscriptionCallback = (data: any) => void;
 
 type InflightRequest = {
   payload: string,
-  cb?: (error: Error | undefined, result: any) => void,
-  subscriptionCb?: SubscriptionCallback,
+  cb: (error: Error | undefined, result: any) => void,
 }
 
+export type SubscriptionId = string;
 export type WebSocketConnectionOptions = { url: string, token?: string };
 let id = 1;
 
@@ -21,7 +19,6 @@ export class WsJsonRpcConnector extends EventEmitter implements Connector {
   token?: string;
   private websocket!: WebSocket;
   private requests: {[id: string]: InflightRequest } = {};
-  private subscriptions: {[id: string]: SubscriptionCallback} = {};
   private websocketReady!: boolean;
 
   constructor(options: WebSocketConnectionOptions) {
@@ -69,28 +66,8 @@ export class WsJsonRpcConnector extends EventEmitter implements Connector {
     });
   }
 
-  public async requestWithChannel(args: RequestArguments, cb: (data: any) => void) {
-    const currentId = id++;
-    const { method, params } = args;
-    const payload = JSON.stringify({
-      method,
-      params,
-      id: currentId,
-      jsonrpc: "2.0",
-    });
-
-    this.requests[`${currentId}`] = {
-      payload,
-      subscriptionCb: cb,
-    }
-
-    if (this.websocketReady) {
-      this.websocket.send(payload);
-    }
-  }
-
-  public async removeChannelListener(key: string) {
-
+  public async closeSubscription(subscriptionId: string) {
+    this.websocket.removeEventListener(subscriptionId);
   }
 
   async disconnect(): Promise<any> {
@@ -113,24 +90,22 @@ export class WsJsonRpcConnector extends EventEmitter implements Connector {
     return this.token ? `${this.url}?token=${this.token}` : `${this.url}`;
   }
 
-  public on(event: 'connected' | 'disconnected' | 'error', listener: (...args: any[]) => void): this {
+  public on(event: 'connected' | 'disconnected' | 'error' | SubscriptionId, listener: (...args: any[]) => void): this {
     return super.on(event, listener);
   }
 
   private onSocketClose = () => {
     this.websocketReady = false;
     this.requests = {};
-    this.subscriptions = {};
   }
 
   private onSocketError = () => {
     this.websocketReady = false;
-    this.requests = {};
-    this.subscriptions = {};
   }
 
   private onSocketOpen = () => {
     this.websocketReady = true;
+
     Object.keys(this.requests).forEach((id) => {
       this.websocket.send(this.requests[id].payload);
     });
@@ -147,11 +122,7 @@ export class WsJsonRpcConnector extends EventEmitter implements Connector {
       delete this.requests[id];
 
       if (response.result) {
-        if (request.cb) {
-          request.cb(undefined, response.result);
-        } else if (request.subscriptionCb) {
-          this.subscriptions[response.result] = request.subscriptionCb;
-        }
+        request.cb(undefined, response.result);
       } else {
         if (response.error && request.cb) {
           const error = new JsonRpcError({
@@ -167,10 +138,9 @@ export class WsJsonRpcConnector extends EventEmitter implements Connector {
       if (response.method === "xrpc.ch.val") {
         const subscriptionId = response.params[0];
         const isValid = Number.isInteger(subscriptionId);
-        const subscriptionCb = isValid && this.subscriptions[subscriptionId];
 
-        if (subscriptionCb) {
-          subscriptionCb(response.params[1]);
+        if (isValid) {
+          this.emit(subscriptionId, response.params[1]);
         }
       }
     }
