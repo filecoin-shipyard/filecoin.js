@@ -8,7 +8,7 @@ import { WsJsonRpcConnector } from '../../src/connectors/WsJsonRpcConnector';
 const httpConnector = new HttpJsonRpcConnector({ url: 'http://localhost:8000/rpc/v0', token: LOTUS_AUTH_TOKEN });
 const wsConnector = new WsJsonRpcConnector({ url: 'ws://localhost:8000/rpc/v0', token: LOTUS_AUTH_TOKEN });
 
-describe.only("Common tests", function() {
+describe("Net tests", function() {
   it("should check connectedness of peer ID [http]", async function() {
     const provider = new JsonRpcProvider(httpConnector);
     const peerId = await provider.id();
