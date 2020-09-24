@@ -1146,4 +1146,13 @@ export class JsonRpcProvider {
   //   const stats: Stats = await this.conn.request({ method: 'Filecoin.NetBandwidthStats' });
   //   return stats;
   // }
+
+  // TODO: This method throws an error: "method 'NetBandwidthStatsByPeer' not found"
+  // /**
+  //  * returns statistics about the nodes bandwidth usage and current rate per peer
+  //  */
+  // public async netBandwidthStatsByPeer(): Promise<any> {
+  //   const stats: any = await this.conn.request({ method: 'Filecoin.NetBandwidthStatsByPeer' });
+  //   return stats;
+  // }
 }
