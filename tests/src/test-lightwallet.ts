@@ -15,7 +15,7 @@ function sleep(ms: any) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-describe.only("Send message", function () {
+describe("Send message", function () {
   it("should send signed message, lotus default wallet [http]", async function () {
     const httpConnector = new HttpJsonRpcConnector({ url: 'http://localhost:8000/rpc/v0', token: LOTUS_AUTH_TOKEN });
 
