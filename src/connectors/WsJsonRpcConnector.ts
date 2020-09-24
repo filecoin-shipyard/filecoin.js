@@ -121,7 +121,7 @@ export class WsJsonRpcConnector extends EventEmitter implements Connector {
       if (!request) { return; }
       delete this.requests[id];
 
-      if (response.result) {
+      if (response.result !== undefined && response.result !== null) {
         request.cb(undefined, response.result);
       } else {
         if (response.error && request.cb) {
