@@ -1,10 +1,12 @@
 #!/usr/bin/env bash
+cat /proc/cpuinfo
+
 docker-compose -f ./tests/tools/testnet/docker-compose-tests.yml up -d --force-recreate
 echo 'waiting for testnetwork'
 i=0
 pollPeriod=15
 testCurlStatus=0
-timeoutPeriod=480
+timeoutPeriod=320
 succesTestStatus=200
 
 while [[ $testCurlStatus != $succesTestStatus && $i -lt $timeoutPeriod ]]
