@@ -361,6 +361,58 @@ export class WorkerKeyChange {
   EffectiveAt!: ChainEpoch;
 }
 
+/**
+ * multiaddr is the data type representing a Multiaddr
+ */
+export type Multiaddr = string;
+
+/**
+ * AddrInfo is a small struct used to pass around a peer with a set of addresses (and later, keys?).
+ */
+export class AddrInfo {
+  ID!: ID;
+  Addrs!: Multiaddr[];
+}
+
+export class Score {
+  Score!: number;
+  Topics!: any;
+  AppSpecificScore!: number;
+  IPColocationFactor!: number;
+  BehaviourPenalty!: number;
+}
+
+export class PubsubScore {
+  ID!: ID;
+  Score!: Score;
+}
+
+/**
+ * Reachability indicates how reachable a node is./**
+ */
+export type Reachability = number;
+
+export class NatInfo {
+  Reachability!: Reachability;
+  PublicAddr!: string;
+}
+
+/**
+ * Stats represents a point-in-time snapshot of bandwidth metrics.
+ */
+export class Stats {
+  /**
+   * The TotalIn and TotalOut fields record cumulative bytes sent / received.
+   */
+  TotalIn!: number;
+  TotalOut!: number;
+  /**
+   * The RateIn and RateOut fields record bytes sent / received per second.
+   */
+  RateIn!: number;
+  RateOut!: number;
+}
+
 export type PeerID = string;
 
 // TODO: Find the proper type for Multiaddrs (possible string[])
@@ -893,6 +945,8 @@ export class KeyInfo {
   PrivateKey!: [];
 }
 
+export type Permission = string;
+export type Connectedness = number;
 
 export class RetrievalEvent {
   Event!: ClientEvent;

@@ -51,7 +51,7 @@ import {
   SignedStorageAsk,
   CommPRet,
   DataSize,
-  DataTransferChannel, Import, RetrievalEvent,
+  DataTransferChannel, Import, RetrievalEvent, Permission, ID, Connectedness, AddrInfo, PubsubScore, NatInfo, Stats,
 } from './Types';
 import { Connector } from '../connectors/Connector';
 import { WsJsonRpcConnector } from '../connectors/WsJsonRpcConnector';
@@ -73,12 +73,6 @@ export class JsonRpcProvider {
 
   public async release() {
     return this.conn.disconnect();
-  }
-
-
-  public async version(): Promise<Version> {
-    const ret = await this.conn.request({ method: 'Filecoin.Version' });
-    return ret as Version;
   }
 
   /**
@@ -1035,4 +1029,139 @@ export class JsonRpcProvider {
     const ret = await this.conn.request({ method: 'Filecoin.MpoolGetConfig', params: [] });
     return ret;
   }
+
+
+  /**
+   * Auth
+   * The Auth method group is used to manage the authorization tokens.
+   */
+
+  /**
+   * list the permissions for a given authorization token
+   * @param token
+   */
+  public async authVerify(token: string): Promise<Permission[]> {
+    const permissions: Permission[] = await this.conn.request({ method: 'Filecoin.AuthVerify', params: [token] });
+    return permissions;
+  }
+
+  /**
+   * generate a new authorization token for a given permissions list
+   * @param permissions
+   */
+  public async authNew(permissions: Permission[]): Promise<string> {
+    const token: string = await this.conn.request({ method: 'Filecoin.AuthNew', params: [permissions] });
+    const tokenAscii = Buffer.from(token, 'base64').toString('ascii');
+    return tokenAscii;
+  }
+
+  /**
+   * Common
+   */
+
+  /**
+   * returns peerID of libp2p node backing this API
+   */
+  public async id(): Promise<ID> {
+    const id: ID = await this.conn.request({ method: 'Filecoin.ID', params: [] });
+    return id;
+  }
+
+  /**
+   * provides information about API provider
+   */
+  public async version(): Promise<Version> {
+    const ret = await this.conn.request({ method: 'Filecoin.Version' });
+    return ret as Version;
+  }
+
+  public async logList(): Promise<string[]> {
+    const list: string[] = await this.conn.request({ method: 'Filecoin.LogList' });
+    return list;
+  }
+
+  public async logSetLevel(string1: string, string2: string): Promise<any> {
+    const result = await this.conn.request({ method: 'Filecoin.LogSetLevel', params: [string1, string2] });
+    return result;
+  }
+
+  /**
+   * trigger graceful shutdown
+   */
+  public async shutdown() {
+    await this.conn.request({ method: 'Filecoin.Shutdown' });
+  }
+
+  /**
+   * Net
+   */
+
+  public async netConnectedness(peerId: PeerID): Promise<Connectedness> {
+    const connectedness: Connectedness = await this.conn.request({ method: 'Filecoin.NetConnectedness', params: [peerId] });
+    return connectedness;
+  }
+
+  public async netPeers(): Promise<AddrInfo[]> {
+    const peers: AddrInfo[] = await this.conn.request({ method: 'Filecoin.NetPeers' });
+    return peers;
+  }
+
+  public async netConnect(addrInfo: AddrInfo): Promise<any> {
+    const result: any = await this.conn.request({ method: 'Filecoin.NetConnect', params: [addrInfo] });
+    return result;
+  }
+
+  public async netAddrsListen(): Promise<AddrInfo> {
+    const addr: AddrInfo = await this.conn.request({ method: 'Filecoin.NetAddrsListen' });
+    return addr;
+  }
+
+  public async netDisconnect(peerID: PeerID) {
+    await this.conn.request({ method: 'Filecoin.NetDisconnect', params: [peerID] });
+  }
+
+  public async findPeer(peerID: PeerID): Promise<AddrInfo> {
+    const peer: AddrInfo = await this.conn.request({ method: 'Filecoin.NetFindPeer', params: [peerID] });
+    return peer;
+  }
+
+  public async netPubsubScores(): Promise<PubsubScore[]> {
+    const score: PubsubScore[] = await this.conn.request({ method: 'Filecoin.NetPubsubScores' });
+    return score;
+  }
+
+  public async netAutoNatStatus(): Promise<NatInfo> {
+    const natInfo: NatInfo = await this.conn.request({ method: 'Filecoin.NetAutoNatStatus' });
+    return natInfo;
+  }
+
+  // TODO: This method throws an error: "method 'Filecoin.NetAgentVersion' not found"
+  // public async netAgentVersion(peerId: PeerID): Promise<string> {
+  //   const agentVersion: string = await this.conn.request({ method: 'Filecoin.NetAgentVersion', params: [peerId] });
+  //   return agentVersion;
+  // }
+
+  // TODO: This method throws an error: "method 'Filecoin.NetBandwidthStats' not found"
+  // public async netBandwidthStats(): Promise<Stats> {
+  //   const stats: Stats = await this.conn.request({ method: 'Filecoin.NetBandwidthStats' });
+  //   return stats;
+  // }
+
+  // TODO: This method throws an error: "method 'NetBandwidthStatsByPeer' not found"
+  // /**
+  //  * returns statistics about the nodes bandwidth usage and current rate per peer
+  //  */
+  // public async netBandwidthStatsByPeer(): Promise<any> {
+  //   const stats: any = await this.conn.request({ method: 'Filecoin.NetBandwidthStatsByPeer' });
+  //   return stats;
+  // }
+
+  // TODO: This method throws an error: "method 'Filecoin.NetBandwidthStatsByProtocol' not found"
+  // /**
+  //  * returns statistics about the nodes bandwidth usage and current rate per protocol
+  //  */
+  // public async netBandwidthStatsByProtocol(): Promise<any> {
+  //   const stats: any = await this.conn.request({ method: 'Filecoin.NetBandwidthStatsByProtocol' });
+  //   return stats;
+  // }
 }
