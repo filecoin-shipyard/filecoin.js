@@ -22,6 +22,7 @@ done
 if [[ $i -ge $timeoutPeriod ]]
 then
     echo 'could not initialize testnetwork'
+    docker-compose -f ./tests/tools/testnet/docker-compose-tests.yml logs filecoin_js_infra
 else
     echo 'testnetwork up and running'
     echo 'ready to test'
