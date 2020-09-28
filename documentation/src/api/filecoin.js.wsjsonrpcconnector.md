@@ -28,17 +28,15 @@ export declare class WsJsonRpcConnector extends EventEmitter implements Connecto
 
 |  Property | Modifiers | Type | Description |
 |  --- | --- | --- | --- |
-|  [options](./filecoin.js.wsjsonrpcconnector.options.md) |  | WsJsonRpcConnectionOptions |  |
-|  [token](./filecoin.js.wsjsonrpcconnector.token.md) |  | string &#124; undefined |  |
+|  [token](./filecoin.js.wsjsonrpcconnector.token.md) |  | string |  |
 |  [url](./filecoin.js.wsjsonrpcconnector.url.md) |  | string |  |
 
 ## Methods
 
 |  Method | Modifiers | Description |
 |  --- | --- | --- |
+|  [closeSubscription(subscriptionId)](./filecoin.js.wsjsonrpcconnector.closesubscription.md) |  |  |
 |  [connect()](./filecoin.js.wsjsonrpcconnector.connect.md) |  |  |
 |  [disconnect()](./filecoin.js.wsjsonrpcconnector.disconnect.md) |  |  |
 |  [on(event, listener)](./filecoin.js.wsjsonrpcconnector.on.md) |  |  |
-|  [removeChannelListener(channelKey)](./filecoin.js.wsjsonrpcconnector.removechannellistener.md) |  |  |
-|  [request(req)](./filecoin.js.wsjsonrpcconnector.request.md) |  |  |
-|  [requestWithChannel(req, channelKey, channelCb)](./filecoin.js.wsjsonrpcconnector.requestwithchannel.md) |  |  |
+|  [request(args)](./filecoin.js.wsjsonrpcconnector.request.md) |  |  |

@@ -29,6 +29,7 @@ export declare class MetamaskWalletProvider extends HttpJsonRpcWalletProvider
 |  [getAccounts()](./filecoin.js.metamaskwalletprovider.getaccounts.md) |  |  |
 |  [getDefaultAccount()](./filecoin.js.metamaskwalletprovider.getdefaultaccount.md) |  |  |
 |  [getSigner()](./filecoin.js.metamaskwalletprovider.getsigner.md) |  |  |
+|  [sendMessage(msg)](./filecoin.js.metamaskwalletprovider.sendmessage.md) |  |  |
 |  [sign(data)](./filecoin.js.metamaskwalletprovider.sign.md) |  |  |
 |  [signMessage(msg)](./filecoin.js.metamaskwalletprovider.signmessage.md) |  |  |
-|  [verify(data, sign)](./filecoin.js.metamaskwalletprovider.verify.md) |  |  |
+|  [verify(address, data, sign)](./filecoin.js.metamaskwalletprovider.verify.md) |  |  |

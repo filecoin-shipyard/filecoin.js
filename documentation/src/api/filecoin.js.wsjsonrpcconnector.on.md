@@ -12,14 +12,14 @@ hide_title: true
 <b>Signature:</b>
 
 ```typescript
-on(event: 'connected' | 'disconnected' | 'error', listener: (...args: any[]) => void): this;
+on(event: 'connected' | 'disconnected' | 'error' | SubscriptionId, listener: (...args: any[]) => void): this;
 ```
 
 ## Parameters
 
 |  Parameter | Type | Description |
 |  --- | --- | --- |
-|  event | 'connected' &#124; 'disconnected' &#124; 'error' |  |
+|  event | 'connected' &#124; 'disconnected' &#124; 'error' &#124; SubscriptionId |  |
 |  listener | (...args: any\[\]) =&gt; void |  |
 
 <b>Returns:</b>

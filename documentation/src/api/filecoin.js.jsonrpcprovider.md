@@ -33,6 +33,8 @@ export declare class JsonRpcProvider
 |  --- | --- | --- |
 |  [accountKey(address, tipSetKey)](./filecoin.js.jsonrpcprovider.accountkey.md) |  | returns the public key address of the given ID address |
 |  [allMinerFaults(epoch, tipSetKey)](./filecoin.js.jsonrpcprovider.allminerfaults.md) |  | returns all non-expired Faults that occur within lookback epochs of the given tipset |
+|  [authNew(permissions)](./filecoin.js.jsonrpcprovider.authnew.md) |  | generate a new authorization token for a given permissions list |
+|  [authVerify(token)](./filecoin.js.jsonrpcprovider.authverify.md) |  | list the permissions for a given authorization token |
 |  [calcCommP(path)](./filecoin.js.jsonrpcprovider.calccommp.md) |  | calculates the CommP for a specified file |
 |  [chainNotify(cb)](./filecoin.js.jsonrpcprovider.chainnotify.md) |  | call back on chain head updates. |
 |  [changedActors(cid1, cid2)](./filecoin.js.jsonrpcprovider.changedactors.md) |  | returns all the actors whose states change between the two given state CIDs |
@@ -43,6 +45,7 @@ export declare class JsonRpcProvider
 |  [dealSize(root)](./filecoin.js.jsonrpcprovider.dealsize.md) |  | calculates real deal data size |
 |  [export(nroots, tipSetKey)](./filecoin.js.jsonrpcprovider.export.md) |  | Returns a stream of bytes with CAR dump of chain data. |
 |  [findData(cid, pieceCid)](./filecoin.js.jsonrpcprovider.finddata.md) |  | Identifies peers that have a certain file, and returns QueryOffers (one per peer). |
+|  [findPeer(peerID)](./filecoin.js.jsonrpcprovider.findpeer.md) |  |  |
 |  [genCar(ref, outpath)](./filecoin.js.jsonrpcprovider.gencar.md) |  | generates a CAR file for the specified file. |
 |  [getActor(address, tipSetKey)](./filecoin.js.jsonrpcprovider.getactor.md) |  | returns the indicated actor's nonce and balance |
 |  [getBlock(blockCid)](./filecoin.js.jsonrpcprovider.getblock.md) |  | returns the block specified by the given CID |
@@ -52,14 +55,20 @@ export declare class JsonRpcProvider
 |  [getGenesis()](./filecoin.js.jsonrpcprovider.getgenesis.md) |  | Returns the genesis tipset. |
 |  [getHead()](./filecoin.js.jsonrpcprovider.gethead.md) |  | returns the current head of the chain |
 |  [getMessage(messageCid)](./filecoin.js.jsonrpcprovider.getmessage.md) |  | reads a message referenced by the specified CID from the chain blockstore |
+|  [getMpoolConfig()](./filecoin.js.jsonrpcprovider.getmpoolconfig.md) |  | returns (a copy of) the current mpool config |
 |  [getParentMessages(blockCid)](./filecoin.js.jsonrpcprovider.getparentmessages.md) |  | returns messages stored in parent tipset of the specified block. |
 |  [getParentReceipts(blockCid)](./filecoin.js.jsonrpcprovider.getparentreceipts.md) |  | returns receipts for messages in parent tipset of the specified block |
 |  [getPath(from, to)](./filecoin.js.jsonrpcprovider.getpath.md) |  | Returns a set of revert/apply operations needed to get from |
+|  [getPaymentChannel(from, to, amount)](./filecoin.js.jsonrpcprovider.getpaymentchannel.md) |  |  |
+|  [getPaymentChannelList()](./filecoin.js.jsonrpcprovider.getpaymentchannellist.md) |  |  |
+|  [getPaymentChannelStatus(address)](./filecoin.js.jsonrpcprovider.getpaymentchannelstatus.md) |  |  |
 |  [getReceipt(cid, tipSetKey)](./filecoin.js.jsonrpcprovider.getreceipt.md) |  | returns the message receipt for the given message |
 |  [getTipSetByHeight(epochNumber)](./filecoin.js.jsonrpcprovider.gettipsetbyheight.md) |  | looks back for a tipset at the specified epoch. |
 |  [getTipSetWeight(tipSetKey)](./filecoin.js.jsonrpcprovider.gettipsetweight.md) |  | Computes weight for the specified tipset. |
+|  [getWaitReadyPaymentChannel(cid)](./filecoin.js.jsonrpcprovider.getwaitreadypaymentchannel.md) |  |  |
 |  [hasLocal(cid)](./filecoin.js.jsonrpcprovider.haslocal.md) |  |  |
 |  [hasObj(cid)](./filecoin.js.jsonrpcprovider.hasobj.md) |  | checks if a given CID exists in the chain blockstore |
+|  [id()](./filecoin.js.jsonrpcprovider.id.md) |  | returns peerID of libp2p node backing this API |
 |  [import(fileRef)](./filecoin.js.jsonrpcprovider.import.md) |  | Imports file under the specified path into filestore. |
 |  [listActors(tipSetKey)](./filecoin.js.jsonrpcprovider.listactors.md) |  | returns the addresses of every actor in the state |
 |  [listDataTransfers()](./filecoin.js.jsonrpcprovider.listdatatransfers.md) |  | returns the status of all ongoing transfers of data |
@@ -67,6 +76,8 @@ export declare class JsonRpcProvider
 |  [listImports()](./filecoin.js.jsonrpcprovider.listimports.md) |  | lists imported files and their root CIDs |
 |  [listMessages(filter, tipSetKey, toHeight)](./filecoin.js.jsonrpcprovider.listmessages.md) |  | looks back and returns all messages with a matching to or from address, stopping at the given height. |
 |  [listMiners(tipSetKey)](./filecoin.js.jsonrpcprovider.listminers.md) |  | returns the addresses of every miner that has claimed power in the Power Actor |
+|  [logList()](./filecoin.js.jsonrpcprovider.loglist.md) |  |  |
+|  [logSetLevel(string1, string2)](./filecoin.js.jsonrpcprovider.logsetlevel.md) |  |  |
 |  [lookupId(address, tipSetKey)](./filecoin.js.jsonrpcprovider.lookupid.md) |  | retrieves the ID address of the given address |
 |  [marketBalance(address, tipSetKey)](./filecoin.js.jsonrpcprovider.marketbalance.md) |  | looks up the Escrow and Locked balances of the given address in the Storage Market |
 |  [marketDeals(tipSetKey)](./filecoin.js.jsonrpcprovider.marketdeals.md) |  | returns information about every deal in the Storage Market |
@@ -86,7 +97,23 @@ export declare class JsonRpcProvider
 |  [minerRecoveries(address, tipSetKey)](./filecoin.js.jsonrpcprovider.minerrecoveries.md) |  | returns a bitfield indicating the recovering sectors of the given miner |
 |  [minerSectorCount(address, tipSetKey)](./filecoin.js.jsonrpcprovider.minersectorcount.md) |  | returns the number of sectors in a miner's sector set and proving set |
 |  [minerSectors(address, tipSetKey)](./filecoin.js.jsonrpcprovider.minersectors.md) |  | returns info about the given miner's sectors |
+|  [netAddrsListen()](./filecoin.js.jsonrpcprovider.netaddrslisten.md) |  |  |
+|  [netAutoNatStatus()](./filecoin.js.jsonrpcprovider.netautonatstatus.md) |  |  |
+|  [netConnect(addrInfo)](./filecoin.js.jsonrpcprovider.netconnect.md) |  |  |
+|  [netConnectedness(peerId)](./filecoin.js.jsonrpcprovider.netconnectedness.md) |  | Net |
+|  [netDisconnect(peerID)](./filecoin.js.jsonrpcprovider.netdisconnect.md) |  |  |
+|  [netPeers()](./filecoin.js.jsonrpcprovider.netpeers.md) |  |  |
+|  [netPubsubScores()](./filecoin.js.jsonrpcprovider.netpubsubscores.md) |  |  |
 |  [networkName()](./filecoin.js.jsonrpcprovider.networkname.md) |  | returns the name of the network the node is synced to |
+|  [PaymentChannelAllocateLane(address)](./filecoin.js.jsonrpcprovider.paymentchannelallocatelane.md) |  |  |
+|  [PaymentChannelCollect(address)](./filecoin.js.jsonrpcprovider.paymentchannelcollect.md) |  |  |
+|  [PaymentChannelSettle(address)](./filecoin.js.jsonrpcprovider.paymentchannelsettle.md) |  |  |
+|  [PaymentChannelVoucherAdd(address, signedVoucher, proof, minDelta)](./filecoin.js.jsonrpcprovider.paymentchannelvoucheradd.md) |  |  |
+|  [PaymentChannelVoucherCheckSpendable(address, signedVoucher, secret, proof)](./filecoin.js.jsonrpcprovider.paymentchannelvouchercheckspendable.md) |  |  |
+|  [PaymentChannelVoucherCheckValid(address, signedVoucher)](./filecoin.js.jsonrpcprovider.paymentchannelvouchercheckvalid.md) |  |  |
+|  [PaymentChannelVoucherCreate(address, amount, lane)](./filecoin.js.jsonrpcprovider.paymentchannelvouchercreate.md) |  |  |
+|  [PaymentChannelVoucherList(address)](./filecoin.js.jsonrpcprovider.paymentchannelvoucherlist.md) |  |  |
+|  [PaymentChannelVoucherVoucherSubmit(address, signedVoucher, secret, proof)](./filecoin.js.jsonrpcprovider.paymentchannelvouchervouchersubmit.md) |  |  |
 |  [queryAsk(peerId, miner)](./filecoin.js.jsonrpcprovider.queryask.md) |  | returns a signed StorageAsk from the specified miner. |
 |  [readObj(cid)](./filecoin.js.jsonrpcprovider.readobj.md) |  | reads ipld nodes referenced by the specified CID from chain blockstore and returns raw bytes. |
 |  [readState(address, tipSetKey)](./filecoin.js.jsonrpcprovider.readstate.md) |  | returns the indicated actor's state |
@@ -101,11 +128,12 @@ export declare class JsonRpcProvider
 |  [sectorPartition(address, sector, tipSetKey)](./filecoin.js.jsonrpcprovider.sectorpartition.md) |  | finds deadline/partition with the specified sector |
 |  [sectorPreCommitInfo(address, sector, tipSetKey)](./filecoin.js.jsonrpcprovider.sectorprecommitinfo.md) |  | returns the PreCommit info for the specified miner's sector |
 |  [setHead(tipSetKey)](./filecoin.js.jsonrpcprovider.sethead.md) |  | Forcefully sets current chain head. Use with caution. |
+|  [shutdown()](./filecoin.js.jsonrpcprovider.shutdown.md) |  | trigger graceful shutdown |
 |  [startDeal(dealParams)](./filecoin.js.jsonrpcprovider.startdeal.md) |  | Proposes a deal with a miner. |
 |  [stateCall(message, tipSetKey)](./filecoin.js.jsonrpcprovider.statecall.md) |  | runs the given message and returns its result without any persisted changes. |
 |  [stateReplay(tipSetKey, cid)](./filecoin.js.jsonrpcprovider.statereplay.md) |  | returns the result of executing the indicated message, assuming it was executed in the indicated tipset |
 |  [statObj(obj, base)](./filecoin.js.jsonrpcprovider.statobj.md) |  | returns statistics about the graph referenced by 'obj'. |
-|  [stopChainNotify(intervalId)](./filecoin.js.jsonrpcprovider.stopchainnotify.md) |  |  |
+|  [stopChainNotify(id)](./filecoin.js.jsonrpcprovider.stopchainnotify.md) |  |  |
 |  [verifiedClientStatus(address, tipSetKey)](./filecoin.js.jsonrpcprovider.verifiedclientstatus.md) |  | returns the data cap for the given address. |
-|  [version()](./filecoin.js.jsonrpcprovider.version.md) |  |  |
+|  [version()](./filecoin.js.jsonrpcprovider.version.md) |  | provides information about API provider |
 |  [waitMsg(cid, confidence)](./filecoin.js.jsonrpcprovider.waitmsg.md) |  | looks back in the chain for a message. If not found, it blocks until the message arrives on chain, and gets to the indicated confidence depth. |

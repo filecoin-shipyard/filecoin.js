@@ -29,6 +29,7 @@ export declare class MnemonicWalletProvider extends HttpJsonRpcWalletProvider
 |  [getAccounts()](./filecoin.js.mnemonicwalletprovider.getaccounts.md) |  |  |
 |  [getDefaultAccount()](./filecoin.js.mnemonicwalletprovider.getdefaultaccount.md) |  |  |
 |  [getSigner()](./filecoin.js.mnemonicwalletprovider.getsigner.md) |  |  |
+|  [sendMessage(msg)](./filecoin.js.mnemonicwalletprovider.sendmessage.md) |  |  |
 |  [sign(data)](./filecoin.js.mnemonicwalletprovider.sign.md) |  |  |
 |  [signMessage(msg)](./filecoin.js.mnemonicwalletprovider.signmessage.md) |  |  |
-|  [verify(data, sign)](./filecoin.js.mnemonicwalletprovider.verify.md) |  |  |
+|  [verify(address, data, sign)](./filecoin.js.mnemonicwalletprovider.verify.md) |  |  |

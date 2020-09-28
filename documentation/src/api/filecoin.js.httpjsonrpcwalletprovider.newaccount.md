@@ -14,7 +14,7 @@ create new wallet
 <b>Signature:</b>
 
 ```typescript
-newAccount(type?: number): Promise<string[]>;
+newAccount(type?: number): Promise<string>;
 ```
 
 ## Parameters
@@ -25,4 +25,4 @@ newAccount(type?: number): Promise<string[]>;
 
 <b>Returns:</b>
 
-Promise&lt;string\[\]&gt;
+Promise&lt;string&gt;
