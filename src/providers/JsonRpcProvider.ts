@@ -1214,4 +1214,31 @@ export class JsonRpcProvider {
   public async syncUnmarkBad(blockCid: Cid) {
     await this.conn.request({ method: 'Filecoin.SyncUnmarkBad', params: [blockCid] });
   }
+
+  /**
+   * marks a blocks as checkpointed, meaning that it won't ever fork away from it.
+   * @param tipSetKey
+   */
+  public async syncCheckpoint(tipSetKey: TipSetKey) {
+    const check: string = await this.conn.request({ method: 'Filecoin.SyncCheckpoint', params: [tipSetKey] });
+    return check;
+  }
+
+  /**
+   * can be used to submit a newly created block to the network
+   * @param blockMsg
+   */
+  public async syncSubmitBlock(blockMsg: BlockMsg) {
+    const check: string = await this.conn.request({ method: 'Filecoin.SyncSubmitBlock', params: [blockMsg] });
+    return check;
+  }
+
+  /**
+   * returns a channel streaming incoming, potentially not yet synced block headers.
+   * @param cb
+   */
+  public async syncIncomingBlocks(cb: (blockHeader: BlockHeader) => void) {
+    const subscriptionId = await this.conn.request({ method: 'Filecoin.SyncIncomingBlocks' });
+    this.conn.on(subscriptionId, cb);
+  }
 }

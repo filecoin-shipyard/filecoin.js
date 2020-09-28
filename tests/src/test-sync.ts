@@ -8,7 +8,7 @@ import { WsJsonRpcConnector } from '../../src/connectors/WsJsonRpcConnector';
 const httpConnector = new HttpJsonRpcConnector({ url: 'http://localhost:8000/rpc/v0', token: LOTUS_AUTH_TOKEN });
 const wsConnector = new WsJsonRpcConnector({ url: 'ws://localhost:8000/rpc/v0', token: LOTUS_AUTH_TOKEN });
 
-describe.only("Sync", function() {
+describe("Sync", function() {
   it("should get the current status of the Lotus sync [http]", async function() {
     const provider = new JsonRpcProvider(httpConnector);
     const state = await provider.syncState();
@@ -42,5 +42,13 @@ describe.only("Sync", function() {
     await provider.syncMarkBad(blockCid);
     const check = await provider.syncCheckBad(blockCid);
     assert.strictEqual(check, 'manually marked bad', 'failed bad mark');
+  });
+
+  it("get not yet synced block headers [ws]", function(done) {
+    const provider = new JsonRpcProvider(wsConnector);
+    provider.syncIncomingBlocks((blockHeader) => {
+      assert.strictEqual(typeof blockHeader.Height === 'number', true, 'invalid not yet synced block headers')
+      provider.release().then(() => { done() });
+    });
   });
 });
