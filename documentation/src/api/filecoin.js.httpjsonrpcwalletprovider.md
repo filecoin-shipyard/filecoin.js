@@ -27,29 +27,23 @@ export declare class HttpJsonRpcWalletProvider implements WalletProvider
 |  Method | Modifiers | Description |
 |  --- | --- | --- |
 |  [createMessage(message)](./filecoin.js.httpjsonrpcwalletprovider.createmessage.md) |  | prepare a message for signing, add defaults, and populate nonce and gas related parameters if not provided |
+|  [deleteWallet(address)](./filecoin.js.httpjsonrpcwalletprovider.deletewallet.md) |  | delete address from lotus |
 |  [estimateMessageGas(message)](./filecoin.js.httpjsonrpcwalletprovider.estimatemessagegas.md) |  | estimate gas to succesufully send message, and have it included in the next 10 blocks |
+|  [estimateMessageGasFeeCap(message, nblocksincl)](./filecoin.js.httpjsonrpcwalletprovider.estimatemessagegasfeecap.md) |  | estimate gas fee cap |
+|  [estimateMessageGasLimit(message)](./filecoin.js.httpjsonrpcwalletprovider.estimatemessagegaslimit.md) |  | estimate gas limit, it fails if message fails to execute. |
+|  [estimateMessageGasPremium(nblocksincl, sender, gasLimit)](./filecoin.js.httpjsonrpcwalletprovider.estimatemessagegaspremium.md) |  | estimate gas to succesufully send message, and have it likely be included in the next nblocksincl blocks |
 |  [getAccounts()](./filecoin.js.httpjsonrpcwalletprovider.getaccounts.md) |  | get wallet list |
 |  [getBalance(address)](./filecoin.js.httpjsonrpcwalletprovider.getbalance.md) |  | get balance for address |
 |  [getDefaultAccount()](./filecoin.js.httpjsonrpcwalletprovider.getdefaultaccount.md) |  | get default address |
 |  [getNonce(address)](./filecoin.js.httpjsonrpcwalletprovider.getnonce.md) |  | get nonce for address |
-|  [getPaymentChannel(from, to, amount)](./filecoin.js.httpjsonrpcwalletprovider.getpaymentchannel.md) |  |  |
-|  [getPaymentChannelList()](./filecoin.js.httpjsonrpcwalletprovider.getpaymentchannellist.md) |  |  |
-|  [getPaymentChannelStatus(address)](./filecoin.js.httpjsonrpcwalletprovider.getpaymentchannelstatus.md) |  |  |
-|  [getWaitReadyPaymentChannel(cid)](./filecoin.js.httpjsonrpcwalletprovider.getwaitreadypaymentchannel.md) |  |  |
+|  [hasWallet(address)](./filecoin.js.httpjsonrpcwalletprovider.haswallet.md) |  | check if address is in keystore |
 |  [newAccount(type)](./filecoin.js.httpjsonrpcwalletprovider.newaccount.md) |  | create new wallet |
-|  [PaymentChannelAllocateLane(address)](./filecoin.js.httpjsonrpcwalletprovider.paymentchannelallocatelane.md) |  |  |
-|  [PaymentChannelCollect(address)](./filecoin.js.httpjsonrpcwalletprovider.paymentchannelcollect.md) |  |  |
-|  [PaymentChannelSettle(address)](./filecoin.js.httpjsonrpcwalletprovider.paymentchannelsettle.md) |  |  |
-|  [PaymentChannelVoucherAdd(address, signedVoucher, proof, minDelta)](./filecoin.js.httpjsonrpcwalletprovider.paymentchannelvoucheradd.md) |  |  |
-|  [PaymentChannelVoucherCheckSpendable(address, signedVoucher, secret, proof)](./filecoin.js.httpjsonrpcwalletprovider.paymentchannelvouchercheckspendable.md) |  |  |
-|  [PaymentChannelVoucherCheckValid(address, signedVoucher)](./filecoin.js.httpjsonrpcwalletprovider.paymentchannelvouchercheckvalid.md) |  |  |
-|  [PaymentChannelVoucherCreate(address, amount, lane)](./filecoin.js.httpjsonrpcwalletprovider.paymentchannelvouchercreate.md) |  |  |
-|  [PaymentChannelVoucherList(address)](./filecoin.js.httpjsonrpcwalletprovider.paymentchannelvoucherlist.md) |  |  |
-|  [PaymentChannelVoucherVoucherSubmit(address, signedVoucher, secret, proof)](./filecoin.js.httpjsonrpcwalletprovider.paymentchannelvouchervouchersubmit.md) |  |  |
 |  [release()](./filecoin.js.httpjsonrpcwalletprovider.release.md) |  |  |
 |  [sendMessage(msg)](./filecoin.js.httpjsonrpcwalletprovider.sendmessage.md) |  | send message, signed with default lotus wallet |
 |  [sendSignedMessage(msg)](./filecoin.js.httpjsonrpcwalletprovider.sendsignedmessage.md) |  | send signed message |
-|  [setDefaultAccount(address)](./filecoin.js.httpjsonrpcwalletprovider.setdefaultaccount.md) |  |  |
+|  [setDefaultAccount(address)](./filecoin.js.httpjsonrpcwalletprovider.setdefaultaccount.md) |  | set default address |
 |  [sign(data)](./filecoin.js.httpjsonrpcwalletprovider.sign.md) |  | sign raw message |
 |  [signMessage(msg)](./filecoin.js.httpjsonrpcwalletprovider.signmessage.md) |  | sign message |
-|  [verify(data, sign)](./filecoin.js.httpjsonrpcwalletprovider.verify.md) |  | verify message signature |
+|  [verify(address, data, sign)](./filecoin.js.httpjsonrpcwalletprovider.verify.md) |  | verify message signature |
+|  [walletExport(address)](./filecoin.js.httpjsonrpcwalletprovider.walletexport.md) |  | walletExport returns the private key of an address in the wallet. |
+|  [walletImport(keyInfo)](./filecoin.js.httpjsonrpcwalletprovider.walletimport.md) |  | walletImport returns the private key of an address in the wallet. |

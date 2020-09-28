@@ -9,6 +9,8 @@ hide_title: true
 
 ## JsonRpcProvider.version() method
 
+provides information about API provider
+
 <b>Signature:</b>
 
 ```typescript

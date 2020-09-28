@@ -12,13 +12,14 @@ hide_title: true
 <b>Signature:</b>
 
 ```typescript
-verify(data: string | ArrayBuffer, sign: Signature): Promise<boolean>;
+verify(address: string, data: string | ArrayBuffer, sign: Signature): Promise<boolean>;
 ```
 
 ## Parameters
 
 |  Parameter | Type | Description |
 |  --- | --- | --- |
+|  address | string |  |
 |  data | string &#124; ArrayBuffer |  |
 |  sign | Signature |  |
 

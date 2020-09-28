@@ -14,11 +14,11 @@ Constructs a new instance of the `WsJsonRpcConnector` class
 <b>Signature:</b>
 
 ```typescript
-constructor(options: WsJsonRpcConnectionOptions);
+constructor(options: WebSocketConnectionOptions);
 ```
 
 ## Parameters
 
 |  Parameter | Type | Description |
 |  --- | --- | --- |
-|  options | WsJsonRpcConnectionOptions |  |
+|  options | WebSocketConnectionOptions |  |

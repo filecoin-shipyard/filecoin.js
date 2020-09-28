@@ -12,15 +12,15 @@ hide_title: true
 <b>Signature:</b>
 
 ```typescript
-request(req: RequestArguments): Promise<unknown>;
+request(args: RequestArguments): Promise<any>;
 ```
 
 ## Parameters
 
 |  Parameter | Type | Description |
 |  --- | --- | --- |
-|  req | RequestArguments |  |
+|  args | RequestArguments |  |
 
 <b>Returns:</b>
 
-Promise&lt;unknown&gt;
+Promise&lt;any&gt;

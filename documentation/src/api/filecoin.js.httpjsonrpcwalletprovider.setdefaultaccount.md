@@ -9,6 +9,8 @@ hide_title: true
 
 ## HttpJsonRpcWalletProvider.setDefaultAccount() method
 
+set default address
+
 <b>Signature:</b>
 
 ```typescript

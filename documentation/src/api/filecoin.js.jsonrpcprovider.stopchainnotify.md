@@ -12,14 +12,14 @@ hide_title: true
 <b>Signature:</b>
 
 ```typescript
-stopChainNotify(intervalId?: Timeout): void;
+stopChainNotify(id?: any): void;
 ```
 
 ## Parameters
 
 |  Parameter | Type | Description |
 |  --- | --- | --- |
-|  intervalId | Timeout |  |
+|  id | any |  |
 
 <b>Returns:</b>
 
