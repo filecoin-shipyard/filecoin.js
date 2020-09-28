@@ -17,6 +17,14 @@ declare class ActorState {
 
 declare type Address = string;
 
+/**
+ * AddrInfo is a small struct used to pass around a peer with a set of addresses (and later, keys?).
+ */
+declare class AddrInfo {
+    ID: ID;
+    Addrs: Multiaddr[];
+}
+
 declare type BitField = number[];
 
 declare class BlockHeader {
@@ -84,16 +92,25 @@ declare class Claim {
     QualityAdjPower: StoragePower;
 }
 
+declare type ClientEvent = number;
+
+declare class CommPRet {
+    Root: Cid;
+    Size: UnpaddedPieceSize;
+}
+
 declare class ComputeStateOutput {
     Root: Cid;
     Trace: InvocResult[];
 }
 
+declare type Connectedness = number;
+
 declare interface Connector {
     url: string;
     token?: string | undefined;
-    connect(): Promise<any>;
     disconnect(): Promise<any>;
+    connect(): Promise<any>;
     request(req: RequestArguments): Promise<any>;
     on(event: 'connected' | 'disconnected', listener: (...args: any[]) => void): this;
 }
@@ -105,6 +122,39 @@ declare interface Connector {
  * This can be replaced in the future due to policy changes
  */
 declare type DataCap = StoragePower;
+
+/**
+ * DataRef is a reference for how data will be transferred for a given storage deal
+ */
+declare class DataRef {
+    TransferType: string;
+    Root: Cid;
+    /**
+     * Optional for non-manual transfer, will be recomputed from the data if not given
+     */
+    PieceCid?: Cid;
+    /**
+     * Optional for non-manual transfer, will be recomputed from the data if not given
+     */
+    PieceSize?: UnpaddedPieceSize;
+}
+
+declare class DataSize {
+    PayloadSize: number;
+    PieceSize: PaddedPieceSize;
+}
+
+declare class DataTransferChannel {
+    TransferID: TransferID;
+    Status: number;
+    BaseCID: Cid;
+    IsInitiator: boolean;
+    IsSender: boolean;
+    Voucher: string;
+    Message: string;
+    OtherPeer: PeerID;
+    Transferred: number;
+}
 
 declare class Deadline {
     /**
@@ -189,6 +239,23 @@ declare class DealCollateralBounds {
 
 declare type DealID = number;
 
+declare class DealInfo {
+    ProposalCid: Cid;
+    State: StorageDealStatus;
+    /**
+     * More information about deal state, particularly errors
+     */
+    Message: string;
+    Provider: Address;
+    DataRef: DataRef;
+    PieceCID: Cid;
+    Size: number;
+    PricePerEpoch: any;
+    Duration: number;
+    DealID: DealID;
+    CreationTime: string;
+}
+
 declare class DealProposal {
     PieceCID: Cid;
     PieceSize: PaddedPieceSize;
@@ -230,6 +297,11 @@ declare class DealState {
     SlashEpoch: ChainEpoch;
 }
 
+/**
+ * DealStatus is the status of a retrieval deal returned by a provider in a DealResponse
+ */
+declare type DealStatus = number;
+
 declare type DealWeight = number;
 
 declare class ExecutionTrace {
@@ -246,6 +318,11 @@ declare type ExitCode = number;
 declare class Fault {
     Miner: Address;
     Epoch: ChainEpoch;
+}
+
+declare class FileRef {
+    Path: string;
+    IsCAR: boolean;
 }
 
 declare class GasTrace {
@@ -288,7 +365,7 @@ export declare class HttpJsonRpcWalletProvider implements WalletProvider {
      * create new wallet
      * @param type
      */
-    newAccount(type?: number): Promise<string[]>;
+    newAccount(type?: number): Promise<string>;
     /**
      * get nonce for address
      * @param address
@@ -303,7 +380,31 @@ export declare class HttpJsonRpcWalletProvider implements WalletProvider {
      * @param address
      */
     getBalance(address: string): Promise<any>;
+    /**
+     * delete address from lotus
+     * @param address
+     */
+    deleteWallet(address: string): Promise<any>;
+    /**
+    * check if address is in keystore
+    * @param address
+    */
+    hasWallet(address: string): Promise<any>;
+    /**
+     * set default address
+     * @param address
+     */
     setDefaultAccount(address: string): Promise<undefined>;
+    /**
+     * walletExport returns the private key of an address in the wallet.
+     * @param address
+     */
+    walletExport(address: string): Promise<KeyInfo>;
+    /**
+     * walletImport returns the private key of an address in the wallet.
+     * @param keyInfo
+     */
+    walletImport(keyInfo: KeyInfo): Promise<string>;
     /**
      * get default address
      */
@@ -319,13 +420,31 @@ export declare class HttpJsonRpcWalletProvider implements WalletProvider {
      */
     sendSignedMessage(msg: SignedMessage): Promise<Cid>;
     /**
+    * estimate gas fee cap
+    * @param message
+    * @param nblocksincl
+    */
+    estimateMessageGasFeeCap(message: Message, nblocksincl: number): Promise<string>;
+    /**
+    * estimate gas limit, it fails if message fails to execute.
+    * @param message
+    */
+    estimateMessageGasLimit(message: Message): Promise<number>;
+    /**
+    * estimate gas to succesufully send message, and have it likely be included in the next nblocksincl blocks
+    * @param nblocksincl
+    * @param sender
+    * @param gasLimit
+    */
+    estimateMessageGasPremium(nblocksincl: number, sender: string, gasLimit: number): Promise<string>;
+    /**
      * estimate gas to succesufully send message, and have it included in the next 10 blocks
-     * @param msg
+     * @param message
      */
     estimateMessageGas(message: Message): Promise<Message>;
     /**
      * prepare a message for signing, add defaults, and populate nonce and gas related parameters if not provided
-     * @param msg
+     * @param message
      */
     createMessage(message: MessagePartial): Promise<Message>;
     /**
@@ -343,20 +462,25 @@ export declare class HttpJsonRpcWalletProvider implements WalletProvider {
      * @param data
      * @param sign
      */
-    verify(data: string | ArrayBuffer, sign: Signature): Promise<boolean>;
-    getPaymentChannel(from: string, to: string, amount: string): Promise<any>;
-    getWaitReadyPaymentChannel(cid: Cid): Promise<any>;
-    getPaymentChannelList(): Promise<any>;
-    getPaymentChannelStatus(address: string): Promise<any>;
-    PaymentChannelAllocateLane(address: string): Promise<any>;
-    PaymentChannelSettle(address: string): Promise<any>;
-    PaymentChannelCollect(address: string): Promise<any>;
-    PaymentChannelVoucherCreate(address: string, amount: string, lane: number): Promise<any>;
-    PaymentChannelVoucherList(address: string): Promise<any>;
-    PaymentChannelVoucherCheckValid(address: string, signedVoucher: any): Promise<any>;
-    PaymentChannelVoucherAdd(address: string, signedVoucher: any, proof: any, minDelta: string): Promise<any>;
-    PaymentChannelVoucherCheckSpendable(address: string, signedVoucher: any, secret: any, proof: any): Promise<any>;
-    PaymentChannelVoucherVoucherSubmit(address: string, signedVoucher: any, secret: any, proof: any): Promise<any>;
+    verify(address: string, data: string | ArrayBuffer, sign: Signature): Promise<boolean>;
+}
+
+/**
+ * ID is a libp2p peer identity
+ */
+declare type ID = string;
+
+declare class Import {
+    Key: StoreID;
+    Err: string;
+    Root: Cid;
+    Source: string;
+    FilePath: string;
+}
+
+declare class ImportRes {
+    Root: Cid;
+    ImportID: StoreID;
 }
 
 declare class InvocResult {
@@ -377,7 +501,6 @@ export declare class JsonRpcProvider {
     private intervals;
     constructor(connector: Connector);
     release(): Promise<any>;
-    version(): Promise<Version>;
     /**
      * reads ipld nodes referenced by the specified CID from chain blockstore and returns raw bytes.
      * @param cid
@@ -398,12 +521,12 @@ export declare class JsonRpcProvider {
      * @returns interval id
      */
     chainNotify(cb: (headChange: HeadChange[]) => void): Promise<Timeout | undefined>;
-    stopChainNotify(intervalId?: Timeout): void;
+    stopChainNotify(id?: any): void;
     /**
      * returns the block specified by the given CID
      * @param blockCid
      */
-    getBlock(blockCid: Cid): Promise<TipSet>;
+    getBlock(blockCid: Cid): Promise<BlockHeader>;
     /**
      * reads a message referenced by the specified CID from the chain blockstore
      * @param messageCid
@@ -425,10 +548,46 @@ export declare class JsonRpcProvider {
      */
     hasObj(cid: Cid): Promise<boolean>;
     /**
+     * returns statistics about the graph referenced by 'obj'.
+     *
+     * @remarks
+     * If 'base' is also specified, then the returned stat will be a diff between the two objects.
+     */
+    statObj(obj: Cid, base?: Cid): Promise<ObjStat>;
+    /**
+     * Forcefully sets current chain head. Use with caution.
+     * @param tipSetKey
+     */
+    setHead(tipSetKey: TipSetKey): Promise<void>;
+    /**
+     * Returns the genesis tipset.
+     * @param tipSet
+     */
+    getGenesis(): Promise<TipSet>;
+    /**
+     * Computes weight for the specified tipset.
+     * @param tipSetKey
+     */
+    getTipSetWeight(tipSetKey?: TipSetKey): Promise<string>;
+    /**
      * looks back for a tipset at the specified epoch.
      * @param epochNumber
      */
     getTipSetByHeight(epochNumber: number): Promise<TipSet>;
+    /**
+     * Returns a set of revert/apply operations needed to get from
+     * @param from
+     * @param to
+     */
+    getPath(from: TipSetKey, to: TipSetKey): Promise<HeadChange[]>;
+    /**
+     * Returns a stream of bytes with CAR dump of chain data.
+     * @param nroots
+     * @param tipSetKey
+     *
+     * @remarks The exported chain data includes the header chain from the given tipset back to genesis, the entire genesis state, and the most recent 'nroots' state trees.
+     */
+    export(nroots: ChainEpoch, tipSetKey: TipSetKey): Promise<any>;
     /**
      * State
      * The State methods are used to query, inspect, and interact with chain state.
@@ -691,17 +850,168 @@ export declare class JsonRpcProvider {
      * @param tipSetKey
      */
     circulatingSupply(tipSetKey?: TipSetKey): Promise<CirculatingSupply>;
+    /**
+     * Client
+     * The Client methods all have to do with interacting with the storage and retrieval markets as a client.
+     */
+    /**
+     * Imports file under the specified path into filestore.
+     * @param fileRef
+     */
+    import(fileRef: FileRef): Promise<ImportRes>;
+    /**
+     * Removes file import
+     * @param importId
+     */
+    removeImport(importId: StoreID): Promise<ImportRes>;
+    /**
+     * Proposes a deal with a miner.
+     * @param dealParams
+     */
+    startDeal(dealParams: StartDealParams): Promise<Cid>;
+    /**
+     * Returns the latest information about a given deal.
+     * @param dealCid
+     */
+    getDealInfo(dealCid: Cid): Promise<DealInfo>;
+    /**
+     * Returns information about the deals made by the local client.
+     */
+    listDeals(): Promise<DealInfo[]>;
+    hasLocal(cid: Cid): Promise<boolean>;
+    /**
+     * Identifies peers that have a certain file, and returns QueryOffers (one per peer).
+     * @param cid
+     * @param pieceCid
+     */
+    findData(cid: Cid, pieceCid?: Cid): Promise<QueryOffer[]>;
+    /**
+     * returns a QueryOffer for the specific miner and file.
+     * @param miner
+     * @param root
+     * @param pieceCid
+     */
+    minerQueryOffer(miner: Address, root: Cid, pieceCid?: Cid): Promise<QueryOffer>;
+    /**
+     * initiates the retrieval of a file, as specified in the order.
+     * @param order
+     * @param ref
+     */
+    retrieve(order: RetrievalOrder, ref: FileRef): Promise<void>;
+    /**
+     * returns a signed StorageAsk from the specified miner.
+     * @param peerId
+     * @param miner
+     */
+    queryAsk(peerId: PeerID, miner: Address): Promise<SignedStorageAsk>;
+    /**
+     * calculates the CommP for a specified file
+     * @param path
+     */
+    calcCommP(path: string): Promise<CommPRet>;
+    /**
+     * generates a CAR file for the specified file.
+     * @param ref
+     * @param outpath
+     */
+    genCar(ref: FileRef, outpath: string): Promise<any>;
+    /**
+     * calculates real deal data size
+     * @param root
+     */
+    dealSize(root: Cid): Promise<DataSize>;
+    /**
+     * returns the status of all ongoing transfers of data
+     */
+    listDataTransfers(): Promise<DataTransferChannel[]>;
+    /**
+     * attempts to restart stalled retrievals on a given payment channel which are stuck due to insufficient funds.
+     * @param paymentChannel
+     */
+    retrieveTryRestartInsufficientFunds(paymentChannel: Address): Promise<void>;
+    /**
+     * lists imported files and their root CIDs
+     */
+    listImports(): Promise<Import[]>;
+    /**
+     * returns the status of updated deals
+     */
+    getDealUpdates(cb: (data: DealInfo) => void): Promise<void>;
+    /**
+     * initiates the retrieval of a file, as specified in the order, and provides a channel of status updates.
+     * @param order
+     * @param ref
+     * @param cb
+     */
+    retrieveWithEvents(order: RetrievalOrder, ref: FileRef, cb: (data: RetrievalEvent) => void): Promise<void>;
+    dataTransferUpdates(cb: (data: DataTransferChannel) => void): Promise<void>;
+    getPaymentChannel(from: string, to: string, amount: string): Promise<any>;
+    getWaitReadyPaymentChannel(cid: Cid): Promise<any>;
+    getPaymentChannelList(): Promise<any>;
+    getPaymentChannelStatus(address: string): Promise<any>;
+    PaymentChannelAllocateLane(address: string): Promise<any>;
+    PaymentChannelSettle(address: string): Promise<any>;
+    PaymentChannelCollect(address: string): Promise<any>;
+    PaymentChannelVoucherCreate(address: string, amount: string, lane: number): Promise<any>;
+    PaymentChannelVoucherList(address: string): Promise<any>;
+    PaymentChannelVoucherCheckValid(address: string, signedVoucher: any): Promise<any>;
+    PaymentChannelVoucherAdd(address: string, signedVoucher: any, proof: any, minDelta: string): Promise<any>;
+    PaymentChannelVoucherCheckSpendable(address: string, signedVoucher: any, secret: any, proof: any): Promise<any>;
+    PaymentChannelVoucherVoucherSubmit(address: string, signedVoucher: any, secret: any, proof: any): Promise<any>;
+    /**
+    * returns (a copy of) the current mpool config
+    */
+    getMpoolConfig(): Promise<any>;
+    /**
+     * Auth
+     * The Auth method group is used to manage the authorization tokens.
+     */
+    /**
+     * list the permissions for a given authorization token
+     * @param token
+     */
+    authVerify(token: string): Promise<Permission[]>;
+    /**
+     * generate a new authorization token for a given permissions list
+     * @param permissions
+     */
+    authNew(permissions: Permission[]): Promise<string>;
+    /**
+     * Common
+     */
+    /**
+     * returns peerID of libp2p node backing this API
+     */
+    id(): Promise<ID>;
+    /**
+     * provides information about API provider
+     */
+    version(): Promise<Version>;
+    logList(): Promise<string[]>;
+    logSetLevel(string1: string, string2: string): Promise<any>;
+    /**
+     * trigger graceful shutdown
+     */
+    shutdown(): Promise<void>;
+    /**
+     * Net
+     */
+    netConnectedness(peerId: PeerID): Promise<Connectedness>;
+    netPeers(): Promise<AddrInfo[]>;
+    netConnect(addrInfo: AddrInfo): Promise<any>;
+    netAddrsListen(): Promise<AddrInfo>;
+    netDisconnect(peerID: PeerID): Promise<void>;
+    findPeer(peerID: PeerID): Promise<AddrInfo>;
+    netPubsubScores(): Promise<PubsubScore[]>;
+    netAutoNatStatus(): Promise<NatInfo>;
 }
 
-export declare class LedgerSigner implements Signer {
-    private path;
-    private transport;
-    private wasm;
-    constructor(path?: string);
-    connect(): Promise<void>;
-    sign(message: Message): Promise<SignedMessage>;
-    getDefaultAccount(): Promise<string>;
-    private messageToSigner;
+/**
+ * KeyInfo is used for storing keys in KeyStore
+ */
+declare class KeyInfo {
+    Type: string;
+    PrivateKey: [];
 }
 
 declare class Loc {
@@ -776,10 +1086,11 @@ export declare class MetamaskWalletProvider extends HttpJsonRpcWalletProvider {
     constructor(connector: Connector, filecoinApi: FilecoinSnapApi);
     getAccounts(): Promise<string[]>;
     getDefaultAccount(): Promise<string>;
+    sendMessage(msg: Message): Promise<SignedMessage>;
     signMessage(msg: Message): Promise<SignedMessage>;
     sign(data: string | ArrayBuffer): Promise<Signature>;
     getSigner(): MetamaskSigner;
-    verify(data: string | ArrayBuffer, sign: Signature): Promise<boolean>;
+    verify(address: string, data: string | ArrayBuffer, sign: Signature): Promise<boolean>;
 }
 
 declare class MinerInfo {
@@ -861,10 +1172,11 @@ export declare class MnemonicWalletProvider extends HttpJsonRpcWalletProvider {
     constructor(connector: Connector, mnemonic: string | StringGetter, password: string | StringGetter, path?: string);
     getAccounts(): Promise<string[]>;
     getDefaultAccount(): Promise<string>;
+    sendMessage(msg: Message): Promise<SignedMessage>;
     signMessage(msg: Message): Promise<SignedMessage>;
     sign(data: string | ArrayBuffer): Promise<Signature>;
     getSigner(): MnemonicSigner;
-    verify(data: string | ArrayBuffer, sign: Signature): Promise<boolean>;
+    verify(address: string, data: string | ArrayBuffer, sign: Signature): Promise<boolean>;
 }
 
 declare class MsgLookup {
@@ -879,9 +1191,24 @@ declare class MsgLookup {
     Height: ChainEpoch;
 }
 
+/**
+ * multiaddr is the data type representing a Multiaddr
+ */
+declare type Multiaddr = string;
+
 declare type Multiaddrs = any;
 
+declare class NatInfo {
+    Reachability: Reachability;
+    PublicAddr: string;
+}
+
 declare type NetworkName = string;
+
+declare class ObjStat {
+    Size: number;
+    Links: number;
+}
 
 declare type PaddedPieceSize = number;
 
@@ -944,10 +1271,35 @@ declare class Partition {
 
 declare type PeerID = string;
 
+declare type Permission = string;
+
 declare class PowerPair {
     Raw: StoragePower;
     QA: StoragePower;
 }
+
+declare class PubsubScore {
+    ID: ID;
+    Score: Score;
+}
+
+declare class QueryOffer {
+    Err: string;
+    Root: Cid;
+    Piece: Cid;
+    Size: number;
+    MinPrice: string;
+    UnsealPrice: string;
+    PaymentInterval: number;
+    PaymentIntervalIncrease: number;
+    Miner: Address;
+    MinerPeer: RetrievalPeer;
+}
+
+/**
+ * Reachability indicates how reachable a node is./**
+ */
+declare type Reachability = number;
 
 declare type RegisteredProof = number;
 
@@ -956,6 +1308,44 @@ declare type RegisteredSealProof = RegisteredProof;
 declare interface RequestArguments {
     readonly method: string;
     readonly params?: readonly unknown[];
+}
+
+declare class RetrievalEvent {
+    Event: ClientEvent;
+    Status: DealStatus;
+    BytesReceived: number;
+    FundsSpent: TokenAmount;
+    Err: string;
+}
+
+declare class RetrievalOrder {
+    Root: Cid;
+    Piece?: Cid;
+    Size: number;
+    Total: string;
+    UnsealPrice: string;
+    PaymentInterval: number;
+    PaymentIntervalIncrease: number;
+    Client: Address;
+    Miner: Address;
+    MinerPeer: RetrievalPeer;
+}
+
+/**
+ * RetrievalPeer is a provider address/peer.ID pair (everything needed to make deals for with a miner)
+ */
+declare class RetrievalPeer {
+    Address: Address;
+    ID?: ID;
+    PieceCID?: Cid;
+}
+
+declare class Score {
+    Score: number;
+    Topics: any;
+    AppSpecificScore: number;
+    IPColocationFactor: number;
+    BehaviourPenalty: number;
 }
 
 declare class SectorExpiration {
@@ -1091,16 +1481,66 @@ declare interface SignedMessage {
     Signature: Signature;
 }
 
+/**
+ * SignedStorageAsk is an ask signed by the miner's private key
+ */
+declare class SignedStorageAsk {
+    Ask: StorageAsk;
+    Signature: Signature;
+}
+
 declare interface Signer {
     sign(message: Message): Promise<SignedMessage>;
 }
+
+declare class StartDealParams {
+    Data: DataRef;
+    Wallet: Address;
+    Miner: Address;
+    EpochPrice: string;
+    MinBlocksDuration: number;
+    ProviderCollateral?: string;
+    DealStartEpoch?: ChainEpoch;
+    FastRetrieval?: boolean;
+    VerifiedDeal?: boolean;
+}
+
+/**
+ * StorageAsk defines the parameters by which a miner will choose to accept or reject a deal.
+ *
+ * @remarks making a storage deal proposal which matches the miner's ask is a precondition, but not sufficient to ensure the deal is accepted (the storage provider may run its own decision logic).
+ */
+declare class StorageAsk {
+    /**
+     * Price per GiB / Epoch
+     */
+    Price: TokenAmount;
+    VerifiedPrice: TokenAmount;
+    MinPieceSize: PaddedPieceSize;
+    MaxPieceSize: PaddedPieceSize;
+    Miner: Address;
+    Timestamp: ChainEpoch;
+    Expiry: ChainEpoch;
+    SeqNo: number;
+}
+
+/**
+ * StorageDealStatus is the local status of a StorageDeal.
+ *
+ * @remarks This status has meaning in the context of this module only - it is not recorded on chain
+ */
+declare type StorageDealStatus = number;
 
 /**
  * The unit of storage power (measured in bytes)
  */
 declare type StoragePower = string;
 
+declare type StoreID = number;
+
 declare type StringGetter = () => Promise<string>;
+
+declare type SubscriptionId = string;
 
 declare class TipSet {
     Cids: Cid[];
@@ -1112,6 +1552,13 @@ declare type TipSetKey = Cid[];
 
 declare type TokenAmount = string;
 
+/**
+ * TransferID is an identifier for a data transfer, shared between request/responder and unique to the requester.
+ */
+declare type TransferID = number;
+
+declare type UnpaddedPieceSize = number;
+
 declare class Version {
     Version: string;
     APIVersion: number;
@@ -1122,8 +1569,13 @@ declare interface WalletProvider {
     getAccounts(): Promise<string[]>;
     signMessage(msg: Message): Promise<SignedMessage>;
     sign(data: string): Promise<Signature>;
-    verify(data: string | ArrayBuffer, sign: Signature): Promise<boolean>;
+    verify(address: string, data: string | ArrayBuffer, sign: Signature): Promise<boolean>;
 }
+
+declare type WebSocketConnectionOptions = {
+    url: string;
+    token?: string;
+};
 
 declare class WorkerKeyChange {
     NewWorker: Address;
@@ -1135,28 +1587,23 @@ declare class WrappedMessage {
     Message: Message;
 }
 
-declare type WsJsonRpcConnectionOptions = string | {
+export declare class WsJsonRpcConnector extends EventEmitter implements Connector {
     url: string;
     token?: string;
-};
-
-export declare class WsJsonRpcConnector extends EventEmitter implements Connector {
-    protected options: WsJsonRpcConnectionOptions;
-    url: string;
-    token?: string | undefined;
-    private connected;
-    private client?;
+    private websocket;
     private requests;
-    constructor(options: WsJsonRpcConnectionOptions);
+    private websocketReady;
+    constructor(options: WebSocketConnectionOptions);
     connect(): Promise<any>;
+    request(args: RequestArguments): Promise<any>;
+    closeSubscription(subscriptionId: string): Promise<void>;
     disconnect(): Promise<any>;
-    private handleWaitingRequests;
-    request(req: RequestArguments): Promise<unknown>;
-    requestWithChannel(req: RequestArguments, channelKey: string, channelCb: (data: any) => void): Promise<unknown>;
-    removeChannelListener(channelKey: string): void;
-    on(event: 'connected' | 'disconnected' | 'error', listener: (...args: any[]) => void): this;
-    private performRequest;
     private fullUrl;
+    on(event: 'connected' | 'disconnected' | 'error' | SubscriptionId, listener: (...args: any[]) => void): this;
+    private onSocketClose;
+    private onSocketError;
+    private onSocketOpen;
+    private onSocketMessage;
 }
 
 export { }
