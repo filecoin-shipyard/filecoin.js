@@ -61,7 +61,7 @@ import {
   PubsubScore,
   NatInfo,
   Stats,
-  SyncState,
+  SyncState, BlockMsg,
 } from './Types';
 import { Connector } from '../connectors/Connector';
 import { WsJsonRpcConnector } from '../connectors/WsJsonRpcConnector';
@@ -1186,5 +1186,32 @@ export class JsonRpcProvider {
   public async syncState(): Promise<SyncState> {
     const state: SyncState = await this.conn.request({ method: 'Filecoin.SyncState' });
     return state;
+  }
+
+  //TODO: Method not working for the requests done through WebSocket
+  /**
+   * checks if a block was marked as bad, and if it was, returns the reason.
+   * @param blockCid
+   */
+  public async syncCheckBad(blockCid: Cid): Promise<string> {
+    const check: string = await this.conn.request({ method: 'Filecoin.SyncCheckBad', params: [blockCid] });
+    return check;
+  }
+
+  /**
+   * marks a blocks as bad, meaning that it won't ever by synced. Use with extreme caution.
+   * @param blockCid
+   */
+  public async syncMarkBad(blockCid: Cid) {
+    await this.conn.request({ method: 'Filecoin.SyncMarkBad', params: [blockCid] });
+  }
+
+  // TODO: Method not working. Returns 500 "Internal Server Error"
+  /**
+   * unmarks a block as bad, making it possible to be validated and synced again.
+   * @param blockCid
+   */
+  public async syncUnmarkBad(blockCid: Cid) {
+    await this.conn.request({ method: 'Filecoin.SyncUnmarkBad', params: [blockCid] });
   }
 }

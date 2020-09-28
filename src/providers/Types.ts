@@ -973,6 +973,12 @@ export class SyncState {
   VMApplied!: number;
 }
 
+export class BlockMsg {
+  Header!: BlockHeader;
+  BlsMessages!: Cid;
+  SecpkMessages!: Cid;
+}
+
 /**
  * Interface to be implemented by all providers.
  *

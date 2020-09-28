@@ -21,4 +21,26 @@ describe.only("Sync", function() {
     assert.strictEqual(Array.isArray(state.ActiveSyncs), true, 'invalid sync state');
     await provider.release();
   });
+
+  it("should check if a block was marked as bad [http]", async function() {
+    const provider = new JsonRpcProvider(httpConnector);
+    const tipset = await provider.getTipSetByHeight(1);
+    const check = await provider.syncCheckBad(tipset.Cids[0]);
+  });
+
+  it("should check if a block was marked as bad [ws]", async function() {
+    const provider = new JsonRpcProvider(wsConnector);
+    const tipset = await provider.getTipSetByHeight(1);
+    const check = await provider.syncCheckBad(tipset.Cids[0]);
+    await provider.release();
+  });
+
+  it("should mark a block as bad [http]", async function() {
+    const provider = new JsonRpcProvider(httpConnector);
+    const tipset = await provider.getTipSetByHeight(1);
+    const blockCid = tipset.Cids[0];
+    await provider.syncMarkBad(blockCid);
+    const check = await provider.syncCheckBad(blockCid);
+    assert.strictEqual(check, 'manually marked bad', 'failed bad mark');
+  });
 });
