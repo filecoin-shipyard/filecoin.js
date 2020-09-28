@@ -956,6 +956,23 @@ export class RetrievalEvent {
   Err!: string;
 }
 
+export type SyncStateStage = number;
+
+export class ActiveSync {
+  Base!: TipSet;
+  Target!: TipSet;
+  Stage!: SyncStateStage;
+  Height!: ChainEpoch;
+  Start!: string;
+  End!: string;
+  Message!: string;
+}
+
+export class SyncState {
+  ActiveSyncs!: ActiveSync[];
+  VMApplied!: number;
+}
+
 /**
  * Interface to be implemented by all providers.
  *

@@ -51,7 +51,17 @@ import {
   SignedStorageAsk,
   CommPRet,
   DataSize,
-  DataTransferChannel, Import, RetrievalEvent, Permission, ID, Connectedness, AddrInfo, PubsubScore, NatInfo, Stats,
+  DataTransferChannel,
+  Import,
+  RetrievalEvent,
+  Permission,
+  ID,
+  Connectedness,
+  AddrInfo,
+  PubsubScore,
+  NatInfo,
+  Stats,
+  SyncState,
 } from './Types';
 import { Connector } from '../connectors/Connector';
 import { WsJsonRpcConnector } from '../connectors/WsJsonRpcConnector';
@@ -1164,4 +1174,17 @@ export class JsonRpcProvider {
   //   const stats: any = await this.conn.request({ method: 'Filecoin.NetBandwidthStatsByProtocol' });
   //   return stats;
   // }
+
+  /**
+   * Sync
+   * The Sync method group contains methods for interacting with and observing the lotus sync service.
+   */
+
+  /**
+   * returns the current status of the lotus sync system.
+   */
+  public async syncState(): Promise<SyncState> {
+    const state: SyncState = await this.conn.request({ method: 'Filecoin.SyncState' });
+    return state;
+  }
 }
