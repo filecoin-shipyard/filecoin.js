@@ -1,29 +1,11 @@
 import assert from "assert";
 import { LOTUS_AUTH_TOKEN } from "../tools/testnet/credentials/credentials";
-import { JsonRpcProvider } from '../../src/providers/JsonRpcProvider';
 import { HttpJsonRpcConnector } from '../../src/connectors/HttpJsonRpcConnector';
 import { HttpJsonRpcWalletProvider } from '../../src/providers/wallet/HttpJsonRpcWalletProvider';
-import { MnemonicWalletProvider } from '../../src/providers/wallet/MnemonicWalletProvider';
-
-import BigNumber from 'bignumber.js';
-import { WsJsonRpcConnector } from "../../src/connectors/WsJsonRpcConnector";
-import { privateEncrypt } from "crypto";
-
-const testMnemonic = 'equip will roof matter pink blind book anxiety banner elbow sun young';
 
 function sleep(ms: any) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
-
-/*
-
-    // WalletExport returns the private key of an address in the wallet.
-    WalletExport(context.Context, address.Address) (*types.KeyInfo, error)
-    // WalletImport receives a KeyInfo, which includes a private key, and imports it into the wallet.
-    WalletImport(context.Context, *types.KeyInfo) (address.Address, error)
-    // WalletDelete deletes an address from the wallet.
-    WalletDelete(context.Context, address.Address) error
-*/
 
 let addressList: string[];
 let newAddress: string;

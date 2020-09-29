@@ -1136,7 +1136,7 @@ export class JsonRpcProvider {
     * clears pending messages from the mpool
     */
   public async mpoolClear(): Promise<any> {
-    const ret = await this.conn.request({ method: 'Filecoin.MpoolClear', params: [] });
+    const ret = await this.conn.request({ method: 'Filecoin.MpoolClear', params: [true] });
     return ret;
   }
 
@@ -1212,7 +1212,7 @@ export class JsonRpcProvider {
     */
   public async multiSigCreate(
     requiredNumberOfSenders: number,
-    approvingAddresses: [string],
+    approvingAddresses: string[],
     unlockDuration: ChainEpoch,
     initialBalance: string,
     senderAddressOfCreateMsg: string,
