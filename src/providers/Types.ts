@@ -973,12 +973,6 @@ export class SyncState {
   VMApplied!: number;
 }
 
-export class BlockMsg {
-  Header!: BlockHeader;
-  BlsMessages!: Cid;
-  SecpkMessages!: Cid;
-}
-
 /**
  * Payment Channel Types
  */

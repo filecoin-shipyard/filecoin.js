@@ -60,10 +60,20 @@ import {
   AddrInfo,
   PubsubScore,
   NatInfo,
-  Stats,
-  SyncState, BlockMsg,
-  DataTransferChannel, Import, RetrievalEvent, Permission, ID, Connectedness, AddrInfo, PubsubScore, NatInfo, Stats,
-  ChannelAvailableFunds, VoucherSpec, PaymentInfo, ChannelInfo, PaychStatus, VoucherCreateResult, SignedVoucher, MpoolConfig, SignedMessage, MiningBaseInfo, BlockTemplate, BlockMsg, MpoolUpdate
+  SyncState,
+  ChannelAvailableFunds,
+  VoucherSpec,
+  PaymentInfo,
+  ChannelInfo,
+  PaychStatus,
+  VoucherCreateResult,
+  SignedVoucher,
+  MpoolConfig,
+  SignedMessage,
+  MiningBaseInfo,
+  BlockTemplate,
+  BlockMsg,
+  MpoolUpdate
 } from './Types';
 import { Connector } from '../connectors/Connector';
 import { WsJsonRpcConnector } from '../connectors/WsJsonRpcConnector';
