@@ -1003,10 +1003,10 @@ export class SignedVoucher {
 	// Amount voucher can be redeemed for
 	Amount!: string;
 	// (optional) MinSettleHeight can extend channel MinSettleHeight if needed
-	MinSettleHeight!: ChainEpoch;
+	MinSettleHeight?: ChainEpoch;
 
 	// (optional) Set of lanes to be merged into `Lane`
-	Merges!: [Merge];
+	Merges?: [Merge];
 
 	// Sender's signature over the voucher
   Signature!: Signature;
