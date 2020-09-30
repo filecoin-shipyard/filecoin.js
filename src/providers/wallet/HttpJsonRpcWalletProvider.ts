@@ -28,7 +28,7 @@ export class HttpJsonRpcWalletProvider implements WalletProvider {
   }
 
   /**
-   * get nonce for address
+   * get nonce for address.  Note that this method may not be atomic. Use MpoolPushMessage instead.
    * @param address
    */
   public async getNonce(address: string): Promise<number> {
@@ -108,6 +108,13 @@ export class HttpJsonRpcWalletProvider implements WalletProvider {
 
   /**
    * send message, signed with default lotus wallet
+   *
+   * @remarks
+   * MpoolPushMessage atomically assigns a nonce, signs, and pushes a message
+   * to mempool.
+   * maxFee is only used when GasFeeCap/GasPremium fields aren't specified
+   * When maxFee is set to 0, MpoolPushMessage will guess appropriate fee
+   * based on current chain conditions
    * @param msg
    */
   public async sendMessage(msg: Message): Promise<SignedMessage> {

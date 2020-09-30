@@ -60,13 +60,26 @@ import {
   AddrInfo,
   PubsubScore,
   NatInfo,
-  Stats,
-  SyncState, BlockMsg,
+  SyncState,
+  ChannelAvailableFunds,
+  VoucherSpec,
+  PaymentInfo,
+  ChannelInfo,
+  PaychStatus,
+  VoucherCreateResult,
+  SignedVoucher,
+  MpoolConfig,
+  SignedMessage,
+  MiningBaseInfo,
+  BlockTemplate,
+  BlockMsg,
+  MpoolUpdate
 } from './Types';
 import { Connector } from '../connectors/Connector';
 import { WsJsonRpcConnector } from '../connectors/WsJsonRpcConnector';
 import { HttpJsonRpcConnector } from '../connectors/HttpJsonRpcConnector';
 import Timeout = NodeJS.Timeout;
+import { StringDecoder } from 'string_decoder';
 
 const CHAIN_NOTIFY_INTERVAL = 2000;
 
@@ -961,85 +974,585 @@ export class JsonRpcProvider {
   }
 
   //Payment channel methods
-  /*
-  PaychNewPayment(ctx context.Context, from, to address.Address, vouchers []VoucherSpec) (*PaymentInfo, error)
-  */
-
-  public async getPaymentChannel(from: string, to: string, amount: string): Promise<any> {
+  /**
+   * PaychGet
+   * @param from
+   * @param to
+   * @param amount
+   */
+  public async getPaymentChannel(from: string, to: string, amount: string): Promise<ChannelInfo> {
     const ret = await this.conn.request({ method: 'Filecoin.PaychGet', params: [from, to, amount] });
     return ret;
   }
 
-  public async getWaitReadyPaymentChannel(cid: Cid): Promise<any> {
+  /**
+   * PaychGetWaitReady
+   * @param cid
+   */
+  public async getWaitReadyPaymentChannel(cid: Cid): Promise<Address> {
     const ret = await this.conn.request({ method: 'Filecoin.PaychGetWaitReady', params: [cid] });
     return ret;
   }
 
-  public async getPaymentChannelList(): Promise<any> {
+  /**
+    * PaychList
+    */
+  public async getPaymentChannelList(): Promise<[Address]> {
     const ret = await this.conn.request({ method: 'Filecoin.PaychList', params: [] });
     return ret;
   }
 
-  public async getPaymentChannelStatus(address: string): Promise<any> {
+  /**
+   * PaychStatus
+   * @param address
+   */
+  public async getPaymentChannelStatus(address: string): Promise<PaychStatus> {
     const ret = await this.conn.request({ method: 'Filecoin.PaychStatus', params: [address] });
     return ret;
   }
 
-  public async PaymentChannelAllocateLane(address: string): Promise<any> {
+  /**
+   * PaychAllocateLane
+   * @param address
+   */
+  public async PaymentChannelAllocateLane(address: string): Promise<number> {
     const ret = await this.conn.request({ method: 'Filecoin.PaychAllocateLane', params: [address] });
     return ret;
   }
 
-  public async PaymentChannelSettle(address: string): Promise<any> {
+  /**
+   * PaychSettle
+   * @param address
+   */
+  public async PaymentChannelSettle(address: string): Promise<Cid> {
     const ret = await this.conn.request({ method: 'Filecoin.PaychSettle', params: [address] });
     return ret;
   }
 
-  public async PaymentChannelCollect(address: string): Promise<any> {
+  /**
+   * PaychCollect
+   * @param address
+   */
+  public async PaymentChannelCollect(address: string): Promise<Cid> {
     const ret = await this.conn.request({ method: 'Filecoin.PaychCollect', params: [address] });
     return ret;
   }
 
+  /**
+   * PaychAvailableFunds
+   * @param address
+   */
+  public async getPaymentChannelAvailableFunds(address: string): Promise<ChannelAvailableFunds> {
+    const ret = await this.conn.request({ method: 'Filecoin.PaychAvailableFunds', params: [address] });
+    return ret;
+  }
+
+  /**
+   * PaychAvailableFundsByFromTo
+   * @param from
+   * @param to
+   */
+  public async getPaymentChannelAvailableFundsByFromTo(from: string, to: string): Promise<ChannelAvailableFunds> {
+    const ret = await this.conn.request({ method: 'Filecoin.PaychAvailableFundsByFromTo', params: [from, to] });
+    return ret;
+  }
+
+  /**
+   * PaychNewPayment
+   * @param from
+   * @param to
+   * @param vouchers
+   */
+  public async paymentChannelNewPayment(from: string, to: string, vouchers: [VoucherSpec]): Promise<PaymentInfo> {
+    const ret = await this.conn.request({ method: 'Filecoin.PaychNewPayment', params: [from, to, vouchers] });
+    return ret;
+  }
+
   //Payment channel vouchers methods
-  public async PaymentChannelVoucherCreate(address: string, amount: string, lane: number): Promise<any> {
+  /**
+   * PaychVoucherCreate
+   * @param address
+   * @param amount
+   * @param lane
+   */
+  public async PaymentChannelVoucherCreate(address: string, amount: string, lane: number): Promise<VoucherCreateResult> {
     const ret = await this.conn.request({ method: 'Filecoin.PaychVoucherCreate', params: [address, amount, lane] });
     return ret;
   }
 
-  public async PaymentChannelVoucherList(address: string): Promise<any> {
+  /**
+   * PaychVoucherList
+   * @param address
+   */
+  public async PaymentChannelVoucherList(address: string): Promise<[SignedVoucher]> {
     const ret = await this.conn.request({ method: 'Filecoin.PaychVoucherList', params: [address] });
     return ret;
   }
 
-  public async PaymentChannelVoucherCheckValid(address: string, signedVoucher: any): Promise<any> {
+  /**
+   * PaychVoucherCheckValid
+   * @param address
+   * @param signedVoucher
+   */
+  public async PaymentChannelVoucherCheckValid(address: string, signedVoucher: SignedVoucher): Promise<any> {
     const ret = await this.conn.request({ method: 'Filecoin.PaychVoucherCheckValid', params: [address, signedVoucher] });
     return ret;
   }
 
-  public async PaymentChannelVoucherAdd(address: string, signedVoucher: any, proof: any, minDelta: string): Promise<any> {
+  /**
+   * PaychVoucherAdd
+   * @param address
+   * @param signedVoucher
+   * @param proof
+   * @param minDelta
+   */
+  public async PaymentChannelVoucherAdd(address: string, signedVoucher: SignedVoucher, proof: any, minDelta: string): Promise<string> {
     const ret = await this.conn.request({ method: 'Filecoin.PaychVoucherAdd', params: [address, signedVoucher, proof, minDelta] });
     return ret;
   }
 
-  public async PaymentChannelVoucherCheckSpendable(address: string, signedVoucher: any, secret: any, proof: any): Promise<any> {
+  /**
+   * PaychVoucherCheckSpendable
+   * @param address
+   * @param signedVoucher
+   * @param secret
+   * @param proof
+   */
+  public async PaymentChannelVoucherCheckSpendable(address: string, signedVoucher: SignedVoucher, secret: any, proof: any): Promise<boolean> {
     const ret = await this.conn.request({ method: 'Filecoin.PaychVoucherCheckSpendable', params: [address, signedVoucher, secret, proof] });
     return ret;
   }
 
-  public async PaymentChannelVoucherVoucherSubmit(address: string, signedVoucher: any, secret: any, proof: any): Promise<any> {
+  /**
+   * PaychVoucherSubmit
+   * @param address
+   * @param signedVoucher
+   * @param secret
+   * @param proof
+   */
+  public async PaymentChannelVoucherSubmit(address: string, signedVoucher: SignedVoucher, secret: any, proof: any): Promise<Cid> {
     const ret = await this.conn.request({ method: 'Filecoin.PaychVoucherSubmit', params: [address, signedVoucher, secret, proof] });
     return ret;
   }
 
   //Mpool
-   /**
-   * returns (a copy of) the current mpool config
-   */
-  public async getMpoolConfig(): Promise<any> {
+  /**
+    * returns (a copy of) the current mpool config
+    */
+  public async getMpoolConfig(): Promise<MpoolConfig> {
     const ret = await this.conn.request({ method: 'Filecoin.MpoolGetConfig', params: [] });
     return ret;
   }
 
+  /**
+    * sets the mpool config to (a copy of) the supplied config
+    * @param config
+    */
+  public async setMpoolConfig(config: MpoolConfig): Promise<MpoolConfig> {
+    const ret = await this.conn.request({ method: 'Filecoin.MpoolSetConfig', params: [config] });
+    return ret;
+  }
+
+  /**
+    * clears pending messages from the mpool
+    */
+  public async mpoolClear(): Promise<any> {
+    const ret = await this.conn.request({ method: 'Filecoin.MpoolClear', params: [true] });
+    return ret;
+  }
+
+  /**
+    * get all mpool messages
+    * @param tipSetKey
+    */
+  public async getMpoolPending(tipSetKey: TipSetKey): Promise<[SignedMessage]> {
+    const ret = await this.conn.request({ method: 'Filecoin.MpoolPending', params: [tipSetKey] });
+    return ret;
+  }
+
+  /**
+    * returns a list of pending messages for inclusion in the next block
+    * @param tipSetKey
+    * @param ticketQuality
+    */
+  public async mpoolSelect(tipSetKey: TipSetKey, ticketQuality: number): Promise<[SignedMessage]> {
+    const ret = await this.conn.request({ method: 'Filecoin.MpoolSelect', params: [tipSetKey, ticketQuality] });
+    return ret;
+  }
+
+  /**
+    * returns a list of pending messages for inclusion in the next block
+    * @param tipSetKey
+    * @param ticketQuality
+    */
+   public async mpoolSub(cb: (data: MpoolUpdate) => void) {
+    if (this.conn instanceof WsJsonRpcConnector) {
+      const subscriptionId = await this.conn.request({
+        method: 'Filecoin.MpoolSub',
+      });
+      this.conn.on(subscriptionId, cb);
+    }
+  }
+  /*
+  needs implementing
+  MpoolSub(context.Context) (<-chan MpoolUpdate, error)
+  */
+
+  //Miner
+  /**
+    * MinerGetBaseInfo
+    * @param address
+    * @param chainEpoch
+    * @param tipSetKey
+    */
+  public async minerGetBaseInfo(address: string, chainEpoch: ChainEpoch, tipSetKey: TipSetKey): Promise<MiningBaseInfo> {
+    const ret = await this.conn.request({ method: 'Filecoin.MinerGetBaseInfo', params: [address, chainEpoch, tipSetKey] });
+    return ret;
+  }
+
+  /**
+    * MinerCreateBlock
+    * @param blockTemplate
+    */
+   public async minerCreateBlock(blockTemplate: BlockTemplate): Promise<BlockMsg> {
+    const ret = await this.conn.request({ method: 'Filecoin.MinerCreateBlock', params: [blockTemplate] });
+    return ret;
+  }
+
+  // MethodGroup: Msig
+  // The Msig methods are used to interact with multisig wallets on the
+  // filecoin network
+
+  /**
+    * multiSigGetAvailableBalance returns the portion of a multisig's balance that can be withdrawn or spent
+    * @param address
+    * @param tipSetKey
+    */
+  public async multiSigGetAvailableBalance(address: string, tipSetKey: TipSetKey): Promise<string> {
+    const ret = await this.conn.request({ method: 'Filecoin.MsigGetAvailableBalance', params: [address, tipSetKey] });
+    return ret;
+  }
+
+  /**
+    * multiSigGetVested returns the amount of FIL that vested in a multisig in a certain period.
+    * @param address
+    * @param startEpoch
+    * @param endEpoch
+    */
+  public async multiSigGetVested(address: string, startEpoch: TipSetKey, endEpoch: TipSetKey): Promise<string> {
+    const ret = await this.conn.request({ method: 'Filecoin.MsigGetVested', params: [address, startEpoch, endEpoch] });
+    return ret;
+  }
+
+  /**
+    * multiSigCreate creates a multisig wallet
+    * @param requiredNumberOfSenders
+    * @param approvingAddresses
+    * @param unlockDuration
+    * @param initialBalance
+    * @param senderAddressOfCreateMsg
+    * @param gasPrice
+    */
+  public async multiSigCreate(
+    requiredNumberOfSenders: number,
+    approvingAddresses: string[],
+    unlockDuration: ChainEpoch,
+    initialBalance: string,
+    senderAddressOfCreateMsg: string,
+    gasPrice: string): Promise<Cid> {
+    const ret = await this.conn.request(
+      {
+        method: 'Filecoin.MsigCreate',
+        params: [
+          requiredNumberOfSenders,
+          approvingAddresses,
+          unlockDuration,
+          initialBalance,
+          senderAddressOfCreateMsg,
+          gasPrice
+        ]
+      });
+    return ret;
+  }
+
+  /**
+    * multiSigPropose creates a multisig wallet
+    * @param address
+    * @param recipientAddres
+    * @param value
+    * @param senderAddressOfProposeMsg
+    * @param methodToCallInProposeMsg
+    * @param paramsToIncludeInProposeMsg
+    */
+  public async multiSigPropose(
+    address: string,
+    recipientAddres: string,
+    value: string,
+    senderAddressOfProposeMsg: string,
+    methodToCallInProposeMsg: number,
+    paramsToIncludeInProposeMsg: []): Promise<Cid> {
+    const ret = await this.conn.request(
+      {
+        method: 'Filecoin.MsigPropose',
+        params: [
+          address,
+          recipientAddres,
+          value,
+          senderAddressOfProposeMsg,
+          methodToCallInProposeMsg,
+          paramsToIncludeInProposeMsg
+        ]
+      });
+    return ret;
+  }
+
+  /**
+    * multiSigApprove approves a previously-proposed multisig message
+    * @param address
+    * @param proposedMessageId
+    * @param proposerAddress
+    * @param recipientAddres
+    * @param value
+    * @param senderAddressOfApproveMsg
+    * @param methodToCallInProposeMsg
+    * @param paramsToIncludeInProposeMsg
+    */
+  public async multiSigApprove(
+    address: string,
+    proposedMessageId: number,
+    proposerAddress: string,
+    recipientAddres: string,
+    value: string,
+    senderAddressOfApproveMsg: string,
+    methodToCallInProposeMsg: number,
+    paramsToIncludeInProposeMsg: []): Promise<Cid> {
+    const ret = await this.conn.request(
+      {
+        method: 'Filecoin.MsigApprove',
+        params: [
+          address,
+          proposedMessageId,
+          proposerAddress,
+          recipientAddres,
+          value,
+          senderAddressOfApproveMsg,
+          methodToCallInProposeMsg,
+          paramsToIncludeInProposeMsg
+        ]
+      });
+    return ret;
+  }
+
+  /**
+    * multiSigCancel cancels a previously-proposed multisig message
+    * @param address
+    * @param proposedMessageId
+    * @param proposerAddress
+    * @param recipientAddres
+    * @param value
+    * @param senderAddressOfCancelMsg
+    * @param methodToCallInProposeMsg
+    * @param paramsToIncludeInProposeMsg
+    */
+  public async multiSigCancel(
+    address: string,
+    proposedMessageId: number,
+    proposerAddress: string,
+    recipientAddres: string,
+    value: string,
+    senderAddressOfCancelMsg: string,
+    methodToCallInProposeMsg: number,
+    paramsToIncludeInProposeMsg: []): Promise<Cid> {
+    const ret = await this.conn.request(
+      {
+        method: 'Filecoin.MsigCancel',
+        params: [
+          address,
+          proposedMessageId,
+          proposerAddress,
+          recipientAddres,
+          value,
+          senderAddressOfCancelMsg,
+          methodToCallInProposeMsg,
+          paramsToIncludeInProposeMsg
+        ]
+      });
+    return ret;
+  }
+
+  /**
+    * multiSigAddPropose proposes adding a signer in the multisig
+    * @param address
+    * @param senderAddressOfProposeMsg
+    * @param newSignerAddress
+    * @param increaseNumberOfRequiredSigners
+    */
+  public async multiSigAddPropose(
+    address: string,
+    senderAddressOfProposeMsg: string,
+    newSignerAddress: string,
+    increaseNumberOfRequiredSigners: boolean,
+  ): Promise<Cid> {
+    const ret = await this.conn.request(
+      {
+        method: 'Filecoin.MsigAddPropose',
+        params: [
+          address,
+          senderAddressOfProposeMsg,
+          newSignerAddress,
+          increaseNumberOfRequiredSigners
+        ]
+      });
+    return ret;
+  }
+
+  /**
+    * multiSigAddApprove approves a previously proposed AddSigner message
+    * @param address
+    * @param senderAddressOfApproveMsg
+    * @param proposedMessageId
+    * @param proposerAddress
+    * @param newSignerAddress
+    * @param increaseNumberOfRequiredSigners
+    */
+  public async multiSigAddApprove(
+    address: string,
+    senderAddressOfApproveMsg: string,
+    proposedMessageId: number,
+    proposerAddress: string,
+    newSignerAddress: string,
+    increaseNumberOfRequiredSigners: boolean
+  ): Promise<Cid> {
+    const ret = await this.conn.request(
+      {
+        method: 'Filecoin.MsigAddApprove',
+        params: [
+          address,
+          senderAddressOfApproveMsg,
+          proposedMessageId,
+          proposerAddress,
+          newSignerAddress,
+          increaseNumberOfRequiredSigners
+        ]
+      });
+    return ret;
+  }
+
+  /**
+    * multiSigAddCancel cancels a previously proposed AddSigner message
+    * @param address
+    * @param senderAddressOfCancelMsg
+    * @param proposedMessageId
+    * @param newSignerAddress
+    * @param increaseNumberOfRequiredSigners
+    */
+  public async multiSigAddCancel(
+    address: string,
+    senderAddressOfCancelMsg: string,
+    proposedMessageId: number,
+    newSignerAddress: string,
+    increaseNumberOfRequiredSigners: boolean
+  ): Promise<Cid> {
+    const ret = await this.conn.request(
+      {
+        method: 'Filecoin.MsigAddCancel',
+        params: [
+          address,
+          senderAddressOfCancelMsg,
+          proposedMessageId,
+          newSignerAddress,
+          increaseNumberOfRequiredSigners
+        ]
+      });
+    return ret;
+  }
+
+  /**
+    * multiSigSwapPropose proposes swapping 2 signers in the multisig
+    * @param address
+    * @param senderAddressOfProposeMsg
+    * @param oldSignerAddress
+    * @param newSignerAddress
+    */
+  public async multiSigSwapPropose(
+    address: string,
+    senderAddressOfProposeMsg: string,
+    oldSignerAddress: string,
+    newSignerAddress: string,
+  ): Promise<Cid> {
+    const ret = await this.conn.request(
+      {
+        method: 'Filecoin.MsigSwapPropose',
+        params: [
+          address,
+          senderAddressOfProposeMsg,
+          oldSignerAddress,
+          newSignerAddress
+        ]
+      });
+    return ret;
+  }
+
+  /**
+    * multiSigSwapApprove approves a previously proposed SwapSigner
+    * @param address
+    * @param senderAddressOfApproveMsg
+    * @param proposedMessageId
+    * @param proposerAddress
+    * @param oldSignerAddress
+    * @param newSignerAddress
+    */
+   public async multiSigSwapApprove(
+    address: string,
+    senderAddressOfApproveMsg: string,
+    proposedMessageId: number,
+    proposerAddress: string,
+    oldSignerAddress: string,
+    newSignerAddress: string,
+  ): Promise<Cid> {
+    const ret = await this.conn.request(
+      {
+        method: 'Filecoin.MsigSwapApprove',
+        params: [
+          address,
+          senderAddressOfApproveMsg,
+          proposedMessageId,
+          proposerAddress,
+          oldSignerAddress,
+          newSignerAddress,
+        ]
+      });
+    return ret;
+  }
+
+  /**
+    * multiSigSwapCancel cancels a previously proposed SwapSigner message
+    * @param address
+    * @param senderAddressOfCancelMsg
+    * @param proposedMessageId
+    * @param oldSignerAddress
+    * @param newSignerAddress
+    */
+   public async multiSigSwapCancel(
+    address: string,
+    senderAddressOfCancelMsg: string,
+    proposedMessageId: number,
+    oldSignerAddress: string,
+    newSignerAddress: string,
+  ): Promise<Cid> {
+    const ret = await this.conn.request(
+      {
+        method: 'Filecoin.MsigSwapCancel',
+        params: [
+          address,
+          senderAddressOfCancelMsg,
+          proposedMessageId,
+          oldSignerAddress,
+          newSignerAddress,
+        ]
+      });
+    return ret;
+  }
 
   /**
    * Auth
