@@ -51,6 +51,17 @@ import {
   SignedStorageAsk,
   CommPRet,
   DataSize,
+  DataTransferChannel,
+  Import,
+  RetrievalEvent,
+  Permission,
+  ID,
+  Connectedness,
+  AddrInfo,
+  PubsubScore,
+  NatInfo,
+  Stats,
+  SyncState, BlockMsg,
   DataTransferChannel, Import, RetrievalEvent, Permission, ID, Connectedness, AddrInfo, PubsubScore, NatInfo, Stats,
   ChannelAvailableFunds, VoucherSpec, PaymentInfo, ChannelInfo, PaychStatus, VoucherCreateResult, SignedVoucher, MpoolConfig, SignedMessage, MiningBaseInfo, BlockTemplate, BlockMsg, MpoolUpdate
 } from './Types';
@@ -1666,4 +1677,71 @@ export class JsonRpcProvider {
   //   const stats: any = await this.conn.request({ method: 'Filecoin.NetBandwidthStatsByProtocol' });
   //   return stats;
   // }
+
+  /**
+   * Sync
+   * The Sync method group contains methods for interacting with and observing the lotus sync service.
+   */
+
+  /**
+   * returns the current status of the lotus sync system.
+   */
+  public async syncState(): Promise<SyncState> {
+    const state: SyncState = await this.conn.request({ method: 'Filecoin.SyncState' });
+    return state;
+  }
+
+  //TODO: Method not working for the requests done through WebSocket
+  /**
+   * checks if a block was marked as bad, and if it was, returns the reason.
+   * @param blockCid
+   */
+  public async syncCheckBad(blockCid: Cid): Promise<string> {
+    const check: string = await this.conn.request({ method: 'Filecoin.SyncCheckBad', params: [blockCid] });
+    return check;
+  }
+
+  /**
+   * marks a blocks as bad, meaning that it won't ever by synced. Use with extreme caution.
+   * @param blockCid
+   */
+  public async syncMarkBad(blockCid: Cid) {
+    await this.conn.request({ method: 'Filecoin.SyncMarkBad', params: [blockCid] });
+  }
+
+  // TODO: Method not working. Returns 500 "Internal Server Error"
+  /**
+   * unmarks a block as bad, making it possible to be validated and synced again.
+   * @param blockCid
+   */
+  public async syncUnmarkBad(blockCid: Cid) {
+    await this.conn.request({ method: 'Filecoin.SyncUnmarkBad', params: [blockCid] });
+  }
+
+  /**
+   * marks a blocks as checkpointed, meaning that it won't ever fork away from it.
+   * @param tipSetKey
+   */
+  public async syncCheckpoint(tipSetKey: TipSetKey) {
+    const check: string = await this.conn.request({ method: 'Filecoin.SyncCheckpoint', params: [tipSetKey] });
+    return check;
+  }
+
+  /**
+   * can be used to submit a newly created block to the network
+   * @param blockMsg
+   */
+  public async syncSubmitBlock(blockMsg: BlockMsg) {
+    const check: string = await this.conn.request({ method: 'Filecoin.SyncSubmitBlock', params: [blockMsg] });
+    return check;
+  }
+
+  /**
+   * returns a channel streaming incoming, potentially not yet synced block headers.
+   * @param cb
+   */
+  public async syncIncomingBlocks(cb: (blockHeader: BlockHeader) => void) {
+    const subscriptionId = await this.conn.request({ method: 'Filecoin.SyncIncomingBlocks' });
+    this.conn.on(subscriptionId, cb);
+  }
 }
