@@ -15,6 +15,10 @@ const wsConnector = new WsJsonRpcConnector({ url: 'ws://localhost:8000/rpc/v0', 
 const testMnemonic = 'equip will roof matter pink blind book anxiety banner elbow sun young';
 let signedMessageForSub: SignedMessage;
 
+function sleep(ms: any) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
 describe("Mpool tests", function () {
   it("should get and delete messages from mpool [http]", async function () {
     const httpConnector = new HttpJsonRpcConnector({ url: 'http://localhost:8000/rpc/v0', token: LOTUS_AUTH_TOKEN });
@@ -93,5 +97,10 @@ describe("Mpool tests", function () {
       assert.strictEqual(data.Type, 0, 'wrong type received on subscription');
     })
     walletLotusHttp.sendSignedMessage(signedMessageForSub);
+  });
+
+  it("just wait for the previous message to be mined", function (done) {
+    this.timeout(8000);
+    sleep(6000).then(() => { done() });;
   });
 });
