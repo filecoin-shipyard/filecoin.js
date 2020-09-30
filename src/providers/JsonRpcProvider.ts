@@ -52,7 +52,7 @@ import {
   CommPRet,
   DataSize,
   DataTransferChannel, Import, RetrievalEvent, Permission, ID, Connectedness, AddrInfo, PubsubScore, NatInfo, Stats,
-  ChannelAvailableFunds, VoucherSpec, PaymentInfo, ChannelInfo, PaychStatus, VoucherCreateResult, SignedVoucher, MpoolConfig, SignedMessage, MiningBaseInfo
+  ChannelAvailableFunds, VoucherSpec, PaymentInfo, ChannelInfo, PaychStatus, VoucherCreateResult, SignedVoucher, MpoolConfig, SignedMessage, MiningBaseInfo, BlockTemplate, BlockMsg, MpoolUpdate
 } from './Types';
 import { Connector } from '../connectors/Connector';
 import { WsJsonRpcConnector } from '../connectors/WsJsonRpcConnector';
@@ -1159,6 +1159,19 @@ export class JsonRpcProvider {
     return ret;
   }
 
+  /**
+    * returns a list of pending messages for inclusion in the next block
+    * @param tipSetKey
+    * @param ticketQuality
+    */
+   public async mpoolSub(cb: (data: MpoolUpdate) => void) {
+    if (this.conn instanceof WsJsonRpcConnector) {
+      const subscriptionId = await this.conn.request({
+        method: 'Filecoin.MpoolSub',
+      });
+      this.conn.on(subscriptionId, cb);
+    }
+  }
   /*
   needs implementing
   MpoolSub(context.Context) (<-chan MpoolUpdate, error)
@@ -1173,6 +1186,15 @@ export class JsonRpcProvider {
     */
   public async minerGetBaseInfo(address: string, chainEpoch: ChainEpoch, tipSetKey: TipSetKey): Promise<MiningBaseInfo> {
     const ret = await this.conn.request({ method: 'Filecoin.MinerGetBaseInfo', params: [address, chainEpoch, tipSetKey] });
+    return ret;
+  }
+
+  /**
+    * MinerCreateBlock
+    * @param blockTemplate
+    */
+   public async minerCreateBlock(blockTemplate: BlockTemplate): Promise<BlockMsg> {
+    const ret = await this.conn.request({ method: 'Filecoin.MinerCreateBlock', params: [blockTemplate] });
     return ret;
   }
 

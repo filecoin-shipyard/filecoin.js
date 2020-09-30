@@ -108,6 +108,8 @@ export class HttpJsonRpcWalletProvider implements WalletProvider {
 
   /**
    * send message, signed with default lotus wallet
+   *
+   * @remarks
    * MpoolPushMessage atomically assigns a nonce, signs, and pushes a message
    * to mempool.
    * maxFee is only used when GasFeeCap/GasPremium fields aren't specified

@@ -1068,6 +1068,10 @@ export class MpoolConfig {
 	GasLimitOverestimation!: number;
 }
 
+export class MpoolUpdate{
+	Type!: number;
+	Message!: SignedMessage;
+}
 
 //Miner info types
 export class MiningBaseInfo {
@@ -1079,6 +1083,38 @@ export class MiningBaseInfo {
   PrevBeaconEntry!: BeaconEntry;
 	BeaconEntries!: [BeaconEntry];
 	HasMinPower!: boolean;
+}
+
+export class BlockTemplate{
+	Miner!: Address;
+	Parents!: TipSetKey;
+	Ticket!: Ticket;
+	Eproof!: ElectionProof;
+	BeaconValues!: BeaconEntry[];
+	Messages!: SignedMessage[];
+	Epoch!: ChainEpoch;
+	Timestamp!: number;
+	WinningPoStProof!: PoStProof[]
+}
+
+export class  Ticket {
+	VRFProof!: [];
+}
+
+export class  BlockMsg {
+	Header!: BlockHeader;
+	BlsMessages!: Cid[];
+	SecpkMessages!: Cid[];
+}
+
+export class  ElectionProof {
+  WinCount!: number;
+	VRFProof!: [];
+}
+
+export class  PoStProof {
+  PoStProof!: number;
+	ProofBytes!: [];
 }
 
 export class BeaconEntry {

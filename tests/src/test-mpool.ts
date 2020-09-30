@@ -7,17 +7,19 @@ import { WsJsonRpcConnector } from '../../src/connectors/WsJsonRpcConnector';
 import { MnemonicWalletProvider } from "../../src/providers/wallet/MnemonicWalletProvider";
 import { HttpJsonRpcWalletProvider } from "../../src/providers/wallet/HttpJsonRpcWalletProvider";
 import BigNumber from "bignumber.js";
+import { MpoolUpdate, SignedMessage } from "../../src/providers/Types";
 
 const httpConnector = new HttpJsonRpcConnector({ url: 'http://localhost:8000/rpc/v0', token: LOTUS_AUTH_TOKEN });
 const wsConnector = new WsJsonRpcConnector({ url: 'ws://localhost:8000/rpc/v0', token: LOTUS_AUTH_TOKEN });
 
 const testMnemonic = 'equip will roof matter pink blind book anxiety banner elbow sun young';
+let signedMessageForSub: SignedMessage;
 
-describe("Miner tests", function() {
-  it("should get and delete messages from mpool [http]", async function() {
+describe("Mpool tests", function () {
+  it("should get and delete messages from mpool [http]", async function () {
     const httpConnector = new HttpJsonRpcConnector({ url: 'http://localhost:8000/rpc/v0', token: LOTUS_AUTH_TOKEN });
 
-    const mnemonicWalletProvider = new MnemonicWalletProvider( httpConnector, testMnemonic, '');
+    const mnemonicWalletProvider = new MnemonicWalletProvider(httpConnector, testMnemonic, '');
     const walletLotusHttp = new HttpJsonRpcWalletProvider(httpConnector);
     const con = new JsonRpcProvider(httpConnector);
 
@@ -38,6 +40,13 @@ describe("Miner tests", function() {
     const signedMessage = await walletLotusHttp.signMessage(message);
     await walletLotusHttp.sendSignedMessage(signedMessage);
 
+    const messageForSub = await walletLotusHttp.createMessage({
+      From: defaultAccount,
+      To: mnemonicAddress,
+      Value: new BigNumber(1)
+    });
+    signedMessageForSub = await walletLotusHttp.signMessage(messageForSub);
+
     let mempoolContents = await con.getMpoolPending([]);
     assert.strictEqual(mempoolContents.length, 1, 'wrong message count in mpool');
 
@@ -50,7 +59,7 @@ describe("Miner tests", function() {
     assert.strictEqual(mempoolContents.length, 0, 'mpool not empty');
   });
 
-  it("should get and set mpool config [http]", async function() {
+  it("should get and set mpool config [http]", async function () {
     const httpConnector = new HttpJsonRpcConnector({ url: 'http://localhost:8000/rpc/v0', token: LOTUS_AUTH_TOKEN });
 
     const con = new JsonRpcProvider(httpConnector);
@@ -58,7 +67,7 @@ describe("Miner tests", function() {
     //clear mpool
     const initialConfig = await con.getMpoolConfig();
 
-    const newConfig = {...initialConfig};
+    const newConfig = { ...initialConfig };
     newConfig.GasLimitOverestimation = 1.5;
 
     await con.setMpoolConfig(newConfig);
@@ -70,5 +79,19 @@ describe("Miner tests", function() {
     const revertedInitialConfig = await con.getMpoolConfig();
 
     assert.strictEqual(initialConfig.GasLimitOverestimation, revertedInitialConfig.GasLimitOverestimation, 'mpool not empty');
+  });
+
+  it("should subscribe to mpool changes and get notified [http]", function (done) {
+    const httpConnector = new HttpJsonRpcConnector({ url: 'http://localhost:8000/rpc/v0', token: LOTUS_AUTH_TOKEN });
+    const wsConnector = new WsJsonRpcConnector({ url: 'ws://localhost:8000/rpc/v0', token: LOTUS_AUTH_TOKEN });
+
+    const walletLotusHttp = new HttpJsonRpcWalletProvider(httpConnector);
+    const con = new JsonRpcProvider(wsConnector);
+
+    con.mpoolSub((data: MpoolUpdate) => {
+      con.release().then(() => { done() });
+      assert.strictEqual(data.Type, 0, 'wrong type received on subscription');
+    })
+    walletLotusHttp.sendSignedMessage(signedMessageForSub);
   });
 });

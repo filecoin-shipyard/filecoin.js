@@ -14,7 +14,7 @@ function sleep(ms: any) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-describe.only("Send message", function () {
+describe("Multisig Wallets", function () {
   it("should create multisig wallet and transfer funds [http]", async function () {
     this.timeout(40000);
     const httpConnector = new HttpJsonRpcConnector({ url: 'http://localhost:8000/rpc/v0', token: LOTUS_AUTH_TOKEN });
