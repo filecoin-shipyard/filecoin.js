@@ -130,8 +130,18 @@ export class MessageReceipt {
 }
 
 export class MinerSectors {
-  Sectors!: number;
+  /**
+   * Sectors actively contributing to power.
+   */
   Active!: number;
+  /**
+   * Sectors with failed proofs.
+   */
+  Faulty!: number;
+  /**
+   * Live sectors that should be proven.
+   */
+  Live!: number;
 }
 
 export class ComputeStateOutput {
@@ -534,68 +544,19 @@ export class Partition {
   /**
    * Sector numbers in this partition, including faulty, unproven, and terminated sectors.
    */
-  Sectors!: BitField;
-
-  /**
-   * Unproven sectors in the partition.
-   *
-   * @remarks
-   * This bitfield will be cleared on a successful window post (or at the end of the partition's next deadline).
-   * At that time, any still unproven sectors will be added tothe faulty sector bitfield.
-   */
-  Unproven!: BitField;
+  AllSectors!: BitField;
 
   /**
    * Subset of sectors detected/declared faulty and not yet recovered (excl. from PoSt).
    */
-  Faults!: BitField;
+  FaultySectors!: BitField;
 
   /**
    * Subset of faulty sectors expected to recover on next PoSt
    */
-  Recoveries!: BitField;
-
-  /**
-   * Subset of sectors terminated but not yet removed from partition (excl. from PoSt)
-   */
-  Terminated!: BitField;
-
-  /**
-   * Maps epochs sectors that expire in or before that epoch.
-   *
-   * @remarks
-   * An expiration may be an "on-time" scheduled expiration, or early "faulty" expiration. Keys are quantized to last-in-deadline epochs.
-   */
-  ExpirationsEpochs!: Cid;
-
-  /**
-   * Subset of terminated that were before their committed expiration epoch, by termination epoch.
-   *
-   * @remarks
-   * Termination fees have not yet been calculated or paid and associated deals have not yet been canceled but effective power has already been adjusted.
-   */
-  EarlyTerminated!: Cid;
-
-  //
-  /**
-   * Power of not-yet-terminated sectors (incl faulty & unproven).
-   */
-  LivePower!: PowerPair;
-
-  /**
-   * Power of yet-to-be-proved sectors (never faulty).
-   */
-  UnprovenPower!: PowerPair;
-
-  /**
-   * Power of currently-faulty sectors. FaultyPower <= LivePower.
-   */
-  FaultyPower!: PowerPair;
-
-  /**
-   * Power of expected-to-recover sectors. RecoveringPower <= FaultyPower.
-   */
-  RecoveringPower!: PowerPair;
+  RecoveringSectors!: BitField;
+  ActiveSectors!: BitField;
+  LiveSectors!: BitField;
 }
 
 export class Fault {
