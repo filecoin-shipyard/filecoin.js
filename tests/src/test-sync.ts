@@ -45,6 +45,7 @@ describe("Sync", function() {
   });
 
   it("get not yet synced block headers [ws]", function(done) {
+    this.timeout(5000);
     const provider = new JsonRpcProvider(wsConnector);
     provider.syncIncomingBlocks((blockHeader) => {
       assert.strictEqual(typeof blockHeader.Height === 'number', true, 'invalid not yet synced block headers')
