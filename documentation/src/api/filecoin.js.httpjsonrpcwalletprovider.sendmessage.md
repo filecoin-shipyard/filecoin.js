@@ -26,3 +26,7 @@ sendMessage(msg: Message): Promise<SignedMessage>;
 <b>Returns:</b>
 
 Promise&lt;SignedMessage&gt;
+
+## Remarks
+
+MpoolPushMessage atomically assigns a nonce, signs, and pushes a message to mempool. maxFee is only used when GasFeeCap/GasPremium fields aren't specified When maxFee is set to 0, MpoolPushMessage will guess appropriate fee based on current chain conditions

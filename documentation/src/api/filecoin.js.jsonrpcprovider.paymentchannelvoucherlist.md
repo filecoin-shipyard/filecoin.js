@@ -9,10 +9,12 @@ hide_title: true
 
 ## JsonRpcProvider.PaymentChannelVoucherList() method
 
+PaychVoucherList
+
 <b>Signature:</b>
 
 ```typescript
-PaymentChannelVoucherList(address: string): Promise<any>;
+PaymentChannelVoucherList(address: string): Promise<[SignedVoucher]>;
 ```
 
 ## Parameters
@@ -23,4 +25,4 @@ PaymentChannelVoucherList(address: string): Promise<any>;
 
 <b>Returns:</b>
 
-Promise&lt;any&gt;
+Promise&lt;\[SignedVoucher\]&gt;

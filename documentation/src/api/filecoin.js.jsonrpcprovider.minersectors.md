@@ -14,7 +14,7 @@ returns info about the given miner's sectors
 <b>Signature:</b>
 
 ```typescript
-minerSectors(address: string, tipSetKey?: TipSetKey): Promise<ChainSectorInfo[]>;
+minerSectors(address: string, tipSetKey?: TipSetKey): Promise<SectorOnChainInfo[]>;
 ```
 
 ## Parameters
@@ -26,4 +26,4 @@ minerSectors(address: string, tipSetKey?: TipSetKey): Promise<ChainSectorInfo[]>
 
 <b>Returns:</b>
 
-Promise&lt;ChainSectorInfo\[\]&gt;
+Promise&lt;SectorOnChainInfo\[\]&gt;

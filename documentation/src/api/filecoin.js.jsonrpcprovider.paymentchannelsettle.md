@@ -9,10 +9,12 @@ hide_title: true
 
 ## JsonRpcProvider.PaymentChannelSettle() method
 
+PaychSettle
+
 <b>Signature:</b>
 
 ```typescript
-PaymentChannelSettle(address: string): Promise<any>;
+PaymentChannelSettle(address: string): Promise<Cid>;
 ```
 
 ## Parameters
@@ -23,4 +25,4 @@ PaymentChannelSettle(address: string): Promise<any>;
 
 <b>Returns:</b>
 
-Promise&lt;any&gt;
+Promise&lt;Cid&gt;

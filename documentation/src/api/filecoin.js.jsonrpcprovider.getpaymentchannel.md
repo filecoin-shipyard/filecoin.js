@@ -9,10 +9,12 @@ hide_title: true
 
 ## JsonRpcProvider.getPaymentChannel() method
 
+PaychGet
+
 <b>Signature:</b>
 
 ```typescript
-getPaymentChannel(from: string, to: string, amount: string): Promise<any>;
+getPaymentChannel(from: string, to: string, amount: string): Promise<ChannelInfo>;
 ```
 
 ## Parameters
@@ -25,4 +27,4 @@ getPaymentChannel(from: string, to: string, amount: string): Promise<any>;
 
 <b>Returns:</b>
 
-Promise&lt;any&gt;
+Promise&lt;ChannelInfo&gt;

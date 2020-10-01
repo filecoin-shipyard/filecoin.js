@@ -14,7 +14,7 @@ returns info about sectors that a given miner is actively proving.
 <b>Signature:</b>
 
 ```typescript
-minerActiveSectors(address: string, tipSetKey?: TipSetKey): Promise<ChainSectorInfo[]>;
+minerActiveSectors(address: string, tipSetKey?: TipSetKey): Promise<SectorOnChainInfo[]>;
 ```
 
 ## Parameters
@@ -26,4 +26,4 @@ minerActiveSectors(address: string, tipSetKey?: TipSetKey): Promise<ChainSectorI
 
 <b>Returns:</b>
 
-Promise&lt;ChainSectorInfo\[\]&gt;
+Promise&lt;SectorOnChainInfo\[\]&gt;

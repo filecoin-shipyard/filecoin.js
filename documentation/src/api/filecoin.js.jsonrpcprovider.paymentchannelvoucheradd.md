@@ -9,10 +9,12 @@ hide_title: true
 
 ## JsonRpcProvider.PaymentChannelVoucherAdd() method
 
+PaychVoucherAdd
+
 <b>Signature:</b>
 
 ```typescript
-PaymentChannelVoucherAdd(address: string, signedVoucher: any, proof: any, minDelta: string): Promise<any>;
+PaymentChannelVoucherAdd(address: string, signedVoucher: SignedVoucher, proof: any, minDelta: string): Promise<string>;
 ```
 
 ## Parameters
@@ -20,10 +22,10 @@ PaymentChannelVoucherAdd(address: string, signedVoucher: any, proof: any, minDel
 |  Parameter | Type | Description |
 |  --- | --- | --- |
 |  address | string |  |
-|  signedVoucher | any |  |
+|  signedVoucher | SignedVoucher |  |
 |  proof | any |  |
 |  minDelta | string |  |
 
 <b>Returns:</b>
 
-Promise&lt;any&gt;
+Promise&lt;string&gt;

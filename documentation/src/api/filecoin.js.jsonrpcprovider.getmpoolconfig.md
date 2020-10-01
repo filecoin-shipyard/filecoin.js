@@ -14,8 +14,8 @@ returns (a copy of) the current mpool config
 <b>Signature:</b>
 
 ```typescript
-getMpoolConfig(): Promise<any>;
+getMpoolConfig(): Promise<MpoolConfig>;
 ```
 <b>Returns:</b>
 
-Promise&lt;any&gt;
+Promise&lt;MpoolConfig&gt;

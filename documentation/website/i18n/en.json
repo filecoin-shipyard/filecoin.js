@@ -86,8 +86,20 @@
       "api/filecoin.js.httpjsonrpcwalletprovider.createmessage": {
         "title": "HttpJsonRpcWalletProvider.createMessage() method"
       },
+      "api/filecoin.js.httpjsonrpcwalletprovider.deletewallet": {
+        "title": "HttpJsonRpcWalletProvider.deleteWallet() method"
+      },
       "api/filecoin.js.httpjsonrpcwalletprovider.estimatemessagegas": {
         "title": "HttpJsonRpcWalletProvider.estimateMessageGas() method"
+      },
+      "api/filecoin.js.httpjsonrpcwalletprovider.estimatemessagegasfeecap": {
+        "title": "HttpJsonRpcWalletProvider.estimateMessageGasFeeCap() method"
+      },
+      "api/filecoin.js.httpjsonrpcwalletprovider.estimatemessagegaslimit": {
+        "title": "HttpJsonRpcWalletProvider.estimateMessageGasLimit() method"
+      },
+      "api/filecoin.js.httpjsonrpcwalletprovider.estimatemessagegaspremium": {
+        "title": "HttpJsonRpcWalletProvider.estimateMessageGasPremium() method"
       },
       "api/filecoin.js.httpjsonrpcwalletprovider.getaccounts": {
         "title": "HttpJsonRpcWalletProvider.getAccounts() method"
@@ -101,50 +113,14 @@
       "api/filecoin.js.httpjsonrpcwalletprovider.getnonce": {
         "title": "HttpJsonRpcWalletProvider.getNonce() method"
       },
-      "api/filecoin.js.httpjsonrpcwalletprovider.getpaymentchannel": {
-        "title": "HttpJsonRpcWalletProvider.getPaymentChannel() method"
-      },
-      "api/filecoin.js.httpjsonrpcwalletprovider.getpaymentchannellist": {
-        "title": "HttpJsonRpcWalletProvider.getPaymentChannelList() method"
-      },
-      "api/filecoin.js.httpjsonrpcwalletprovider.getpaymentchannelstatus": {
-        "title": "HttpJsonRpcWalletProvider.getPaymentChannelStatus() method"
-      },
-      "api/filecoin.js.httpjsonrpcwalletprovider.getwaitreadypaymentchannel": {
-        "title": "HttpJsonRpcWalletProvider.getWaitReadyPaymentChannel() method"
+      "api/filecoin.js.httpjsonrpcwalletprovider.haswallet": {
+        "title": "HttpJsonRpcWalletProvider.hasWallet() method"
       },
       "api/filecoin.js.httpjsonrpcwalletprovider": {
         "title": "HttpJsonRpcWalletProvider class"
       },
       "api/filecoin.js.httpjsonrpcwalletprovider.newaccount": {
         "title": "HttpJsonRpcWalletProvider.newAccount() method"
-      },
-      "api/filecoin.js.httpjsonrpcwalletprovider.paymentchannelallocatelane": {
-        "title": "HttpJsonRpcWalletProvider.PaymentChannelAllocateLane() method"
-      },
-      "api/filecoin.js.httpjsonrpcwalletprovider.paymentchannelcollect": {
-        "title": "HttpJsonRpcWalletProvider.PaymentChannelCollect() method"
-      },
-      "api/filecoin.js.httpjsonrpcwalletprovider.paymentchannelsettle": {
-        "title": "HttpJsonRpcWalletProvider.PaymentChannelSettle() method"
-      },
-      "api/filecoin.js.httpjsonrpcwalletprovider.paymentchannelvoucheradd": {
-        "title": "HttpJsonRpcWalletProvider.PaymentChannelVoucherAdd() method"
-      },
-      "api/filecoin.js.httpjsonrpcwalletprovider.paymentchannelvouchercheckspendable": {
-        "title": "HttpJsonRpcWalletProvider.PaymentChannelVoucherCheckSpendable() method"
-      },
-      "api/filecoin.js.httpjsonrpcwalletprovider.paymentchannelvouchercheckvalid": {
-        "title": "HttpJsonRpcWalletProvider.PaymentChannelVoucherCheckValid() method"
-      },
-      "api/filecoin.js.httpjsonrpcwalletprovider.paymentchannelvouchercreate": {
-        "title": "HttpJsonRpcWalletProvider.PaymentChannelVoucherCreate() method"
-      },
-      "api/filecoin.js.httpjsonrpcwalletprovider.paymentchannelvoucherlist": {
-        "title": "HttpJsonRpcWalletProvider.PaymentChannelVoucherList() method"
-      },
-      "api/filecoin.js.httpjsonrpcwalletprovider.paymentchannelvouchervouchersubmit": {
-        "title": "HttpJsonRpcWalletProvider.PaymentChannelVoucherVoucherSubmit() method"
       },
       "api/filecoin.js.httpjsonrpcwalletprovider.release": {
         "title": "HttpJsonRpcWalletProvider.release() method"
@@ -167,6 +143,12 @@
       "api/filecoin.js.httpjsonrpcwalletprovider.verify": {
         "title": "HttpJsonRpcWalletProvider.verify() method"
       },
+      "api/filecoin.js.httpjsonrpcwalletprovider.walletexport": {
+        "title": "HttpJsonRpcWalletProvider.walletExport() method"
+      },
+      "api/filecoin.js.httpjsonrpcwalletprovider.walletimport": {
+        "title": "HttpJsonRpcWalletProvider.walletImport() method"
+      },
       "api/filecoin.js.jsonrpcprovider._constructor_": {
         "title": "JsonRpcProvider.(constructor)"
       },
@@ -175,6 +157,12 @@
       },
       "api/filecoin.js.jsonrpcprovider.allminerfaults": {
         "title": "JsonRpcProvider.allMinerFaults() method"
+      },
+      "api/filecoin.js.jsonrpcprovider.authnew": {
+        "title": "JsonRpcProvider.authNew() method"
+      },
+      "api/filecoin.js.jsonrpcprovider.authverify": {
+        "title": "JsonRpcProvider.authVerify() method"
       },
       "api/filecoin.js.jsonrpcprovider.calccommp": {
         "title": "JsonRpcProvider.calcCommP() method"
@@ -209,6 +197,9 @@
       "api/filecoin.js.jsonrpcprovider.finddata": {
         "title": "JsonRpcProvider.findData() method"
       },
+      "api/filecoin.js.jsonrpcprovider.findpeer": {
+        "title": "JsonRpcProvider.findPeer() method"
+      },
       "api/filecoin.js.jsonrpcprovider.gencar": {
         "title": "JsonRpcProvider.genCar() method"
       },
@@ -236,6 +227,12 @@
       "api/filecoin.js.jsonrpcprovider.getmessage": {
         "title": "JsonRpcProvider.getMessage() method"
       },
+      "api/filecoin.js.jsonrpcprovider.getmpoolconfig": {
+        "title": "JsonRpcProvider.getMpoolConfig() method"
+      },
+      "api/filecoin.js.jsonrpcprovider.getmpoolpending": {
+        "title": "JsonRpcProvider.getMpoolPending() method"
+      },
       "api/filecoin.js.jsonrpcprovider.getparentmessages": {
         "title": "JsonRpcProvider.getParentMessages() method"
       },
@@ -244,6 +241,21 @@
       },
       "api/filecoin.js.jsonrpcprovider.getpath": {
         "title": "JsonRpcProvider.getPath() method"
+      },
+      "api/filecoin.js.jsonrpcprovider.getpaymentchannel": {
+        "title": "JsonRpcProvider.getPaymentChannel() method"
+      },
+      "api/filecoin.js.jsonrpcprovider.getpaymentchannelavailablefunds": {
+        "title": "JsonRpcProvider.getPaymentChannelAvailableFunds() method"
+      },
+      "api/filecoin.js.jsonrpcprovider.getpaymentchannelavailablefundsbyfromto": {
+        "title": "JsonRpcProvider.getPaymentChannelAvailableFundsByFromTo() method"
+      },
+      "api/filecoin.js.jsonrpcprovider.getpaymentchannellist": {
+        "title": "JsonRpcProvider.getPaymentChannelList() method"
+      },
+      "api/filecoin.js.jsonrpcprovider.getpaymentchannelstatus": {
+        "title": "JsonRpcProvider.getPaymentChannelStatus() method"
       },
       "api/filecoin.js.jsonrpcprovider.getreceipt": {
         "title": "JsonRpcProvider.getReceipt() method"
@@ -254,11 +266,17 @@
       "api/filecoin.js.jsonrpcprovider.gettipsetweight": {
         "title": "JsonRpcProvider.getTipSetWeight() method"
       },
+      "api/filecoin.js.jsonrpcprovider.getwaitreadypaymentchannel": {
+        "title": "JsonRpcProvider.getWaitReadyPaymentChannel() method"
+      },
       "api/filecoin.js.jsonrpcprovider.haslocal": {
         "title": "JsonRpcProvider.hasLocal() method"
       },
       "api/filecoin.js.jsonrpcprovider.hasobj": {
         "title": "JsonRpcProvider.hasObj() method"
+      },
+      "api/filecoin.js.jsonrpcprovider.id": {
+        "title": "JsonRpcProvider.id() method"
       },
       "api/filecoin.js.jsonrpcprovider.import": {
         "title": "JsonRpcProvider.import() method"
@@ -280,6 +298,12 @@
       },
       "api/filecoin.js.jsonrpcprovider.listminers": {
         "title": "JsonRpcProvider.listMiners() method"
+      },
+      "api/filecoin.js.jsonrpcprovider.loglist": {
+        "title": "JsonRpcProvider.logList() method"
+      },
+      "api/filecoin.js.jsonrpcprovider.logsetlevel": {
+        "title": "JsonRpcProvider.logSetLevel() method"
       },
       "api/filecoin.js.jsonrpcprovider.lookupid": {
         "title": "JsonRpcProvider.lookupId() method"
@@ -305,11 +329,17 @@
       "api/filecoin.js.jsonrpcprovider.mineravailablebalance": {
         "title": "JsonRpcProvider.minerAvailableBalance() method"
       },
+      "api/filecoin.js.jsonrpcprovider.minercreateblock": {
+        "title": "JsonRpcProvider.minerCreateBlock() method"
+      },
       "api/filecoin.js.jsonrpcprovider.minerdeadlines": {
         "title": "JsonRpcProvider.minerDeadlines() method"
       },
       "api/filecoin.js.jsonrpcprovider.minerfaults": {
         "title": "JsonRpcProvider.minerFaults() method"
+      },
+      "api/filecoin.js.jsonrpcprovider.minergetbaseinfo": {
+        "title": "JsonRpcProvider.minerGetBaseInfo() method"
       },
       "api/filecoin.js.jsonrpcprovider.minerinfo": {
         "title": "JsonRpcProvider.minerInfo() method"
@@ -341,8 +371,104 @@
       "api/filecoin.js.jsonrpcprovider.minersectors": {
         "title": "JsonRpcProvider.minerSectors() method"
       },
+      "api/filecoin.js.jsonrpcprovider.mpoolclear": {
+        "title": "JsonRpcProvider.mpoolClear() method"
+      },
+      "api/filecoin.js.jsonrpcprovider.mpoolselect": {
+        "title": "JsonRpcProvider.mpoolSelect() method"
+      },
+      "api/filecoin.js.jsonrpcprovider.mpoolsub": {
+        "title": "JsonRpcProvider.mpoolSub() method"
+      },
+      "api/filecoin.js.jsonrpcprovider.multisigaddapprove": {
+        "title": "JsonRpcProvider.multiSigAddApprove() method"
+      },
+      "api/filecoin.js.jsonrpcprovider.multisigaddcancel": {
+        "title": "JsonRpcProvider.multiSigAddCancel() method"
+      },
+      "api/filecoin.js.jsonrpcprovider.multisigaddpropose": {
+        "title": "JsonRpcProvider.multiSigAddPropose() method"
+      },
+      "api/filecoin.js.jsonrpcprovider.multisigapprove": {
+        "title": "JsonRpcProvider.multiSigApprove() method"
+      },
+      "api/filecoin.js.jsonrpcprovider.multisigcancel": {
+        "title": "JsonRpcProvider.multiSigCancel() method"
+      },
+      "api/filecoin.js.jsonrpcprovider.multisigcreate": {
+        "title": "JsonRpcProvider.multiSigCreate() method"
+      },
+      "api/filecoin.js.jsonrpcprovider.multisiggetavailablebalance": {
+        "title": "JsonRpcProvider.multiSigGetAvailableBalance() method"
+      },
+      "api/filecoin.js.jsonrpcprovider.multisiggetvested": {
+        "title": "JsonRpcProvider.multiSigGetVested() method"
+      },
+      "api/filecoin.js.jsonrpcprovider.multisigpropose": {
+        "title": "JsonRpcProvider.multiSigPropose() method"
+      },
+      "api/filecoin.js.jsonrpcprovider.multisigswapapprove": {
+        "title": "JsonRpcProvider.multiSigSwapApprove() method"
+      },
+      "api/filecoin.js.jsonrpcprovider.multisigswapcancel": {
+        "title": "JsonRpcProvider.multiSigSwapCancel() method"
+      },
+      "api/filecoin.js.jsonrpcprovider.multisigswappropose": {
+        "title": "JsonRpcProvider.multiSigSwapPropose() method"
+      },
+      "api/filecoin.js.jsonrpcprovider.netaddrslisten": {
+        "title": "JsonRpcProvider.netAddrsListen() method"
+      },
+      "api/filecoin.js.jsonrpcprovider.netautonatstatus": {
+        "title": "JsonRpcProvider.netAutoNatStatus() method"
+      },
+      "api/filecoin.js.jsonrpcprovider.netconnect": {
+        "title": "JsonRpcProvider.netConnect() method"
+      },
+      "api/filecoin.js.jsonrpcprovider.netconnectedness": {
+        "title": "JsonRpcProvider.netConnectedness() method"
+      },
+      "api/filecoin.js.jsonrpcprovider.netdisconnect": {
+        "title": "JsonRpcProvider.netDisconnect() method"
+      },
+      "api/filecoin.js.jsonrpcprovider.netpeers": {
+        "title": "JsonRpcProvider.netPeers() method"
+      },
+      "api/filecoin.js.jsonrpcprovider.netpubsubscores": {
+        "title": "JsonRpcProvider.netPubsubScores() method"
+      },
       "api/filecoin.js.jsonrpcprovider.networkname": {
         "title": "JsonRpcProvider.networkName() method"
+      },
+      "api/filecoin.js.jsonrpcprovider.paymentchannelallocatelane": {
+        "title": "JsonRpcProvider.PaymentChannelAllocateLane() method"
+      },
+      "api/filecoin.js.jsonrpcprovider.paymentchannelcollect": {
+        "title": "JsonRpcProvider.PaymentChannelCollect() method"
+      },
+      "api/filecoin.js.jsonrpcprovider.paymentchannelnewpayment": {
+        "title": "JsonRpcProvider.paymentChannelNewPayment() method"
+      },
+      "api/filecoin.js.jsonrpcprovider.paymentchannelsettle": {
+        "title": "JsonRpcProvider.PaymentChannelSettle() method"
+      },
+      "api/filecoin.js.jsonrpcprovider.paymentchannelvoucheradd": {
+        "title": "JsonRpcProvider.PaymentChannelVoucherAdd() method"
+      },
+      "api/filecoin.js.jsonrpcprovider.paymentchannelvouchercheckspendable": {
+        "title": "JsonRpcProvider.PaymentChannelVoucherCheckSpendable() method"
+      },
+      "api/filecoin.js.jsonrpcprovider.paymentchannelvouchercheckvalid": {
+        "title": "JsonRpcProvider.PaymentChannelVoucherCheckValid() method"
+      },
+      "api/filecoin.js.jsonrpcprovider.paymentchannelvouchercreate": {
+        "title": "JsonRpcProvider.PaymentChannelVoucherCreate() method"
+      },
+      "api/filecoin.js.jsonrpcprovider.paymentchannelvoucherlist": {
+        "title": "JsonRpcProvider.PaymentChannelVoucherList() method"
+      },
+      "api/filecoin.js.jsonrpcprovider.paymentchannelvouchersubmit": {
+        "title": "JsonRpcProvider.PaymentChannelVoucherSubmit() method"
       },
       "api/filecoin.js.jsonrpcprovider.queryask": {
         "title": "JsonRpcProvider.queryAsk() method"
@@ -386,6 +512,12 @@
       "api/filecoin.js.jsonrpcprovider.sethead": {
         "title": "JsonRpcProvider.setHead() method"
       },
+      "api/filecoin.js.jsonrpcprovider.setmpoolconfig": {
+        "title": "JsonRpcProvider.setMpoolConfig() method"
+      },
+      "api/filecoin.js.jsonrpcprovider.shutdown": {
+        "title": "JsonRpcProvider.shutdown() method"
+      },
       "api/filecoin.js.jsonrpcprovider.startdeal": {
         "title": "JsonRpcProvider.startDeal() method"
       },
@@ -401,6 +533,27 @@
       "api/filecoin.js.jsonrpcprovider.stopchainnotify": {
         "title": "JsonRpcProvider.stopChainNotify() method"
       },
+      "api/filecoin.js.jsonrpcprovider.synccheckbad": {
+        "title": "JsonRpcProvider.syncCheckBad() method"
+      },
+      "api/filecoin.js.jsonrpcprovider.synccheckpoint": {
+        "title": "JsonRpcProvider.syncCheckpoint() method"
+      },
+      "api/filecoin.js.jsonrpcprovider.syncincomingblocks": {
+        "title": "JsonRpcProvider.syncIncomingBlocks() method"
+      },
+      "api/filecoin.js.jsonrpcprovider.syncmarkbad": {
+        "title": "JsonRpcProvider.syncMarkBad() method"
+      },
+      "api/filecoin.js.jsonrpcprovider.syncstate": {
+        "title": "JsonRpcProvider.syncState() method"
+      },
+      "api/filecoin.js.jsonrpcprovider.syncsubmitblock": {
+        "title": "JsonRpcProvider.syncSubmitBlock() method"
+      },
+      "api/filecoin.js.jsonrpcprovider.syncunmarkbad": {
+        "title": "JsonRpcProvider.syncUnmarkBad() method"
+      },
       "api/filecoin.js.jsonrpcprovider.verifiedclientstatus": {
         "title": "JsonRpcProvider.verifiedClientStatus() method"
       },
@@ -409,21 +562,6 @@
       },
       "api/filecoin.js.jsonrpcprovider.waitmsg": {
         "title": "JsonRpcProvider.waitMsg() method"
-      },
-      "api/filecoin.js.ledgersigner._constructor_": {
-        "title": "LedgerSigner.(constructor)"
-      },
-      "api/filecoin.js.ledgersigner.connect": {
-        "title": "LedgerSigner.connect() method"
-      },
-      "api/filecoin.js.ledgersigner.getdefaultaccount": {
-        "title": "LedgerSigner.getDefaultAccount() method"
-      },
-      "api/filecoin.js.ledgersigner": {
-        "title": "LedgerSigner class"
-      },
-      "api/filecoin.js.ledgersigner.sign": {
-        "title": "LedgerSigner.sign() method"
       },
       "api/filecoin.js": {
         "title": "filecoin.js package"
@@ -470,6 +608,9 @@
       "api/filecoin.js.metamaskwalletprovider": {
         "title": "MetamaskWalletProvider class"
       },
+      "api/filecoin.js.metamaskwalletprovider.sendmessage": {
+        "title": "MetamaskWalletProvider.sendMessage() method"
+      },
       "api/filecoin.js.metamaskwalletprovider.sign": {
         "title": "MetamaskWalletProvider.sign() method"
       },
@@ -506,6 +647,9 @@
       "api/filecoin.js.mnemonicwalletprovider": {
         "title": "MnemonicWalletProvider class"
       },
+      "api/filecoin.js.mnemonicwalletprovider.sendmessage": {
+        "title": "MnemonicWalletProvider.sendMessage() method"
+      },
       "api/filecoin.js.mnemonicwalletprovider.sign": {
         "title": "MnemonicWalletProvider.sign() method"
       },
@@ -517,6 +661,9 @@
       },
       "api/filecoin.js.wsjsonrpcconnector._constructor_": {
         "title": "WsJsonRpcConnector.(constructor)"
+      },
+      "api/filecoin.js.wsjsonrpcconnector.closesubscription": {
+        "title": "WsJsonRpcConnector.closeSubscription() method"
       },
       "api/filecoin.js.wsjsonrpcconnector.connect": {
         "title": "WsJsonRpcConnector.connect() method"
@@ -530,17 +677,8 @@
       "api/filecoin.js.wsjsonrpcconnector.on": {
         "title": "WsJsonRpcConnector.on() method"
       },
-      "api/filecoin.js.wsjsonrpcconnector.options": {
-        "title": "WsJsonRpcConnector.options property"
-      },
-      "api/filecoin.js.wsjsonrpcconnector.removechannellistener": {
-        "title": "WsJsonRpcConnector.removeChannelListener() method"
-      },
       "api/filecoin.js.wsjsonrpcconnector.request": {
         "title": "WsJsonRpcConnector.request() method"
-      },
-      "api/filecoin.js.wsjsonrpcconnector.requestwithchannel": {
-        "title": "WsJsonRpcConnector.requestWithChannel() method"
       },
       "api/filecoin.js.wsjsonrpcconnector.token": {
         "title": "WsJsonRpcConnector.token property"

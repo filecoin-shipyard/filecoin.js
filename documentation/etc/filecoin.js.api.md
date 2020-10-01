@@ -119,23 +119,26 @@ export class JsonRpcProvider {
     // Warning: (ae-forgotten-export) The symbol "TipSet" needs to be exported by the entry point index.d.ts
     getHead(): Promise<TipSet>;
     getMessage(messageCid: Cid): Promise<Message>;
-    getMpoolConfig(): Promise<any>;
+    // Warning: (ae-forgotten-export) The symbol "MpoolConfig" needs to be exported by the entry point index.d.ts
+    getMpoolConfig(): Promise<MpoolConfig>;
+    getMpoolPending(tipSetKey: TipSetKey): Promise<[SignedMessage]>;
     // Warning: (ae-forgotten-export) The symbol "WrappedMessage" needs to be exported by the entry point index.d.ts
     getParentMessages(blockCid: Cid): Promise<WrappedMessage[]>;
     // Warning: (ae-forgotten-export) The symbol "MessageReceipt" needs to be exported by the entry point index.d.ts
     getParentReceipts(blockCid: Cid): Promise<MessageReceipt[]>;
     getPath(from: TipSetKey, to: TipSetKey): Promise<HeadChange[]>;
-    // (undocumented)
-    getPaymentChannel(from: string, to: string, amount: string): Promise<any>;
-    // (undocumented)
-    getPaymentChannelList(): Promise<any>;
-    // (undocumented)
-    getPaymentChannelStatus(address: string): Promise<any>;
+    // Warning: (ae-forgotten-export) The symbol "ChannelInfo" needs to be exported by the entry point index.d.ts
+    getPaymentChannel(from: string, to: string, amount: string): Promise<ChannelInfo>;
+    // Warning: (ae-forgotten-export) The symbol "ChannelAvailableFunds" needs to be exported by the entry point index.d.ts
+    getPaymentChannelAvailableFunds(address: string): Promise<ChannelAvailableFunds>;
+    getPaymentChannelAvailableFundsByFromTo(from: string, to: string): Promise<ChannelAvailableFunds>;
+    getPaymentChannelList(): Promise<[Address]>;
+    // Warning: (ae-forgotten-export) The symbol "PaychStatus" needs to be exported by the entry point index.d.ts
+    getPaymentChannelStatus(address: string): Promise<PaychStatus>;
     getReceipt(cid: Cid, tipSetKey?: TipSetKey): Promise<MessageReceipt>;
     getTipSetByHeight(epochNumber: number): Promise<TipSet>;
     getTipSetWeight(tipSetKey?: TipSetKey): Promise<string>;
-    // (undocumented)
-    getWaitReadyPaymentChannel(cid: Cid): Promise<any>;
+    getWaitReadyPaymentChannel(cid: Cid): Promise<Address>;
     // (undocumented)
     hasLocal(cid: Cid): Promise<boolean>;
     hasObj(cid: Cid): Promise<boolean>;
@@ -171,12 +174,17 @@ export class JsonRpcProvider {
     }>;
     // Warning: (ae-forgotten-export) The symbol "DealID" needs to be exported by the entry point index.d.ts
     marketStorageDeal(dealId: DealID, tipSetKey?: TipSetKey): Promise<MarketDeal>;
-    minerActiveSectors(address: string, tipSetKey?: TipSetKey): Promise<ChainSectorInfo[]>;
+    minerActiveSectors(address: string, tipSetKey?: TipSetKey): Promise<SectorOnChainInfo[]>;
     minerAvailableBalance(address: string, tipSetKey?: TipSetKey): Promise<string>;
+    // Warning: (ae-forgotten-export) The symbol "BlockTemplate" needs to be exported by the entry point index.d.ts
+    // Warning: (ae-forgotten-export) The symbol "BlockMsg" needs to be exported by the entry point index.d.ts
+    minerCreateBlock(blockTemplate: BlockTemplate): Promise<BlockMsg>;
     // Warning: (ae-forgotten-export) The symbol "Deadline" needs to be exported by the entry point index.d.ts
     minerDeadlines(address: string, tipSetKey?: TipSetKey): Promise<Deadline[]>;
     // Warning: (ae-forgotten-export) The symbol "BitField" needs to be exported by the entry point index.d.ts
     minerFaults(address: string, tipSetKey?: TipSetKey): Promise<BitField>;
+    // Warning: (ae-forgotten-export) The symbol "MiningBaseInfo" needs to be exported by the entry point index.d.ts
+    minerGetBaseInfo(address: string, chainEpoch: ChainEpoch, tipSetKey: TipSetKey): Promise<MiningBaseInfo>;
     // Warning: (ae-forgotten-export) The symbol "MinerInfo" needs to be exported by the entry point index.d.ts
     minerInfo(address: string, tipSetKey?: TipSetKey): Promise<MinerInfo>;
     minerInitialPledgeCollateral(address: string, sectorPreCommitInfo: SectorPreCommitInfo, tipSetKey?: TipSetKey): Promise<string>;
@@ -192,8 +200,24 @@ export class JsonRpcProvider {
     minerRecoveries(address: string, tipSetKey?: TipSetKey): Promise<BitField>;
     // Warning: (ae-forgotten-export) The symbol "MinerSectors" needs to be exported by the entry point index.d.ts
     minerSectorCount(address: Address, tipSetKey?: TipSetKey): Promise<MinerSectors>;
-    // Warning: (ae-forgotten-export) The symbol "ChainSectorInfo" needs to be exported by the entry point index.d.ts
-    minerSectors(address: string, tipSetKey?: TipSetKey): Promise<ChainSectorInfo[]>;
+    // Warning: (ae-forgotten-export) The symbol "SectorOnChainInfo" needs to be exported by the entry point index.d.ts
+    minerSectors(address: string, tipSetKey?: TipSetKey): Promise<SectorOnChainInfo[]>;
+    mpoolClear(): Promise<any>;
+    mpoolSelect(tipSetKey: TipSetKey, ticketQuality: number): Promise<[SignedMessage]>;
+    // Warning: (ae-forgotten-export) The symbol "MpoolUpdate" needs to be exported by the entry point index.d.ts
+    mpoolSub(cb: (data: MpoolUpdate) => void): Promise<void>;
+    multiSigAddApprove(address: string, senderAddressOfApproveMsg: string, proposedMessageId: number, proposerAddress: string, newSignerAddress: string, increaseNumberOfRequiredSigners: boolean): Promise<Cid>;
+    multiSigAddCancel(address: string, senderAddressOfCancelMsg: string, proposedMessageId: number, newSignerAddress: string, increaseNumberOfRequiredSigners: boolean): Promise<Cid>;
+    multiSigAddPropose(address: string, senderAddressOfProposeMsg: string, newSignerAddress: string, increaseNumberOfRequiredSigners: boolean): Promise<Cid>;
+    multiSigApprove(address: string, proposedMessageId: number, proposerAddress: string, recipientAddres: string, value: string, senderAddressOfApproveMsg: string, methodToCallInProposeMsg: number, paramsToIncludeInProposeMsg: []): Promise<Cid>;
+    multiSigCancel(address: string, proposedMessageId: number, proposerAddress: string, recipientAddres: string, value: string, senderAddressOfCancelMsg: string, methodToCallInProposeMsg: number, paramsToIncludeInProposeMsg: []): Promise<Cid>;
+    multiSigCreate(requiredNumberOfSenders: number, approvingAddresses: string[], unlockDuration: ChainEpoch, initialBalance: string, senderAddressOfCreateMsg: string, gasPrice: string): Promise<Cid>;
+    multiSigGetAvailableBalance(address: string, tipSetKey: TipSetKey): Promise<string>;
+    multiSigGetVested(address: string, startEpoch: TipSetKey, endEpoch: TipSetKey): Promise<string>;
+    multiSigPropose(address: string, recipientAddres: string, value: string, senderAddressOfProposeMsg: string, methodToCallInProposeMsg: number, paramsToIncludeInProposeMsg: []): Promise<Cid>;
+    multiSigSwapApprove(address: string, senderAddressOfApproveMsg: string, proposedMessageId: number, proposerAddress: string, oldSignerAddress: string, newSignerAddress: string): Promise<Cid>;
+    multiSigSwapCancel(address: string, senderAddressOfCancelMsg: string, proposedMessageId: number, oldSignerAddress: string, newSignerAddress: string): Promise<Cid>;
+    multiSigSwapPropose(address: string, senderAddressOfProposeMsg: string, oldSignerAddress: string, newSignerAddress: string): Promise<Cid>;
     // (undocumented)
     netAddrsListen(): Promise<AddrInfo>;
     // Warning: (ae-forgotten-export) The symbol "NatInfo" needs to be exported by the entry point index.d.ts
@@ -216,27 +240,23 @@ export class JsonRpcProvider {
     netPubsubScores(): Promise<PubsubScore[]>;
     // Warning: (ae-forgotten-export) The symbol "NetworkName" needs to be exported by the entry point index.d.ts
     networkName(): Promise<NetworkName>;
-    // (undocumented)
-    PaymentChannelAllocateLane(address: string): Promise<any>;
-    // (undocumented)
-    PaymentChannelCollect(address: string): Promise<any>;
-    // (undocumented)
-    PaymentChannelSettle(address: string): Promise<any>;
-    // (undocumented)
-    PaymentChannelVoucherAdd(address: string, signedVoucher: any, proof: any, minDelta: string): Promise<any>;
-    // (undocumented)
-    PaymentChannelVoucherCheckSpendable(address: string, signedVoucher: any, secret: any, proof: any): Promise<any>;
-    // (undocumented)
-    PaymentChannelVoucherCheckValid(address: string, signedVoucher: any): Promise<any>;
-    // (undocumented)
-    PaymentChannelVoucherCreate(address: string, amount: string, lane: number): Promise<any>;
-    // (undocumented)
-    PaymentChannelVoucherList(address: string): Promise<any>;
-    // (undocumented)
-    PaymentChannelVoucherVoucherSubmit(address: string, signedVoucher: any, secret: any, proof: any): Promise<any>;
+    PaymentChannelAllocateLane(address: string): Promise<number>;
+    PaymentChannelCollect(address: string): Promise<Cid>;
+    // Warning: (ae-forgotten-export) The symbol "VoucherSpec" needs to be exported by the entry point index.d.ts
+    // Warning: (ae-forgotten-export) The symbol "PaymentInfo" needs to be exported by the entry point index.d.ts
+    paymentChannelNewPayment(from: string, to: string, vouchers: [VoucherSpec]): Promise<PaymentInfo>;
+    PaymentChannelSettle(address: string): Promise<Cid>;
+    PaymentChannelVoucherAdd(address: string, signedVoucher: SignedVoucher, proof: any, minDelta: string): Promise<string>;
+    PaymentChannelVoucherCheckSpendable(address: string, signedVoucher: SignedVoucher, secret: any, proof: any): Promise<boolean>;
+    PaymentChannelVoucherCheckValid(address: string, signedVoucher: SignedVoucher): Promise<any>;
+    // Warning: (ae-forgotten-export) The symbol "VoucherCreateResult" needs to be exported by the entry point index.d.ts
+    PaymentChannelVoucherCreate(address: string, amount: string, lane: number): Promise<VoucherCreateResult>;
+    // Warning: (ae-forgotten-export) The symbol "SignedVoucher" needs to be exported by the entry point index.d.ts
+    PaymentChannelVoucherList(address: string): Promise<[SignedVoucher]>;
+    PaymentChannelVoucherSubmit(address: string, signedVoucher: SignedVoucher, secret: any, proof: any): Promise<Cid>;
     // Warning: (ae-forgotten-export) The symbol "PeerID" needs to be exported by the entry point index.d.ts
-    // Warning: (ae-forgotten-export) The symbol "SignedStorageAsk" needs to be exported by the entry point index.d.ts
-    queryAsk(peerId: PeerID, miner: Address): Promise<SignedStorageAsk>;
+    // Warning: (ae-forgotten-export) The symbol "StorageAsk" needs to be exported by the entry point index.d.ts
+    queryAsk(peerId: PeerID, miner: Address): Promise<StorageAsk>;
     readObj(cid: Cid): Promise<string>;
     // Warning: (ae-forgotten-export) The symbol "ActorState" needs to be exported by the entry point index.d.ts
     readState(address: string, tipSetKey?: TipSetKey): Promise<ActorState>;
@@ -253,7 +273,6 @@ export class JsonRpcProvider {
     searchMsg(cid: Cid): Promise<MsgLookup>;
     // Warning: (ae-forgotten-export) The symbol "SectorExpiration" needs to be exported by the entry point index.d.ts
     sectorExpiration(address: string, sector: SectorNumber, tipSetKey?: TipSetKey): Promise<SectorExpiration>;
-    // Warning: (ae-forgotten-export) The symbol "SectorOnChainInfo" needs to be exported by the entry point index.d.ts
     sectorGetInfo(address: string, sector: SectorNumber, tipSetKey?: TipSetKey): Promise<SectorOnChainInfo>;
     // Warning: (ae-forgotten-export) The symbol "SectorLocation" needs to be exported by the entry point index.d.ts
     sectorPartition(address: string, sector: SectorNumber, tipSetKey?: TipSetKey): Promise<SectorLocation>;
@@ -262,6 +281,7 @@ export class JsonRpcProvider {
     sectorPreCommitInfo(address: string, sector: SectorNumber, tipSetKey?: TipSetKey): Promise<SectorPreCommitOnChainInfo>;
     // Warning: (ae-forgotten-export) The symbol "TipSetKey" needs to be exported by the entry point index.d.ts
     setHead(tipSetKey: TipSetKey): Promise<void>;
+    setMpoolConfig(config: MpoolConfig): Promise<MpoolConfig>;
     shutdown(): Promise<void>;
     // Warning: (ae-forgotten-export) The symbol "StartDealParams" needs to be exported by the entry point index.d.ts
     startDeal(dealParams: StartDealParams): Promise<Cid>;
@@ -272,6 +292,14 @@ export class JsonRpcProvider {
     statObj(obj: Cid, base?: Cid): Promise<ObjStat>;
     // (undocumented)
     stopChainNotify(id?: any): void;
+    syncCheckBad(blockCid: Cid): Promise<string>;
+    syncCheckpoint(tipSetKey: TipSetKey): Promise<string>;
+    syncIncomingBlocks(cb: (blockHeader: BlockHeader) => void): Promise<void>;
+    syncMarkBad(blockCid: Cid): Promise<void>;
+    // Warning: (ae-forgotten-export) The symbol "SyncState" needs to be exported by the entry point index.d.ts
+    syncState(): Promise<SyncState>;
+    syncSubmitBlock(blockMsg: BlockMsg): Promise<string>;
+    syncUnmarkBad(blockCid: Cid): Promise<void>;
     // Warning: (ae-forgotten-export) The symbol "DataCap" needs to be exported by the entry point index.d.ts
     verifiedClientStatus(address: Address, tipSetKey?: TipSetKey): Promise<DataCap | null>;
     // Warning: (ae-forgotten-export) The symbol "Version" needs to be exported by the entry point index.d.ts
@@ -374,7 +402,7 @@ export class WsJsonRpcConnector extends EventEmitter implements Connector {
 
 // Warnings were encountered during analysis:
 //
-// src/providers/JsonRpcProvider.ts:575:62 - (ae-forgotten-export) The symbol "MarketDeal" needs to be exported by the entry point index.d.ts
+// src/providers/JsonRpcProvider.ts:599:62 - (ae-forgotten-export) The symbol "MarketDeal" needs to be exported by the entry point index.d.ts
 
 // (No @packageDocumentation comment for this package)
 
