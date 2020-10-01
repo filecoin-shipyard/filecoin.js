@@ -14,7 +14,7 @@ returns a signed StorageAsk from the specified miner.
 <b>Signature:</b>
 
 ```typescript
-queryAsk(peerId: PeerID, miner: Address): Promise<SignedStorageAsk>;
+queryAsk(peerId: PeerID, miner: Address): Promise<StorageAsk>;
 ```
 
 ## Parameters
@@ -26,4 +26,4 @@ queryAsk(peerId: PeerID, miner: Address): Promise<SignedStorageAsk>;
 
 <b>Returns:</b>
 
-Promise&lt;SignedStorageAsk&gt;
+Promise&lt;StorageAsk&gt;

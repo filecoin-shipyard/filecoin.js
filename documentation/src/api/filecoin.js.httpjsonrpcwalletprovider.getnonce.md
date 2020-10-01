@@ -9,7 +9,7 @@ hide_title: true
 
 ## HttpJsonRpcWalletProvider.getNonce() method
 
-get nonce for address
+get nonce for address. Note that this method may not be atomic. Use MpoolPushMessage instead.
 
 <b>Signature:</b>
 

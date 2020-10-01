@@ -9,10 +9,12 @@ hide_title: true
 
 ## JsonRpcProvider.PaymentChannelVoucherCreate() method
 
+PaychVoucherCreate
+
 <b>Signature:</b>
 
 ```typescript
-PaymentChannelVoucherCreate(address: string, amount: string, lane: number): Promise<any>;
+PaymentChannelVoucherCreate(address: string, amount: string, lane: number): Promise<VoucherCreateResult>;
 ```
 
 ## Parameters
@@ -25,4 +27,4 @@ PaymentChannelVoucherCreate(address: string, amount: string, lane: number): Prom
 
 <b>Returns:</b>
 
-Promise&lt;any&gt;
+Promise&lt;VoucherCreateResult&gt;

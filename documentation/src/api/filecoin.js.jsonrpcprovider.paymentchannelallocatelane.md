@@ -9,10 +9,12 @@ hide_title: true
 
 ## JsonRpcProvider.PaymentChannelAllocateLane() method
 
+PaychAllocateLane
+
 <b>Signature:</b>
 
 ```typescript
-PaymentChannelAllocateLane(address: string): Promise<any>;
+PaymentChannelAllocateLane(address: string): Promise<number>;
 ```
 
 ## Parameters
@@ -23,4 +25,4 @@ PaymentChannelAllocateLane(address: string): Promise<any>;
 
 <b>Returns:</b>
 
-Promise&lt;any&gt;
+Promise&lt;number&gt;

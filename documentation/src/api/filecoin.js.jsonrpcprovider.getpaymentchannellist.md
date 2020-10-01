@@ -9,11 +9,13 @@ hide_title: true
 
 ## JsonRpcProvider.getPaymentChannelList() method
 
+PaychList
+
 <b>Signature:</b>
 
 ```typescript
-getPaymentChannelList(): Promise<any>;
+getPaymentChannelList(): Promise<[Address]>;
 ```
 <b>Returns:</b>
 
-Promise&lt;any&gt;
+Promise&lt;\[Address\]&gt;

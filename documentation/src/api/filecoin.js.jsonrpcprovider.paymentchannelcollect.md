@@ -9,10 +9,12 @@ hide_title: true
 
 ## JsonRpcProvider.PaymentChannelCollect() method
 
+PaychCollect
+
 <b>Signature:</b>
 
 ```typescript
-PaymentChannelCollect(address: string): Promise<any>;
+PaymentChannelCollect(address: string): Promise<Cid>;
 ```
 
 ## Parameters
@@ -23,4 +25,4 @@ PaymentChannelCollect(address: string): Promise<any>;
 
 <b>Returns:</b>
 
-Promise&lt;any&gt;
+Promise&lt;Cid&gt;

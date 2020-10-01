@@ -9,10 +9,12 @@ hide_title: true
 
 ## JsonRpcProvider.getWaitReadyPaymentChannel() method
 
+PaychGetWaitReady
+
 <b>Signature:</b>
 
 ```typescript
-getWaitReadyPaymentChannel(cid: Cid): Promise<any>;
+getWaitReadyPaymentChannel(cid: Cid): Promise<Address>;
 ```
 
 ## Parameters
@@ -23,4 +25,4 @@ getWaitReadyPaymentChannel(cid: Cid): Promise<any>;
 
 <b>Returns:</b>
 
-Promise&lt;any&gt;
+Promise&lt;Address&gt;

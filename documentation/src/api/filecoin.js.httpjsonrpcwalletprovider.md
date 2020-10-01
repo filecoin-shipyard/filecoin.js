@@ -35,7 +35,7 @@ export declare class HttpJsonRpcWalletProvider implements WalletProvider
 |  [getAccounts()](./filecoin.js.httpjsonrpcwalletprovider.getaccounts.md) |  | get wallet list |
 |  [getBalance(address)](./filecoin.js.httpjsonrpcwalletprovider.getbalance.md) |  | get balance for address |
 |  [getDefaultAccount()](./filecoin.js.httpjsonrpcwalletprovider.getdefaultaccount.md) |  | get default address |
-|  [getNonce(address)](./filecoin.js.httpjsonrpcwalletprovider.getnonce.md) |  | get nonce for address |
+|  [getNonce(address)](./filecoin.js.httpjsonrpcwalletprovider.getnonce.md) |  | get nonce for address. Note that this method may not be atomic. Use MpoolPushMessage instead. |
 |  [hasWallet(address)](./filecoin.js.httpjsonrpcwalletprovider.haswallet.md) |  | check if address is in keystore |
 |  [newAccount(type)](./filecoin.js.httpjsonrpcwalletprovider.newaccount.md) |  | create new wallet |
 |  [release()](./filecoin.js.httpjsonrpcwalletprovider.release.md) |  |  |

@@ -9,10 +9,12 @@ hide_title: true
 
 ## JsonRpcProvider.getPaymentChannelStatus() method
 
+PaychStatus
+
 <b>Signature:</b>
 
 ```typescript
-getPaymentChannelStatus(address: string): Promise<any>;
+getPaymentChannelStatus(address: string): Promise<PaychStatus>;
 ```
 
 ## Parameters
@@ -23,4 +25,4 @@ getPaymentChannelStatus(address: string): Promise<any>;
 
 <b>Returns:</b>
 
-Promise&lt;any&gt;
+Promise&lt;PaychStatus&gt;
