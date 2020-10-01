@@ -73,7 +73,8 @@ import {
   MiningBaseInfo,
   BlockTemplate,
   BlockMsg,
-  MpoolUpdate
+  MpoolUpdate,
+  StorageAsk,
 } from './Types';
 import { Connector } from '../connectors/Connector';
 import { WsJsonRpcConnector } from '../connectors/WsJsonRpcConnector';
@@ -853,8 +854,8 @@ export class JsonRpcProvider {
    * @param peerId
    * @param miner
    */
-  public async queryAsk(peerId: PeerID, miner: Address): Promise<SignedStorageAsk> {
-    const queryAsk: SignedStorageAsk = await this.conn.request({
+  public async queryAsk(peerId: PeerID, miner: Address): Promise<StorageAsk> {
+    const queryAsk: StorageAsk = await this.conn.request({
       method: 'Filecoin.ClientQueryAsk',
       params: [peerId, miner],
     });
