@@ -46,7 +46,7 @@ cat > "${base_dir}/scripts/start_faucet.bash" <<EOF
 #!/usr/bin/env bash
 set -xe
 
-wallet=\$(lotus wallet list)
+wallet=\$(lotus wallet list | cut -d " " -f 1 | sed -e "s/^Address//" | tr -d '\n')
 while [ "\$wallet" = "" ]; do
   sleep 5
   wallet=\$(lotus wallet list)
