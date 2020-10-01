@@ -156,8 +156,9 @@ describe("Client tests", function() {
   it("should perform query ask ", async function() {
     const provider = new JsonRpcProvider(httpConnector);
     const minerInfo = await provider.minerInfo('t01000');
-    const queryOffer = await provider.queryAsk(minerInfo.PeerId, 't01000');
-    assert.strictEqual(!!queryOffer.Ask && !!queryOffer.Signature, true, 'failed query ask');
+    const queryAsk = await provider.queryAsk(minerInfo.PeerId, 't01000');
+    const valid = typeof queryAsk.Price === 'string' && typeof queryAsk.Miner === 'string';
+    assert.strictEqual(valid, true, 'failed query ask');
   });
 
   it("should compute commP", async function() {

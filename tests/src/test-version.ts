@@ -101,14 +101,14 @@ describe("Connection test", function () {
   it("should get miner sectors info [http]", async function () {
     const con = new JsonRpcProvider(httpConnector);
     const sectors = await con.minerSectors('t01000');
-    const valid = sectors.reduce((acc, sector) => acc === false ? acc : typeof sector.Info.SectorNumber === 'number', true);
+    const valid = sectors.reduce((acc, sector) => acc === false ? acc : typeof sector.SectorNumber === 'number', true);
     assert.strictEqual(valid, true, 'invalid sectors info');
   });
 
   it("should get miner active sectors info [http]", async function () {
     const con = new JsonRpcProvider(httpConnector);
     const sectors = await con.minerActiveSectors('t01000');
-    const valid = sectors.reduce((acc, sector) => acc === false ? acc : typeof sector.Info.SectorNumber === 'number', true);
+    const valid = sectors.reduce((acc, sector) => acc === false ? acc : typeof sector.SectorNumber === 'number', true);
     assert.strictEqual(valid, true, 'invalid active sectors info');
   });
 
@@ -133,14 +133,14 @@ describe("Connection test", function () {
   it("should get miner deadlines", async function () {
     const con = new JsonRpcProvider(httpConnector);
     const minerDeadlines = await con.minerDeadlines('t01000');
-    const valid = minerDeadlines.reduce((acc, deadline) => acc === false ? false : !!deadline.Partitions, true);
+    const valid = minerDeadlines.reduce((acc, deadline) => acc === false ? false : Array.isArray(deadline.PostSubmissions), true);
     assert.strictEqual(valid, true, 'invalid miner deadlines');
   });
 
   it("should get miner partitions", async function () {
     const con = new JsonRpcProvider(httpConnector);
     const minerPartitions = await con.minerPartitions('t01000', 0);
-    const valid = minerPartitions.reduce((acc, partition) => acc === false ? false : !!partition.Sectors, true);
+    const valid = minerPartitions.reduce((acc, partition) => acc === false ? false : Array.isArray(partition.AllSectors), true);
     assert.strictEqual(valid, true, 'invalid miner partitions');
   });
 
@@ -326,7 +326,7 @@ describe("Connection test", function () {
   it("should return the number of sectors in a miner's sector set", async function() {
     const con = new JsonRpcProvider(httpConnector);
     const sectors = await con.minerSectorCount('t01000');
-    assert.strictEqual(typeof sectors.Sectors === 'number', true, "invalid number of sectors");
+    assert.strictEqual(typeof sectors.Active === 'number', true, "invalid number of sectors");
   });
 
   it("should apply the messages", async function() {

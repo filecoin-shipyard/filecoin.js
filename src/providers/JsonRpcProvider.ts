@@ -73,7 +73,8 @@ import {
   MiningBaseInfo,
   BlockTemplate,
   BlockMsg,
-  MpoolUpdate
+  MpoolUpdate,
+  StorageAsk,
 } from './Types';
 import { Connector } from '../connectors/Connector';
 import { WsJsonRpcConnector } from '../connectors/WsJsonRpcConnector';
@@ -337,8 +338,8 @@ export class JsonRpcProvider {
    * @param address
    * @param tipSetKey
    */
-  public async minerSectors(address: string, tipSetKey?: TipSetKey): Promise<ChainSectorInfo[]> {
-    const sectorsInfo: ChainSectorInfo[] = await this.conn.request({ method: 'Filecoin.StateMinerSectors', params: [address, undefined, true, tipSetKey] })
+  public async minerSectors(address: string, tipSetKey?: TipSetKey): Promise<SectorOnChainInfo[]> {
+    const sectorsInfo: SectorOnChainInfo[] = await this.conn.request({ method: 'Filecoin.StateMinerSectors', params: [address, undefined, tipSetKey] })
     return sectorsInfo;
   }
 
@@ -347,8 +348,8 @@ export class JsonRpcProvider {
    * @param address
    * @param tipSetKey
    */
-  public async minerActiveSectors(address: string, tipSetKey?: TipSetKey): Promise<ChainSectorInfo[]> {
-    const activeSectors: ChainSectorInfo[] = await this.conn.request({ method: 'Filecoin.StateMinerActiveSectors', params: [address, tipSetKey] });
+  public async minerActiveSectors(address: string, tipSetKey?: TipSetKey): Promise<SectorOnChainInfo[]> {
+    const activeSectors: SectorOnChainInfo[] = await this.conn.request({ method: 'Filecoin.StateMinerActiveSectors', params: [address, tipSetKey] });
     return activeSectors;
   }
 
@@ -853,8 +854,8 @@ export class JsonRpcProvider {
    * @param peerId
    * @param miner
    */
-  public async queryAsk(peerId: PeerID, miner: Address): Promise<SignedStorageAsk> {
-    const queryAsk: SignedStorageAsk = await this.conn.request({
+  public async queryAsk(peerId: PeerID, miner: Address): Promise<StorageAsk> {
+    const queryAsk: StorageAsk = await this.conn.request({
       method: 'Filecoin.ClientQueryAsk',
       params: [peerId, miner],
     });
