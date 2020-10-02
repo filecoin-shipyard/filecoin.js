@@ -47,7 +47,8 @@ describe("Mpool tests", function () {
     const messageForSub = await walletLotusHttp.createMessage({
       From: defaultAccount,
       To: mnemonicAddress,
-      Value: new BigNumber(1)
+      Value: new BigNumber(1),
+      Nonce: nonce
     });
     signedMessageForSub = await walletLotusHttp.signMessage(messageForSub);
 
@@ -100,7 +101,7 @@ describe("Mpool tests", function () {
   });
 
   it("just wait for the previous message to be mined", function (done) {
-    this.timeout(8000);
-    sleep(6000).then(() => { done() });;
+    this.timeout(12000);
+    sleep(10000).then(() => { done() });;
   });
 });

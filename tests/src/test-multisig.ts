@@ -14,6 +14,24 @@ function sleep(ms: any) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 
+async function extractAddressesWithFunds(addresses: string[], wallet:HttpJsonRpcWalletProvider): Promise<{blsAddresses: string[], secpAddreses: string[]}> {
+  let blsAddresses: string[] = [];
+  let secpAddreses: string[] = [];
+
+  for (let i=0; i<addresses.length; i++) {
+    const address = addresses[i];
+    const balance: BigNumber = new BigNumber(await wallet.getBalance(address));
+    if (balance.gt(new BigNumber(0)) && address.startsWith('t3')) {
+      blsAddresses.push(address);
+    }
+    if (balance.gt(new BigNumber(0)) && address.startsWith('t1')) {
+      secpAddreses.push(address);
+    }
+  };
+
+  return { blsAddresses, secpAddreses };
+}
+
 describe("Multisig Wallets", function () {
 
   it("should create multisig wallet and transfer funds [http]", async function () {
@@ -27,9 +45,10 @@ describe("Multisig Wallets", function () {
     const addresses = await walletLotusHttp.getAccounts();
     const defaultAccount = await walletLotusHttp.getDefaultAccount();
 
-    const t3address = addresses[2];
-    const t11address = addresses[1];
-    const t12address = addresses[0];
+    const { blsAddresses, secpAddreses } = await extractAddressesWithFunds (addresses, walletLotusHttp);
+    const t3address = blsAddresses [0]
+    const t11address = secpAddreses[1];
+    const t12address = secpAddreses[0];
 
     const mnemonicAddress = await mnemonicWalletProvider.getDefaultAccount();
 
@@ -118,9 +137,10 @@ describe("Multisig Wallets", function () {
     const addresses = await walletLotusHttp.getAccounts();
     const defaultAccount = await walletLotusHttp.getDefaultAccount();
 
-    const t3address = addresses[2];
-    const t11address = addresses[1];
-    const t12address = addresses[0];
+    const { blsAddresses, secpAddreses } = await extractAddressesWithFunds (addresses, walletLotusHttp);
+    const t3address = blsAddresses [0]
+    const t11address = secpAddreses[1];
+    const t12address = secpAddreses[0];
 
     const mnemonicAddress = await mnemonicWalletProvider.getDefaultAccount();
 
