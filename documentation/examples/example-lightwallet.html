@@ -1,0 +1,280 @@
+<!doctype html>
+<html>
+
+<head>
+  <title>Filecoin.js Wallet Example</title>
+  <meta charset="UTF-8">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+    integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/bignumber.js/9.0.0/bignumber.min.js"
+    integrity="sha512-vg7OeB3i21ZSV8k2kyAXnbFL24Rwoz+nRC6xVAddaoEQIIboCtONdpuQQ+tl56RBDEf8fT0DtcVQeip2asslmg=="
+    crossorigin="anonymous"></script>
+</head>
+
+<body>
+
+  <div class="container">
+    <div class="row row-cols-12" style="padding-bottom: 10px; font-weight: bold;">
+      <div class="col-8">
+        Default Address
+      </div>
+    </div>
+
+    <div class="row row-cols-12" style="padding-bottom: 10px;">
+      <div class="col-7">
+        <div id="rpcAddress"></div>
+      </div>
+
+      <div class="col-3">
+        <input type="text" class="form-control" placeholder="to address" id="toDefault">
+      </div>
+      <div class="col-1">
+        <input type="text" class="form-control" placeholder="FIL" id="filDefault">
+      </div>
+      <div class="col">
+        <button type="submit" class="btn btn-primary" id="sendDefault">Send</button>
+      </div>
+    </div>
+
+    <div class="row row-cols-12" style="padding-bottom: 10px; font-weight: bold;">
+      <div class="col-8">
+        Lightwallet
+      </div>
+    </div>
+
+    <div class="row row-cols-12" style="padding-bottom: 10px;">
+      <div class="col-7">
+        <div id="lightwalletAddress"></div>
+      </div>
+
+      <div class="col-3">
+        <input type="text" class="form-control" placeholder="to address" id="toLightwallet">
+      </div>
+      <div class="col-1">
+        <input type="text" class="form-control" placeholder="FIL" id="filLightwallet">
+      </div>
+      <div class="col">
+        <button type="submit" class="btn btn-primary" id="sendLightwallet">Send</button>
+      </div>
+    </div>
+
+    <div class="row row-cols-12" style="padding-bottom: 10px; font-weight: bold;">
+      <div class="col-12">
+        <button type="submit" class="btn btn-primary" id="refreshBalances">Refresh</button>
+      </div>
+    </div>
+
+    <div class="row row-cols-12" style="padding-bottom: 10px; font-weight: bold; margin-top: 40px;">
+      <div class="col-8">
+        Lightwallet Operations
+      </div>
+    </div>
+
+    <div class="row row-cols-12" style="padding-bottom: 10px;">
+      <div class="col-2">
+        <button type="submit" class="btn btn-primary" id="initLightwallet" style="width: 100px;">Init</button>
+      </div>
+      <div class="col-10" id="mnemonicLightwallet">
+      </div>
+    </div>
+
+    <div class="row row-cols-12" style="padding-bottom: 10px;">
+      <div class="col-2">
+        <button type="submit" class="btn btn-primary" id="saveLightWallet" style="width: 100px;">Save</button>
+      </div>
+    </div>
+
+    <div class="row row-cols-12" style="padding-bottom: 10px;">
+      <div class="col-2">
+        <button type="submit" class="btn btn-primary" id="loadLightwallet" style="width: 100px;">Load</button>
+      </div>
+
+      <div class="col-4">
+        <input type="file" id="lightwalletFile" accept="text/plain">
+      </div>
+    </div>
+
+    <div class="row row-cols-12" style="padding-bottom: 10px;">
+      <div class="col-2">
+        <button type="submit" class="btn btn-primary" id="recoverLightwallet" style="width: 100px;">Recover</button>
+      </div>
+
+      <div class="col-4">
+        <input type="text" id="lightwalletSeed">
+      </div>
+    </div>
+  </div>
+
+  <script type="text/javascript" src="../../builds/bundle/filecoin.js"></script>
+
+  <script type="text/javascript" src="../../tests/tools/testnet/credentials/credentials_web.js"></script>
+
+  <script type="text/javascript">
+    const main = async () => {
+      let rpcAddress = '';
+      let lightwalletAddress = '';
+
+      const httpConnector = new FilecoinJs.HttpJsonRpcConnector({ url: 'http://localhost:8000/rpc/v0', token: LOTUS_AUTH_TOKEN });
+
+      const lotusWalletProvider = new FilecoinJs.HttpJsonRpcWalletProvider(httpConnector);
+
+      const lightWalletProvider = new FilecoinJs.LightWalletProvider(httpConnector);
+
+      let file = null;
+
+      const getPass = () => {
+        let password;
+        return () => {
+          if (password) return password;
+          password = prompt('Mnemonic wallet password?');
+          setTimeout(() => password = undefined, 100000);
+          return password;
+        }
+      }
+
+      const sendLotus = async (from, toId, filId) => {
+        const to = document.getElementById(toId).value;
+        const amount = document.getElementById(filId).value;
+
+        const msg = await lotusWalletProvider.sendMessage({
+          From: from,
+          To: to,
+          GasLimit: 0,
+          GasFeeCap: new BigNumber(0),
+          GasPremium: new BigNumber(0),
+          Value: new BigNumber(amount),
+          Method: 0,
+          Params: '',
+          Version: 0,
+          Nonce: 0
+        });
+      }
+
+      const sendFromLightwallet = async () => {
+        const to = document.getElementById('toLightwallet').value;
+        const amount = document.getElementById('filLightwallet').value;
+
+        if (lightwalletAddress) {
+          const message = await lightWalletProvider.createMessage({
+            From: lightwalletAddress,
+            To: to,
+            Value: new BigNumber(amount),
+          });
+
+          const signedMessage = await lightWalletProvider.signMessage(message);
+          const msgCid = await lightWalletProvider.sendSignedMessage(signedMessage);
+        }
+      }
+
+      const extractAddressesWithFunds = async (addresses, wallet) => {
+        let blsAddresses = [];
+        let secpAddreses = [];
+
+        for (let i = 0; i < addresses.length; i++) {
+          const address = addresses[i];
+          const balance = new BigNumber(await wallet.getBalance(address));
+          if (balance.gt(new BigNumber(0)) && address.startsWith('t3')) {
+            blsAddresses.push(address);
+          }
+          if (balance.gt(new BigNumber(0)) && address.startsWith('t1')) {
+            secpAddreses.push(address);
+          }
+        };
+
+        return { blsAddresses, secpAddreses };
+      }
+
+      const { blsAddresses, secpAddreses } = await extractAddressesWithFunds (await lotusWalletProvider.getAccounts(), lotusWalletProvider);
+      rpcAddress = await secpAddreses[0];
+
+      const updateAddresses = async () => {
+        const rpcBalance = await lotusWalletProvider.getBalance(rpcAddress);
+        document.getElementById('rpcAddress').innerHTML = `${rpcAddress} <br/> (${rpcBalance})`;
+
+        try {
+          lightwalletAddress = await lightWalletProvider.getDefaultAccount();
+          const lightwalletBalance = await lightWalletProvider.getBalance(lightwalletAddress);
+          document.getElementById('lightwalletAddress').innerHTML = `${lightwalletAddress} <br/> (${lightwalletBalance})`;
+        } catch (e) {
+          document.getElementById('lightwalletAddress').innerHTML = 'No wallet loaded'
+          console.log(e);
+        }
+      }
+
+      const createWallet = async () => {
+        const password = prompt('Mnemonic wallet password?');
+        const mnemonic = await lightWalletProvider.createLightWallet(password);
+        document.getElementById('mnemonicLightwallet').innerHTML = `seed: ${mnemonic}`;
+
+        await updateAddresses();
+      }
+
+      const saveWalletToFile = async () => {
+        const address = await lightWalletProvider.getDefaultAccount();
+        if (address) {
+          const a = document.createElement('a');
+          const file = new Blob([lightWalletProvider.prepareToSave()], { type: 'text/plain' });
+
+          a.href = URL.createObjectURL(file);
+          a.download = `${address}.txt`;
+          a.click();
+
+          URL.revokeObjectURL(a.href);
+        }
+      };
+
+      const loadWalletFromFile = async () => {
+        const reader = new FileReader();
+        reader.addEventListener('load', async (event) => {
+          lightWalletProvider.loadLightWallet(event.target.result);
+          await updateAddresses();
+        });
+        reader.readAsText(file);
+      }
+
+      const recoverLightwallet = async () => {
+        const password = prompt('Mnemonic wallet password?');
+        const seed = document.getElementById('lightwalletSeed').value;
+        lightWalletProvider.recoverLightWallet(seed, password);
+        await updateAddresses();
+      }
+
+      const fileSelector = document.getElementById('lightwalletFile');
+      fileSelector.addEventListener('change', (event) => {
+        file = event.target.files[0];
+      });
+
+      document.getElementById('sendDefault').onclick = () => sendLotus(rpcAddress, "toDefault", "filDefault");
+
+      document.getElementById('initLightwallet').onclick = async () => {
+        await createWallet();
+      };
+
+      document.getElementById('saveLightWallet').onclick = async () => {
+        await saveWalletToFile();
+      };
+
+      document.getElementById('loadLightwallet').onclick = async () => {
+        await loadWalletFromFile();
+      };
+
+      document.getElementById('recoverLightwallet').onclick = async () => {
+        await recoverLightwallet();
+      };
+
+      document.getElementById('refreshBalances').onclick = async () => {
+        await updateAddresses();
+      };
+
+      document.getElementById('sendLightwallet').onclick = async () => {
+        await sendFromLightwallet();
+      };
+
+      await updateAddresses();
+    };
+
+    main().then(console.log).catch(console.error);
+  </script>
+</body>
+
+</html>

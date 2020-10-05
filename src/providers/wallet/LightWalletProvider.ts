@@ -52,6 +52,10 @@ export class LightWalletProvider extends HttpJsonRpcWalletProvider {
     this.signer = new LightWalletSigner(this.keystore);
   }
 
+  public prepareToSave() {
+    return this.keystore.serialize();
+  }
+
   public async getAccounts(): Promise<string[]> {
     return [await this.getDefaultAccount()];
   }
@@ -62,7 +66,7 @@ export class LightWalletProvider extends HttpJsonRpcWalletProvider {
 
   public async sendMessage(msg: Message): Promise<SignedMessage> {
     const signedMessage: SignedMessage = await this.signMessage(msg);
-    //await this.sendSignedMessage(signedMessage);
+    await this.sendSignedMessage(signedMessage);
     return signedMessage as SignedMessage;
   }
 
