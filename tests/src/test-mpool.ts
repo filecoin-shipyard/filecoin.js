@@ -1,4 +1,5 @@
 import assert from "assert";
+import BigNumber from "bignumber.js";
 
 import { LOTUS_AUTH_TOKEN } from "../tools/testnet/credentials/credentials";
 import { JsonRpcProvider } from '../../src/providers/JsonRpcProvider';
@@ -6,11 +7,7 @@ import { HttpJsonRpcConnector } from '../../src/connectors/HttpJsonRpcConnector'
 import { WsJsonRpcConnector } from '../../src/connectors/WsJsonRpcConnector';
 import { MnemonicWalletProvider } from "../../src/providers/wallet/MnemonicWalletProvider";
 import { HttpJsonRpcWalletProvider } from "../../src/providers/wallet/HttpJsonRpcWalletProvider";
-import BigNumber from "bignumber.js";
 import { MpoolUpdate, SignedMessage } from "../../src/providers/Types";
-
-const httpConnector = new HttpJsonRpcConnector({ url: 'http://localhost:8000/rpc/v0', token: LOTUS_AUTH_TOKEN });
-const wsConnector = new WsJsonRpcConnector({ url: 'ws://localhost:8000/rpc/v0', token: LOTUS_AUTH_TOKEN });
 
 const testMnemonic = 'equip will roof matter pink blind book anxiety banner elbow sun young';
 let signedMessageForSub: SignedMessage;
@@ -28,7 +25,7 @@ describe("Mpool tests", function () {
     const con = new JsonRpcProvider(httpConnector);
 
     //clear mpool
-    await con.mpoolClear();
+    await con.mpool.clear();
 
     const defaultAccount = await walletLotusHttp.getDefaultAccount();
     const mnemonicAddress = await mnemonicWalletProvider.getDefaultAccount();
@@ -52,15 +49,15 @@ describe("Mpool tests", function () {
     });
     signedMessageForSub = await walletLotusHttp.signMessage(messageForSub);
 
-    let mempoolContents = await con.getMpoolPending([]);
+    let mempoolContents = await con.mpool.getMpoolPending([]);
     assert.strictEqual(mempoolContents.length, 1, 'wrong message count in mpool');
 
-    mempoolContents = await con.mpoolSelect([], 1);
+    mempoolContents = await con.mpool.select([], 1);
     assert.strictEqual(mempoolContents.length, 1, 'wrong message count in mpool');
 
-    await con.mpoolClear();
+    await con.mpool.clear();
 
-    mempoolContents = await con.getMpoolPending([]);
+    mempoolContents = await con.mpool.getMpoolPending([]);
     assert.strictEqual(mempoolContents.length, 0, 'mpool not empty');
   });
 
@@ -70,18 +67,18 @@ describe("Mpool tests", function () {
     const con = new JsonRpcProvider(httpConnector);
 
     //clear mpool
-    const initialConfig = await con.getMpoolConfig();
+    const initialConfig = await con.mpool.getMpoolConfig();
 
     const newConfig = { ...initialConfig };
     newConfig.GasLimitOverestimation = 1.5;
 
-    await con.setMpoolConfig(newConfig);
-    const newlySetConfig = await con.getMpoolConfig();
+    await con.mpool.setMpoolConfig(newConfig);
+    const newlySetConfig = await con.mpool.getMpoolConfig();
     assert.strictEqual(newlySetConfig.GasLimitOverestimation, 1.5, 'mpool not empty');
 
 
-    await con.setMpoolConfig(initialConfig);
-    const revertedInitialConfig = await con.getMpoolConfig();
+    await con.mpool.setMpoolConfig(initialConfig);
+    const revertedInitialConfig = await con.mpool.getMpoolConfig();
 
     assert.strictEqual(initialConfig.GasLimitOverestimation, revertedInitialConfig.GasLimitOverestimation, 'mpool not empty');
   });
@@ -93,7 +90,7 @@ describe("Mpool tests", function () {
     const walletLotusHttp = new HttpJsonRpcWalletProvider(httpConnector);
     const con = new JsonRpcProvider(wsConnector);
 
-    con.mpoolSub((data: MpoolUpdate) => {
+    con.mpool.sub((data: MpoolUpdate) => {
       con.release().then(() => { done() });
       assert.strictEqual(data.Type, 0, 'wrong type received on subscription');
     })

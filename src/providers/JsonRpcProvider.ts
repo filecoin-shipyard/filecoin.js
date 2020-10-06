@@ -80,6 +80,7 @@ import { Connector } from '../connectors/Connector';
 import { JsonRpcStateMethodGroup } from './method-groups/state';
 import { JsonRpcChainMethodGroup } from './method-groups/chain';
 import { JsonRpcPaychMethodGroup } from './method-groups/paych';
+import { JsonRpcMPoolMethodGroup } from './method-groups/mpool';
 import { JsonRpcMsigMethodGroup } from './method-groups/msig';
 
 export class JsonRpcProvider {
@@ -89,6 +90,7 @@ export class JsonRpcProvider {
   public auth: JsonRpcAuthMethodGroup;
   public client: JsonRpcClientMethodGroup;
   public paych: JsonRpcPaychMethodGroup;
+  public mpool: JsonRpcMPoolMethodGroup;
   public msig: JsonRpcMsigMethodGroup;
 
   constructor(connector: Connector) {
@@ -100,75 +102,13 @@ export class JsonRpcProvider {
     this.auth = new JsonRpcAuthMethodGroup(this.conn);
     this.client = new JsonRpcClientMethodGroup(this.conn);
     this.paych = new JsonRpcPaychMethodGroup(this.conn);
+    this.mpool = new JsonRpcMPoolMethodGroup(this.conn);
     this.msig = new JsonRpcMsigMethodGroup(this.conn);
   }
 
   public async release() {
     return this.conn.disconnect();
   }
-
-  //Mpool
-  /**
-    * returns (a copy of) the current mpool config
-    */
-  public async getMpoolConfig(): Promise<MpoolConfig> {
-    const ret = await this.conn.request({ method: 'Filecoin.MpoolGetConfig', params: [] });
-    return ret;
-  }
-
-  /**
-    * sets the mpool config to (a copy of) the supplied config
-    * @param config
-    */
-  public async setMpoolConfig(config: MpoolConfig): Promise<MpoolConfig> {
-    const ret = await this.conn.request({ method: 'Filecoin.MpoolSetConfig', params: [config] });
-    return ret;
-  }
-
-  /**
-    * clears pending messages from the mpool
-    */
-  public async mpoolClear(): Promise<any> {
-    const ret = await this.conn.request({ method: 'Filecoin.MpoolClear', params: [true] });
-    return ret;
-  }
-
-  /**
-    * get all mpool messages
-    * @param tipSetKey
-    */
-  public async getMpoolPending(tipSetKey: TipSetKey): Promise<[SignedMessage]> {
-    const ret = await this.conn.request({ method: 'Filecoin.MpoolPending', params: [tipSetKey] });
-    return ret;
-  }
-
-  /**
-    * returns a list of pending messages for inclusion in the next block
-    * @param tipSetKey
-    * @param ticketQuality
-    */
-  public async mpoolSelect(tipSetKey: TipSetKey, ticketQuality: number): Promise<[SignedMessage]> {
-    const ret = await this.conn.request({ method: 'Filecoin.MpoolSelect', params: [tipSetKey, ticketQuality] });
-    return ret;
-  }
-
-  /**
-    * returns a list of pending messages for inclusion in the next block
-    * @param tipSetKey
-    * @param ticketQuality
-    */
-   public async mpoolSub(cb: (data: MpoolUpdate) => void) {
-    if (this.conn instanceof WsJsonRpcConnector) {
-      const subscriptionId = await this.conn.request({
-        method: 'Filecoin.MpoolSub',
-      });
-      this.conn.on(subscriptionId, cb);
-    }
-  }
-  /*
-  needs implementing
-  MpoolSub(context.Context) (<-chan MpoolUpdate, error)
-  */
 
   //Miner
   /**
