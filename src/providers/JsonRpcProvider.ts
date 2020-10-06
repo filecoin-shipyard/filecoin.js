@@ -84,11 +84,13 @@ const CHAIN_NOTIFY_INTERVAL = 2000;
 
 export class JsonRpcProvider {
   public conn: Connector;
+  public auth: JsonRpcAuthMethodGroup;
 
   constructor(connector: Connector) {
     this.conn = connector;
 
     this.conn.connect();
+    this.auth = new JsonRpcAuthMethodGroup(this.conn);
   }
 
   public async release() {
@@ -1549,30 +1551,6 @@ export class JsonRpcProvider {
         ]
       });
     return ret;
-  }
-
-  /**
-   * Auth
-   * The Auth method group is used to manage the authorization tokens.
-   */
-
-  /**
-   * list the permissions for a given authorization token
-   * @param token
-   */
-  public async authVerify(token: string): Promise<Permission[]> {
-    const permissions: Permission[] = await this.conn.request({ method: 'Filecoin.AuthVerify', params: [token] });
-    return permissions;
-  }
-
-  /**
-   * generate a new authorization token for a given permissions list
-   * @param permissions
-   */
-  public async authNew(permissions: Permission[]): Promise<string> {
-    const token: string = await this.conn.request({ method: 'Filecoin.AuthNew', params: [permissions] });
-    const tokenAscii = Buffer.from(token, 'base64').toString('ascii');
-    return tokenAscii;
   }
 
   /**
