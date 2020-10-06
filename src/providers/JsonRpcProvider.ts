@@ -79,6 +79,7 @@ import {
 import { Connector } from '../connectors/Connector';
 import { JsonRpcStateMethodGroup } from './method-groups/state';
 import { JsonRpcChainMethodGroup } from './method-groups/chain';
+import { JsonRpcCommonMethodGroup } from './method-groups/common';
 import { JsonRpcMinerMethodGroup } from './method-groups/miner';
 import { JsonRpcPaychMethodGroup } from './method-groups/paych';
 import { JsonRpcMPoolMethodGroup } from './method-groups/mpool';
@@ -91,6 +92,7 @@ export class JsonRpcProvider {
   public state: JsonRpcStateMethodGroup;
   public auth: JsonRpcAuthMethodGroup;
   public client: JsonRpcClientMethodGroup;
+  public common: JsonRpcCommonMethodGroup;
   public miner: JsonRpcMinerMethodGroup;
   public paych: JsonRpcPaychMethodGroup;
   public mpool: JsonRpcMPoolMethodGroup;
@@ -105,6 +107,7 @@ export class JsonRpcProvider {
     this.chain = new JsonRpcChainMethodGroup(this.conn);
     this.auth = new JsonRpcAuthMethodGroup(this.conn);
     this.client = new JsonRpcClientMethodGroup(this.conn);
+    this.common = new JsonRpcCommonMethodGroup(this.conn);
     this.miner = new JsonRpcMinerMethodGroup(this.conn);
     this.paych = new JsonRpcPaychMethodGroup(this.conn);
     this.mpool = new JsonRpcMPoolMethodGroup(this.conn);
@@ -114,42 +117,4 @@ export class JsonRpcProvider {
   public async release() {
     return this.conn.disconnect();
   }
-
-  /**
-   * Common
-   */
-
-  /**
-   * returns peerID of libp2p node backing this API
-   */
-  public async id(): Promise<ID> {
-    const id: ID = await this.conn.request({ method: 'Filecoin.ID', params: [] });
-    return id;
-  }
-
-  /**
-   * provides information about API provider
-   */
-  public async version(): Promise<Version> {
-    const ret = await this.conn.request({ method: 'Filecoin.Version' });
-    return ret as Version;
-  }
-
-  public async logList(): Promise<string[]> {
-    const list: string[] = await this.conn.request({ method: 'Filecoin.LogList' });
-    return list;
-  }
-
-  public async logSetLevel(string1: string, string2: string): Promise<any> {
-    const result = await this.conn.request({ method: 'Filecoin.LogSetLevel', params: [string1, string2] });
-    return result;
-  }
-
-  /**
-   * trigger graceful shutdown
-   */
-  public async shutdown() {
-    await this.conn.request({ method: 'Filecoin.Shutdown' });
-  }
-
 }
