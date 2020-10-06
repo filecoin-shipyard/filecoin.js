@@ -79,6 +79,7 @@ import {
 import { Connector } from '../connectors/Connector';
 import { JsonRpcStateMethodGroup } from './method-groups/state';
 import { JsonRpcChainMethodGroup } from './method-groups/chain';
+import { JsonRpcMinerMethodGroup } from './method-groups/miner';
 import { JsonRpcPaychMethodGroup } from './method-groups/paych';
 import { JsonRpcMPoolMethodGroup } from './method-groups/mpool';
 import { JsonRpcNetMethodGroup } from './method-groups/net';
@@ -90,6 +91,7 @@ export class JsonRpcProvider {
   public state: JsonRpcStateMethodGroup;
   public auth: JsonRpcAuthMethodGroup;
   public client: JsonRpcClientMethodGroup;
+  public miner: JsonRpcMinerMethodGroup;
   public paych: JsonRpcPaychMethodGroup;
   public mpool: JsonRpcMPoolMethodGroup;
   public net: JsonRpcNetMethodGroup;
@@ -103,6 +105,7 @@ export class JsonRpcProvider {
     this.chain = new JsonRpcChainMethodGroup(this.conn);
     this.auth = new JsonRpcAuthMethodGroup(this.conn);
     this.client = new JsonRpcClientMethodGroup(this.conn);
+    this.miner = new JsonRpcMinerMethodGroup(this.conn);
     this.paych = new JsonRpcPaychMethodGroup(this.conn);
     this.mpool = new JsonRpcMPoolMethodGroup(this.conn);
     this.msig = new JsonRpcMsigMethodGroup(this.conn);
@@ -110,27 +113,6 @@ export class JsonRpcProvider {
 
   public async release() {
     return this.conn.disconnect();
-  }
-
-  //Miner
-  /**
-    * MinerGetBaseInfo
-    * @param address
-    * @param chainEpoch
-    * @param tipSetKey
-    */
-  public async minerGetBaseInfo(address: string, chainEpoch: ChainEpoch, tipSetKey: TipSetKey): Promise<MiningBaseInfo> {
-    const ret = await this.conn.request({ method: 'Filecoin.MinerGetBaseInfo', params: [address, chainEpoch, tipSetKey] });
-    return ret;
-  }
-
-  /**
-    * MinerCreateBlock
-    * @param blockTemplate
-    */
-   public async minerCreateBlock(blockTemplate: BlockTemplate): Promise<BlockMsg> {
-    const ret = await this.conn.request({ method: 'Filecoin.MinerCreateBlock', params: [blockTemplate] });
-    return ret;
   }
 
   /**
