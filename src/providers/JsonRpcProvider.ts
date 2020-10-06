@@ -79,6 +79,7 @@ import {
 import { Connector } from '../connectors/Connector';
 import { JsonRpcStateMethodGroup } from './method-groups/state';
 import { JsonRpcChainMethodGroup } from './method-groups/chain';
+import { JsonRpcPaychMethodGroup } from './method-groups/paych';
 import { JsonRpcMsigMethodGroup } from './method-groups/msig';
 
 export class JsonRpcProvider {
@@ -87,6 +88,7 @@ export class JsonRpcProvider {
   public state: JsonRpcStateMethodGroup;
   public auth: JsonRpcAuthMethodGroup;
   public client: JsonRpcClientMethodGroup;
+  public paych: JsonRpcPaychMethodGroup;
   public msig: JsonRpcMsigMethodGroup;
 
   constructor(connector: Connector) {
@@ -97,173 +99,12 @@ export class JsonRpcProvider {
     this.chain = new JsonRpcChainMethodGroup(this.conn);
     this.auth = new JsonRpcAuthMethodGroup(this.conn);
     this.client = new JsonRpcClientMethodGroup(this.conn);
+    this.paych = new JsonRpcPaychMethodGroup(this.conn);
     this.msig = new JsonRpcMsigMethodGroup(this.conn);
   }
 
   public async release() {
     return this.conn.disconnect();
-  }
-
-  //Payment channel methods
-  /**
-   * PaychGet
-   * @param from
-   * @param to
-   * @param amount
-   */
-  public async getPaymentChannel(from: string, to: string, amount: string): Promise<ChannelInfo> {
-    const ret = await this.conn.request({ method: 'Filecoin.PaychGet', params: [from, to, amount] });
-    return ret;
-  }
-
-  /**
-   * PaychGetWaitReady
-   * @param cid
-   */
-  public async getWaitReadyPaymentChannel(cid: Cid): Promise<Address> {
-    const ret = await this.conn.request({ method: 'Filecoin.PaychGetWaitReady', params: [cid] });
-    return ret;
-  }
-
-  /**
-    * PaychList
-    */
-  public async getPaymentChannelList(): Promise<[Address]> {
-    const ret = await this.conn.request({ method: 'Filecoin.PaychList', params: [] });
-    return ret;
-  }
-
-  /**
-   * PaychStatus
-   * @param address
-   */
-  public async getPaymentChannelStatus(address: string): Promise<PaychStatus> {
-    const ret = await this.conn.request({ method: 'Filecoin.PaychStatus', params: [address] });
-    return ret;
-  }
-
-  /**
-   * PaychAllocateLane
-   * @param address
-   */
-  public async PaymentChannelAllocateLane(address: string): Promise<number> {
-    const ret = await this.conn.request({ method: 'Filecoin.PaychAllocateLane', params: [address] });
-    return ret;
-  }
-
-  /**
-   * PaychSettle
-   * @param address
-   */
-  public async PaymentChannelSettle(address: string): Promise<Cid> {
-    const ret = await this.conn.request({ method: 'Filecoin.PaychSettle', params: [address] });
-    return ret;
-  }
-
-  /**
-   * PaychCollect
-   * @param address
-   */
-  public async PaymentChannelCollect(address: string): Promise<Cid> {
-    const ret = await this.conn.request({ method: 'Filecoin.PaychCollect', params: [address] });
-    return ret;
-  }
-
-  /**
-   * PaychAvailableFunds
-   * @param address
-   */
-  public async getPaymentChannelAvailableFunds(address: string): Promise<ChannelAvailableFunds> {
-    const ret = await this.conn.request({ method: 'Filecoin.PaychAvailableFunds', params: [address] });
-    return ret;
-  }
-
-  /**
-   * PaychAvailableFundsByFromTo
-   * @param from
-   * @param to
-   */
-  public async getPaymentChannelAvailableFundsByFromTo(from: string, to: string): Promise<ChannelAvailableFunds> {
-    const ret = await this.conn.request({ method: 'Filecoin.PaychAvailableFundsByFromTo', params: [from, to] });
-    return ret;
-  }
-
-  /**
-   * PaychNewPayment
-   * @param from
-   * @param to
-   * @param vouchers
-   */
-  public async paymentChannelNewPayment(from: string, to: string, vouchers: [VoucherSpec]): Promise<PaymentInfo> {
-    const ret = await this.conn.request({ method: 'Filecoin.PaychNewPayment', params: [from, to, vouchers] });
-    return ret;
-  }
-
-  //Payment channel vouchers methods
-  /**
-   * PaychVoucherCreate
-   * @param address
-   * @param amount
-   * @param lane
-   */
-  public async PaymentChannelVoucherCreate(address: string, amount: string, lane: number): Promise<VoucherCreateResult> {
-    const ret = await this.conn.request({ method: 'Filecoin.PaychVoucherCreate', params: [address, amount, lane] });
-    return ret;
-  }
-
-  /**
-   * PaychVoucherList
-   * @param address
-   */
-  public async PaymentChannelVoucherList(address: string): Promise<[SignedVoucher]> {
-    const ret = await this.conn.request({ method: 'Filecoin.PaychVoucherList', params: [address] });
-    return ret;
-  }
-
-  /**
-   * PaychVoucherCheckValid
-   * @param address
-   * @param signedVoucher
-   */
-  public async PaymentChannelVoucherCheckValid(address: string, signedVoucher: SignedVoucher): Promise<any> {
-    const ret = await this.conn.request({ method: 'Filecoin.PaychVoucherCheckValid', params: [address, signedVoucher] });
-    return ret;
-  }
-
-  /**
-   * PaychVoucherAdd
-   * @param address
-   * @param signedVoucher
-   * @param proof
-   * @param minDelta
-   */
-  public async PaymentChannelVoucherAdd(address: string, signedVoucher: SignedVoucher, proof: any, minDelta: string): Promise<string> {
-    const ret = await this.conn.request({ method: 'Filecoin.PaychVoucherAdd', params: [address, signedVoucher, proof, minDelta] });
-    return ret;
-  }
-
-  /**
-   * PaychVoucherCheckSpendable
-   * @param address
-   * @param signedVoucher
-   * @param secret
-   * @param proof
-   */
-  public async PaymentChannelVoucherCheckSpendable(address: string, signedVoucher: SignedVoucher, secret: any, proof: any): Promise<boolean> {
-    const ret = await this.conn.request({ method: 'Filecoin.PaychVoucherCheckSpendable', params: [address, signedVoucher, secret, proof] });
-    return ret;
-  }
-
-  /**
-   * PaychVoucherSubmit
-   * @param address
-   * @param signedVoucher
-   * @param secret
-   * @param proof
-   */
-  public async PaymentChannelVoucherSubmit(address: string, signedVoucher: SignedVoucher, secret: any, proof: any): Promise<Cid> {
-    const ret = await this.conn.request({ method: 'Filecoin.PaychVoucherSubmit', params: [address, signedVoucher, secret, proof] });
-    return ret;
   }
 
   //Mpool
