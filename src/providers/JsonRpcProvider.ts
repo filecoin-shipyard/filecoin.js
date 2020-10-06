@@ -79,17 +79,13 @@ import {
 import { Connector } from '../connectors/Connector';
 import { WsJsonRpcConnector } from '../connectors/WsJsonRpcConnector';
 import { HttpJsonRpcConnector } from '../connectors/HttpJsonRpcConnector';
-import Timeout = NodeJS.Timeout;
-import { StringDecoder } from 'string_decoder';
 
 const CHAIN_NOTIFY_INTERVAL = 2000;
 
 export class JsonRpcProvider {
   public conn: Connector;
-  private intervals: { [key: string]: NodeJS.Timeout };
 
   constructor(connector: Connector) {
-    this.intervals = {};
     this.conn = connector;
 
     this.conn.connect();
