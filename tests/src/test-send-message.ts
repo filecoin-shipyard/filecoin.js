@@ -34,7 +34,7 @@ describe("Send message", function () {
     const signedMessage = await walletLotusHttp.signMessage(message);
     const msgCid = await walletLotusHttp.sendSignedMessage(signedMessage);
 
-    const isMined = await con.hasObj(msgCid);
+    const isMined = await con.chain.hasObj(msgCid);
     assert.strictEqual(isMined, true, 'message not mined');
   });
 
@@ -58,7 +58,7 @@ describe("Send message", function () {
     const signedMessage = await walletLotusWs.signMessage(message);
     const msgCid = await walletLotusWs.sendSignedMessage(signedMessage);
 
-    const isMined = await con.hasObj(msgCid);
+    const isMined = await con.chain.hasObj(msgCid);
     assert.strictEqual(isMined, true, 'message not mined');
     await walletLotusWs.release();
   });
@@ -87,7 +87,7 @@ describe("Send message", function () {
     const signedMessage = await mnemonicWalletProvider.signMessage(message);
     const msgCid = await mnemonicWalletProvider.sendSignedMessage(signedMessage);
 
-    const isMined = await con.hasObj(msgCid);
+    const isMined = await con.chain.hasObj(msgCid);
     assert.strictEqual(isMined, true, 'message not mined');
   });
 
@@ -114,7 +114,7 @@ describe("Send message", function () {
     const signedMessage = await mnemonicWalletProvider.signMessage(message);
     const msgCid = await mnemonicWalletProvider.sendSignedMessage(signedMessage);
 
-    const isMined = await con.hasObj(msgCid);
+    const isMined = await con.chain.hasObj(msgCid);
     assert.strictEqual(isMined, true, 'message not mined');
 
     await mnemonicWalletProvider.release();

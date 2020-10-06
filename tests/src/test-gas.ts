@@ -40,7 +40,7 @@ describe("Gas estimates", function () {
       Params: ''
     }
 
-    const mpoolConfig = await con.getMpoolConfig();
+    const mpoolConfig = await con.mpool.getMpoolConfig();
     const gasLimit: number = await walletLotusHttp.estimateMessageGasLimit(msgPartial);
     const gasFeeCap = await walletLotusHttp.estimateMessageGasFeeCap(msgPartial, 10);
     const gasPremium = await walletLotusHttp.estimateMessageGasPremium(2, defaultAccount, gasLimit*mpoolConfig.GasLimitOverestimation);

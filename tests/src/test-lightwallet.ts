@@ -40,7 +40,7 @@ describe("Send message", function () {
     const signedMessage = await walletLotusHttp.signMessage(message);
     const msgCid = await walletLotusHttp.sendSignedMessage(signedMessage);
 
-    const isMined = await con.hasObj(msgCid);
+    const isMined = await con.chain.hasObj(msgCid);
     assert.strictEqual(isMined, true, 'message not mined');
   });
 
@@ -68,7 +68,7 @@ describe("Send message", function () {
     const signedMessage = await lightWalletHttp.signMessage(message);
     const msgCid = await lightWalletHttp.sendSignedMessage(signedMessage);
 
-    const isMined = await con.hasObj(msgCid);
+    const isMined = await con.chain.hasObj(msgCid);
     console.log(msgCid);
     assert.strictEqual(isMined, true, 'message not mined');
   });
@@ -94,7 +94,7 @@ describe("Send message", function () {
     const signedMessage = await lightWalletHttp.signMessage(message);
     const msgCid = await lightWalletHttp.sendSignedMessage(signedMessage);
 
-    const isMined = await con.hasObj(msgCid);
+    const isMined = await con.chain.hasObj(msgCid);
     console.log(msgCid);
     assert.strictEqual(isMined, true, 'message not mined');
   });
