@@ -81,6 +81,7 @@ import { JsonRpcStateMethodGroup } from './method-groups/state';
 import { JsonRpcChainMethodGroup } from './method-groups/chain';
 import { JsonRpcPaychMethodGroup } from './method-groups/paych';
 import { JsonRpcMPoolMethodGroup } from './method-groups/mpool';
+import { JsonRpcNetMethodGroup } from './method-groups/net';
 import { JsonRpcMsigMethodGroup } from './method-groups/msig';
 
 export class JsonRpcProvider {
@@ -91,6 +92,7 @@ export class JsonRpcProvider {
   public client: JsonRpcClientMethodGroup;
   public paych: JsonRpcPaychMethodGroup;
   public mpool: JsonRpcMPoolMethodGroup;
+  public net: JsonRpcNetMethodGroup;
   public msig: JsonRpcMsigMethodGroup;
 
   constructor(connector: Connector) {
@@ -167,78 +169,5 @@ export class JsonRpcProvider {
   public async shutdown() {
     await this.conn.request({ method: 'Filecoin.Shutdown' });
   }
-
-  /**
-   * Net
-   */
-
-  public async netConnectedness(peerId: PeerID): Promise<Connectedness> {
-    const connectedness: Connectedness = await this.conn.request({ method: 'Filecoin.NetConnectedness', params: [peerId] });
-    return connectedness;
-  }
-
-  public async netPeers(): Promise<AddrInfo[]> {
-    const peers: AddrInfo[] = await this.conn.request({ method: 'Filecoin.NetPeers' });
-    return peers;
-  }
-
-  public async netConnect(addrInfo: AddrInfo): Promise<any> {
-    const result: any = await this.conn.request({ method: 'Filecoin.NetConnect', params: [addrInfo] });
-    return result;
-  }
-
-  public async netAddrsListen(): Promise<AddrInfo> {
-    const addr: AddrInfo = await this.conn.request({ method: 'Filecoin.NetAddrsListen' });
-    return addr;
-  }
-
-  public async netDisconnect(peerID: PeerID) {
-    await this.conn.request({ method: 'Filecoin.NetDisconnect', params: [peerID] });
-  }
-
-  public async findPeer(peerID: PeerID): Promise<AddrInfo> {
-    const peer: AddrInfo = await this.conn.request({ method: 'Filecoin.NetFindPeer', params: [peerID] });
-    return peer;
-  }
-
-  public async netPubsubScores(): Promise<PubsubScore[]> {
-    const score: PubsubScore[] = await this.conn.request({ method: 'Filecoin.NetPubsubScores' });
-    return score;
-  }
-
-  public async netAutoNatStatus(): Promise<NatInfo> {
-    const natInfo: NatInfo = await this.conn.request({ method: 'Filecoin.NetAutoNatStatus' });
-    return natInfo;
-  }
-
-  // TODO: This method throws an error: "method 'Filecoin.NetAgentVersion' not found"
-  // public async netAgentVersion(peerId: PeerID): Promise<string> {
-  //   const agentVersion: string = await this.conn.request({ method: 'Filecoin.NetAgentVersion', params: [peerId] });
-  //   return agentVersion;
-  // }
-
-  // TODO: This method throws an error: "method 'Filecoin.NetBandwidthStats' not found"
-  // public async netBandwidthStats(): Promise<Stats> {
-  //   const stats: Stats = await this.conn.request({ method: 'Filecoin.NetBandwidthStats' });
-  //   return stats;
-  // }
-
-  // TODO: This method throws an error: "method 'NetBandwidthStatsByPeer' not found"
-  // /**
-  //  * returns statistics about the nodes bandwidth usage and current rate per peer
-  //  */
-  // public async netBandwidthStatsByPeer(): Promise<any> {
-  //   const stats: any = await this.conn.request({ method: 'Filecoin.NetBandwidthStatsByPeer' });
-  //   return stats;
-  // }
-
-  // TODO: This method throws an error: "method 'Filecoin.NetBandwidthStatsByProtocol' not found"
-  // /**
-  //  * returns statistics about the nodes bandwidth usage and current rate per protocol
-  //  */
-  // public async netBandwidthStatsByProtocol(): Promise<any> {
-  //   const stats: any = await this.conn.request({ method: 'Filecoin.NetBandwidthStatsByProtocol' });
-  //   return stats;
-  // }
 
 }
