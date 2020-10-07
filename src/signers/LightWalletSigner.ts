@@ -10,11 +10,14 @@ export class LightWalletSigner implements Signer {
     private keystore: Keystore,
   ) { }
 
-  public async sign(message: Message, password: string): Promise<SignedMessage> {
-    const signerAddress = await this.getDefaultAccount();
-    const privateKey = await this.keystore.getPrivateKey(signerAddress, password)
-    const signedTx = filecoin_signer.transactionSignLotus(this.messageToSigner(message), privateKey);
-    return JSON.parse(signedTx);
+  public async sign(message: Message, password: string | undefined): Promise<SignedMessage|undefined> {
+    if (password) {
+      const signerAddress = await this.getDefaultAccount();
+      const privateKey = await this.keystore.getPrivateKey(signerAddress, password)
+      const signedTx = filecoin_signer.transactionSignLotus(this.messageToSigner(message), privateKey);
+      return JSON.parse(signedTx);
+    }
+    return undefined;
   }
 
   public async getDefaultAccount(): Promise<string> {

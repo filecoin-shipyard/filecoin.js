@@ -64,14 +64,17 @@ export class LightWalletProvider extends HttpJsonRpcWalletProvider {
     return await this.signer.getDefaultAccount();
   }
 
-  public async sendMessage(msg: Message): Promise<SignedMessage> {
-    const signedMessage: SignedMessage = await this.signMessage(msg);
-    await this.sendSignedMessage(signedMessage);
-    return signedMessage as SignedMessage;
+  public async sendMessage(msg: Message, password?: string): Promise<SignedMessage | undefined> {
+    const signedMessage: SignedMessage | undefined = await this.signMessage(msg, password);
+    if (signedMessage) {
+      await this.sendSignedMessage(signedMessage);
+      return signedMessage as SignedMessage;
+    }
+    return undefined;
   }
 
-  public async signMessage(msg: Message): Promise<SignedMessage> {
-    return await this.signer.sign(msg, 'test');
+  public async signMessage(msg: Message, password?: string): Promise<SignedMessage | undefined> {
+    return await this.signer.sign(msg, password);
   }
 
   public async sign(data: string | ArrayBuffer): Promise<Signature> {
