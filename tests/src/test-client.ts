@@ -11,7 +11,7 @@ const walletLotus = new HttpJsonRpcWalletProvider(httpConnector);
 describe("Client tests", function() {
   it("should import file", async function() {
     const provider = new JsonRpcProvider(httpConnector);
-    const result = await provider.import({
+    const result = await provider.client.import({
       Path: "/filecoin_miner/original-data.txt",
       IsCAR: false,
     });
@@ -21,20 +21,20 @@ describe("Client tests", function() {
 
   it("should delete imported file", async function() {
     const provider = new JsonRpcProvider(httpConnector);
-    const importResult = await provider.import({
+    const importResult = await provider.client.import({
       Path: "/filecoin_miner/original-data.txt",
       IsCAR: false,
     });
-    await provider.removeImport(importResult.ImportID);
+    await provider.client.removeImport(importResult.ImportID);
   });
 
   it("should start deal", async function() {
     const provider = new JsonRpcProvider(httpConnector);
-    const importResult = await provider.import({
+    const importResult = await provider.client.import({
       Path: "/filecoin_miner/original-data.txt",
       IsCAR: false,
     });
-    const dealCid = await provider.startDeal({
+    const dealCid = await provider.client.startDeal({
       Data: {
         TransferType: 'graphsync',
         Root: importResult.Root,
@@ -49,11 +49,11 @@ describe("Client tests", function() {
 
   it("should get deal info", async function() {
     const provider = new JsonRpcProvider(httpConnector);
-    const importResult = await provider.import({
+    const importResult = await provider.client.import({
       Path: "/filecoin_miner/original-data.txt",
       IsCAR: false,
     });
-    const dealCid = await provider.startDeal({
+    const dealCid = await provider.client.startDeal({
       Data: {
         TransferType: 'graphsync',
         Root: importResult.Root,
@@ -63,34 +63,34 @@ describe("Client tests", function() {
       EpochPrice: '1002',
       MinBlocksDuration: 800,
     });
-    const dealInfo = await provider.getDealInfo(dealCid);
+    const dealInfo = await provider.client.getDealInfo(dealCid);
     const valid = !!dealInfo.Provider && !!dealInfo.State;
     assert.strictEqual(valid, true, 'invalid deal info');
   });
 
   it("should list all deals", async function() {
     const provider = new JsonRpcProvider(httpConnector);
-    const deals = await provider.listDeals();
+    const deals = await provider.client.listDeals();
     assert.strictEqual(Array.isArray(deals), true, 'invalid deals list');
   });
 
   it("should verify if has local", async function() {
     const provider = new JsonRpcProvider(httpConnector);
-    const importResult = await provider.import({
+    const importResult = await provider.client.import({
       Path: "/filecoin_miner/original-data.txt",
       IsCAR: false,
     });
-    const hasLocal = await provider.hasLocal(importResult.Root);
+    const hasLocal = await provider.client.hasLocal(importResult.Root);
     assert.strictEqual(hasLocal, true, 'invalid has local');
   });
 
   it("should find data", async function() {
     const provider = new JsonRpcProvider(httpConnector);
-    const importResult = await provider.import({
+    const importResult = await provider.client.import({
       Path: "/filecoin_miner/original-data.txt",
       IsCAR: false,
     });
-    await provider.startDeal({
+    await provider.client.startDeal({
       Data: {
         TransferType: 'graphsync',
         Root: importResult.Root,
@@ -100,18 +100,18 @@ describe("Client tests", function() {
       EpochPrice: '1003',
       MinBlocksDuration: 800,
     });
-    const queryOffers = await provider.findData(importResult.Root);
+    const queryOffers = await provider.client.findData(importResult.Root);
     const isValid = queryOffers.reduce((acc, offer, idx) => acc === false ? acc : offer.Root["/"] === importResult.Root["/"], true);
     assert.strictEqual(isValid, true, 'invalid found data');
   });
 
   it("should get miner query offer", async function() {
     const provider = new JsonRpcProvider(httpConnector);
-    const importResult = await provider.import({
+    const importResult = await provider.client.import({
       Path: "/filecoin_miner/original-data.txt",
       IsCAR: false,
     });
-    const queryOffer = await provider.minerQueryOffer('t01000', importResult.Root);
+    const queryOffer = await provider.client.minerQueryOffer('t01000', importResult.Root);
     const isValid = importResult.Root["/"] === queryOffer.Root["/"];
     assert.strictEqual(isValid, true, 'invalid miner query offer');
   });
@@ -155,21 +155,21 @@ describe("Client tests", function() {
 
   it("should perform query ask ", async function() {
     const provider = new JsonRpcProvider(httpConnector);
-    const minerInfo = await provider.minerInfo('t01000');
-    const queryAsk = await provider.queryAsk(minerInfo.PeerId, 't01000');
+    const minerInfo = await provider.state.minerInfo('t01000');
+    const queryAsk = await provider.client.queryAsk(minerInfo.PeerId, 't01000');
     const valid = typeof queryAsk.Price === 'string' && typeof queryAsk.Miner === 'string';
     assert.strictEqual(valid, true, 'failed query ask');
   });
 
   it("should compute commP", async function() {
     const provider = new JsonRpcProvider(httpConnector);
-    const { Root, Size } = await provider.calcCommP("/filecoin_miner/original-data.txt");
+    const { Root, Size } = await provider.client.calcCommP("/filecoin_miner/original-data.txt");
     assert.strictEqual(!!Root && !!Size, true, 'failed to compute commP');
   });
 
   it("should generate CAR file", async function() {
     const provider = new JsonRpcProvider(httpConnector);
-    const car = await provider.genCar({
+    const car = await provider.client.genCar({
       IsCAR: false,
       Path: "/filecoin_miner/original-data.txt",
     }, "/filecoin_miner/car.txt");
@@ -177,28 +177,28 @@ describe("Client tests", function() {
 
   it("should calculate deal size", async function() {
     const provider = new JsonRpcProvider(httpConnector);
-    const importResult = await provider.import({
+    const importResult = await provider.client.import({
       Path: "/filecoin_miner/original-data.txt",
       IsCAR: false,
     });
-    const { PayloadSize, PieceSize } = await provider.dealSize(importResult.Root);
+    const { PayloadSize, PieceSize } = await provider.client.dealSize(importResult.Root);
     const isValid = typeof PayloadSize === 'number' && typeof PieceSize === 'number';
     assert.strictEqual(isValid, true, 'invalid deal size');
   });
 
   it("should get transfers status", async function() {
     const provider = new JsonRpcProvider(httpConnector);
-    const transfers = await provider.listDataTransfers();
+    const transfers = await provider.client.listDataTransfers();
     assert.strictEqual(Array.isArray(transfers), true, 'invalid transfers status');
   });
 
   it("should list imports", async function() {
     const provider = new JsonRpcProvider(httpConnector);
-    const importResult = await provider.import({
+    const importResult = await provider.client.import({
       Path: "/filecoin_miner/original-data.txt",
       IsCAR: false,
     });
-    const imports = await provider.listImports();
+    const imports = await provider.client.listImports();
     const isValid = imports.filter(importItem => (
       importItem.Root && importItem.Root['/'] === importResult.Root['/'] && importItem.Key === importResult.ImportID
     )).length > 0;
@@ -209,11 +209,11 @@ describe("Client tests", function() {
     this.timeout(10000);
     const con = new JsonRpcProvider(wsConnector);
     walletLotus.getDefaultAccount().then((account: string) => {
-      con.import({
+      con.client.import({
         Path: "/filecoin_miner/original-data.txt",
         IsCAR: false,
       }).then((importResult) => {
-        con.startDeal({
+        con.client.startDeal({
           Data: {
             TransferType: 'graphsync',
             Root: importResult.Root,
@@ -225,7 +225,7 @@ describe("Client tests", function() {
         });
       });
     });
-    con.getDealUpdates((dealInfo) => {
+    con.client.getDealUpdates((dealInfo) => {
       assert.strictEqual(typeof dealInfo.State === 'number', true, 'invalid updated deal info');
       con.release().then(() => { done() });
     });

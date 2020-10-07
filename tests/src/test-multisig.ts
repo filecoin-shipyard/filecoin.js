@@ -1,12 +1,11 @@
 import assert from "assert";
+import BigNumber from 'bignumber.js';
+
 import { LOTUS_AUTH_TOKEN } from "../tools/testnet/credentials/credentials";
 import { JsonRpcProvider } from '../../src/providers/JsonRpcProvider';
 import { HttpJsonRpcConnector } from '../../src/connectors/HttpJsonRpcConnector';
 import { HttpJsonRpcWalletProvider } from '../../src/providers/wallet/HttpJsonRpcWalletProvider';
 import { MnemonicWalletProvider } from '../../src/providers/wallet/MnemonicWalletProvider';
-
-import BigNumber from 'bignumber.js';
-import { WsJsonRpcConnector } from "../../src/connectors/WsJsonRpcConnector";
 
 const testMnemonic = 'equip will roof matter pink blind book anxiety banner elbow sun young';
 
@@ -52,28 +51,28 @@ describe("Multisig Wallets", function () {
 
     const mnemonicAddress = await mnemonicWalletProvider.getDefaultAccount();
 
-    const multisigCid = await con.multiSigCreate(2, addresses, 0, '1000', defaultAccount, '4000');
+    const multisigCid = await con.msig.create(2, addresses, 0, '1000', defaultAccount, '4000');
 
-    const receipt = await con.waitMsg(multisigCid, 0);
+    const receipt = await con.state.waitMsg(multisigCid, 0);
     const multisigAddress = receipt.ReturnDec.RobustAddress;
 
-    const balance = await con.multiSigGetAvailableBalance(multisigAddress, []);
+    const balance = await con.msig.getAvailableBalance(multisigAddress, []);
     assert.strictEqual(balance, '1000', 'wrong balance');
 
     const initialDefaultWallet = await walletLotusHttp.getDefaultAccount();
     await walletLotusHttp.setDefaultAccount(t3address);
 
-    const initTransferCid = await con.multiSigPropose(multisigAddress, mnemonicAddress, '1', t3address, 0, []);
-    const receiptTransferStart = await con.waitMsg(initTransferCid, 0);
+    const initTransferCid = await con.msig.propose(multisigAddress, mnemonicAddress, '1', t3address, 0, []);
+    const receiptTransferStart = await con.state.waitMsg(initTransferCid, 0);
     const txnID = receiptTransferStart.ReturnDec.TxnID;
     assert.strictEqual(txnID, 0, 'error initiating transfer');
 
     await walletLotusHttp.setDefaultAccount(t11address);
-    const approveTransferCid = await con.multiSigApprove(multisigAddress, txnID, t3address, mnemonicAddress, '1', t11address, 0, []);
-    const receiptTransferApprove = await con.waitMsg(approveTransferCid, 0);
+    const approveTransferCid = await con.msig.approve(multisigAddress, txnID, t3address, mnemonicAddress, '1', t11address, 0, []);
+    const receiptTransferApprove = await con.state.waitMsg(approveTransferCid, 0);
     assert.strictEqual(receiptTransferApprove.ReturnDec.Applied, true, 'error approving transfer');
 
-    const balanceAfterTransfer = await con.multiSigGetAvailableBalance(multisigAddress, []);
+    const balanceAfterTransfer = await con.msig.getAvailableBalance(multisigAddress, []);
     assert.strictEqual(balanceAfterTransfer, '999', 'wrong balance after approve transfer');
 
     await walletLotusHttp.setDefaultAccount(initialDefaultWallet);
@@ -144,39 +143,39 @@ describe("Multisig Wallets", function () {
 
     const mnemonicAddress = await mnemonicWalletProvider.getDefaultAccount();
 
-    const multisigCid = await con.multiSigCreate(2, [t3address, t11address], 0, '1000', defaultAccount, '4000');
+    const multisigCid = await con.msig.create(2, [t3address, t11address], 0, '1000', defaultAccount, '4000');
 
-    const receipt = await con.waitMsg(multisigCid, 0);
+    const receipt = await con.state.waitMsg(multisigCid, 0);
     const multisigAddress = receipt.ReturnDec.RobustAddress;
 
-    const balance = await con.multiSigGetAvailableBalance(multisigAddress, []);
+    const balance = await con.msig.getAvailableBalance(multisigAddress, []);
     assert.strictEqual(balance, '1000', 'wrong balance');
 
     const initialDefaultWallet = await walletLotusHttp.getDefaultAccount();
     await walletLotusHttp.setDefaultAccount(t3address);
 
-    const iniSwapProposeCid = await con.multiSigSwapPropose(multisigAddress, t3address, t11address, t12address);
-    const receiptProposeStart = await con.waitMsg(iniSwapProposeCid, 0);
+    const iniSwapProposeCid = await con.msig.swapPropose(multisigAddress, t3address, t11address, t12address);
+    const receiptProposeStart = await con.state.waitMsg(iniSwapProposeCid, 0);
     const txnID = receiptProposeStart.ReturnDec.TxnID;
     assert.strictEqual(txnID, 0, 'error initiating swap proposal');
 
     await walletLotusHttp.setDefaultAccount(t11address);
-    const approveSwapCid = await con.multiSigSwapApprove(multisigAddress, t11address, txnID, t3address, t11address, t12address);
-    const receiptSwapApprove = await con.waitMsg(approveSwapCid, 0);
+    const approveSwapCid = await con.msig.swapApprove(multisigAddress, t11address, txnID, t3address, t11address, t12address);
+    const receiptSwapApprove = await con.state.waitMsg(approveSwapCid, 0);
     assert.strictEqual(receiptSwapApprove.ReturnDec.Applied, true, 'error approving add proposal');
 
     await walletLotusHttp.setDefaultAccount(t3address);
 
-    const initTransferCid = await con.multiSigPropose(multisigAddress, mnemonicAddress, '1', t3address, 0, []);
-    const receiptTransferStart = await con.waitMsg(initTransferCid, 0);
+    const initTransferCid = await con.msig.propose(multisigAddress, mnemonicAddress, '1', t3address, 0, []);
+    const receiptTransferStart = await con.state.waitMsg(initTransferCid, 0);
     const txnIDTransfer = receiptTransferStart.ReturnDec.TxnID;
 
     await walletLotusHttp.setDefaultAccount(t11address);
-    const approveTransferCid = await con.multiSigApprove(multisigAddress, txnIDTransfer, t3address, mnemonicAddress, '1', t11address, 0, []);
-    const receiptTransferApprove = await con.waitMsg(approveTransferCid, 0);
+    const approveTransferCid = await con.msig.approve(multisigAddress, txnIDTransfer, t3address, mnemonicAddress, '1', t11address, 0, []);
+    const receiptTransferApprove = await con.state.waitMsg(approveTransferCid, 0);
     assert.strictEqual(receiptTransferApprove.ReturnDec.Applied, true, 'error approving transfer');
 
-    const balanceAfterTransfer = await con.multiSigGetAvailableBalance(multisigAddress, []);
+    const balanceAfterTransfer = await con.msig.getAvailableBalance(multisigAddress, []);
     assert.strictEqual(balanceAfterTransfer, '999', 'wrong balance after approve transfer');
 
     await walletLotusHttp.setDefaultAccount(initialDefaultWallet);

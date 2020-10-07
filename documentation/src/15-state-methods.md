@@ -24,7 +24,7 @@ import { HttpJsonRpcConnector, HttpJsonRpcWalletProvider } from 'filecoin.js';
   const connector = new HttpJsonRpcConnector({ url: __LOTUS_RPC_ENDPOINT__, token: __LOTUS_AUTH_TOKEN__ });
   const jsonRpcProvider = new JsonRpcProvider(connector);
 
-  const networkName = await jsonRpcProvider.networkName();
+  const networkName = await jsonRpcProvider.state.networkName();
 
 })().then().catch();
 ```
@@ -39,7 +39,7 @@ Browser:
   const connector = new FilecoinJs.HttpJsonRpcConnector({ url: __LOTUS_RPC_ENDPOINT__, token: __LOTUS_AUTH_TOKEN__ });
   const jsonRpcProvider = new FilecoinJs.JsonRpcProvider(connector);
 
-  const networkName = await jsonRpcProvider.networkName();
+  const networkName = await jsonRpcProvider.state.networkName();
 
 })().then().catch();
 </script>

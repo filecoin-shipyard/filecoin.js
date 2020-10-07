@@ -11,6 +11,6 @@ import "./test-multisig";
 import "./test-net";
 import "./test-paych";
 import "./test-wallet";
-import "./test-version";
+import "./test-state";
 import "./test-send-message";
 

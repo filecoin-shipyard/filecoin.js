@@ -11,17 +11,17 @@ const wsConnector = new WsJsonRpcConnector({ url: 'ws://localhost:8000/rpc/v0', 
 describe("Miner tests", function() {
   it("should get miner info [http]", async function() {
     const provider = new JsonRpcProvider(httpConnector);
-    const headTipset = await provider.getHead();
+    const headTipset = await provider.chain.getHead();
     const tipsetHeight = headTipset.Blocks[0].Height;
-    const minerInfo = await provider.minerGetBaseInfo('t01000', tipsetHeight-2, [headTipset.Cids[0]]);
+    const minerInfo = await provider.miner.getBaseInfo('t01000', tipsetHeight-2, [headTipset.Cids[0]]);
     assert.strictEqual(minerInfo.HasMinPower, true, 'invalid response');
   });
 
   it("should get miner info [ws]", async function() {
     const provider = new JsonRpcProvider(wsConnector);
-    const headTipset = await provider.getHead();
+    const headTipset = await provider.chain.getHead();
     const tipsetHeight = headTipset.Blocks[0].Height;
-    const minerInfo = await provider.minerGetBaseInfo('t01000', tipsetHeight, [headTipset.Cids[0]]);
+    const minerInfo = await provider.miner.getBaseInfo('t01000', tipsetHeight, [headTipset.Cids[0]]);
     await provider.release();
     assert.strictEqual(minerInfo.HasMinPower, true, 'invalid response');
   });
