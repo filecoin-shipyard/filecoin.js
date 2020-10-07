@@ -939,61 +939,98 @@ export class SyncState {
  */
 
 export class ChannelAvailableFunds {
-	// Channel is the address of the channel
+	/**
+   * Address of the channel
+   */
 	Channel!: Address;
-	// From is the from address of the channel (channel creator)
+	/**
+   * From address of the channel (channel creator)
+   */
 	From!: Address;
-	// To is the to address of the channel
+	/**
+   * To address of the channel
+   */
 	To!: Address;
-	// ConfirmedAmt is the amount of funds that have been confirmed on-chain
-	// for the channel
+	/**
+   * Amount of funds that have been confirmed on-chain for the channel
+   */
 	ConfirmedAmt!: string;
-	// PendingAmt is the amount of funds that are pending confirmation on-chain
+	/**
+   * Amount of funds that are pending confirmation on-chain
+   */
 	PendingAmt!: string;
-	// PendingWaitSentinel can be used with PaychGetWaitReady to wait for
-	// confirmation of pending funds
+	/**
+   * Can be used with PaychGetWaitReady to wait for confirmation of pending funds
+   */
 	PendingWaitSentinel!: Cid;
-	// QueuedAmt is the amount that is queued up behind a pending request
+	/**
+   * Amount that is queued up behind a pending request
+   */
 	QueuedAmt!: string;
-	// VoucherRedeemedAmt is the amount that is redeemed by vouchers on-chain
-	// and in the local datastore
+	/**
+   * Amount that is redeemed by vouchers on-chain and in the local datastore
+   */
 	VoucherReedeemedAmt!: string;
 }
 
-// A voucher is sent by `From` to `To` off-chain in order to enable
-// `To` to redeem payments on-chain in the future
+/**
+ * A voucher is sent by `From` to `To` off-chain in order to enable
+ * `To` to redeem payments on-chain in the future
+ */
 export class SignedVoucher {
-	// ChannelAddr is the address of the payment channel this signed voucher is valid for
+	/**
+   * Address of the payment channel this signed voucher is valid for
+   */
 	ChannelAddr!: string;
-	// TimeLockMin sets a min epoch before which the voucher cannot be redeemed
+	/**
+   * Min epoch before which the voucher cannot be redeemed
+   */
 	TimeLockMin!: ChainEpoch;
-	// TimeLockMax sets a max epoch beyond which the voucher cannot be redeemed
-	// TimeLockMax set to 0 means no timeout
+	/**
+   * Max epoch beyond which the voucher cannot be redeemed
+   * TimeLockMax set to 0 means no timeout
+   */
 	TimeLockMax!: ChainEpoch;
-	// (optional) The SecretPreImage is used by `To` to validate
-	SecretPreimage!: [];
-	// (optional) Extra can be specified by `From` to add a verification method to the voucher
-	Extra!: ModVerifyParams;
-	// Specifies which lane the Voucher merges into (will be created if does not exist)
+	/**
+   * (optional) The SecretPreImage is used by `To` to validate
+   */
+	SecretPreimage?: [];
+	/**
+   * (optional) Extra can be specified by `From` to add a verification method to the voucher
+   */
+	Extra?: ModVerifyParams;
+	/**
+   * Specifies which lane the Voucher merges into (will be created if does not exist)
+   */
 	Lane!: number;
-	// Nonce is set by `From` to prevent redemption of stale vouchers on a lane
+	/**
+   * Nonce is set by `From` to prevent redemption of stale vouchers on a lane
+   */
 	Nonce!: number;
-	// Amount voucher can be redeemed for
+	/**
+   * Amount voucher can be redeemed for
+   */
 	Amount!: string;
-	// (optional) MinSettleHeight can extend channel MinSettleHeight if needed
+	/**
+   * (optional) MinSettleHeight can extend channel MinSettleHeight if needed
+   */
 	MinSettleHeight?: ChainEpoch;
 
-	// (optional) Set of lanes to be merged into `Lane`
-	Merges?: [Merge];
+	/**
+   * (optional) Set of lanes to be merged into `Lane`
+   */
+	Merges?: Merge[];
 
-	// Sender's signature over the voucher
+	/**
+   * Sender's signature over the voucher
+   */
   Signature!: Signature;
 }
 
 export class PaymentInfo {
 	Channel!: string;
 	WaitSentinel!: Cid;
-	Vouchers!: [SignedVoucher]
+	Vouchers!: SignedVoucher[]
 }
 export class Merge {
 	Lane!: number;
@@ -1025,20 +1062,24 @@ export class PaychStatus {
 	Direction!: number;
 }
 
-// VoucherCreateResult is the response to calling PaychVoucherCreate
+/**
+ * VoucherCreateResult is the response to calling PaychVoucherCreate
+ */
 export class VoucherCreateResult {
-	// Voucher that was created, or nil if there was an error or if there
-	// were insufficient funds in the channel
+	/**
+   * Voucher that was created, or nil if there was an error or if there were insufficient funds in the channel
+   */
 	Voucher!: SignedVoucher;
-	// Shortfall is the additional amount that would be needed in the channel
-	// in order to be able to create the voucher
+	/**
+   * Additional amount that would be needed in the channel in order to be able to create the voucher
+   */
 	Shortfall!: string;
 }
 
 
 //Mpool types
 export class MpoolConfig {
-	PriorityAddrs!: [Address];
+	PriorityAddrs!: Address[];
 	SizeLimitHigh!: number;
 	SizeLimitLow!: number;
 	ReplaceByFeeRatio!: number;
@@ -1055,11 +1096,11 @@ export class MpoolUpdate{
 export class MiningBaseInfo {
 	MinerPower!: string;
 	NetworkPower!: string;
-	Sectors!: [SectorInfo];
+	Sectors!: SectorInfo[];
 	WorkerKey!: Address;
   SectorSize!: number;
   PrevBeaconEntry!: BeaconEntry;
-	BeaconEntries!: [BeaconEntry];
+	BeaconEntries!: BeaconEntry[];
 	HasMinPower!: boolean;
 }
 
