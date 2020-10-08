@@ -122,16 +122,6 @@
 
       let file = null;
 
-      const getPass = () => {
-        let password;
-        return () => {
-          if (password) return password;
-          password = prompt('Mnemonic wallet password?');
-          setTimeout(() => password = undefined, 100000);
-          return password;
-        }
-      }
-
       const sendLotus = async (from, toId, filId) => {
         const to = document.getElementById(toId).value;
         const amount = document.getElementById(filId).value;
@@ -151,6 +141,8 @@
       }
 
       const sendFromLightwallet = async () => {
+        const password = prompt('Mnemonic wallet password?');
+
         const to = document.getElementById('toLightwallet').value;
         const amount = document.getElementById('filLightwallet').value;
 
@@ -161,8 +153,10 @@
             Value: new BigNumber(amount),
           });
 
-          const signedMessage = await lightWalletProvider.signMessage(message);
-          const msgCid = await lightWalletProvider.sendSignedMessage(signedMessage);
+          const signedMessage = await lightWalletProvider.signMessage(message, password);
+          if (signedMessage){
+            const msgCid = await lightWalletProvider.sendSignedMessage(signedMessage);
+          }
         }
       }
 

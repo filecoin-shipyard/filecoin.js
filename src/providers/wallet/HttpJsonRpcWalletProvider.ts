@@ -117,7 +117,7 @@ export class HttpJsonRpcWalletProvider implements WalletProvider {
    * based on current chain conditions
    * @param msg
    */
-  public async sendMessage(msg: Message, password?: string): Promise<SignedMessage|undefined> {
+  public async sendMessage(msg: Message): Promise<SignedMessage> {
     const ret = await this.conn.request({ method: 'Filecoin.MpoolPushMessage', params: [msg, { MaxFee: "30000000000000" }] });
     return ret as SignedMessage;
   }
@@ -198,7 +198,7 @@ export class HttpJsonRpcWalletProvider implements WalletProvider {
    * sign message
    * @param msg
    */
-  public async signMessage(msg: Message, password?: string): Promise<SignedMessage|undefined> {
+  public async signMessage(msg: Message): Promise<SignedMessage> {
     const address = await this.getDefaultAccount();
     const ret = await this.conn.request({ method: 'Filecoin.WalletSignMessage', params: [address, msg] });
     return ret as SignedMessage;
@@ -208,7 +208,7 @@ export class HttpJsonRpcWalletProvider implements WalletProvider {
    * sign raw message
    * @param data
    */
-  public async sign(data: string | ArrayBuffer, password?: string): Promise<Signature|undefined> {
+  public async sign(data: string | ArrayBuffer): Promise<Signature> {
     const address = await this.getDefaultAccount();
     data = toBase64(data);
     const ret = await this.conn.request({ method: 'Filecoin.WalletSign', params: [address, data] });
