@@ -12,6 +12,10 @@
     "LICENSE-APACHE",
     "LICENSE-MIT"
   ],
+  "repository": {
+    "type" : "git",
+    "url" : "https://github.com/filecoin-shipyard/filecoin.js"
+  },
   "scripts": {
     "prebuild": "rimraf builds/dist builds/dist-esm builds/dist-tests builds/examples",
     "build": "tsc && tsc -m es6 --outDir builds/dist-esm",
