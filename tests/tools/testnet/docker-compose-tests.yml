@@ -13,6 +13,8 @@ services:
 
     volumes:
       - ./credentials:/credentials:delegated
+      - ./bin:/testnet:delegated
+      - ./proxy:/testnet/proxy:delegated
       - filecoin_js_node_modules_volume:/src/node_modules
 
 

@@ -41,7 +41,7 @@ cat > "${base_dir}/version/build_commit.txt" <<EOF
 ${lotus_git_sha}
 EOF
 
-cat > "${base_dir}/scripts/build.bash" <<EOF
+cat > "${base_dir}/scripts/build_ffi.bash" <<EOF
 #!/usr/bin/env bash
 set -xe
 
@@ -58,17 +58,19 @@ if [[ ! -z "${lotus_git_sha}" ]]; then
     SCRIPTDIR="\$( cd "\$( dirname "\${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
     pushd \$SCRIPTDIR/../build
     pwd
+    source $HOME/.cargo/env
+    env RUSTFLAGS="-C target-cpu=native -g" FFI_BUILD_FROM_SOURCE="1"
     make clean deps debug lotus-shed lotus-fountain
     cp lotus lotus-miner lotus-shed lotus-seed lotus-fountain ${base_dir}/bin/
     popd
 fi
 EOF
 
-chmod +x "${base_dir}/scripts/build.bash"
+chmod +x "${base_dir}/scripts/build_ffi.bash"
 
 # build various lotus binaries
 #
-bash "${base_dir}/scripts/build.bash" 2>&1 | tee -a "${build_log_path}"
+bash "${base_dir}/scripts/build_ffi.bash" 2>&1 | tee -a "${build_log_path}"
 
 if [ $? -eq 0 ]
 then
