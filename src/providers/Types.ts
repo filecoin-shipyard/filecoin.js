@@ -1101,7 +1101,7 @@ export class MiningBaseInfo {
   SectorSize!: number;
   PrevBeaconEntry!: BeaconEntry;
 	BeaconEntries!: BeaconEntry[];
-	HasMinPower!: boolean;
+	EligibleForMining!: boolean;
 }
 
 export class BlockTemplate{

@@ -32,7 +32,6 @@ async function extractAddressesWithFunds(addresses: string[], wallet:HttpJsonRpc
 }
 
 describe("Multisig Wallets", function () {
-
   it("should create multisig wallet and transfer funds [http]", async function () {
     this.timeout(40000);
     const httpConnector = new HttpJsonRpcConnector({ url: 'http://localhost:8000/rpc/v0', token: LOTUS_AUTH_TOKEN });
@@ -68,7 +67,7 @@ describe("Multisig Wallets", function () {
     assert.strictEqual(txnID, 0, 'error initiating transfer');
 
     await walletLotusHttp.setDefaultAccount(t11address);
-    const approveTransferCid = await con.msig.approve(multisigAddress, txnID, t3address, mnemonicAddress, '1', t11address, 0, []);
+    const approveTransferCid = await con.msig.approveTxnHash(multisigAddress, txnID, t3address, mnemonicAddress, '1', t11address, 0, []);
     const receiptTransferApprove = await con.state.waitMsg(approveTransferCid, 0);
     assert.strictEqual(receiptTransferApprove.ReturnDec.Applied, true, 'error approving transfer');
 
@@ -77,11 +76,6 @@ describe("Multisig Wallets", function () {
 
     await walletLotusHttp.setDefaultAccount(initialDefaultWallet);
   });
-
-
-  /*
-  //Test on hold, couldn't init add proposal:
-  //ERROR	rpc	go-jsonrpc@v0.1.2-0.20200822201400-474f4fdccc52/server.go:87	RPC Error: method 'Filecoin.MsigAddPropose' not found
 
   it("should create multisig wallet and add signer [http]", async function () {
     this.timeout(40000);
@@ -100,30 +94,29 @@ describe("Multisig Wallets", function () {
 
     const mnemonicAddress = await mnemonicWalletProvider.getDefaultAccount();
 
-    const multisigCid = await con.multiSigCreate(2, [ t3address, t11address ], 0, '1000', defaultAccount, '4000');
+    const multisigCid = await con.msig.create(2, [ t3address, t11address ], 0, '1000', defaultAccount, '4000');
 
-    const receipt = await con.waitMsg(multisigCid, 0);
+    const receipt = await con.state.waitMsg(multisigCid, 0);
     const multisigAddress = receipt.ReturnDec.RobustAddress;
 
-    const balance = await con.multiSigGetAvailableBalance(multisigAddress, []);
+    const balance = await con.msig.getAvailableBalance(multisigAddress, []);
     assert.strictEqual(balance, '1000', 'wrong balance');
 
     const initialDefaultWallet = await walletLotusHttp.getDefaultAccount();
-    await walletLotusHttp.setDefaultAccount(t3address);
 
-    const initAddProposeCid = await con.multiSigAddPropose(multisigAddress,t3address,t12address,false);
-    const receiptAddStart = await con.waitMsg(initAddProposeCid, 0);
+    await walletLotusHttp.setDefaultAccount(t3address);
+    const initAddProposeCid = await con.msig.addPropose(multisigAddress,t3address,t12address,false);
+    const receiptAddStart = await con.state.waitMsg(initAddProposeCid, 0);
     const txnID = receiptAddStart.ReturnDec.TxnID;
     assert.strictEqual(txnID, 0, 'error initiating add proposal');
 
     await walletLotusHttp.setDefaultAccount(t11address);
-    const approveAddCid = await con.multiSigAddApprove(multisigAddress, t11address, txnID, t3address, t12address, false);
-    const receiptAddApprove = await con.waitMsg(approveAddCid, 0);
+    const approveAddCid = await con.msig.addApprove(multisigAddress, t11address, txnID, t3address, t12address, false);
+    const receiptAddApprove = await con.state.waitMsg(approveAddCid, 0);
     assert.strictEqual(receiptAddApprove.ReturnDec.Applied, true, 'error approving add proposal');
 
     await walletLotusHttp.setDefaultAccount(initialDefaultWallet);
   });
-*/
 
   it("should create multisig wallet and swap signer [http]", async function () {
     this.timeout(60000);
@@ -170,8 +163,9 @@ describe("Multisig Wallets", function () {
     const receiptTransferStart = await con.state.waitMsg(initTransferCid, 0);
     const txnIDTransfer = receiptTransferStart.ReturnDec.TxnID;
 
-    await walletLotusHttp.setDefaultAccount(t11address);
-    const approveTransferCid = await con.msig.approve(multisigAddress, txnIDTransfer, t3address, mnemonicAddress, '1', t11address, 0, []);
+
+    await walletLotusHttp.setDefaultAccount(t12address);
+    const approveTransferCid = await con.msig.approveTxnHash(multisigAddress, txnIDTransfer, t3address, mnemonicAddress, '1', t12address, 0, []);
     const receiptTransferApprove = await con.state.waitMsg(approveTransferCid, 0);
     assert.strictEqual(receiptTransferApprove.ReturnDec.Applied, true, 'error approving transfer');
 

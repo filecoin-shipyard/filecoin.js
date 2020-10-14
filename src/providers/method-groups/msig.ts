@@ -97,6 +97,30 @@ export class JsonRpcMsigMethodGroup {
   }
 
   /**
+   * approves a previously-proposed multisig message by transaction ID
+   * @param address
+   * @param proposedTransactionId
+   * @param signerAddress
+   */
+  public async approve(
+    address: string,
+    proposedTransactionId: number,
+    signerAddress: string,
+  ): Promise<Cid> {
+    const ret = await this.conn.request(
+      {
+        method: 'Filecoin.MsigApprove',
+        params: [
+          address,
+          proposedTransactionId,
+          signerAddress
+        ]
+      });
+    return ret;
+  }
+
+
+  /**
    * approves a previously-proposed multisig message
    * @param address
    * @param proposedMessageId
@@ -107,7 +131,7 @@ export class JsonRpcMsigMethodGroup {
    * @param methodToCallInProposeMsg
    * @param paramsToIncludeInProposeMsg
    */
-  public async approve(
+  public async approveTxnHash(
     address: string,
     proposedMessageId: number,
     proposerAddress: string,
@@ -119,7 +143,7 @@ export class JsonRpcMsigMethodGroup {
   ): Promise<Cid> {
     const ret = await this.conn.request(
       {
-        method: 'Filecoin.MsigApprove',
+        method: 'Filecoin.MsigApproveTxnHash',
         params: [
           address,
           proposedMessageId,

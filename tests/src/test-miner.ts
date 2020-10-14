@@ -14,7 +14,7 @@ describe("Miner tests", function() {
     const headTipset = await provider.chain.getHead();
     const tipsetHeight = headTipset.Blocks[0].Height;
     const minerInfo = await provider.miner.getBaseInfo('t01000', tipsetHeight-2, [headTipset.Cids[0]]);
-    assert.strictEqual(minerInfo.HasMinPower, true, 'invalid response');
+    assert.strictEqual(minerInfo.EligibleForMining, true, 'invalid response');
   });
 
   it("should get miner info [ws]", async function() {
@@ -23,6 +23,6 @@ describe("Miner tests", function() {
     const tipsetHeight = headTipset.Blocks[0].Height;
     const minerInfo = await provider.miner.getBaseInfo('t01000', tipsetHeight, [headTipset.Cids[0]]);
     await provider.release();
-    assert.strictEqual(minerInfo.HasMinPower, true, 'invalid response');
+    assert.strictEqual(minerInfo.EligibleForMining, true, 'invalid response');
   });
 });
