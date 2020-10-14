@@ -89,7 +89,7 @@ Sending some FIL to `someAddress`:
     );
 ```
 
-Check out the [tests](./tests/) or [examples](./examples/) folder for more usage examples.
+Check out the [tests](./tests/) or [examples](./documentation/examples) folders for more usage examples.
 
 ## Documentation
 
