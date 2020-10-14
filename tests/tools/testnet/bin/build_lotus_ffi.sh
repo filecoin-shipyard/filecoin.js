@@ -59,7 +59,8 @@ if [[ ! -z "${lotus_git_sha}" ]]; then
     pushd \$SCRIPTDIR/../build
     pwd
     source $HOME/.cargo/env
-    env RUSTFLAGS="-C target-cpu=native -g" FFI_BUILD_FROM_SOURCE="1"
+    export RUSTFLAGS="-C target-cpu=native -g"
+    export FFI_BUILD_FROM_SOURCE=1
     make clean deps debug lotus-shed lotus-fountain
     cp lotus lotus-miner lotus-shed lotus-seed lotus-fountain ${base_dir}/bin/
     popd

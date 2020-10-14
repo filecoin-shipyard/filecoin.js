@@ -6,7 +6,7 @@ echo 'waiting for testnetwork'
 i=0
 pollPeriod=15
 testCurlStatus=0
-timeoutPeriod=320
+timeoutPeriod=600
 succesTestStatus=200
 
 while [[ $testCurlStatus != $succesTestStatus && $i -lt $timeoutPeriod ]]
