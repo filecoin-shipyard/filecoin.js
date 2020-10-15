@@ -25,144 +25,21 @@ export declare class JsonRpcProvider
 
 |  Property | Modifiers | Type | Description |
 |  --- | --- | --- | --- |
+|  [auth](./filecoin.js.jsonrpcprovider.auth.md) |  | JsonRpcAuthMethodGroup |  |
+|  [chain](./filecoin.js.jsonrpcprovider.chain.md) |  | JsonRpcChainMethodGroup |  |
+|  [client](./filecoin.js.jsonrpcprovider.client.md) |  | JsonRpcClientMethodGroup |  |
+|  [common](./filecoin.js.jsonrpcprovider.common.md) |  | JsonRpcCommonMethodGroup |  |
 |  [conn](./filecoin.js.jsonrpcprovider.conn.md) |  | Connector |  |
+|  [miner](./filecoin.js.jsonrpcprovider.miner.md) |  | JsonRpcMinerMethodGroup |  |
+|  [mpool](./filecoin.js.jsonrpcprovider.mpool.md) |  | JsonRpcMPoolMethodGroup |  |
+|  [msig](./filecoin.js.jsonrpcprovider.msig.md) |  | JsonRpcMsigMethodGroup |  |
+|  [net](./filecoin.js.jsonrpcprovider.net.md) |  | JsonRpcNetMethodGroup |  |
+|  [paych](./filecoin.js.jsonrpcprovider.paych.md) |  | JsonRpcPaychMethodGroup |  |
+|  [state](./filecoin.js.jsonrpcprovider.state.md) |  | JsonRpcStateMethodGroup |  |
+|  [sync](./filecoin.js.jsonrpcprovider.sync.md) |  | JsonRpcSyncMethodGroup |  |
 
 ## Methods
 
 |  Method | Modifiers | Description |
 |  --- | --- | --- |
-|  [accountKey(address, tipSetKey)](./filecoin.js.jsonrpcprovider.accountkey.md) |  | returns the public key address of the given ID address |
-|  [allMinerFaults(epoch, tipSetKey)](./filecoin.js.jsonrpcprovider.allminerfaults.md) |  | returns all non-expired Faults that occur within lookback epochs of the given tipset |
-|  [authNew(permissions)](./filecoin.js.jsonrpcprovider.authnew.md) |  | generate a new authorization token for a given permissions list |
-|  [authVerify(token)](./filecoin.js.jsonrpcprovider.authverify.md) |  | list the permissions for a given authorization token |
-|  [calcCommP(path)](./filecoin.js.jsonrpcprovider.calccommp.md) |  | calculates the CommP for a specified file |
-|  [chainNotify(cb)](./filecoin.js.jsonrpcprovider.chainnotify.md) |  | call back on chain head updates. |
-|  [changedActors(cid1, cid2)](./filecoin.js.jsonrpcprovider.changedactors.md) |  | returns all the actors whose states change between the two given state CIDs |
-|  [circulatingSupply(tipSetKey)](./filecoin.js.jsonrpcprovider.circulatingsupply.md) |  | returns the circulating supply of Filecoin at the given tipset |
-|  [compute(epoch, messages, tipSetKey)](./filecoin.js.jsonrpcprovider.compute.md) |  | Applies the given messages on the given tipset. |
-|  [dataTransferUpdates(cb)](./filecoin.js.jsonrpcprovider.datatransferupdates.md) |  |  |
-|  [dealProviderCollateralBounds(size, verified, tipSetKey)](./filecoin.js.jsonrpcprovider.dealprovidercollateralbounds.md) |  | returns the min and max collateral a storage provider can issue |
-|  [dealSize(root)](./filecoin.js.jsonrpcprovider.dealsize.md) |  | calculates real deal data size |
-|  [export(nroots, tipSetKey)](./filecoin.js.jsonrpcprovider.export.md) |  | Returns a stream of bytes with CAR dump of chain data. |
-|  [findData(cid, pieceCid)](./filecoin.js.jsonrpcprovider.finddata.md) |  | Identifies peers that have a certain file, and returns QueryOffers (one per peer). |
-|  [findPeer(peerID)](./filecoin.js.jsonrpcprovider.findpeer.md) |  |  |
-|  [genCar(ref, outpath)](./filecoin.js.jsonrpcprovider.gencar.md) |  | generates a CAR file for the specified file. |
-|  [getActor(address, tipSetKey)](./filecoin.js.jsonrpcprovider.getactor.md) |  | returns the indicated actor's nonce and balance |
-|  [getBlock(blockCid)](./filecoin.js.jsonrpcprovider.getblock.md) |  | returns the block specified by the given CID |
-|  [getBlockMessages(blockCid)](./filecoin.js.jsonrpcprovider.getblockmessages.md) |  | returns messages stored in the specified block. |
-|  [getDealInfo(dealCid)](./filecoin.js.jsonrpcprovider.getdealinfo.md) |  | Returns the latest information about a given deal. |
-|  [getDealUpdates(cb)](./filecoin.js.jsonrpcprovider.getdealupdates.md) |  | returns the status of updated deals |
-|  [getGenesis()](./filecoin.js.jsonrpcprovider.getgenesis.md) |  | Returns the genesis tipset. |
-|  [getHead()](./filecoin.js.jsonrpcprovider.gethead.md) |  | returns the current head of the chain |
-|  [getMessage(messageCid)](./filecoin.js.jsonrpcprovider.getmessage.md) |  | reads a message referenced by the specified CID from the chain blockstore |
-|  [getMpoolConfig()](./filecoin.js.jsonrpcprovider.getmpoolconfig.md) |  | returns (a copy of) the current mpool config |
-|  [getMpoolPending(tipSetKey)](./filecoin.js.jsonrpcprovider.getmpoolpending.md) |  | get all mpool messages |
-|  [getParentMessages(blockCid)](./filecoin.js.jsonrpcprovider.getparentmessages.md) |  | returns messages stored in parent tipset of the specified block. |
-|  [getParentReceipts(blockCid)](./filecoin.js.jsonrpcprovider.getparentreceipts.md) |  | returns receipts for messages in parent tipset of the specified block |
-|  [getPath(from, to)](./filecoin.js.jsonrpcprovider.getpath.md) |  | Returns a set of revert/apply operations needed to get from |
-|  [getPaymentChannel(from, to, amount)](./filecoin.js.jsonrpcprovider.getpaymentchannel.md) |  | PaychGet |
-|  [getPaymentChannelAvailableFunds(address)](./filecoin.js.jsonrpcprovider.getpaymentchannelavailablefunds.md) |  | PaychAvailableFunds |
-|  [getPaymentChannelAvailableFundsByFromTo(from, to)](./filecoin.js.jsonrpcprovider.getpaymentchannelavailablefundsbyfromto.md) |  | PaychAvailableFundsByFromTo |
-|  [getPaymentChannelList()](./filecoin.js.jsonrpcprovider.getpaymentchannellist.md) |  | PaychList |
-|  [getPaymentChannelStatus(address)](./filecoin.js.jsonrpcprovider.getpaymentchannelstatus.md) |  | PaychStatus |
-|  [getReceipt(cid, tipSetKey)](./filecoin.js.jsonrpcprovider.getreceipt.md) |  | returns the message receipt for the given message |
-|  [getTipSetByHeight(epochNumber)](./filecoin.js.jsonrpcprovider.gettipsetbyheight.md) |  | looks back for a tipset at the specified epoch. |
-|  [getTipSetWeight(tipSetKey)](./filecoin.js.jsonrpcprovider.gettipsetweight.md) |  | Computes weight for the specified tipset. |
-|  [getWaitReadyPaymentChannel(cid)](./filecoin.js.jsonrpcprovider.getwaitreadypaymentchannel.md) |  | PaychGetWaitReady |
-|  [hasLocal(cid)](./filecoin.js.jsonrpcprovider.haslocal.md) |  |  |
-|  [hasObj(cid)](./filecoin.js.jsonrpcprovider.hasobj.md) |  | checks if a given CID exists in the chain blockstore |
-|  [id()](./filecoin.js.jsonrpcprovider.id.md) |  | returns peerID of libp2p node backing this API |
-|  [import(fileRef)](./filecoin.js.jsonrpcprovider.import.md) |  | Imports file under the specified path into filestore. |
-|  [listActors(tipSetKey)](./filecoin.js.jsonrpcprovider.listactors.md) |  | returns the addresses of every actor in the state |
-|  [listDataTransfers()](./filecoin.js.jsonrpcprovider.listdatatransfers.md) |  | returns the status of all ongoing transfers of data |
-|  [listDeals()](./filecoin.js.jsonrpcprovider.listdeals.md) |  | Returns information about the deals made by the local client. |
-|  [listImports()](./filecoin.js.jsonrpcprovider.listimports.md) |  | lists imported files and their root CIDs |
-|  [listMessages(filter, tipSetKey, toHeight)](./filecoin.js.jsonrpcprovider.listmessages.md) |  | looks back and returns all messages with a matching to or from address, stopping at the given height. |
-|  [listMiners(tipSetKey)](./filecoin.js.jsonrpcprovider.listminers.md) |  | returns the addresses of every miner that has claimed power in the Power Actor |
-|  [logList()](./filecoin.js.jsonrpcprovider.loglist.md) |  |  |
-|  [logSetLevel(string1, string2)](./filecoin.js.jsonrpcprovider.logsetlevel.md) |  |  |
-|  [lookupId(address, tipSetKey)](./filecoin.js.jsonrpcprovider.lookupid.md) |  | retrieves the ID address of the given address |
-|  [marketBalance(address, tipSetKey)](./filecoin.js.jsonrpcprovider.marketbalance.md) |  | looks up the Escrow and Locked balances of the given address in the Storage Market |
-|  [marketDeals(tipSetKey)](./filecoin.js.jsonrpcprovider.marketdeals.md) |  | returns information about every deal in the Storage Market |
-|  [marketParticipants(tipSetKey)](./filecoin.js.jsonrpcprovider.marketparticipants.md) |  | returns the Escrow and Locked balances of every participant in the Storage Market |
-|  [marketStorageDeal(dealId, tipSetKey)](./filecoin.js.jsonrpcprovider.marketstoragedeal.md) |  | returns information about the indicated deal |
-|  [minerActiveSectors(address, tipSetKey)](./filecoin.js.jsonrpcprovider.mineractivesectors.md) |  | returns info about sectors that a given miner is actively proving. |
-|  [minerAvailableBalance(address, tipSetKey)](./filecoin.js.jsonrpcprovider.mineravailablebalance.md) |  | returns the portion of a miner's balance that can be withdrawn or spent |
-|  [minerCreateBlock(blockTemplate)](./filecoin.js.jsonrpcprovider.minercreateblock.md) |  | MinerCreateBlock |
-|  [minerDeadlines(address, tipSetKey)](./filecoin.js.jsonrpcprovider.minerdeadlines.md) |  | returns all the proving deadlines for the given miner |
-|  [minerFaults(address, tipSetKey)](./filecoin.js.jsonrpcprovider.minerfaults.md) |  | Returns a bitfield indicating the faulty sectors of the given miner |
-|  [minerGetBaseInfo(address, chainEpoch, tipSetKey)](./filecoin.js.jsonrpcprovider.minergetbaseinfo.md) |  | MinerGetBaseInfo |
-|  [minerInfo(address, tipSetKey)](./filecoin.js.jsonrpcprovider.minerinfo.md) |  | returns info about the indicated miner |
-|  [minerInitialPledgeCollateral(address, sectorPreCommitInfo, tipSetKey)](./filecoin.js.jsonrpcprovider.minerinitialpledgecollateral.md) |  | returns the initial pledge collateral for the specified miner's sector |
-|  [minerPartitions(address, idx, tipSetKey)](./filecoin.js.jsonrpcprovider.minerpartitions.md) |  | Loads miner partitions for the specified miner and deadline |
-|  [minerPower(address, tipSetKey)](./filecoin.js.jsonrpcprovider.minerpower.md) |  | returns the power of the indicated miner |
-|  [minerPreCommitDepositForPower(address, sectorPreCommitInfo, tipSetKey)](./filecoin.js.jsonrpcprovider.minerprecommitdepositforpower.md) |  | returns the precommit deposit for the specified miner's sector |
-|  [minerProvingDeadline(address, tipSetKey)](./filecoin.js.jsonrpcprovider.minerprovingdeadline.md) |  | calculates the deadline at some epoch for a proving period and returns the deadline-related calculations. |
-|  [minerQueryOffer(miner, root, pieceCid)](./filecoin.js.jsonrpcprovider.minerqueryoffer.md) |  | returns a QueryOffer for the specific miner and file. |
-|  [minerRecoveries(address, tipSetKey)](./filecoin.js.jsonrpcprovider.minerrecoveries.md) |  | returns a bitfield indicating the recovering sectors of the given miner |
-|  [minerSectorCount(address, tipSetKey)](./filecoin.js.jsonrpcprovider.minersectorcount.md) |  | returns the number of sectors in a miner's sector set and proving set |
-|  [minerSectors(address, tipSetKey)](./filecoin.js.jsonrpcprovider.minersectors.md) |  | returns info about the given miner's sectors |
-|  [mpoolClear()](./filecoin.js.jsonrpcprovider.mpoolclear.md) |  | clears pending messages from the mpool |
-|  [mpoolSelect(tipSetKey, ticketQuality)](./filecoin.js.jsonrpcprovider.mpoolselect.md) |  | returns a list of pending messages for inclusion in the next block |
-|  [mpoolSub(cb)](./filecoin.js.jsonrpcprovider.mpoolsub.md) |  | returns a list of pending messages for inclusion in the next block |
-|  [multiSigAddApprove(address, senderAddressOfApproveMsg, proposedMessageId, proposerAddress, newSignerAddress, increaseNumberOfRequiredSigners)](./filecoin.js.jsonrpcprovider.multisigaddapprove.md) |  | multiSigAddApprove approves a previously proposed AddSigner message |
-|  [multiSigAddCancel(address, senderAddressOfCancelMsg, proposedMessageId, newSignerAddress, increaseNumberOfRequiredSigners)](./filecoin.js.jsonrpcprovider.multisigaddcancel.md) |  | multiSigAddCancel cancels a previously proposed AddSigner message |
-|  [multiSigAddPropose(address, senderAddressOfProposeMsg, newSignerAddress, increaseNumberOfRequiredSigners)](./filecoin.js.jsonrpcprovider.multisigaddpropose.md) |  | multiSigAddPropose proposes adding a signer in the multisig |
-|  [multiSigApprove(address, proposedMessageId, proposerAddress, recipientAddres, value, senderAddressOfApproveMsg, methodToCallInProposeMsg, paramsToIncludeInProposeMsg)](./filecoin.js.jsonrpcprovider.multisigapprove.md) |  | multiSigApprove approves a previously-proposed multisig message |
-|  [multiSigCancel(address, proposedMessageId, proposerAddress, recipientAddres, value, senderAddressOfCancelMsg, methodToCallInProposeMsg, paramsToIncludeInProposeMsg)](./filecoin.js.jsonrpcprovider.multisigcancel.md) |  | multiSigCancel cancels a previously-proposed multisig message |
-|  [multiSigCreate(requiredNumberOfSenders, approvingAddresses, unlockDuration, initialBalance, senderAddressOfCreateMsg, gasPrice)](./filecoin.js.jsonrpcprovider.multisigcreate.md) |  | multiSigCreate creates a multisig wallet |
-|  [multiSigGetAvailableBalance(address, tipSetKey)](./filecoin.js.jsonrpcprovider.multisiggetavailablebalance.md) |  | multiSigGetAvailableBalance returns the portion of a multisig's balance that can be withdrawn or spent |
-|  [multiSigGetVested(address, startEpoch, endEpoch)](./filecoin.js.jsonrpcprovider.multisiggetvested.md) |  | multiSigGetVested returns the amount of FIL that vested in a multisig in a certain period. |
-|  [multiSigPropose(address, recipientAddres, value, senderAddressOfProposeMsg, methodToCallInProposeMsg, paramsToIncludeInProposeMsg)](./filecoin.js.jsonrpcprovider.multisigpropose.md) |  | multiSigPropose creates a multisig wallet |
-|  [multiSigSwapApprove(address, senderAddressOfApproveMsg, proposedMessageId, proposerAddress, oldSignerAddress, newSignerAddress)](./filecoin.js.jsonrpcprovider.multisigswapapprove.md) |  | multiSigSwapApprove approves a previously proposed SwapSigner |
-|  [multiSigSwapCancel(address, senderAddressOfCancelMsg, proposedMessageId, oldSignerAddress, newSignerAddress)](./filecoin.js.jsonrpcprovider.multisigswapcancel.md) |  | multiSigSwapCancel cancels a previously proposed SwapSigner message |
-|  [multiSigSwapPropose(address, senderAddressOfProposeMsg, oldSignerAddress, newSignerAddress)](./filecoin.js.jsonrpcprovider.multisigswappropose.md) |  | multiSigSwapPropose proposes swapping 2 signers in the multisig |
-|  [netAddrsListen()](./filecoin.js.jsonrpcprovider.netaddrslisten.md) |  |  |
-|  [netAutoNatStatus()](./filecoin.js.jsonrpcprovider.netautonatstatus.md) |  |  |
-|  [netConnect(addrInfo)](./filecoin.js.jsonrpcprovider.netconnect.md) |  |  |
-|  [netConnectedness(peerId)](./filecoin.js.jsonrpcprovider.netconnectedness.md) |  | Net |
-|  [netDisconnect(peerID)](./filecoin.js.jsonrpcprovider.netdisconnect.md) |  |  |
-|  [netPeers()](./filecoin.js.jsonrpcprovider.netpeers.md) |  |  |
-|  [netPubsubScores()](./filecoin.js.jsonrpcprovider.netpubsubscores.md) |  |  |
-|  [networkName()](./filecoin.js.jsonrpcprovider.networkname.md) |  | returns the name of the network the node is synced to |
-|  [PaymentChannelAllocateLane(address)](./filecoin.js.jsonrpcprovider.paymentchannelallocatelane.md) |  | PaychAllocateLane |
-|  [PaymentChannelCollect(address)](./filecoin.js.jsonrpcprovider.paymentchannelcollect.md) |  | PaychCollect |
-|  [paymentChannelNewPayment(from, to, vouchers)](./filecoin.js.jsonrpcprovider.paymentchannelnewpayment.md) |  | PaychNewPayment |
-|  [PaymentChannelSettle(address)](./filecoin.js.jsonrpcprovider.paymentchannelsettle.md) |  | PaychSettle |
-|  [PaymentChannelVoucherAdd(address, signedVoucher, proof, minDelta)](./filecoin.js.jsonrpcprovider.paymentchannelvoucheradd.md) |  | PaychVoucherAdd |
-|  [PaymentChannelVoucherCheckSpendable(address, signedVoucher, secret, proof)](./filecoin.js.jsonrpcprovider.paymentchannelvouchercheckspendable.md) |  | PaychVoucherCheckSpendable |
-|  [PaymentChannelVoucherCheckValid(address, signedVoucher)](./filecoin.js.jsonrpcprovider.paymentchannelvouchercheckvalid.md) |  | PaychVoucherCheckValid |
-|  [PaymentChannelVoucherCreate(address, amount, lane)](./filecoin.js.jsonrpcprovider.paymentchannelvouchercreate.md) |  | PaychVoucherCreate |
-|  [PaymentChannelVoucherList(address)](./filecoin.js.jsonrpcprovider.paymentchannelvoucherlist.md) |  | PaychVoucherList |
-|  [PaymentChannelVoucherSubmit(address, signedVoucher, secret, proof)](./filecoin.js.jsonrpcprovider.paymentchannelvouchersubmit.md) |  | PaychVoucherSubmit |
-|  [queryAsk(peerId, miner)](./filecoin.js.jsonrpcprovider.queryask.md) |  | returns a signed StorageAsk from the specified miner. |
-|  [readObj(cid)](./filecoin.js.jsonrpcprovider.readobj.md) |  | reads ipld nodes referenced by the specified CID from chain blockstore and returns raw bytes. |
-|  [readState(address, tipSetKey)](./filecoin.js.jsonrpcprovider.readstate.md) |  | returns the indicated actor's state |
 |  [release()](./filecoin.js.jsonrpcprovider.release.md) |  |  |
-|  [removeImport(importId)](./filecoin.js.jsonrpcprovider.removeimport.md) |  | Removes file import |
-|  [retrieve(order, ref)](./filecoin.js.jsonrpcprovider.retrieve.md) |  | initiates the retrieval of a file, as specified in the order. |
-|  [retrieveTryRestartInsufficientFunds(paymentChannel)](./filecoin.js.jsonrpcprovider.retrievetryrestartinsufficientfunds.md) |  | attempts to restart stalled retrievals on a given payment channel which are stuck due to insufficient funds. |
-|  [retrieveWithEvents(order, ref, cb)](./filecoin.js.jsonrpcprovider.retrievewithevents.md) |  | initiates the retrieval of a file, as specified in the order, and provides a channel of status updates. |
-|  [searchMsg(cid)](./filecoin.js.jsonrpcprovider.searchmsg.md) |  | searches for a message in the chain and returns its receipt and the tipset where it was executed |
-|  [sectorExpiration(address, sector, tipSetKey)](./filecoin.js.jsonrpcprovider.sectorexpiration.md) |  | returns epoch at which given sector will expire |
-|  [sectorGetInfo(address, sector, tipSetKey)](./filecoin.js.jsonrpcprovider.sectorgetinfo.md) |  | StateSectorGetInfo returns the on-chain info for the specified miner's sector |
-|  [sectorPartition(address, sector, tipSetKey)](./filecoin.js.jsonrpcprovider.sectorpartition.md) |  | finds deadline/partition with the specified sector |
-|  [sectorPreCommitInfo(address, sector, tipSetKey)](./filecoin.js.jsonrpcprovider.sectorprecommitinfo.md) |  | returns the PreCommit info for the specified miner's sector |
-|  [setHead(tipSetKey)](./filecoin.js.jsonrpcprovider.sethead.md) |  | Forcefully sets current chain head. Use with caution. |
-|  [setMpoolConfig(config)](./filecoin.js.jsonrpcprovider.setmpoolconfig.md) |  | sets the mpool config to (a copy of) the supplied config |
-|  [shutdown()](./filecoin.js.jsonrpcprovider.shutdown.md) |  | trigger graceful shutdown |
-|  [startDeal(dealParams)](./filecoin.js.jsonrpcprovider.startdeal.md) |  | Proposes a deal with a miner. |
-|  [stateCall(message, tipSetKey)](./filecoin.js.jsonrpcprovider.statecall.md) |  | runs the given message and returns its result without any persisted changes. |
-|  [stateReplay(tipSetKey, cid)](./filecoin.js.jsonrpcprovider.statereplay.md) |  | returns the result of executing the indicated message, assuming it was executed in the indicated tipset |
-|  [statObj(obj, base)](./filecoin.js.jsonrpcprovider.statobj.md) |  | returns statistics about the graph referenced by 'obj'. |
-|  [stopChainNotify(id)](./filecoin.js.jsonrpcprovider.stopchainnotify.md) |  |  |
-|  [syncCheckBad(blockCid)](./filecoin.js.jsonrpcprovider.synccheckbad.md) |  | checks if a block was marked as bad, and if it was, returns the reason. |
-|  [syncCheckpoint(tipSetKey)](./filecoin.js.jsonrpcprovider.synccheckpoint.md) |  | marks a blocks as checkpointed, meaning that it won't ever fork away from it. |
-|  [syncIncomingBlocks(cb)](./filecoin.js.jsonrpcprovider.syncincomingblocks.md) |  | returns a channel streaming incoming, potentially not yet synced block headers. |
-|  [syncMarkBad(blockCid)](./filecoin.js.jsonrpcprovider.syncmarkbad.md) |  | marks a blocks as bad, meaning that it won't ever by synced. Use with extreme caution. |
-|  [syncState()](./filecoin.js.jsonrpcprovider.syncstate.md) |  | returns the current status of the lotus sync system. |
-|  [syncSubmitBlock(blockMsg)](./filecoin.js.jsonrpcprovider.syncsubmitblock.md) |  | can be used to submit a newly created block to the network |
-|  [syncUnmarkBad(blockCid)](./filecoin.js.jsonrpcprovider.syncunmarkbad.md) |  | unmarks a block as bad, making it possible to be validated and synced again. |
-|  [verifiedClientStatus(address, tipSetKey)](./filecoin.js.jsonrpcprovider.verifiedclientstatus.md) |  | returns the data cap for the given address. |
-|  [version()](./filecoin.js.jsonrpcprovider.version.md) |  | provides information about API provider |
-|  [waitMsg(cid, confidence)](./filecoin.js.jsonrpcprovider.waitmsg.md) |  | looks back in the chain for a message. If not found, it blocks until the message arrives on chain, and gets to the indicated confidence depth. |
