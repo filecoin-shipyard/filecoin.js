@@ -13,7 +13,8 @@ deps=(printf paste jq python nc)
 #lotus_git_sha="009e14b679edf5f5d66481b0802427063ea47ee2" #calibration 18 aug
 #lotus_git_sha="4f45c623a5896637a9239d16b1836fdb635bb8f9" #master top 31 aug
 #lotus_git_sha="636810daa5e63a6ec132d78993d028a41f179276" #v0.8.1
-lotus_git_sha="a6b2180756db71574b385ef3c357f2b943252e78" #v0.10.0
+#lotus_git_sha="a6b2180756db71574b385ef3c357f2b943252e78" #v0.10.0
+lotus_git_sha="8340124786c244b21806e117e84b67fc6117686d" #v0.10.2
 
 copy_binaries_from_dir=""
 other_args=()

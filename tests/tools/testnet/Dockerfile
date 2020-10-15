@@ -4,7 +4,7 @@ FROM ubuntu:20.10
 
 RUN apt update
 RUN apt-get install -y software-properties-common
-RUN apt install -y --no-install-recommends build-essential git jq python netcat curl wget pkg-config libgl-dev libglu-dev libglib2.0-dev libsm-dev libxrender-dev libfontconfig1-dev libxext-dev nvidia-opencl-dev ocl-icd-opencl-dev tmux
+RUN apt install -y --no-install-recommends build-essential git jq python netcat curl wget pkg-config libgl-dev libglu-dev libglib2.0-dev libsm-dev libxrender-dev libfontconfig1-dev libxext-dev nvidia-opencl-dev ocl-icd-opencl-dev libclang-dev
 RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
 
 #install node
