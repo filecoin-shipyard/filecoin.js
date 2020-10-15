@@ -152,416 +152,101 @@
       "api/filecoin.js.jsonrpcprovider._constructor_": {
         "title": "JsonRpcProvider.(constructor)"
       },
-      "api/filecoin.js.jsonrpcprovider.accountkey": {
-        "title": "JsonRpcProvider.accountKey() method"
+      "api/filecoin.js.jsonrpcprovider.auth": {
+        "title": "JsonRpcProvider.auth property"
       },
-      "api/filecoin.js.jsonrpcprovider.allminerfaults": {
-        "title": "JsonRpcProvider.allMinerFaults() method"
+      "api/filecoin.js.jsonrpcprovider.chain": {
+        "title": "JsonRpcProvider.chain property"
       },
-      "api/filecoin.js.jsonrpcprovider.authnew": {
-        "title": "JsonRpcProvider.authNew() method"
+      "api/filecoin.js.jsonrpcprovider.client": {
+        "title": "JsonRpcProvider.client property"
       },
-      "api/filecoin.js.jsonrpcprovider.authverify": {
-        "title": "JsonRpcProvider.authVerify() method"
-      },
-      "api/filecoin.js.jsonrpcprovider.calccommp": {
-        "title": "JsonRpcProvider.calcCommP() method"
-      },
-      "api/filecoin.js.jsonrpcprovider.chainnotify": {
-        "title": "JsonRpcProvider.chainNotify() method"
-      },
-      "api/filecoin.js.jsonrpcprovider.changedactors": {
-        "title": "JsonRpcProvider.changedActors() method"
-      },
-      "api/filecoin.js.jsonrpcprovider.circulatingsupply": {
-        "title": "JsonRpcProvider.circulatingSupply() method"
-      },
-      "api/filecoin.js.jsonrpcprovider.compute": {
-        "title": "JsonRpcProvider.compute() method"
+      "api/filecoin.js.jsonrpcprovider.common": {
+        "title": "JsonRpcProvider.common property"
       },
       "api/filecoin.js.jsonrpcprovider.conn": {
         "title": "JsonRpcProvider.conn property"
       },
-      "api/filecoin.js.jsonrpcprovider.datatransferupdates": {
-        "title": "JsonRpcProvider.dataTransferUpdates() method"
-      },
-      "api/filecoin.js.jsonrpcprovider.dealprovidercollateralbounds": {
-        "title": "JsonRpcProvider.dealProviderCollateralBounds() method"
-      },
-      "api/filecoin.js.jsonrpcprovider.dealsize": {
-        "title": "JsonRpcProvider.dealSize() method"
-      },
-      "api/filecoin.js.jsonrpcprovider.export": {
-        "title": "JsonRpcProvider.export() method"
-      },
-      "api/filecoin.js.jsonrpcprovider.finddata": {
-        "title": "JsonRpcProvider.findData() method"
-      },
-      "api/filecoin.js.jsonrpcprovider.findpeer": {
-        "title": "JsonRpcProvider.findPeer() method"
-      },
-      "api/filecoin.js.jsonrpcprovider.gencar": {
-        "title": "JsonRpcProvider.genCar() method"
-      },
-      "api/filecoin.js.jsonrpcprovider.getactor": {
-        "title": "JsonRpcProvider.getActor() method"
-      },
-      "api/filecoin.js.jsonrpcprovider.getblock": {
-        "title": "JsonRpcProvider.getBlock() method"
-      },
-      "api/filecoin.js.jsonrpcprovider.getblockmessages": {
-        "title": "JsonRpcProvider.getBlockMessages() method"
-      },
-      "api/filecoin.js.jsonrpcprovider.getdealinfo": {
-        "title": "JsonRpcProvider.getDealInfo() method"
-      },
-      "api/filecoin.js.jsonrpcprovider.getdealupdates": {
-        "title": "JsonRpcProvider.getDealUpdates() method"
-      },
-      "api/filecoin.js.jsonrpcprovider.getgenesis": {
-        "title": "JsonRpcProvider.getGenesis() method"
-      },
-      "api/filecoin.js.jsonrpcprovider.gethead": {
-        "title": "JsonRpcProvider.getHead() method"
-      },
-      "api/filecoin.js.jsonrpcprovider.getmessage": {
-        "title": "JsonRpcProvider.getMessage() method"
-      },
-      "api/filecoin.js.jsonrpcprovider.getmpoolconfig": {
-        "title": "JsonRpcProvider.getMpoolConfig() method"
-      },
-      "api/filecoin.js.jsonrpcprovider.getmpoolpending": {
-        "title": "JsonRpcProvider.getMpoolPending() method"
-      },
-      "api/filecoin.js.jsonrpcprovider.getparentmessages": {
-        "title": "JsonRpcProvider.getParentMessages() method"
-      },
-      "api/filecoin.js.jsonrpcprovider.getparentreceipts": {
-        "title": "JsonRpcProvider.getParentReceipts() method"
-      },
-      "api/filecoin.js.jsonrpcprovider.getpath": {
-        "title": "JsonRpcProvider.getPath() method"
-      },
-      "api/filecoin.js.jsonrpcprovider.getpaymentchannel": {
-        "title": "JsonRpcProvider.getPaymentChannel() method"
-      },
-      "api/filecoin.js.jsonrpcprovider.getpaymentchannelavailablefunds": {
-        "title": "JsonRpcProvider.getPaymentChannelAvailableFunds() method"
-      },
-      "api/filecoin.js.jsonrpcprovider.getpaymentchannelavailablefundsbyfromto": {
-        "title": "JsonRpcProvider.getPaymentChannelAvailableFundsByFromTo() method"
-      },
-      "api/filecoin.js.jsonrpcprovider.getpaymentchannellist": {
-        "title": "JsonRpcProvider.getPaymentChannelList() method"
-      },
-      "api/filecoin.js.jsonrpcprovider.getpaymentchannelstatus": {
-        "title": "JsonRpcProvider.getPaymentChannelStatus() method"
-      },
-      "api/filecoin.js.jsonrpcprovider.getreceipt": {
-        "title": "JsonRpcProvider.getReceipt() method"
-      },
-      "api/filecoin.js.jsonrpcprovider.gettipsetbyheight": {
-        "title": "JsonRpcProvider.getTipSetByHeight() method"
-      },
-      "api/filecoin.js.jsonrpcprovider.gettipsetweight": {
-        "title": "JsonRpcProvider.getTipSetWeight() method"
-      },
-      "api/filecoin.js.jsonrpcprovider.getwaitreadypaymentchannel": {
-        "title": "JsonRpcProvider.getWaitReadyPaymentChannel() method"
-      },
-      "api/filecoin.js.jsonrpcprovider.haslocal": {
-        "title": "JsonRpcProvider.hasLocal() method"
-      },
-      "api/filecoin.js.jsonrpcprovider.hasobj": {
-        "title": "JsonRpcProvider.hasObj() method"
-      },
-      "api/filecoin.js.jsonrpcprovider.id": {
-        "title": "JsonRpcProvider.id() method"
-      },
-      "api/filecoin.js.jsonrpcprovider.import": {
-        "title": "JsonRpcProvider.import() method"
-      },
-      "api/filecoin.js.jsonrpcprovider.listactors": {
-        "title": "JsonRpcProvider.listActors() method"
-      },
-      "api/filecoin.js.jsonrpcprovider.listdatatransfers": {
-        "title": "JsonRpcProvider.listDataTransfers() method"
-      },
-      "api/filecoin.js.jsonrpcprovider.listdeals": {
-        "title": "JsonRpcProvider.listDeals() method"
-      },
-      "api/filecoin.js.jsonrpcprovider.listimports": {
-        "title": "JsonRpcProvider.listImports() method"
-      },
-      "api/filecoin.js.jsonrpcprovider.listmessages": {
-        "title": "JsonRpcProvider.listMessages() method"
-      },
-      "api/filecoin.js.jsonrpcprovider.listminers": {
-        "title": "JsonRpcProvider.listMiners() method"
-      },
-      "api/filecoin.js.jsonrpcprovider.loglist": {
-        "title": "JsonRpcProvider.logList() method"
-      },
-      "api/filecoin.js.jsonrpcprovider.logsetlevel": {
-        "title": "JsonRpcProvider.logSetLevel() method"
-      },
-      "api/filecoin.js.jsonrpcprovider.lookupid": {
-        "title": "JsonRpcProvider.lookupId() method"
-      },
-      "api/filecoin.js.jsonrpcprovider.marketbalance": {
-        "title": "JsonRpcProvider.marketBalance() method"
-      },
-      "api/filecoin.js.jsonrpcprovider.marketdeals": {
-        "title": "JsonRpcProvider.marketDeals() method"
-      },
-      "api/filecoin.js.jsonrpcprovider.marketparticipants": {
-        "title": "JsonRpcProvider.marketParticipants() method"
-      },
-      "api/filecoin.js.jsonrpcprovider.marketstoragedeal": {
-        "title": "JsonRpcProvider.marketStorageDeal() method"
-      },
       "api/filecoin.js.jsonrpcprovider": {
         "title": "JsonRpcProvider class"
       },
-      "api/filecoin.js.jsonrpcprovider.mineractivesectors": {
-        "title": "JsonRpcProvider.minerActiveSectors() method"
+      "api/filecoin.js.jsonrpcprovider.miner": {
+        "title": "JsonRpcProvider.miner property"
       },
-      "api/filecoin.js.jsonrpcprovider.mineravailablebalance": {
-        "title": "JsonRpcProvider.minerAvailableBalance() method"
+      "api/filecoin.js.jsonrpcprovider.mpool": {
+        "title": "JsonRpcProvider.mpool property"
       },
-      "api/filecoin.js.jsonrpcprovider.minercreateblock": {
-        "title": "JsonRpcProvider.minerCreateBlock() method"
+      "api/filecoin.js.jsonrpcprovider.msig": {
+        "title": "JsonRpcProvider.msig property"
       },
-      "api/filecoin.js.jsonrpcprovider.minerdeadlines": {
-        "title": "JsonRpcProvider.minerDeadlines() method"
+      "api/filecoin.js.jsonrpcprovider.net": {
+        "title": "JsonRpcProvider.net property"
       },
-      "api/filecoin.js.jsonrpcprovider.minerfaults": {
-        "title": "JsonRpcProvider.minerFaults() method"
-      },
-      "api/filecoin.js.jsonrpcprovider.minergetbaseinfo": {
-        "title": "JsonRpcProvider.minerGetBaseInfo() method"
-      },
-      "api/filecoin.js.jsonrpcprovider.minerinfo": {
-        "title": "JsonRpcProvider.minerInfo() method"
-      },
-      "api/filecoin.js.jsonrpcprovider.minerinitialpledgecollateral": {
-        "title": "JsonRpcProvider.minerInitialPledgeCollateral() method"
-      },
-      "api/filecoin.js.jsonrpcprovider.minerpartitions": {
-        "title": "JsonRpcProvider.minerPartitions() method"
-      },
-      "api/filecoin.js.jsonrpcprovider.minerpower": {
-        "title": "JsonRpcProvider.minerPower() method"
-      },
-      "api/filecoin.js.jsonrpcprovider.minerprecommitdepositforpower": {
-        "title": "JsonRpcProvider.minerPreCommitDepositForPower() method"
-      },
-      "api/filecoin.js.jsonrpcprovider.minerprovingdeadline": {
-        "title": "JsonRpcProvider.minerProvingDeadline() method"
-      },
-      "api/filecoin.js.jsonrpcprovider.minerqueryoffer": {
-        "title": "JsonRpcProvider.minerQueryOffer() method"
-      },
-      "api/filecoin.js.jsonrpcprovider.minerrecoveries": {
-        "title": "JsonRpcProvider.minerRecoveries() method"
-      },
-      "api/filecoin.js.jsonrpcprovider.minersectorcount": {
-        "title": "JsonRpcProvider.minerSectorCount() method"
-      },
-      "api/filecoin.js.jsonrpcprovider.minersectors": {
-        "title": "JsonRpcProvider.minerSectors() method"
-      },
-      "api/filecoin.js.jsonrpcprovider.mpoolclear": {
-        "title": "JsonRpcProvider.mpoolClear() method"
-      },
-      "api/filecoin.js.jsonrpcprovider.mpoolselect": {
-        "title": "JsonRpcProvider.mpoolSelect() method"
-      },
-      "api/filecoin.js.jsonrpcprovider.mpoolsub": {
-        "title": "JsonRpcProvider.mpoolSub() method"
-      },
-      "api/filecoin.js.jsonrpcprovider.multisigaddapprove": {
-        "title": "JsonRpcProvider.multiSigAddApprove() method"
-      },
-      "api/filecoin.js.jsonrpcprovider.multisigaddcancel": {
-        "title": "JsonRpcProvider.multiSigAddCancel() method"
-      },
-      "api/filecoin.js.jsonrpcprovider.multisigaddpropose": {
-        "title": "JsonRpcProvider.multiSigAddPropose() method"
-      },
-      "api/filecoin.js.jsonrpcprovider.multisigapprove": {
-        "title": "JsonRpcProvider.multiSigApprove() method"
-      },
-      "api/filecoin.js.jsonrpcprovider.multisigcancel": {
-        "title": "JsonRpcProvider.multiSigCancel() method"
-      },
-      "api/filecoin.js.jsonrpcprovider.multisigcreate": {
-        "title": "JsonRpcProvider.multiSigCreate() method"
-      },
-      "api/filecoin.js.jsonrpcprovider.multisiggetavailablebalance": {
-        "title": "JsonRpcProvider.multiSigGetAvailableBalance() method"
-      },
-      "api/filecoin.js.jsonrpcprovider.multisiggetvested": {
-        "title": "JsonRpcProvider.multiSigGetVested() method"
-      },
-      "api/filecoin.js.jsonrpcprovider.multisigpropose": {
-        "title": "JsonRpcProvider.multiSigPropose() method"
-      },
-      "api/filecoin.js.jsonrpcprovider.multisigswapapprove": {
-        "title": "JsonRpcProvider.multiSigSwapApprove() method"
-      },
-      "api/filecoin.js.jsonrpcprovider.multisigswapcancel": {
-        "title": "JsonRpcProvider.multiSigSwapCancel() method"
-      },
-      "api/filecoin.js.jsonrpcprovider.multisigswappropose": {
-        "title": "JsonRpcProvider.multiSigSwapPropose() method"
-      },
-      "api/filecoin.js.jsonrpcprovider.netaddrslisten": {
-        "title": "JsonRpcProvider.netAddrsListen() method"
-      },
-      "api/filecoin.js.jsonrpcprovider.netautonatstatus": {
-        "title": "JsonRpcProvider.netAutoNatStatus() method"
-      },
-      "api/filecoin.js.jsonrpcprovider.netconnect": {
-        "title": "JsonRpcProvider.netConnect() method"
-      },
-      "api/filecoin.js.jsonrpcprovider.netconnectedness": {
-        "title": "JsonRpcProvider.netConnectedness() method"
-      },
-      "api/filecoin.js.jsonrpcprovider.netdisconnect": {
-        "title": "JsonRpcProvider.netDisconnect() method"
-      },
-      "api/filecoin.js.jsonrpcprovider.netpeers": {
-        "title": "JsonRpcProvider.netPeers() method"
-      },
-      "api/filecoin.js.jsonrpcprovider.netpubsubscores": {
-        "title": "JsonRpcProvider.netPubsubScores() method"
-      },
-      "api/filecoin.js.jsonrpcprovider.networkname": {
-        "title": "JsonRpcProvider.networkName() method"
-      },
-      "api/filecoin.js.jsonrpcprovider.paymentchannelallocatelane": {
-        "title": "JsonRpcProvider.PaymentChannelAllocateLane() method"
-      },
-      "api/filecoin.js.jsonrpcprovider.paymentchannelcollect": {
-        "title": "JsonRpcProvider.PaymentChannelCollect() method"
-      },
-      "api/filecoin.js.jsonrpcprovider.paymentchannelnewpayment": {
-        "title": "JsonRpcProvider.paymentChannelNewPayment() method"
-      },
-      "api/filecoin.js.jsonrpcprovider.paymentchannelsettle": {
-        "title": "JsonRpcProvider.PaymentChannelSettle() method"
-      },
-      "api/filecoin.js.jsonrpcprovider.paymentchannelvoucheradd": {
-        "title": "JsonRpcProvider.PaymentChannelVoucherAdd() method"
-      },
-      "api/filecoin.js.jsonrpcprovider.paymentchannelvouchercheckspendable": {
-        "title": "JsonRpcProvider.PaymentChannelVoucherCheckSpendable() method"
-      },
-      "api/filecoin.js.jsonrpcprovider.paymentchannelvouchercheckvalid": {
-        "title": "JsonRpcProvider.PaymentChannelVoucherCheckValid() method"
-      },
-      "api/filecoin.js.jsonrpcprovider.paymentchannelvouchercreate": {
-        "title": "JsonRpcProvider.PaymentChannelVoucherCreate() method"
-      },
-      "api/filecoin.js.jsonrpcprovider.paymentchannelvoucherlist": {
-        "title": "JsonRpcProvider.PaymentChannelVoucherList() method"
-      },
-      "api/filecoin.js.jsonrpcprovider.paymentchannelvouchersubmit": {
-        "title": "JsonRpcProvider.PaymentChannelVoucherSubmit() method"
-      },
-      "api/filecoin.js.jsonrpcprovider.queryask": {
-        "title": "JsonRpcProvider.queryAsk() method"
-      },
-      "api/filecoin.js.jsonrpcprovider.readobj": {
-        "title": "JsonRpcProvider.readObj() method"
-      },
-      "api/filecoin.js.jsonrpcprovider.readstate": {
-        "title": "JsonRpcProvider.readState() method"
+      "api/filecoin.js.jsonrpcprovider.paych": {
+        "title": "JsonRpcProvider.paych property"
       },
       "api/filecoin.js.jsonrpcprovider.release": {
         "title": "JsonRpcProvider.release() method"
       },
-      "api/filecoin.js.jsonrpcprovider.removeimport": {
-        "title": "JsonRpcProvider.removeImport() method"
+      "api/filecoin.js.jsonrpcprovider.state": {
+        "title": "JsonRpcProvider.state property"
       },
-      "api/filecoin.js.jsonrpcprovider.retrieve": {
-        "title": "JsonRpcProvider.retrieve() method"
+      "api/filecoin.js.jsonrpcprovider.sync": {
+        "title": "JsonRpcProvider.sync property"
       },
-      "api/filecoin.js.jsonrpcprovider.retrievetryrestartinsufficientfunds": {
-        "title": "JsonRpcProvider.retrieveTryRestartInsufficientFunds() method"
+      "api/filecoin.js.lightwalletprovider._constructor_": {
+        "title": "LightWalletProvider.(constructor)"
       },
-      "api/filecoin.js.jsonrpcprovider.retrievewithevents": {
-        "title": "JsonRpcProvider.retrieveWithEvents() method"
+      "api/filecoin.js.lightwalletprovider.createlightwallet": {
+        "title": "LightWalletProvider.createLightWallet() method"
       },
-      "api/filecoin.js.jsonrpcprovider.searchmsg": {
-        "title": "JsonRpcProvider.searchMsg() method"
+      "api/filecoin.js.lightwalletprovider.getaccounts": {
+        "title": "LightWalletProvider.getAccounts() method"
       },
-      "api/filecoin.js.jsonrpcprovider.sectorexpiration": {
-        "title": "JsonRpcProvider.sectorExpiration() method"
+      "api/filecoin.js.lightwalletprovider.getdefaultaccount": {
+        "title": "LightWalletProvider.getDefaultAccount() method"
       },
-      "api/filecoin.js.jsonrpcprovider.sectorgetinfo": {
-        "title": "JsonRpcProvider.sectorGetInfo() method"
+      "api/filecoin.js.lightwalletprovider.getsigner": {
+        "title": "LightWalletProvider.getSigner() method"
       },
-      "api/filecoin.js.jsonrpcprovider.sectorpartition": {
-        "title": "JsonRpcProvider.sectorPartition() method"
+      "api/filecoin.js.lightwalletprovider.keystore": {
+        "title": "LightWalletProvider.keystore property"
       },
-      "api/filecoin.js.jsonrpcprovider.sectorprecommitinfo": {
-        "title": "JsonRpcProvider.sectorPreCommitInfo() method"
+      "api/filecoin.js.lightwalletprovider.loadlightwallet": {
+        "title": "LightWalletProvider.loadLightWallet() method"
       },
-      "api/filecoin.js.jsonrpcprovider.sethead": {
-        "title": "JsonRpcProvider.setHead() method"
+      "api/filecoin.js.lightwalletprovider": {
+        "title": "LightWalletProvider class"
       },
-      "api/filecoin.js.jsonrpcprovider.setmpoolconfig": {
-        "title": "JsonRpcProvider.setMpoolConfig() method"
+      "api/filecoin.js.lightwalletprovider.preparetosave": {
+        "title": "LightWalletProvider.prepareToSave() method"
       },
-      "api/filecoin.js.jsonrpcprovider.shutdown": {
-        "title": "JsonRpcProvider.shutdown() method"
+      "api/filecoin.js.lightwalletprovider.recoverlightwallet": {
+        "title": "LightWalletProvider.recoverLightWallet() method"
       },
-      "api/filecoin.js.jsonrpcprovider.startdeal": {
-        "title": "JsonRpcProvider.startDeal() method"
+      "api/filecoin.js.lightwalletprovider.sendmessage": {
+        "title": "LightWalletProvider.sendMessage() method"
       },
-      "api/filecoin.js.jsonrpcprovider.statecall": {
-        "title": "JsonRpcProvider.stateCall() method"
+      "api/filecoin.js.lightwalletprovider.sign": {
+        "title": "LightWalletProvider.sign() method"
       },
-      "api/filecoin.js.jsonrpcprovider.statereplay": {
-        "title": "JsonRpcProvider.stateReplay() method"
+      "api/filecoin.js.lightwalletprovider.signmessage": {
+        "title": "LightWalletProvider.signMessage() method"
       },
-      "api/filecoin.js.jsonrpcprovider.statobj": {
-        "title": "JsonRpcProvider.statObj() method"
+      "api/filecoin.js.lightwalletprovider.verify": {
+        "title": "LightWalletProvider.verify() method"
       },
-      "api/filecoin.js.jsonrpcprovider.stopchainnotify": {
-        "title": "JsonRpcProvider.stopChainNotify() method"
+      "api/filecoin.js.lightwalletsigner._constructor_": {
+        "title": "LightWalletSigner.(constructor)"
       },
-      "api/filecoin.js.jsonrpcprovider.synccheckbad": {
-        "title": "JsonRpcProvider.syncCheckBad() method"
+      "api/filecoin.js.lightwalletsigner.getdefaultaccount": {
+        "title": "LightWalletSigner.getDefaultAccount() method"
       },
-      "api/filecoin.js.jsonrpcprovider.synccheckpoint": {
-        "title": "JsonRpcProvider.syncCheckpoint() method"
+      "api/filecoin.js.lightwalletsigner": {
+        "title": "LightWalletSigner class"
       },
-      "api/filecoin.js.jsonrpcprovider.syncincomingblocks": {
-        "title": "JsonRpcProvider.syncIncomingBlocks() method"
-      },
-      "api/filecoin.js.jsonrpcprovider.syncmarkbad": {
-        "title": "JsonRpcProvider.syncMarkBad() method"
-      },
-      "api/filecoin.js.jsonrpcprovider.syncstate": {
-        "title": "JsonRpcProvider.syncState() method"
-      },
-      "api/filecoin.js.jsonrpcprovider.syncsubmitblock": {
-        "title": "JsonRpcProvider.syncSubmitBlock() method"
-      },
-      "api/filecoin.js.jsonrpcprovider.syncunmarkbad": {
-        "title": "JsonRpcProvider.syncUnmarkBad() method"
-      },
-      "api/filecoin.js.jsonrpcprovider.verifiedclientstatus": {
-        "title": "JsonRpcProvider.verifiedClientStatus() method"
-      },
-      "api/filecoin.js.jsonrpcprovider.version": {
-        "title": "JsonRpcProvider.version() method"
-      },
-      "api/filecoin.js.jsonrpcprovider.waitmsg": {
-        "title": "JsonRpcProvider.waitMsg() method"
+      "api/filecoin.js.lightwalletsigner.sign": {
+        "title": "LightWalletSigner.sign() method"
       },
       "api/filecoin.js": {
         "title": "filecoin.js package"

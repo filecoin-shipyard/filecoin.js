@@ -101,13 +101,37 @@ declare type ChainEpoch = number;
  * Payment Channel Types
  */
 declare class ChannelAvailableFunds {
+    /**
+   * Address of the channel
+   */
     Channel: Address;
+    /**
+   * From address of the channel (channel creator)
+   */
     From: Address;
+    /**
+   * To address of the channel
+   */
     To: Address;
+    /**
+   * Amount of funds that have been confirmed on-chain for the channel
+   */
     ConfirmedAmt: string;
+    /**
+   * Amount of funds that are pending confirmation on-chain
+   */
     PendingAmt: string;
+    /**
+   * Can be used with PaychGetWaitReady to wait for confirmation of pending funds
+   */
     PendingWaitSentinel: Cid;
+    /**
+   * Amount that is queued up behind a pending request
+   */
     QueuedAmt: string;
+    /**
+   * Amount that is redeemed by vouchers on-chain and in the local datastore
+   */
     VoucherReedeemedAmt: string;
 }
 
@@ -550,16 +574,30 @@ declare class InvocResult {
     Duration: number;
 }
 
-declare type JsonRpcConnectionOptions = {
-    url: string;
-    token?: string;
-};
+/**
+ * The Auth method group is used to manage the authorization tokens.
+ */
+declare class JsonRpcAuthMethodGroup {
+    private conn;
+    constructor(conn: Connector);
+    /**
+     * list the permissions for a given authorization token
+     * @param token
+     */
+    verify(token: string): Promise<Permission[]>;
+    /**
+     * generate a new authorization token for a given permissions list
+     * @param permissions
+     */
+    new(permissions: Permission[]): Promise<string>;
+}
 
-export declare class JsonRpcProvider {
-    conn: Connector;
-    private intervals;
-    constructor(connector: Connector);
-    release(): Promise<any>;
+/**
+ * The Chain method group contains methods for interacting with the blockchain, but that do not require any form of state computation.
+ */
+declare class JsonRpcChainMethodGroup {
+    private conn;
+    constructor(conn: Connector);
     /**
      * reads ipld nodes referenced by the specified CID from chain blockstore and returns raw bytes.
      * @param cid
@@ -579,7 +617,7 @@ export declare class JsonRpcProvider {
      * @param cb
      * @returns interval id
      */
-    chainNotify(cb: (headChange: HeadChange[]) => void): Promise<Timeout | undefined>;
+    chainNotify(cb: (headChange: HeadChange[]) => void): Promise<NodeJS.Timeout | undefined>;
     stopChainNotify(id?: any): void;
     /**
      * returns the block specified by the given CID
@@ -647,12 +685,449 @@ export declare class JsonRpcProvider {
      * @remarks The exported chain data includes the header chain from the given tipset back to genesis, the entire genesis state, and the most recent 'nroots' state trees.
      */
     export(nroots: ChainEpoch, tipSetKey: TipSetKey): Promise<any>;
+}
+
+/**
+ * The Client methods all have to do with interacting with the storage and retrieval markets as a client.
+ */
+declare class JsonRpcClientMethodGroup {
+    private conn;
+    constructor(conn: Connector);
     /**
-     * State
-     * The State methods are used to query, inspect, and interact with chain state.
-     * All methods take a TipSetKey as a parameter. The state looked up is the state at that tipset.
-     * If TipSetKey is not provided as a param, the heaviest tipset in the chain to be used.
+     * Imports file under the specified path into filestore.
+     * @param fileRef
      */
+    import(fileRef: FileRef): Promise<ImportRes>;
+    /**
+     * Removes file import
+     * @param importId
+     */
+    removeImport(importId: StoreID): Promise<ImportRes>;
+    /**
+     * Proposes a deal with a miner.
+     * @param dealParams
+     */
+    startDeal(dealParams: StartDealParams): Promise<Cid>;
+    /**
+     * Returns the latest information about a given deal.
+     * @param dealCid
+     */
+    getDealInfo(dealCid: Cid): Promise<DealInfo>;
+    /**
+     * Returns information about the deals made by the local client.
+     */
+    listDeals(): Promise<DealInfo[]>;
+    hasLocal(cid: Cid): Promise<boolean>;
+    /**
+     * Identifies peers that have a certain file, and returns QueryOffers (one per peer).
+     * @param cid
+     * @param pieceCid
+     */
+    findData(cid: Cid, pieceCid?: Cid): Promise<QueryOffer[]>;
+    /**
+     * returns a QueryOffer for the specific miner and file.
+     * @param miner
+     * @param root
+     * @param pieceCid
+     */
+    minerQueryOffer(miner: Address, root: Cid, pieceCid?: Cid): Promise<QueryOffer>;
+    /**
+     * initiates the retrieval of a file, as specified in the order.
+     * @param order
+     * @param ref
+     */
+    retrieve(order: RetrievalOrder, ref: FileRef): Promise<void>;
+    /**
+     * returns a signed StorageAsk from the specified miner.
+     * @param peerId
+     * @param miner
+     */
+    queryAsk(peerId: PeerID, miner: Address): Promise<StorageAsk>;
+    /**
+     * calculates the CommP for a specified file
+     * @param path
+     */
+    calcCommP(path: string): Promise<CommPRet>;
+    /**
+     * generates a CAR file for the specified file.
+     * @param ref
+     * @param outpath
+     */
+    genCar(ref: FileRef, outpath: string): Promise<any>;
+    /**
+     * calculates real deal data size
+     * @param root
+     */
+    dealSize(root: Cid): Promise<DataSize>;
+    /**
+     * returns the status of all ongoing transfers of data
+     */
+    listDataTransfers(): Promise<DataTransferChannel[]>;
+    /**
+     * attempts to restart stalled retrievals on a given payment channel which are stuck due to insufficient funds.
+     * @param paymentChannel
+     */
+    retrieveTryRestartInsufficientFunds(paymentChannel: Address): Promise<void>;
+    /**
+     * lists imported files and their root CIDs
+     */
+    listImports(): Promise<Import[]>;
+    /**
+     * returns the status of updated deals
+     */
+    getDealUpdates(cb: (data: DealInfo) => void): Promise<void>;
+    /**
+     * initiates the retrieval of a file, as specified in the order, and provides a channel of status updates.
+     * @param order
+     * @param ref
+     * @param cb
+     */
+    retrieveWithEvents(order: RetrievalOrder, ref: FileRef, cb: (data: RetrievalEvent) => void): Promise<void>;
+    dataTransferUpdates(cb: (data: DataTransferChannel) => void): Promise<void>;
+}
+
+declare class JsonRpcCommonMethodGroup {
+    private conn;
+    constructor(conn: Connector);
+    /**
+     * returns peerID of libp2p node backing this API
+     */
+    id(): Promise<ID>;
+    /**
+     * provides information about API provider
+     */
+    version(): Promise<Version>;
+    logList(): Promise<string[]>;
+    logSetLevel(string1: string, string2: string): Promise<any>;
+    /**
+     * trigger graceful shutdown
+     */
+    shutdown(): Promise<void>;
+}
+
+declare type JsonRpcConnectionOptions = {
+    url: string;
+    token?: string;
+};
+
+declare class JsonRpcMinerMethodGroup {
+    private conn;
+    constructor(conn: Connector);
+    /**
+     * MinerGetBaseInfo
+     * @param address
+     * @param chainEpoch
+     * @param tipSetKey
+     */
+    getBaseInfo(address: string, chainEpoch: ChainEpoch, tipSetKey: TipSetKey): Promise<MiningBaseInfo>;
+    /**
+     * MinerCreateBlock
+     * @param blockTemplate
+     */
+    createBlock(blockTemplate: BlockTemplate): Promise<BlockMsg>;
+}
+
+/**
+ * The Mpool methods are for interacting with the message pool. The message pool manages all incoming and outgoing 'messages' going over the network.
+ */
+declare class JsonRpcMPoolMethodGroup {
+    private conn;
+    constructor(conn: Connector);
+    /**
+     * returns (a copy of) the current mpool config
+     */
+    getMpoolConfig(): Promise<MpoolConfig>;
+    /**
+     * sets the mpool config to (a copy of) the supplied config
+     * @param config
+     */
+    setMpoolConfig(config: MpoolConfig): Promise<MpoolConfig>;
+    /**
+     * clears pending messages from the mpool
+     */
+    clear(): Promise<any>;
+    /**
+     * get all mpool messages
+     * @param tipSetKey
+     */
+    getMpoolPending(tipSetKey: TipSetKey): Promise<[SignedMessage]>;
+    /**
+     * returns a list of pending messages for inclusion in the next block
+     * @param tipSetKey
+     * @param ticketQuality
+     */
+    select(tipSetKey: TipSetKey, ticketQuality: number): Promise<[SignedMessage]>;
+    /**
+     * returns a list of pending messages for inclusion in the next block
+     * @param tipSetKey
+     * @param ticketQuality
+     */
+    sub(cb: (data: MpoolUpdate) => void): Promise<void>;
+}
+
+/**
+ * The Msig methods are used to interact with multisig wallets on the filecoin network
+ */
+declare class JsonRpcMsigMethodGroup {
+    private conn;
+    constructor(conn: Connector);
+    /**
+     * returns the portion of a multisig's balance that can be withdrawn or spent
+     * @param address
+     * @param tipSetKey
+     */
+    getAvailableBalance(address: string, tipSetKey: TipSetKey): Promise<string>;
+    /**
+     * returns the amount of FIL that vested in a multisig in a certain period.
+     * @param address
+     * @param startEpoch
+     * @param endEpoch
+     */
+    getVested(address: string, startEpoch: TipSetKey, endEpoch: TipSetKey): Promise<string>;
+    /**
+     * creates a multisig wallet
+     * @param requiredNumberOfSenders
+     * @param approvingAddresses
+     * @param unlockDuration
+     * @param initialBalance
+     * @param senderAddressOfCreateMsg
+     * @param gasPrice
+     */
+    create(requiredNumberOfSenders: number, approvingAddresses: string[], unlockDuration: ChainEpoch, initialBalance: string, senderAddressOfCreateMsg: string, gasPrice: string): Promise<Cid>;
+    /**
+     * proposes a multisig message
+     * @param address
+     * @param recipientAddres
+     * @param value
+     * @param senderAddressOfProposeMsg
+     * @param methodToCallInProposeMsg
+     * @param paramsToIncludeInProposeMsg
+     */
+    propose(address: string, recipientAddres: string, value: string, senderAddressOfProposeMsg: string, methodToCallInProposeMsg: number, paramsToIncludeInProposeMsg: []): Promise<Cid>;
+    /**
+     * approves a previously-proposed multisig message
+     * @param address
+     * @param proposedMessageId
+     * @param proposerAddress
+     * @param recipientAddres
+     * @param value
+     * @param senderAddressOfApproveMsg
+     * @param methodToCallInProposeMsg
+     * @param paramsToIncludeInProposeMsg
+     */
+    approve(address: string, proposedMessageId: number, proposerAddress: string, recipientAddres: string, value: string, senderAddressOfApproveMsg: string, methodToCallInProposeMsg: number, paramsToIncludeInProposeMsg: []): Promise<Cid>;
+    /**
+     * cancels a previously-proposed multisig message
+     * @param address
+     * @param proposedMessageId
+     * @param proposerAddress
+     * @param recipientAddres
+     * @param value
+     * @param senderAddressOfCancelMsg
+     * @param methodToCallInProposeMsg
+     * @param paramsToIncludeInProposeMsg
+     */
+    cancel(address: string, proposedMessageId: number, proposerAddress: string, recipientAddres: string, value: string, senderAddressOfCancelMsg: string, methodToCallInProposeMsg: number, paramsToIncludeInProposeMsg: []): Promise<Cid>;
+    /**
+     * proposes adding a signer in the multisig
+     * @param address
+     * @param senderAddressOfProposeMsg
+     * @param newSignerAddress
+     * @param increaseNumberOfRequiredSigners
+     */
+    addPropose(address: string, senderAddressOfProposeMsg: string, newSignerAddress: string, increaseNumberOfRequiredSigners: boolean): Promise<Cid>;
+    /**
+     * approves a previously proposed AddSigner message
+     * @param address
+     * @param senderAddressOfApproveMsg
+     * @param proposedMessageId
+     * @param proposerAddress
+     * @param newSignerAddress
+     * @param increaseNumberOfRequiredSigners
+     */
+    addApprove(address: string, senderAddressOfApproveMsg: string, proposedMessageId: number, proposerAddress: string, newSignerAddress: string, increaseNumberOfRequiredSigners: boolean): Promise<Cid>;
+    /**
+     * cancels a previously proposed AddSigner message
+     * @param address
+     * @param senderAddressOfCancelMsg
+     * @param proposedMessageId
+     * @param newSignerAddress
+     * @param increaseNumberOfRequiredSigners
+     */
+    addCancel(address: string, senderAddressOfCancelMsg: string, proposedMessageId: number, newSignerAddress: string, increaseNumberOfRequiredSigners: boolean): Promise<Cid>;
+    /**
+     * proposes swapping 2 signers in the multisig
+     * @param address
+     * @param senderAddressOfProposeMsg
+     * @param oldSignerAddress
+     * @param newSignerAddress
+     */
+    swapPropose(address: string, senderAddressOfProposeMsg: string, oldSignerAddress: string, newSignerAddress: string): Promise<Cid>;
+    /**
+     * approves a previously proposed SwapSigner
+     * @param address
+     * @param senderAddressOfApproveMsg
+     * @param proposedMessageId
+     * @param proposerAddress
+     * @param oldSignerAddress
+     * @param newSignerAddress
+     */
+    swapApprove(address: string, senderAddressOfApproveMsg: string, proposedMessageId: number, proposerAddress: string, oldSignerAddress: string, newSignerAddress: string): Promise<Cid>;
+    /**
+     * cancels a previously proposed SwapSigner message
+     * @param address
+     * @param senderAddressOfCancelMsg
+     * @param proposedMessageId
+     * @param oldSignerAddress
+     * @param newSignerAddress
+     */
+    multiSigSwapCancel(address: string, senderAddressOfCancelMsg: string, proposedMessageId: number, oldSignerAddress: string, newSignerAddress: string): Promise<Cid>;
+}
+
+declare class JsonRpcNetMethodGroup {
+    private conn;
+    constructor(conn: Connector);
+    connectedness(peerId: PeerID): Promise<Connectedness>;
+    peers(): Promise<AddrInfo[]>;
+    connect(addrInfo: AddrInfo): Promise<any>;
+    addrsListen(): Promise<AddrInfo>;
+    disconnect(peerID: PeerID): Promise<void>;
+    findPeer(peerID: PeerID): Promise<AddrInfo>;
+    pubsubScores(): Promise<PubsubScore[]>;
+    autoNatStatus(): Promise<NatInfo>;
+}
+
+/**
+ * The Paych methods are for interacting with and managing payment channels
+ */
+declare class JsonRpcPaychMethodGroup {
+    private conn;
+    constructor(conn: Connector);
+    /**
+     * PaychGet
+     * @param from
+     * @param to
+     * @param amount
+     */
+    getPaymentChannel(from: string, to: string, amount: string): Promise<ChannelInfo>;
+    /**
+     * PaychGetWaitReady
+     * @param cid
+     */
+    getWaitReadyPaymentChannel(cid: Cid): Promise<Address>;
+    /**
+     * PaychList
+     */
+    getList(): Promise<[Address]>;
+    /**
+     * PaychStatus
+     * @param address
+     */
+    status(address: string): Promise<PaychStatus>;
+    /**
+     * PaychAllocateLane
+     * @param address
+     */
+    allocateLane(address: string): Promise<number>;
+    /**
+     * PaychSettle
+     * @param address
+     */
+    settle(address: string): Promise<Cid>;
+    /**
+     * PaychCollect
+     * @param address
+     */
+    collect(address: string): Promise<Cid>;
+    /**
+     * PaychAvailableFunds
+     * @param address
+     */
+    getAvailableFunds(address: string): Promise<ChannelAvailableFunds>;
+    /**
+     * PaychAvailableFundsByFromTo
+     * @param from
+     * @param to
+     */
+    getAvailableFundsByFromTo(from: string, to: string): Promise<ChannelAvailableFunds>;
+    /**
+     * PaychNewPayment
+     * @param from
+     * @param to
+     * @param vouchers
+     */
+    newPayment(from: string, to: string, vouchers: [VoucherSpec]): Promise<PaymentInfo>;
+    /**
+     * PaychVoucherCreate
+     * @param address
+     * @param amount
+     * @param lane
+     */
+    voucherCreate(address: string, amount: string, lane: number): Promise<VoucherCreateResult>;
+    /**
+     * PaychVoucherList
+     * @param address
+     */
+    voucherList(address: string): Promise<[SignedVoucher]>;
+    /**
+     * PaychVoucherCheckValid
+     * @param address
+     * @param signedVoucher
+     */
+    voucherCheckValid(address: string, signedVoucher: SignedVoucher): Promise<any>;
+    /**
+     * PaychVoucherAdd
+     * @param address
+     * @param signedVoucher
+     * @param proof
+     * @param minDelta
+     */
+    voucherAdd(address: string, signedVoucher: SignedVoucher, proof: any, minDelta: string): Promise<string>;
+    /**
+     * PaychVoucherCheckSpendable
+     * @param address
+     * @param signedVoucher
+     * @param secret
+     * @param proof
+     */
+    voucherCheckSpendable(address: string, signedVoucher: SignedVoucher, secret: any, proof: any): Promise<boolean>;
+    /**
+     * PaychVoucherSubmit
+     * @param address
+     * @param signedVoucher
+     * @param secret
+     * @param proof
+     */
+    voucherSubmit(address: string, signedVoucher: SignedVoucher, secret: any, proof: any): Promise<Cid>;
+}
+
+export declare class JsonRpcProvider {
+    conn: Connector;
+    chain: JsonRpcChainMethodGroup;
+    state: JsonRpcStateMethodGroup;
+    auth: JsonRpcAuthMethodGroup;
+    client: JsonRpcClientMethodGroup;
+    common: JsonRpcCommonMethodGroup;
+    miner: JsonRpcMinerMethodGroup;
+    paych: JsonRpcPaychMethodGroup;
+    mpool: JsonRpcMPoolMethodGroup;
+    net: JsonRpcNetMethodGroup;
+    msig: JsonRpcMsigMethodGroup;
+    sync: JsonRpcSyncMethodGroup;
+    constructor(connector: Connector);
+    release(): Promise<any>;
+}
+
+/**
+ * The State methods are used to query, inspect, and interact with chain state.
+ *
+ * @remarks
+ * All methods take a TipSetKey as a parameter. The state looked up is the state at that tipset.
+ * If TipSetKey is not provided as a param, the heaviest tipset in the chain to be used.
+ */
+declare class JsonRpcStateMethodGroup {
+    private conn;
+    constructor(conn: Connector);
     /**
      * runs the given message and returns its result without any persisted changes.
      */
@@ -909,430 +1384,48 @@ export declare class JsonRpcProvider {
      * @param tipSetKey
      */
     circulatingSupply(tipSetKey?: TipSetKey): Promise<CirculatingSupply>;
-    /**
-     * Client
-     * The Client methods all have to do with interacting with the storage and retrieval markets as a client.
-     */
-    /**
-     * Imports file under the specified path into filestore.
-     * @param fileRef
-     */
-    import(fileRef: FileRef): Promise<ImportRes>;
-    /**
-     * Removes file import
-     * @param importId
-     */
-    removeImport(importId: StoreID): Promise<ImportRes>;
-    /**
-     * Proposes a deal with a miner.
-     * @param dealParams
-     */
-    startDeal(dealParams: StartDealParams): Promise<Cid>;
-    /**
-     * Returns the latest information about a given deal.
-     * @param dealCid
-     */
-    getDealInfo(dealCid: Cid): Promise<DealInfo>;
-    /**
-     * Returns information about the deals made by the local client.
-     */
-    listDeals(): Promise<DealInfo[]>;
-    hasLocal(cid: Cid): Promise<boolean>;
-    /**
-     * Identifies peers that have a certain file, and returns QueryOffers (one per peer).
-     * @param cid
-     * @param pieceCid
-     */
-    findData(cid: Cid, pieceCid?: Cid): Promise<QueryOffer[]>;
-    /**
-     * returns a QueryOffer for the specific miner and file.
-     * @param miner
-     * @param root
-     * @param pieceCid
-     */
-    minerQueryOffer(miner: Address, root: Cid, pieceCid?: Cid): Promise<QueryOffer>;
-    /**
-     * initiates the retrieval of a file, as specified in the order.
-     * @param order
-     * @param ref
-     */
-    retrieve(order: RetrievalOrder, ref: FileRef): Promise<void>;
-    /**
-     * returns a signed StorageAsk from the specified miner.
-     * @param peerId
-     * @param miner
-     */
-    queryAsk(peerId: PeerID, miner: Address): Promise<StorageAsk>;
-    /**
-     * calculates the CommP for a specified file
-     * @param path
-     */
-    calcCommP(path: string): Promise<CommPRet>;
-    /**
-     * generates a CAR file for the specified file.
-     * @param ref
-     * @param outpath
-     */
-    genCar(ref: FileRef, outpath: string): Promise<any>;
-    /**
-     * calculates real deal data size
-     * @param root
-     */
-    dealSize(root: Cid): Promise<DataSize>;
-    /**
-     * returns the status of all ongoing transfers of data
-     */
-    listDataTransfers(): Promise<DataTransferChannel[]>;
-    /**
-     * attempts to restart stalled retrievals on a given payment channel which are stuck due to insufficient funds.
-     * @param paymentChannel
-     */
-    retrieveTryRestartInsufficientFunds(paymentChannel: Address): Promise<void>;
-    /**
-     * lists imported files and their root CIDs
-     */
-    listImports(): Promise<Import[]>;
-    /**
-     * returns the status of updated deals
-     */
-    getDealUpdates(cb: (data: DealInfo) => void): Promise<void>;
-    /**
-     * initiates the retrieval of a file, as specified in the order, and provides a channel of status updates.
-     * @param order
-     * @param ref
-     * @param cb
-     */
-    retrieveWithEvents(order: RetrievalOrder, ref: FileRef, cb: (data: RetrievalEvent) => void): Promise<void>;
-    dataTransferUpdates(cb: (data: DataTransferChannel) => void): Promise<void>;
-    /**
-     * PaychGet
-     * @param from
-     * @param to
-     * @param amount
-     */
-    getPaymentChannel(from: string, to: string, amount: string): Promise<ChannelInfo>;
-    /**
-     * PaychGetWaitReady
-     * @param cid
-     */
-    getWaitReadyPaymentChannel(cid: Cid): Promise<Address>;
-    /**
-      * PaychList
-      */
-    getPaymentChannelList(): Promise<[Address]>;
-    /**
-     * PaychStatus
-     * @param address
-     */
-    getPaymentChannelStatus(address: string): Promise<PaychStatus>;
-    /**
-     * PaychAllocateLane
-     * @param address
-     */
-    PaymentChannelAllocateLane(address: string): Promise<number>;
-    /**
-     * PaychSettle
-     * @param address
-     */
-    PaymentChannelSettle(address: string): Promise<Cid>;
-    /**
-     * PaychCollect
-     * @param address
-     */
-    PaymentChannelCollect(address: string): Promise<Cid>;
-    /**
-     * PaychAvailableFunds
-     * @param address
-     */
-    getPaymentChannelAvailableFunds(address: string): Promise<ChannelAvailableFunds>;
-    /**
-     * PaychAvailableFundsByFromTo
-     * @param from
-     * @param to
-     */
-    getPaymentChannelAvailableFundsByFromTo(from: string, to: string): Promise<ChannelAvailableFunds>;
-    /**
-     * PaychNewPayment
-     * @param from
-     * @param to
-     * @param vouchers
-     */
-    paymentChannelNewPayment(from: string, to: string, vouchers: [VoucherSpec]): Promise<PaymentInfo>;
-    /**
-     * PaychVoucherCreate
-     * @param address
-     * @param amount
-     * @param lane
-     */
-    PaymentChannelVoucherCreate(address: string, amount: string, lane: number): Promise<VoucherCreateResult>;
-    /**
-     * PaychVoucherList
-     * @param address
-     */
-    PaymentChannelVoucherList(address: string): Promise<[SignedVoucher]>;
-    /**
-     * PaychVoucherCheckValid
-     * @param address
-     * @param signedVoucher
-     */
-    PaymentChannelVoucherCheckValid(address: string, signedVoucher: SignedVoucher): Promise<any>;
-    /**
-     * PaychVoucherAdd
-     * @param address
-     * @param signedVoucher
-     * @param proof
-     * @param minDelta
-     */
-    PaymentChannelVoucherAdd(address: string, signedVoucher: SignedVoucher, proof: any, minDelta: string): Promise<string>;
-    /**
-     * PaychVoucherCheckSpendable
-     * @param address
-     * @param signedVoucher
-     * @param secret
-     * @param proof
-     */
-    PaymentChannelVoucherCheckSpendable(address: string, signedVoucher: SignedVoucher, secret: any, proof: any): Promise<boolean>;
-    /**
-     * PaychVoucherSubmit
-     * @param address
-     * @param signedVoucher
-     * @param secret
-     * @param proof
-     */
-    PaymentChannelVoucherSubmit(address: string, signedVoucher: SignedVoucher, secret: any, proof: any): Promise<Cid>;
-    /**
-      * returns (a copy of) the current mpool config
-      */
-    getMpoolConfig(): Promise<MpoolConfig>;
-    /**
-      * sets the mpool config to (a copy of) the supplied config
-      * @param config
-      */
-    setMpoolConfig(config: MpoolConfig): Promise<MpoolConfig>;
-    /**
-      * clears pending messages from the mpool
-      */
-    mpoolClear(): Promise<any>;
-    /**
-      * get all mpool messages
-      * @param tipSetKey
-      */
-    getMpoolPending(tipSetKey: TipSetKey): Promise<[SignedMessage]>;
-    /**
-      * returns a list of pending messages for inclusion in the next block
-      * @param tipSetKey
-      * @param ticketQuality
-      */
-    mpoolSelect(tipSetKey: TipSetKey, ticketQuality: number): Promise<[SignedMessage]>;
-    /**
-      * returns a list of pending messages for inclusion in the next block
-      * @param tipSetKey
-      * @param ticketQuality
-      */
-    mpoolSub(cb: (data: MpoolUpdate) => void): Promise<void>;
-    /**
-      * MinerGetBaseInfo
-      * @param address
-      * @param chainEpoch
-      * @param tipSetKey
-      */
-    minerGetBaseInfo(address: string, chainEpoch: ChainEpoch, tipSetKey: TipSetKey): Promise<MiningBaseInfo>;
-    /**
-      * MinerCreateBlock
-      * @param blockTemplate
-      */
-    minerCreateBlock(blockTemplate: BlockTemplate): Promise<BlockMsg>;
-    /**
-      * multiSigGetAvailableBalance returns the portion of a multisig's balance that can be withdrawn or spent
-      * @param address
-      * @param tipSetKey
-      */
-    multiSigGetAvailableBalance(address: string, tipSetKey: TipSetKey): Promise<string>;
-    /**
-      * multiSigGetVested returns the amount of FIL that vested in a multisig in a certain period.
-      * @param address
-      * @param startEpoch
-      * @param endEpoch
-      */
-    multiSigGetVested(address: string, startEpoch: TipSetKey, endEpoch: TipSetKey): Promise<string>;
-    /**
-      * multiSigCreate creates a multisig wallet
-      * @param requiredNumberOfSenders
-      * @param approvingAddresses
-      * @param unlockDuration
-      * @param initialBalance
-      * @param senderAddressOfCreateMsg
-      * @param gasPrice
-      */
-    multiSigCreate(requiredNumberOfSenders: number, approvingAddresses: string[], unlockDuration: ChainEpoch, initialBalance: string, senderAddressOfCreateMsg: string, gasPrice: string): Promise<Cid>;
-    /**
-      * multiSigPropose creates a multisig wallet
-      * @param address
-      * @param recipientAddres
-      * @param value
-      * @param senderAddressOfProposeMsg
-      * @param methodToCallInProposeMsg
-      * @param paramsToIncludeInProposeMsg
-      */
-    multiSigPropose(address: string, recipientAddres: string, value: string, senderAddressOfProposeMsg: string, methodToCallInProposeMsg: number, paramsToIncludeInProposeMsg: []): Promise<Cid>;
-    /**
-      * multiSigApprove approves a previously-proposed multisig message
-      * @param address
-      * @param proposedMessageId
-      * @param proposerAddress
-      * @param recipientAddres
-      * @param value
-      * @param senderAddressOfApproveMsg
-      * @param methodToCallInProposeMsg
-      * @param paramsToIncludeInProposeMsg
-      */
-    multiSigApprove(address: string, proposedMessageId: number, proposerAddress: string, recipientAddres: string, value: string, senderAddressOfApproveMsg: string, methodToCallInProposeMsg: number, paramsToIncludeInProposeMsg: []): Promise<Cid>;
-    /**
-      * multiSigCancel cancels a previously-proposed multisig message
-      * @param address
-      * @param proposedMessageId
-      * @param proposerAddress
-      * @param recipientAddres
-      * @param value
-      * @param senderAddressOfCancelMsg
-      * @param methodToCallInProposeMsg
-      * @param paramsToIncludeInProposeMsg
-      */
-    multiSigCancel(address: string, proposedMessageId: number, proposerAddress: string, recipientAddres: string, value: string, senderAddressOfCancelMsg: string, methodToCallInProposeMsg: number, paramsToIncludeInProposeMsg: []): Promise<Cid>;
-    /**
-      * multiSigAddPropose proposes adding a signer in the multisig
-      * @param address
-      * @param senderAddressOfProposeMsg
-      * @param newSignerAddress
-      * @param increaseNumberOfRequiredSigners
-      */
-    multiSigAddPropose(address: string, senderAddressOfProposeMsg: string, newSignerAddress: string, increaseNumberOfRequiredSigners: boolean): Promise<Cid>;
-    /**
-      * multiSigAddApprove approves a previously proposed AddSigner message
-      * @param address
-      * @param senderAddressOfApproveMsg
-      * @param proposedMessageId
-      * @param proposerAddress
-      * @param newSignerAddress
-      * @param increaseNumberOfRequiredSigners
-      */
-    multiSigAddApprove(address: string, senderAddressOfApproveMsg: string, proposedMessageId: number, proposerAddress: string, newSignerAddress: string, increaseNumberOfRequiredSigners: boolean): Promise<Cid>;
-    /**
-      * multiSigAddCancel cancels a previously proposed AddSigner message
-      * @param address
-      * @param senderAddressOfCancelMsg
-      * @param proposedMessageId
-      * @param newSignerAddress
-      * @param increaseNumberOfRequiredSigners
-      */
-    multiSigAddCancel(address: string, senderAddressOfCancelMsg: string, proposedMessageId: number, newSignerAddress: string, increaseNumberOfRequiredSigners: boolean): Promise<Cid>;
-    /**
-      * multiSigSwapPropose proposes swapping 2 signers in the multisig
-      * @param address
-      * @param senderAddressOfProposeMsg
-      * @param oldSignerAddress
-      * @param newSignerAddress
-      */
-    multiSigSwapPropose(address: string, senderAddressOfProposeMsg: string, oldSignerAddress: string, newSignerAddress: string): Promise<Cid>;
-    /**
-      * multiSigSwapApprove approves a previously proposed SwapSigner
-      * @param address
-      * @param senderAddressOfApproveMsg
-      * @param proposedMessageId
-      * @param proposerAddress
-      * @param oldSignerAddress
-      * @param newSignerAddress
-      */
-    multiSigSwapApprove(address: string, senderAddressOfApproveMsg: string, proposedMessageId: number, proposerAddress: string, oldSignerAddress: string, newSignerAddress: string): Promise<Cid>;
-    /**
-      * multiSigSwapCancel cancels a previously proposed SwapSigner message
-      * @param address
-      * @param senderAddressOfCancelMsg
-      * @param proposedMessageId
-      * @param oldSignerAddress
-      * @param newSignerAddress
-      */
-    multiSigSwapCancel(address: string, senderAddressOfCancelMsg: string, proposedMessageId: number, oldSignerAddress: string, newSignerAddress: string): Promise<Cid>;
-    /**
-     * Auth
-     * The Auth method group is used to manage the authorization tokens.
-     */
-    /**
-     * list the permissions for a given authorization token
-     * @param token
-     */
-    authVerify(token: string): Promise<Permission[]>;
-    /**
-     * generate a new authorization token for a given permissions list
-     * @param permissions
-     */
-    authNew(permissions: Permission[]): Promise<string>;
-    /**
-     * Common
-     */
-    /**
-     * returns peerID of libp2p node backing this API
-     */
-    id(): Promise<ID>;
-    /**
-     * provides information about API provider
-     */
-    version(): Promise<Version>;
-    logList(): Promise<string[]>;
-    logSetLevel(string1: string, string2: string): Promise<any>;
-    /**
-     * trigger graceful shutdown
-     */
-    shutdown(): Promise<void>;
-    /**
-     * Net
-     */
-    netConnectedness(peerId: PeerID): Promise<Connectedness>;
-    netPeers(): Promise<AddrInfo[]>;
-    netConnect(addrInfo: AddrInfo): Promise<any>;
-    netAddrsListen(): Promise<AddrInfo>;
-    netDisconnect(peerID: PeerID): Promise<void>;
-    findPeer(peerID: PeerID): Promise<AddrInfo>;
-    netPubsubScores(): Promise<PubsubScore[]>;
-    netAutoNatStatus(): Promise<NatInfo>;
-    /**
-     * Sync
-     * The Sync method group contains methods for interacting with and observing the lotus sync service.
-     */
+}
+
+/**
+ * The Sync method group contains methods for interacting with and observing the lotus sync service.
+ */
+declare class JsonRpcSyncMethodGroup {
+    private conn;
+    constructor(conn: Connector);
     /**
      * returns the current status of the lotus sync system.
      */
-    syncState(): Promise<SyncState>;
+    state(): Promise<SyncState>;
     /**
      * checks if a block was marked as bad, and if it was, returns the reason.
      * @param blockCid
      */
-    syncCheckBad(blockCid: Cid): Promise<string>;
+    checkBad(blockCid: Cid): Promise<string>;
     /**
      * marks a blocks as bad, meaning that it won't ever by synced. Use with extreme caution.
      * @param blockCid
      */
-    syncMarkBad(blockCid: Cid): Promise<void>;
+    markBad(blockCid: Cid): Promise<void>;
     /**
      * unmarks a block as bad, making it possible to be validated and synced again.
      * @param blockCid
      */
-    syncUnmarkBad(blockCid: Cid): Promise<void>;
+    unmarkBad(blockCid: Cid): Promise<void>;
     /**
      * marks a blocks as checkpointed, meaning that it won't ever fork away from it.
      * @param tipSetKey
      */
-    syncCheckpoint(tipSetKey: TipSetKey): Promise<string>;
+    checkpoint(tipSetKey: TipSetKey): Promise<string>;
     /**
      * can be used to submit a newly created block to the network
      * @param blockMsg
      */
-    syncSubmitBlock(blockMsg: BlockMsg): Promise<string>;
+    submitBlock(blockMsg: BlockMsg): Promise<string>;
     /**
      * returns a channel streaming incoming, potentially not yet synced block headers.
      * @param cb
      */
-    syncIncomingBlocks(cb: (blockHeader: BlockHeader) => void): Promise<void>;
+    incomingBlocks(cb: (blockHeader: BlockHeader) => void): Promise<void>;
 }
 
 /**
@@ -1341,6 +1434,63 @@ export declare class JsonRpcProvider {
 declare class KeyInfo {
     Type: string;
     PrivateKey: [];
+}
+
+declare class Keystore {
+    salt: string;
+    hdPathString: string;
+    encSeed: {
+        encStr: any;
+        nonce: any;
+    } | undefined;
+    version: number;
+    hdIndex: number;
+    encPrivKeys: any;
+    addresses: string[];
+    serialize(): string;
+    deserialize(keystore: string): void;
+    init(mnemonic: string, pwDerivedKey: Uint8Array, hdPathString: string, salt: string): void;
+    createVault(opts: any): Promise<Error | null>;
+    private generateSalt;
+    private isSeedValid;
+    private _encryptString;
+    private _decryptString;
+    private encodeHex;
+    private decodeHex;
+    private _encryptKey;
+    private _decryptKey;
+    private deriveKeyFromPasswordAndSalt;
+    private generateNewAddress;
+    private _generatePrivKeys;
+    getPrivateKey(address: string, password: string): Promise<string>;
+    generateRandomSeed(extraEntropy?: any): string;
+    _concatAndSha256: (entropyBuf0: any, entropyBuf1: any) => Buffer;
+}
+
+export declare class LightWalletProvider extends HttpJsonRpcWalletProvider {
+    keystore: Keystore;
+    private hdPathString;
+    private signer;
+    constructor(connector: Connector);
+    createLightWallet(password: string): Promise<string>;
+    recoverLightWallet(mnemonic: string, password: string): Promise<void>;
+    loadLightWallet(encryptedWallet: string): void;
+    prepareToSave(): string;
+    getAccounts(): Promise<string[]>;
+    getDefaultAccount(): Promise<string>;
+    sendMessage(msg: Message, password?: string): Promise<SignedMessage>;
+    signMessage(msg: Message, password?: string): Promise<SignedMessage>;
+    sign(data: string | ArrayBuffer): Promise<Signature>;
+    getSigner(): LightWalletSigner;
+    verify(address: string, data: string | ArrayBuffer, sign: Signature): Promise<boolean>;
+}
+
+export declare class LightWalletSigner implements Signer {
+    private keystore;
+    constructor(keystore: Keystore);
+    sign(message: Message, password?: string): Promise<SignedMessage>;
+    getDefaultAccount(): Promise<string>;
+    private messageToSigner;
 }
 
 declare class Loc {
@@ -1502,11 +1652,11 @@ declare class MinerSectors {
 declare class MiningBaseInfo {
     MinerPower: string;
     NetworkPower: string;
-    Sectors: [SectorInfo];
+    Sectors: SectorInfo[];
     WorkerKey: Address;
     SectorSize: number;
     PrevBeaconEntry: BeaconEntry;
-    BeaconEntries: [BeaconEntry];
+    BeaconEntries: BeaconEntry[];
     HasMinPower: boolean;
 }
 
@@ -1541,7 +1691,7 @@ declare class ModVerifyParams {
 }
 
 declare class MpoolConfig {
-    PriorityAddrs: [Address];
+    PriorityAddrs: Address[];
     SizeLimitHigh: number;
     SizeLimitLow: number;
     ReplaceByFeeRatio: number;
@@ -1612,7 +1762,7 @@ declare class PaychStatus {
 declare class PaymentInfo {
     Channel: string;
     WaitSentinel: Cid;
-    Vouchers: [SignedVoucher];
+    Vouchers: SignedVoucher[];
 }
 
 declare type PeerID = string;
@@ -1838,22 +1988,60 @@ declare interface SignedMessage {
     Signature: Signature;
 }
 
+/**
+ * A voucher is sent by `From` to `To` off-chain in order to enable
+ * `To` to redeem payments on-chain in the future
+ */
 declare class SignedVoucher {
+    /**
+   * Address of the payment channel this signed voucher is valid for
+   */
     ChannelAddr: string;
+    /**
+   * Min epoch before which the voucher cannot be redeemed
+   */
     TimeLockMin: ChainEpoch;
+    /**
+   * Max epoch beyond which the voucher cannot be redeemed
+   * TimeLockMax set to 0 means no timeout
+   */
     TimeLockMax: ChainEpoch;
-    SecretPreimage: [];
-    Extra: ModVerifyParams;
+    /**
+   * (optional) The SecretPreImage is used by `To` to validate
+   */
+    SecretPreimage?: [];
+    /**
+   * (optional) Extra can be specified by `From` to add a verification method to the voucher
+   */
+    Extra?: ModVerifyParams;
+    /**
+   * Specifies which lane the Voucher merges into (will be created if does not exist)
+   */
     Lane: number;
+    /**
+   * Nonce is set by `From` to prevent redemption of stale vouchers on a lane
+   */
     Nonce: number;
+    /**
+   * Amount voucher can be redeemed for
+   */
     Amount: string;
+    /**
+   * (optional) MinSettleHeight can extend channel MinSettleHeight if needed
+   */
     MinSettleHeight?: ChainEpoch;
-    Merges?: [Merge];
+    /**
+   * (optional) Set of lanes to be merged into `Lane`
+   */
+    Merges?: Merge[];
+    /**
+   * Sender's signature over the voucher
+   */
     Signature: Signature;
 }
 
 declare interface Signer {
-    sign(message: Message, password?: string): Promise<SignedMessage>;
+    sign(message: Message, password?: string): Promise<SignedMessage | undefined>;
 }
 
 declare class StartDealParams {
@@ -1939,8 +2127,17 @@ declare class Version {
     BlockDelay: number;
 }
 
+/**
+ * VoucherCreateResult is the response to calling PaychVoucherCreate
+ */
 declare class VoucherCreateResult {
+    /**
+   * Voucher that was created, or nil if there was an error or if there were insufficient funds in the channel
+   */
     Voucher: SignedVoucher;
+    /**
+   * Additional amount that would be needed in the channel in order to be able to create the voucher
+   */
     Shortfall: string;
 }
 
@@ -1954,8 +2151,8 @@ declare class VoucherSpec {
 
 declare interface WalletProvider {
     getAccounts(): Promise<string[]>;
-    signMessage(msg: Message): Promise<SignedMessage>;
-    sign(data: string): Promise<Signature>;
+    signMessage(msg: Message, password?: string): Promise<SignedMessage>;
+    sign(data: string, password?: string): Promise<Signature>;
     verify(address: string, data: string | ArrayBuffer, sign: Signature): Promise<boolean>;
 }
 

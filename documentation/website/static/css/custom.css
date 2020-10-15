@@ -11,8 +11,46 @@ a {
   text-decoration: none;
 }
 
+#footer {
+  background: #00bfff;
+}
+
 .homeCustomWrapper {
   padding: 80px 10px;
+}
+
+.homeContainer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(to top, #00bfff, #007fff);
+}
+
+.homeContainer .projectTitle {
+  color: #fff;
+}
+
+.homeContainer .promoSection .promoRow .pluginRowBlock .pluginWrapper {
+  padding: 8px;
+}
+
+.homeContainer .promoSection .button {
+  border: 1px solid #fff;
+  border-radius: 6px;
+  color: #fff;
+}
+
+.homeContainer .promoSection .button:hover {
+  background-color: #fff;
+  color: #007fff;
+}
+
+.nav-footer .sitemap a {
+  color: rgba(255, 255, 255, 1);
+}
+
+.nav-footer .sitemap .nav-home {
+  opacity: 0.9;
 }
 
 @media only screen and (min-device-width: 360px) and (max-device-width: 736px) {

@@ -23,15 +23,15 @@ const users = [
 const siteConfig = {
   title: 'Filecoin.js', // Title for your website.
   tagline: 'Filecoin.js library',
-  url: 'filecoin.js', // Your website URL
-  baseUrl: '/', // Base URL for your project */
+  url: 'https://filecoin-shipyard.github.io', // Replace USERNAME with your GitHub username.
+  baseUrl: '/filecoin.js/', // Base URL for your project */
   // For github.io type URLs, you would set the url and baseUrl like:
   //   url: 'https://facebook.github.io',
   //   baseUrl: '/test-site/',
 
   // Used for publishing and more
-  projectName: 'filecoin-docs',
-  organizationName: 'Filecoin',
+  projectName: 'filecoin.js',
+  organizationName: 'filecoin-shipyard',
   customDocsPath: 'src',
   // For top-level user or org sites, the organization is still the same.
   // e.g., for the https://JoelMarcey.github.io site, it would be set like...
@@ -58,8 +58,8 @@ const siteConfig = {
 
   /* Colors for website */
   colors: {
-    primaryColor: '#27293D',
-    secondaryColor: '#27293D',
+    primaryColor: '#007fff',
+    secondaryColor: '#007fff',
   },
 
   /* Custom fonts for website */
@@ -108,7 +108,7 @@ const siteConfig = {
 
   // You may provide arbitrary config keys to be used as needed by your
   // template. For example, if you need your repo's URL...
-    repoUrl: 'https://github.com/Digital-MOB-Filecoin/filecoin.js/',
+  repoUrl: 'https://github.com/filecoin-shipyard/filecoin.js',
 };
 
 module.exports = siteConfig;

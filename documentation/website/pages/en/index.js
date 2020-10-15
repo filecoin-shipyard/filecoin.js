@@ -10,16 +10,13 @@ class HomeSplash extends React.Component {
 
     const SplashContainer = props => (
       <div className="homeContainer">
-        <div className="homeSplashFade">
           <div className="homeCustomWrapper">{props.children}</div>
-        </div>
       </div>
     );
 
     const ProjectTitle = () => (
       <h2 className="projectTitle">
-        Filecoin JavaScript library
-        <small>Filecoin.js</small>
+        FilecoinJS
       </h2>
     );
 
@@ -41,14 +38,12 @@ class HomeSplash extends React.Component {
 
     return (
       <SplashContainer>
-        <div className="inner">
           <ProjectTitle />
           <PromoSection>
             <Button href={docUrl('introduction')}>Documentation</Button>
             <Button href={docUrl('api/filecoin.js')}>API Reference</Button>
             <Button href={repoUrl}>GitHub</Button>
           </PromoSection>
-        </div>
       </SplashContainer>
     );
   }
@@ -59,9 +54,7 @@ class Index extends React.Component {
     const {config: siteConfig, language = ''} = this.props;
 
     return (
-      <div>
-        <HomeSplash siteConfig={siteConfig} language={language} />
-      </div>
+      <HomeSplash siteConfig={siteConfig} language={language} />
     );
   }
 }
