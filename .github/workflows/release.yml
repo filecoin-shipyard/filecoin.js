@@ -3,11 +3,13 @@ name: release
 on:
   push:
     branches: [ master ]
+  pull_request:
+    branches: [ master ]
 
 jobs:
   release:
     # only release on push to master
-    if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+    # if: github.event_name == 'push' && github.ref == 'refs/heads/master'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -19,7 +21,9 @@ jobs:
       - name: Npm install
         run: npm install
       - name: Release
-        run: npx semantic-release
+        run: |
+          echo "$NPM_TOKEN"
+          npx semantic-release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_ACCESS_TOKEN }}
