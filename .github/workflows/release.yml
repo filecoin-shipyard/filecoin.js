@@ -2,10 +2,7 @@ name: release
 
 on:
   push:
-    branches: [ master ]
-  pull_request:
-    branches: [ master ]
-
+    branches: [ master, beta ]
 jobs:
   release:
     # only release on push to master
@@ -14,6 +11,7 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
+        token: ${{ secrets.GH_TOKEN_SEMANTIC_RELEASE }}
       - name: Setup Node.js
         uses: actions/setup-node@v1
         with:
