@@ -2,10 +2,7 @@ name: release
 
 on:
   push:
-    branches: [ master ]
-  pull_request:
-    branches: [ master ]
-
+    branches: [ master, beta ]
 jobs:
   release:
     # only release on push to master
