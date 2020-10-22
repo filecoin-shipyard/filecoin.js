@@ -5,13 +5,12 @@ on:
     branches: [ master, beta ]
 jobs:
   release:
-    # only release on push to master
-    if: github.event_name == 'push' && github.ref == 'refs/heads/master'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-        token: ${{ secrets.GH_TOKEN_SEMANTIC_RELEASE }}
+        with:
+          token: ${{ secrets.GH_TOKEN_SEMANTIC_RELEASE }}
       - name: Setup Node.js
         uses: actions/setup-node@v1
         with:
