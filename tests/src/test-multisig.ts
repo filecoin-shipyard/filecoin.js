@@ -2,7 +2,7 @@ import assert from "assert";
 import BigNumber from 'bignumber.js';
 
 import { LOTUS_AUTH_TOKEN } from "../tools/testnet/credentials/credentials";
-import { JsonRpcProvider } from '../../src/providers/JsonRpcProvider';
+import { LotusClient } from '../../src/providers/LotusClient';
 import { HttpJsonRpcConnector } from '../../src/connectors/HttpJsonRpcConnector';
 import { HttpJsonRpcWalletProvider } from '../../src/providers/wallet/HttpJsonRpcWalletProvider';
 import { MnemonicWalletProvider } from '../../src/providers/wallet/MnemonicWalletProvider';
@@ -38,7 +38,7 @@ describe("Multisig Wallets", function () {
 
     const mnemonicWalletProvider = new MnemonicWalletProvider(httpConnector, testMnemonic, '');
     const walletLotusHttp = new HttpJsonRpcWalletProvider(httpConnector);
-    const con = new JsonRpcProvider(httpConnector);
+    const con = new LotusClient(httpConnector);
 
     const addresses = await walletLotusHttp.getAccounts();
     const defaultAccount = await walletLotusHttp.getDefaultAccount();
@@ -83,7 +83,7 @@ describe("Multisig Wallets", function () {
 
     const mnemonicWalletProvider = new MnemonicWalletProvider(httpConnector, testMnemonic, '');
     const walletLotusHttp = new HttpJsonRpcWalletProvider(httpConnector);
-    const con = new JsonRpcProvider(httpConnector);
+    const con = new LotusClient(httpConnector);
 
     const addresses = await walletLotusHttp.getAccounts();
     const defaultAccount = await walletLotusHttp.getDefaultAccount();
@@ -124,7 +124,7 @@ describe("Multisig Wallets", function () {
 
     const mnemonicWalletProvider = new MnemonicWalletProvider(httpConnector, testMnemonic, '');
     const walletLotusHttp = new HttpJsonRpcWalletProvider(httpConnector);
-    const con = new JsonRpcProvider(httpConnector);
+    const con = new LotusClient(httpConnector);
 
     const addresses = await walletLotusHttp.getAccounts();
     const defaultAccount = await walletLotusHttp.getDefaultAccount();

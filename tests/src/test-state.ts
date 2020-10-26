@@ -1,6 +1,6 @@
 import assert from "assert";
 import { LOTUS_AUTH_TOKEN } from "../tools/testnet/credentials/credentials";
-import { JsonRpcProvider } from '../../src/providers/JsonRpcProvider';
+import { LotusClient } from '../../src/providers/LotusClient';
 import { HttpJsonRpcConnector } from '../../src/connectors/HttpJsonRpcConnector';
 import { WsJsonRpcConnector } from '../../src/connectors/WsJsonRpcConnector';
 
@@ -11,7 +11,7 @@ describe("Connection test", function () {
   const blocksWithMessages: any = [];
 
   it("get blocks with messages [http]", async function() {
-    const con = new JsonRpcProvider(httpConnector);
+    const con = new LotusClient(httpConnector);
     const res: any = await con.chain.getTipSetByHeight(30);
 
     let parentCid = res.Blocks[0].Parents[0];
@@ -35,33 +35,33 @@ describe("Connection test", function () {
   });
 
   it("should get block parent receipts [http]", async function() {
-    const con = new JsonRpcProvider(httpConnector);
+    const con = new LotusClient(httpConnector);
     const receipts = await con.chain.getParentReceipts(blocksWithMessages[0]);
     assert.strictEqual(typeof receipts[0].GasUsed, "number", "invalid receipts");
   });
 
   it("should get block parent receipts [ws]", async function() {
-    const provider = new JsonRpcProvider(wsConnector);
+    const provider = new LotusClient(wsConnector);
     const receipts = await provider.chain.getParentReceipts(blocksWithMessages[0]);
     assert.strictEqual(typeof receipts[0].GasUsed, "number", "invalid receipts");
     await provider.release();
   });
 
   it("should get block parent messages [http]", async function() {
-    const con = new JsonRpcProvider(httpConnector);
+    const con = new LotusClient(httpConnector);
     const messages = await con.chain.getParentMessages(blocksWithMessages[0]);
     assert.strictEqual(typeof messages[0].Message.Nonce, "number", "invalid message");
   });
 
   it("should get block parent messages [ws]", async function() {
-    const provider = new JsonRpcProvider(wsConnector);
+    const provider = new LotusClient(wsConnector);
     const messages = await provider.chain.getParentMessages(blocksWithMessages[0]);
     assert.strictEqual(typeof messages[0].Message.Nonce, "number", "invalid message");
     await provider.release();
   });
 
   it("should run the given message", async function() {
-    const provider = new JsonRpcProvider(httpConnector);
+    const provider = new LotusClient(httpConnector);
     const messages = await provider.state.listMessages({
       To: 't01000'
     });
@@ -72,19 +72,19 @@ describe("Connection test", function () {
   });
 
   it("should get actor [http]", async function() {
-    const con = new JsonRpcProvider(httpConnector);
+    const con = new LotusClient(httpConnector);
     const actor = await con.state.getActor('t01000');
     assert.strictEqual( typeof actor.Balance === 'string', true, "invalid actor");
   });
 
   it("should get state [http]", async function() {
-    const con = new JsonRpcProvider(httpConnector);
+    const con = new LotusClient(httpConnector);
     const state = await con.state.readState('t01000');
     assert.strictEqual(JSON.stringify(Object.keys(state)), JSON.stringify(['Balance', 'State']), 'invalid state');
   });
 
   it("should list messages [http]", async function () {
-    const con = new JsonRpcProvider(httpConnector);
+    const con = new LotusClient(httpConnector);
     const messages = await con.state.listMessages({
       To: 't01000'
     });
@@ -92,77 +92,77 @@ describe("Connection test", function () {
   });
 
   it("should get network name [http]", async function () {
-    const con = new JsonRpcProvider(httpConnector);
+    const con = new LotusClient(httpConnector);
     const network = await con.state.networkName();
     assert.strictEqual(typeof network === 'string', true, 'invalid network name');
   });
 
   it("should get miner sectors info [http]", async function () {
-    const con = new JsonRpcProvider(httpConnector);
+    const con = new LotusClient(httpConnector);
     const sectors = await con.state.minerSectors('t01000');
     const valid = sectors.reduce((acc, sector) => acc === false ? acc : typeof sector.SectorNumber === 'number', true);
     assert.strictEqual(valid, true, 'invalid sectors info');
   });
 
   it("should get miner active sectors info [http]", async function () {
-    const con = new JsonRpcProvider(httpConnector);
+    const con = new LotusClient(httpConnector);
     const sectors = await con.state.minerActiveSectors('t01000');
     const valid = sectors.reduce((acc, sector) => acc === false ? acc : typeof sector.SectorNumber === 'number', true);
     assert.strictEqual(valid, true, 'invalid active sectors info');
   });
 
   it("should get miner proving deadline", async function () {
-    const con = new JsonRpcProvider(httpConnector);
+    const con = new LotusClient(httpConnector);
     const provingDeadline = await con.state.minerProvingDeadline('t01000');
     assert.strictEqual(typeof provingDeadline.Index === 'number', true, 'invalid miner proving deadline');
   });
 
   it("should get miner power", async function () {
-    const con = new JsonRpcProvider(httpConnector);
+    const con = new LotusClient(httpConnector);
     const power = await con.state.minerPower('t01000');
     assert.strictEqual(typeof power.MinerPower.RawBytePower === 'string', true, 'invalid miner power');
   });
 
   it("should get miner info", async function () {
-    const con = new JsonRpcProvider(httpConnector);
+    const con = new LotusClient(httpConnector);
     const minerInfo = await con.state.minerInfo('t01000');
     assert.strictEqual(typeof minerInfo.Owner === 'string', true, 'invalid miner info');
   });
 
   it("should get miner deadlines", async function () {
-    const con = new JsonRpcProvider(httpConnector);
+    const con = new LotusClient(httpConnector);
     const minerDeadlines = await con.state.minerDeadlines('t01000');
     const valid = minerDeadlines.reduce((acc, deadline) => acc === false ? false : Array.isArray(deadline.PostSubmissions), true);
     assert.strictEqual(valid, true, 'invalid miner deadlines');
   });
 
   it("should get miner partitions", async function () {
-    const con = new JsonRpcProvider(httpConnector);
+    const con = new LotusClient(httpConnector);
     const minerPartitions = await con.state.minerPartitions('t01000', 0);
     const valid = minerPartitions.reduce((acc, partition) => acc === false ? false : Array.isArray(partition.AllSectors), true);
     assert.strictEqual(valid, true, 'invalid miner partitions');
   });
 
   it("should get the faulty sectors of a miner", async function () {
-    const con = new JsonRpcProvider(httpConnector);
+    const con = new LotusClient(httpConnector);
     const minerFaults = await con.state.minerFaults('t01000');
     assert.strictEqual(minerFaults === null || Array.isArray(minerFaults), true, 'invalid miner faulty sectors');
   });
 
   // TODO: test on hold. The method has a bug
   // it("should get all faulty sectors", async function () {
-  //   const con = new JsonRpcProvider(httpConnector);
+  //   const con = new LotusClient(httpConnector);
   //   const minerFaults = await con.allMinerFaults(182);
   // });
 
   it("should get the recovering sectors of a miner", async function () {
-    const con = new JsonRpcProvider(httpConnector);
+    const con = new LotusClient(httpConnector);
     const recoveries = await con.state.minerRecoveries('t01000');
     assert.strictEqual(recoveries === null || Array.isArray(recoveries), true, 'invalid miner recovering sectors');
   });
 
   it("should get the precommit deposit for the specified miner's sector", async function () {
-    const con = new JsonRpcProvider(httpConnector);
+    const con = new LotusClient(httpConnector);
     const deposit = await con.state.minerPreCommitDepositForPower('t01000',        {
       SealProof: 1,
       SectorNumber: 1,
@@ -181,7 +181,7 @@ describe("Connection test", function () {
   });
 
   it("should get the initial pledge collateral for the specified miner's sector", async function () {
-    const con = new JsonRpcProvider(httpConnector);
+    const con = new LotusClient(httpConnector);
     const collateral = await con.state.minerInitialPledgeCollateral('t01000',        {
       SealProof: 1,
       SectorNumber: 1,
@@ -200,37 +200,37 @@ describe("Connection test", function () {
   });
 
   it("should get the miner's balance that can be withdrawn or spent", async function () {
-    const con = new JsonRpcProvider(httpConnector);
+    const con = new LotusClient(httpConnector);
     const balance = await con.state.minerAvailableBalance('t01000');
     assert.strictEqual(typeof balance === 'string', true, "invalid miner's balance that can be withdrawn or spent");
   });
 
   // TODO: It throws an error: precommit not found
   // it("should get the PreCommit info for the specified miner's sector", async function () {
-  //   const con = new JsonRpcProvider(httpConnector);
+  //   const con = new LotusClient(httpConnector);
   //   const preCommitInfo = await con.state.sectorPreCommitInfo('t01000', 0);
   // });
 
   it("should return info for the specified miner's sector", async function() {
-    const con = new JsonRpcProvider(httpConnector);
+    const con = new LotusClient(httpConnector);
     const info = await con.state.sectorGetInfo('t01000', 0);
     assert.strictEqual(info.SectorNumber === 0, true, "invalid info for the specified miner's sector");
   });
 
   it("should get epoch at which given sector will expire", async function() {
-    const con = new JsonRpcProvider(httpConnector);
+    const con = new LotusClient(httpConnector);
     const expiration = await con.state.sectorExpiration('t01000', 0);
     assert.strictEqual(typeof expiration.OnTime === 'number', true, "invalid epoch at which given sector will expire");
   });
 
   it("should get deadline/partition with the specified sector", async function() {
-    const con = new JsonRpcProvider(httpConnector);
+    const con = new LotusClient(httpConnector);
     const partition = await con.state.sectorPartition('t01000', 0);
     assert.strictEqual(typeof partition.Partition === 'number', true, "invalid deadline/partition with the specified sector");
   });
 
   it("should search for message and return its receipt and the tipset where it was executed", async function() {
-    const con = new JsonRpcProvider(httpConnector);
+    const con = new LotusClient(httpConnector);
     const messages = await con.state.listMessages({
       To: 't01000'
     });
@@ -239,7 +239,7 @@ describe("Connection test", function () {
   });
 
   it("should wait for message", async function() {
-    const con = new JsonRpcProvider(httpConnector);
+    const con = new LotusClient(httpConnector);
     const messages = await con.state.listMessages({
       To: 't01000'
     });
@@ -248,19 +248,19 @@ describe("Connection test", function () {
   });
 
   it("should list miners", async function() {
-    const con = new JsonRpcProvider(httpConnector);
+    const con = new LotusClient(httpConnector);
     const miners = await con.state.listMiners();
     assert.strictEqual(Array.isArray(miners), true, "invalid list of miners");
   });
 
   it("should list actors", async function() {
-    const con = new JsonRpcProvider(httpConnector);
+    const con = new LotusClient(httpConnector);
     const actors = await con.state.listActors();
     assert.strictEqual(Array.isArray(actors), true, "invalid list of actors");
   });
 
   it("should get market balance", async function() {
-    const con = new JsonRpcProvider(httpConnector);
+    const con = new LotusClient(httpConnector);
     const marketBalance = await con.state.marketBalance('t01000');
     assert.strictEqual(typeof marketBalance.Escrow === 'string', true, "invalid market balance");
   });
@@ -268,14 +268,14 @@ describe("Connection test", function () {
   /*
   disabled temporarily: Error: locked funds not found
   it("should get market participants", async function() {
-    const con = new JsonRpcProvider(httpConnector);
+    const con = new LotusClient(httpConnector);
     const marketBalance = await con.marketParticipants();
     assert.strictEqual(typeof marketBalance === 'object', true, "invalid market participants");
   });
   */
 
   it("should get market deals", async function() {
-    const con = new JsonRpcProvider(httpConnector);
+    const con = new LotusClient(httpConnector);
     const marketDeals = await con.state.marketDeals();
     let valid = typeof marketDeals === 'object';
     const keys = Object.keys(marketDeals);
@@ -288,33 +288,33 @@ describe("Connection test", function () {
   });
 
   it("should get information about the storage deal", async function() {
-    const con = new JsonRpcProvider(httpConnector);
+    const con = new LotusClient(httpConnector);
     const marketDeal = await con.state.marketStorageDeal(0);
     assert.strictEqual(!!marketDeal.Proposal.PieceCID, true, "invalid information about the storage deal");
   });
 
   it("should get the ID address of the given address", async function() {
-    const con = new JsonRpcProvider(httpConnector);
+    const con = new LotusClient(httpConnector);
     const id = await con.state.lookupId('t01000');
     assert.strictEqual(typeof id === 'string', true, "invalid ID address");
   });
 
   it("should get the public key address of the given ID address", async function() {
-    const con = new JsonRpcProvider(httpConnector);
+    const con = new LotusClient(httpConnector);
     const key = await con.state.accountKey('t01002');
     assert.strictEqual(typeof key === 'string', true, "public key address of the given ID address");
   });
 
   // TODO: Fix error: "failed to load hamt node: cbor input had wrong number of fields" and add assertion
   // it("should return all the actors whose states change", async function() {
-  //   const con = new JsonRpcProvider(httpConnector);
+  //   const con = new LotusClient(httpConnector);
   //   const tipSet = await con.getTipSetByHeight(1);
   //   const tipSet2 = await con.getTipSetByHeight(30);
   //   const actors = await con.changedActors(tipSet.Cids[0], tipSet2.Cids[0]);
   // });
 
   it("should return the message receipt for the given message", async function() {
-    const con = new JsonRpcProvider(httpConnector);
+    const con = new LotusClient(httpConnector);
     const messages = await con.state.listMessages({
       To: 't01000'
     });
@@ -323,13 +323,13 @@ describe("Connection test", function () {
   });
 
   it("should return the number of sectors in a miner's sector set", async function() {
-    const con = new JsonRpcProvider(httpConnector);
+    const con = new LotusClient(httpConnector);
     const sectors = await con.state.minerSectorCount('t01000');
     assert.strictEqual(typeof sectors.Active === 'number', true, "invalid number of sectors");
   });
 
   it("should apply the messages", async function() {
-    const con = new JsonRpcProvider(httpConnector);
+    const con = new LotusClient(httpConnector);
     const messages = await con.state.listMessages({
       To: 't01000'
     });
@@ -339,20 +339,20 @@ describe("Connection test", function () {
   });
 
   it("should return the data cap for the given address", async function() {
-    const con = new JsonRpcProvider(httpConnector);
+    const con = new LotusClient(httpConnector);
     const status = await con.state.verifiedClientStatus('t01000');
     assert.strictEqual(status === null || typeof status === 'string', true, "invalid data cap");
   });
 
   it("should return min and max collateral a storage provider can issue", async function() {
-    const con = new JsonRpcProvider(httpConnector);
+    const con = new LotusClient(httpConnector);
     const collateralBounds = await con.state.dealProviderCollateralBounds(Math.pow(1024, 2), true);
     const valid = typeof collateralBounds.Min === 'string' && typeof collateralBounds.Max === 'string'
     assert.strictEqual(valid, true, "invalid collateral a storage provider can issue");
   });
 
   it("the circulating supply of Filecoin at the given tipset", async function() {
-    const con = new JsonRpcProvider(httpConnector);
+    const con = new LotusClient(httpConnector);
     const supply = await con.state.circulatingSupply();
     const valid = Object
       .keys(supply)

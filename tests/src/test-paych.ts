@@ -1,5 +1,5 @@
 import { LOTUS_AUTH_TOKEN } from "../tools/testnet/credentials/credentials";
-import { JsonRpcProvider } from '../../src/providers/JsonRpcProvider';
+import { LotusClient } from '../../src/providers/LotusClient';
 import { HttpJsonRpcConnector } from '../../src/connectors/HttpJsonRpcConnector';
 import { HttpJsonRpcWalletProvider } from '../../src/providers/wallet/HttpJsonRpcWalletProvider';
 
@@ -9,7 +9,7 @@ describe("Payment channel tests", async function () {
     const httpConnector = new HttpJsonRpcConnector({ url: 'http://localhost:8000/rpc/v0', token: LOTUS_AUTH_TOKEN });
 
     const walletLotusHttp = new HttpJsonRpcWalletProvider(httpConnector);
-    const con = new JsonRpcProvider(httpConnector);
+    const con = new LotusClient(httpConnector);
 
     const defaultAccount = await walletLotusHttp.getDefaultAccount();
     const accounts = await walletLotusHttp.getAccounts();

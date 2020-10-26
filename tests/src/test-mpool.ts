@@ -2,7 +2,7 @@ import assert from "assert";
 import BigNumber from "bignumber.js";
 
 import { LOTUS_AUTH_TOKEN } from "../tools/testnet/credentials/credentials";
-import { JsonRpcProvider } from '../../src/providers/JsonRpcProvider';
+import { LotusClient } from '../../src/providers/LotusClient';
 import { HttpJsonRpcConnector } from '../../src/connectors/HttpJsonRpcConnector';
 import { WsJsonRpcConnector } from '../../src/connectors/WsJsonRpcConnector';
 import { MnemonicWalletProvider } from "../../src/providers/wallet/MnemonicWalletProvider";
@@ -22,7 +22,7 @@ describe("Mpool tests", function () {
 
     const mnemonicWalletProvider = new MnemonicWalletProvider(httpConnector, testMnemonic, '');
     const walletLotusHttp = new HttpJsonRpcWalletProvider(httpConnector);
-    const con = new JsonRpcProvider(httpConnector);
+    const con = new LotusClient(httpConnector);
 
     //clear mpool
     await con.mpool.clear();
@@ -64,7 +64,7 @@ describe("Mpool tests", function () {
   it("should get and set mpool config [http]", async function () {
     const httpConnector = new HttpJsonRpcConnector({ url: 'http://localhost:8000/rpc/v0', token: LOTUS_AUTH_TOKEN });
 
-    const con = new JsonRpcProvider(httpConnector);
+    const con = new LotusClient(httpConnector);
 
     //clear mpool
     const initialConfig = await con.mpool.getMpoolConfig();
@@ -88,7 +88,7 @@ describe("Mpool tests", function () {
     const wsConnector = new WsJsonRpcConnector({ url: 'ws://localhost:8000/rpc/v0', token: LOTUS_AUTH_TOKEN });
 
     const walletLotusHttp = new HttpJsonRpcWalletProvider(httpConnector);
-    const con = new JsonRpcProvider(wsConnector);
+    const con = new LotusClient(wsConnector);
 
     con.mpool.sub((data: MpoolUpdate) => {
       con.release().then(() => { done() });

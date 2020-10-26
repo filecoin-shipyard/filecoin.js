@@ -71,7 +71,7 @@ export class HttpJsonRpcWalletProvider implements WalletProvider {
 }
 
 // @public (undocumented)
-export class JsonRpcProvider {
+export class LotusClient {
     constructor(connector: Connector);
     // Warning: (ae-forgotten-export) The symbol "JsonRpcAuthMethodGroup" needs to be exported by the entry point index.d.ts
     //

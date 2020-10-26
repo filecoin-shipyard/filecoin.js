@@ -4,18 +4,18 @@ import { HttpJsonRpcConnector, JsonRpcConnectionOptions } from '../../connectors
 import { toBase64 } from '../../utils/data';
 import BigNumber from 'bignumber.js';
 import { Connector } from '../../connectors/Connector';
+import { LotusClient } from '../..';
 
 export class HttpJsonRpcWalletProvider implements WalletProvider {
 
-  private conn: Connector;
+  private lotusClient: LotusClient;
 
   constructor(connector: Connector) {
-    this.conn = connector;
-    this.conn.connect();
+    this.lotusClient = new LotusClient(connector);
   }
 
   public async release() {
-    return this.conn.disconnect();
+    return this.lotusClient.release();
   }
 
   /**
@@ -23,7 +23,7 @@ export class HttpJsonRpcWalletProvider implements WalletProvider {
    * @param type
    */
   public async newAccount(type = 1): Promise<string> {
-    const ret = await this.conn.request({ method: 'Filecoin.WalletNew', params: [type] });
+    const ret = await this.lotusClient.wallet.new(type);
     return ret as string;
   }
 
@@ -32,7 +32,7 @@ export class HttpJsonRpcWalletProvider implements WalletProvider {
    * @param address
    */
   public async getNonce(address: string): Promise<number> {
-    const ret = await this.conn.request({ method: 'Filecoin.MpoolGetNonce', params: [address] });
+    const ret = await this.lotusClient.mpool.getNonce(address);
     return ret as number;
   }
 
@@ -40,7 +40,7 @@ export class HttpJsonRpcWalletProvider implements WalletProvider {
    * get wallet list
    */
   public async getAccounts(): Promise<string[]> {
-    const ret = await this.conn.request({ method: 'Filecoin.WalletList' });
+    const ret = await this.lotusClient.wallet.list();
     return ret as string[];
   }
 
@@ -49,7 +49,7 @@ export class HttpJsonRpcWalletProvider implements WalletProvider {
    * @param address
    */
   public async getBalance(address: string): Promise<any> {
-    const ret = await this.conn.request({ method: 'Filecoin.WalletBalance', params: [address] });
+    const ret = await this.lotusClient.wallet.balance(address);
     return ret as string;
   }
 
@@ -58,7 +58,7 @@ export class HttpJsonRpcWalletProvider implements WalletProvider {
    * @param address
    */
   public async deleteWallet(address: string): Promise<any> {
-    const ret = await this.conn.request({ method: 'Filecoin.WalletDelete', params: [address] });
+    const ret = await this.lotusClient.wallet.delete(address);
     return ret as boolean;
   }
 
@@ -67,7 +67,7 @@ export class HttpJsonRpcWalletProvider implements WalletProvider {
   * @param address
   */
   public async hasWallet(address: string): Promise<any> {
-    const ret = await this.conn.request({ method: 'Filecoin.WalletHas', params: [address] });
+    const ret = await this.lotusClient.wallet.has(address);
     return ret as boolean;
   }
 
@@ -76,7 +76,7 @@ export class HttpJsonRpcWalletProvider implements WalletProvider {
    * @param address
    */
   public async setDefaultAccount(address: string): Promise<undefined> {
-    const ret = await this.conn.request({ method: 'Filecoin.WalletSetDefault', params: [address] });
+    const ret = await this.lotusClient.wallet.setDefault(address);
     return ret as undefined;
   }
 
@@ -85,7 +85,7 @@ export class HttpJsonRpcWalletProvider implements WalletProvider {
    * @param address
    */
   public async walletExport(address: string): Promise<KeyInfo> {
-    const ret = await this.conn.request({ method: 'Filecoin.WalletExport', params: [address] });
+    const ret = await this.lotusClient.wallet.export(address);
     return ret as KeyInfo;
   }
 
@@ -94,7 +94,7 @@ export class HttpJsonRpcWalletProvider implements WalletProvider {
    * @param keyInfo
    */
   public async walletImport(keyInfo: KeyInfo): Promise<string> {
-    const ret = await this.conn.request({ method: 'Filecoin.WalletImport', params: [keyInfo] });
+    const ret = await this.lotusClient.wallet.import(keyInfo);
     return ret as string;
   }
 
@@ -102,23 +102,16 @@ export class HttpJsonRpcWalletProvider implements WalletProvider {
    * get default address
    */
   public async getDefaultAccount(): Promise<string> {
-    const ret = await this.conn.request({ method: 'Filecoin.WalletDefaultAddress' });
+    const ret = await this.lotusClient.wallet.getDefaultAddress();
     return ret as string;
   }
 
   /**
    * send message, signed with default lotus wallet
-   *
-   * @remarks
-   * MpoolPushMessage atomically assigns a nonce, signs, and pushes a message
-   * to mempool.
-   * maxFee is only used when GasFeeCap/GasPremium fields aren't specified
-   * When maxFee is set to 0, MpoolPushMessage will guess appropriate fee
-   * based on current chain conditions
    * @param msg
    */
   public async sendMessage(msg: Message): Promise<SignedMessage> {
-    const ret = await this.conn.request({ method: 'Filecoin.MpoolPushMessage', params: [msg, { MaxFee: "30000000000000" }] });
+    const ret = await this.lotusClient.mpool.pushMessage(msg)
     return ret as SignedMessage;
   }
 
@@ -127,7 +120,7 @@ export class HttpJsonRpcWalletProvider implements WalletProvider {
    * @param msg
    */
   public async sendSignedMessage(msg: SignedMessage): Promise<Cid> {
-    const ret = await this.conn.request({ method: 'Filecoin.MpoolPush', params: [msg] });
+    const ret = await this.lotusClient.mpool.push(msg)
     return ret as Cid;
   }
 
@@ -137,7 +130,7 @@ export class HttpJsonRpcWalletProvider implements WalletProvider {
   * @param nblocksincl
   */
   public async estimateMessageGasFeeCap(message: Message, nblocksincl: number): Promise<string> {
-    const ret = await this.conn.request({ method: 'Filecoin.GasEstimateFeeCap', params: [message, nblocksincl, []] });
+    const ret = await this.lotusClient.gasEstimate.feeCap(message, nblocksincl);
     return ret as string;
   }
 
@@ -146,7 +139,7 @@ export class HttpJsonRpcWalletProvider implements WalletProvider {
   * @param message
   */
   public async estimateMessageGasLimit(message: Message): Promise<number> {
-    const ret = await this.conn.request({ method: 'Filecoin.GasEstimateGasLimit', params: [message, []] });
+    const ret = await this.lotusClient.gasEstimate.gasLimit(message);
     return ret as number;
   }
 
@@ -157,7 +150,7 @@ export class HttpJsonRpcWalletProvider implements WalletProvider {
   * @param gasLimit
   */
   public async estimateMessageGasPremium(nblocksincl: number, sender: string, gasLimit: number): Promise<string> {
-    const ret = await this.conn.request({ method: 'Filecoin.GasEstimateGasPremium', params: [nblocksincl, sender, gasLimit, []] });
+    const ret = await this.lotusClient.gasEstimate.gasPremium(nblocksincl, sender, gasLimit);
     return ret as string;
   }
 
@@ -166,7 +159,7 @@ export class HttpJsonRpcWalletProvider implements WalletProvider {
    * @param message
    */
   public async estimateMessageGas(message: Message): Promise<Message> {
-    const ret = await this.conn.request({ method: 'Filecoin.GasEstimateMessageGas', params: [message, { MaxFee: "30000000000000" }, []] });
+    const ret = await this.lotusClient.gasEstimate.messageGas(message);
     return ret as Message;
   }
 
@@ -199,8 +192,7 @@ export class HttpJsonRpcWalletProvider implements WalletProvider {
    * @param msg
    */
   public async signMessage(msg: Message): Promise<SignedMessage> {
-    const address = await this.getDefaultAccount();
-    const ret = await this.conn.request({ method: 'Filecoin.WalletSignMessage', params: [address, msg] });
+    const ret = await this.lotusClient.wallet.signMessage(msg);
     return ret as SignedMessage;
   }
 
@@ -209,9 +201,7 @@ export class HttpJsonRpcWalletProvider implements WalletProvider {
    * @param data
    */
   public async sign(data: string | ArrayBuffer): Promise<Signature> {
-    const address = await this.getDefaultAccount();
-    data = toBase64(data);
-    const ret = await this.conn.request({ method: 'Filecoin.WalletSign', params: [address, data] });
+    const ret = await this.lotusClient.wallet.sign(data);
     return ret as Signature;
   }
 
@@ -221,8 +211,7 @@ export class HttpJsonRpcWalletProvider implements WalletProvider {
    * @param sign
    */
   public async verify(address: string, data: string | ArrayBuffer, sign: Signature): Promise<boolean> {
-    data = toBase64(data);
-    const ret = await this.conn.request({ method: 'Filecoin.WalletVerify', params: [address, data, sign] });
+    const ret = await this.lotusClient.wallet.verify(address, data, sign);
     return ret as boolean;
   }
 }

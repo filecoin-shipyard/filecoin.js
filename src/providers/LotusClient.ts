@@ -10,8 +10,12 @@ import { JsonRpcMPoolMethodGroup } from './method-groups/mpool';
 import { JsonRpcNetMethodGroup } from './method-groups/net';
 import { JsonRpcMsigMethodGroup } from './method-groups/msig';
 import { JsonRpcSyncMethodGroup } from './method-groups/sync';
+import { JsonRpcGasMethodGroup } from './method-groups/gasEstimate';
+import { JsonRpcWalletMethodGroup } from './method-groups/wallet';
 
-export class JsonRpcProvider {
+
+
+export class LotusClient {
   public conn: Connector;
   public chain: JsonRpcChainMethodGroup;
   public state: JsonRpcStateMethodGroup;
@@ -24,6 +28,10 @@ export class JsonRpcProvider {
   public net: JsonRpcNetMethodGroup;
   public msig: JsonRpcMsigMethodGroup;
   public sync: JsonRpcSyncMethodGroup;
+  public gasEstimate: JsonRpcGasMethodGroup;
+  public wallet: JsonRpcWalletMethodGroup;
+
+
 
   constructor(connector: Connector) {
     this.conn = connector;
@@ -40,6 +48,8 @@ export class JsonRpcProvider {
     this.net = new JsonRpcNetMethodGroup(this.conn);
     this.msig = new JsonRpcMsigMethodGroup(this.conn);
     this.sync = new JsonRpcSyncMethodGroup(this.conn);
+    this.gasEstimate = new JsonRpcGasMethodGroup(this.conn);
+    this.wallet = new JsonRpcWalletMethodGroup(this.conn);
   }
 
   public async release() {

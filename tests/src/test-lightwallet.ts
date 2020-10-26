@@ -5,7 +5,7 @@ import { LightWalletProvider } from '../../src/providers/wallet/LightWalletProvi
 import BigNumber from "bignumber.js";
 import { MnemonicWalletProvider } from "../../src/providers/wallet/MnemonicWalletProvider";
 import { HttpJsonRpcWalletProvider } from "../../src/providers/wallet/HttpJsonRpcWalletProvider";
-import { JsonRpcProvider } from "../../src/providers/JsonRpcProvider";
+import { LotusClient } from "../../src/providers/LotusClient";
 
 const testMnemonic = 'equip will roof matter pink blind book anxiety banner elbow sun young';
 
@@ -26,7 +26,7 @@ describe("Send message", function () {
     encryptedWallet = lightWalletHttp.keystore.serialize();
 
     const walletLotusHttp = new HttpJsonRpcWalletProvider(httpConnector);
-    const con = new JsonRpcProvider(httpConnector);
+    const con = new LotusClient(httpConnector);
 
     const defaultAccount = await walletLotusHttp.getDefaultAccount();
     const mnemonicAddress = await lightWalletHttp.getDefaultAccount();
@@ -49,7 +49,7 @@ describe("Send message", function () {
 
     const httpConnector = new HttpJsonRpcConnector({ url: 'http://localhost:8000/rpc/v0', token: LOTUS_AUTH_TOKEN });
     const mnemonicWalletProvider = new MnemonicWalletProvider( httpConnector, testMnemonic, '');
-    const con = new JsonRpcProvider(httpConnector);
+    const con = new LotusClient(httpConnector);
 
     const lightWalletHttp = new LightWalletProvider(httpConnector);
     await lightWalletHttp.recoverLightWallet(mnemonic, 'testPwd');
@@ -75,7 +75,7 @@ describe("Send message", function () {
 
     const httpConnector = new HttpJsonRpcConnector({ url: 'http://localhost:8000/rpc/v0', token: LOTUS_AUTH_TOKEN });
     const mnemonicWalletProvider = new MnemonicWalletProvider( httpConnector, testMnemonic, '');
-    const con = new JsonRpcProvider(httpConnector);
+    const con = new LotusClient(httpConnector);
 
     const lightWalletHttp = new LightWalletProvider(httpConnector);
     lightWalletHttp.loadLightWallet(encryptedWallet);

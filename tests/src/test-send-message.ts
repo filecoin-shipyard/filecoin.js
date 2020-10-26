@@ -1,6 +1,6 @@
 import assert from "assert";
 import { LOTUS_AUTH_TOKEN } from "../tools/testnet/credentials/credentials";
-import { JsonRpcProvider } from '../../src/providers/JsonRpcProvider';
+import { LotusClient } from '../../src/providers/LotusClient';
 import { HttpJsonRpcConnector } from '../../src/connectors/HttpJsonRpcConnector';
 import { HttpJsonRpcWalletProvider } from '../../src/providers/wallet/HttpJsonRpcWalletProvider';
 import { MnemonicWalletProvider } from '../../src/providers/wallet/MnemonicWalletProvider';
@@ -20,7 +20,7 @@ describe("Send message", function () {
 
     const mnemonicWalletProvider = new MnemonicWalletProvider( httpConnector, testMnemonic, '');
     const walletLotusHttp = new HttpJsonRpcWalletProvider(httpConnector);
-    const con = new JsonRpcProvider(httpConnector);
+    const con = new LotusClient(httpConnector);
 
     const defaultAccount = await walletLotusHttp.getDefaultAccount();
     const mnemonicAddress = await mnemonicWalletProvider.getDefaultAccount();
@@ -44,7 +44,7 @@ describe("Send message", function () {
 
     const mnemonicWalletProvider = new MnemonicWalletProvider( httpConnector, testMnemonic, '');
     const walletLotusWs = new HttpJsonRpcWalletProvider(wsConnector);
-    const con = new JsonRpcProvider(httpConnector);
+    const con = new LotusClient(httpConnector);
 
     const defaultAccount = await walletLotusWs.getDefaultAccount();
     const mnemonicAddress = await mnemonicWalletProvider.getDefaultAccount();
@@ -71,7 +71,7 @@ describe("Send message", function () {
 
     const mnemonicWalletProvider = new MnemonicWalletProvider( httpConnector, testMnemonic, '');
     const walletLotusHttp = new HttpJsonRpcWalletProvider(httpConnector);
-    const con = new JsonRpcProvider(httpConnector);
+    const con = new LotusClient(httpConnector);
 
     const accounts = await walletLotusHttp.getAccounts();
     const secpAddress = accounts[0];
@@ -98,7 +98,7 @@ describe("Send message", function () {
 
     const mnemonicWalletProvider = new MnemonicWalletProvider( wsConnectorMnemonic, testMnemonic, '');
     const walletLotusWs = new HttpJsonRpcWalletProvider(wsConnectorLotus);
-    const con = new JsonRpcProvider(httpConnector);
+    const con = new LotusClient(httpConnector);
 
     const accounts = await walletLotusWs.getAccounts();
     const secpAddress = accounts[0];
