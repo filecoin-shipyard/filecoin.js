@@ -1,18 +1,17 @@
 import { LOTUS_AUTH_TOKEN } from "../tools/testnet/credentials/credentials";
 import { LotusClient } from '../../src/providers/LotusClient';
 import { HttpJsonRpcConnector } from '../../src/connectors/HttpJsonRpcConnector';
-import { HttpJsonRpcWalletProvider } from '../../src/providers/wallet/HttpJsonRpcWalletProvider';
+import { LotusWalletProvider } from '../../src/providers/wallet/LotusWalletProvider';
 
 describe("Payment channel tests", async function () {
   it("Payment channel test [http]", async function () {
     this.timeout(120000);
     const httpConnector = new HttpJsonRpcConnector({ url: 'http://localhost:8000/rpc/v0', token: LOTUS_AUTH_TOKEN });
-
-    const walletLotusHttp = new HttpJsonRpcWalletProvider(httpConnector);
     const con = new LotusClient(httpConnector);
+    const walletLotusHttp = new LotusWalletProvider(con);
 
-    const defaultAccount = await walletLotusHttp.getDefaultAccount();
-    const accounts = await walletLotusHttp.getAccounts();
+    const defaultAccount = await walletLotusHttp.getDefaultAddress();
+    const accounts = await walletLotusHttp.getAddresses();
     const secpAddress = accounts[0];
 
     let pch = await con.paych.getPaymentChannel(defaultAccount, secpAddress,"300");
@@ -44,7 +43,7 @@ describe("Payment channel tests", async function () {
 
 
     //await walletLotusHttp.setDefaultAccount(secpAddress);
-    //console.log(await walletLotusHttp.getDefaultAccount());
+    //console.log(await walletLotusHttp.getDefaultAddress());
 
     //this can be called by either sender or recipient and closes the payment channel
     const settleResult = await con.paych.settle(channelAddress);
@@ -54,7 +53,7 @@ describe("Payment channel tests", async function () {
     //console.log(collectResult);
 
     //await walletLotusHttp.setDefaultAccount(defaultAccount);
-    //console.log(await walletLotusHttp.getDefaultAccount());
+    //console.log(await walletLotusHttp.getDefaultAddress());
 
   });
 });

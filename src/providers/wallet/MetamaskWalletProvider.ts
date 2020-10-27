@@ -1,24 +1,45 @@
-import { Message, SignedMessage, Signature } from "../Types";
-import { HttpJsonRpcWalletProvider } from "./HttpJsonRpcWalletProvider";
+import { Message, SignedMessage, Signature, KeyInfo } from "../Types";
 import { MetamaskSigner } from "../../signers/MetamaskSigner";
+import { WalletProvider, WalletProviderInterface } from "./WalletProvider";
 import { Connector } from "../../connectors/Connector";
 import { FilecoinSnapApi } from "@nodefactory/filsnap-types";
+import { LotusClient } from "../..";
 
-export class MetamaskWalletProvider extends HttpJsonRpcWalletProvider {
+export class MetamaskWalletProvider extends WalletProvider implements WalletProviderInterface{
 
   private signer: MetamaskSigner;
 
-  constructor(connector: Connector, filecoinApi: FilecoinSnapApi) {
-    super(connector);
+  constructor(client: LotusClient, filecoinApi: FilecoinSnapApi) {
+    super(client);
     this.signer = new MetamaskSigner(filecoinApi);
   }
 
-  public async getAccounts(): Promise<string[]> {
-    return [await this.getDefaultAccount()];
+  public async  newAddress(): Promise<string>{
+    return undefined as any;
   }
 
-  public async getDefaultAccount(): Promise<string> {
+  public async deleteAddress(address: string): Promise<any>{
+    return undefined as any;
+  }
+
+  public async hasAddress(address: string): Promise<any>{
+    return undefined as any;
+  }
+
+  public async exportPrivateKey(address: string): Promise<KeyInfo>{
+    return undefined as any;
+  }
+
+  public async getAddresses(): Promise<string[]> {
+    return [await this.getDefaultAddress()];
+  }
+
+  public async getDefaultAddress(): Promise<string> {
     return await this.signer.getDefaultAccount();
+  }
+
+  public async setDefaultAddress(address: string): Promise<undefined> {
+    return undefined;
   }
 
   public async sendMessage(msg: Message): Promise<SignedMessage> {
@@ -35,11 +56,13 @@ export class MetamaskWalletProvider extends HttpJsonRpcWalletProvider {
     return undefined as any;
   }
 
+  public async verify(address: string, data: string | ArrayBuffer, sign: Signature): Promise<boolean> {
+    return undefined as any;
+  }
+
+  //Own functions
   public getSigner(): MetamaskSigner {
     return this.signer;
   }
 
-  public async verify(address: string, data: string | ArrayBuffer, sign: Signature): Promise<boolean> {
-    return undefined as any;
-  }
 }

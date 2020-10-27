@@ -2,7 +2,7 @@ import assert from "assert";
 import { LOTUS_AUTH_TOKEN } from "../tools/testnet/credentials/credentials";
 import { LotusClient } from '../../src/providers/LotusClient';
 import { HttpJsonRpcConnector } from '../../src/connectors/HttpJsonRpcConnector';
-import { HttpJsonRpcWalletProvider } from '../../src/providers/wallet/HttpJsonRpcWalletProvider';
+import { LotusWalletProvider } from '../../src/providers/wallet/LotusWalletProvider';
 import { MnemonicWalletProvider } from '../../src/providers/wallet/MnemonicWalletProvider';
 
 import BigNumber from 'bignumber.js';
@@ -17,13 +17,12 @@ function sleep(ms: any) {
 describe("Send message", function () {
   it("should send signed message, lotus default wallet [http]", async function () {
     const httpConnector = new HttpJsonRpcConnector({ url: 'http://localhost:8000/rpc/v0', token: LOTUS_AUTH_TOKEN });
-
-    const mnemonicWalletProvider = new MnemonicWalletProvider( httpConnector, testMnemonic, '');
-    const walletLotusHttp = new HttpJsonRpcWalletProvider(httpConnector);
     const con = new LotusClient(httpConnector);
+    const mnemonicWalletProvider = new MnemonicWalletProvider( con, testMnemonic, '');
+    const walletLotusHttp = new LotusWalletProvider(con);
 
-    const defaultAccount = await walletLotusHttp.getDefaultAccount();
-    const mnemonicAddress = await mnemonicWalletProvider.getDefaultAccount();
+    const defaultAccount = await walletLotusHttp.getDefaultAddress();
+    const mnemonicAddress = await mnemonicWalletProvider.getDefaultAddress();
 
     const message = await walletLotusHttp.createMessage({
       From: defaultAccount,
@@ -41,13 +40,12 @@ describe("Send message", function () {
   it("should send signed message, lotus default wallet [ws]", async function () {
     const httpConnector = new HttpJsonRpcConnector({ url: 'http://localhost:8000/rpc/v0', token: LOTUS_AUTH_TOKEN });
     const wsConnector = new WsJsonRpcConnector({ url: 'ws://localhost:8000/rpc/v0', token: LOTUS_AUTH_TOKEN });
-
-    const mnemonicWalletProvider = new MnemonicWalletProvider( httpConnector, testMnemonic, '');
-    const walletLotusWs = new HttpJsonRpcWalletProvider(wsConnector);
     const con = new LotusClient(httpConnector);
+    const mnemonicWalletProvider = new MnemonicWalletProvider( con, testMnemonic, '');
+    const walletLotusWs = new LotusWalletProvider(con);
 
-    const defaultAccount = await walletLotusWs.getDefaultAccount();
-    const mnemonicAddress = await mnemonicWalletProvider.getDefaultAccount();
+    const defaultAccount = await walletLotusWs.getDefaultAddress();
+    const mnemonicAddress = await mnemonicWalletProvider.getDefaultAddress();
 
     const message = await walletLotusWs.createMessage({
       From: defaultAccount,
@@ -68,15 +66,14 @@ describe("Send message", function () {
     await sleep(8000);
 
     const httpConnector = new HttpJsonRpcConnector({ url: 'http://localhost:8000/rpc/v0', token: LOTUS_AUTH_TOKEN });
-
-    const mnemonicWalletProvider = new MnemonicWalletProvider( httpConnector, testMnemonic, '');
-    const walletLotusHttp = new HttpJsonRpcWalletProvider(httpConnector);
     const con = new LotusClient(httpConnector);
+    const mnemonicWalletProvider = new MnemonicWalletProvider( con, testMnemonic, '');
+    const walletLotusHttp = new LotusWalletProvider(con);
 
-    const accounts = await walletLotusHttp.getAccounts();
+    const accounts = await walletLotusHttp.getAddresses();
     const secpAddress = accounts[0];
 
-    const mnemonicAddress = await mnemonicWalletProvider.getDefaultAccount();
+    const mnemonicAddress = await mnemonicWalletProvider.getDefaultAddress();
 
     const message = await mnemonicWalletProvider.createMessage({
       From: mnemonicAddress,
@@ -93,17 +90,20 @@ describe("Send message", function () {
 
   it("should send signed message, mnemonic wallet [ws]", async function () {
     const httpConnector = new HttpJsonRpcConnector({ url: 'http://localhost:8000/rpc/v0', token: LOTUS_AUTH_TOKEN });
-    const wsConnectorMnemonic = new WsJsonRpcConnector({ url: 'ws://localhost:8000/rpc/v0', token: LOTUS_AUTH_TOKEN });
-    const wsConnectorLotus = new WsJsonRpcConnector({ url: 'ws://localhost:8000/rpc/v0', token: LOTUS_AUTH_TOKEN });
-
-    const mnemonicWalletProvider = new MnemonicWalletProvider( wsConnectorMnemonic, testMnemonic, '');
-    const walletLotusWs = new HttpJsonRpcWalletProvider(wsConnectorLotus);
     const con = new LotusClient(httpConnector);
 
-    const accounts = await walletLotusWs.getAccounts();
+    const wsConnectorMnemonic = new WsJsonRpcConnector({ url: 'ws://localhost:8000/rpc/v0', token: LOTUS_AUTH_TOKEN });
+    const wsLotusClientMnemonic = new LotusClient(wsConnectorMnemonic);
+    const wsConnectorLotus = new WsJsonRpcConnector({ url: 'ws://localhost:8000/rpc/v0', token: LOTUS_AUTH_TOKEN });
+    const wsLotusClient = new LotusClient(wsConnectorLotus);
+
+    const mnemonicWalletProvider = new MnemonicWalletProvider( wsLotusClientMnemonic, testMnemonic, '');
+    const walletLotusWs = new LotusWalletProvider(wsLotusClient);
+
+    const accounts = await walletLotusWs.getAddresses();
     const secpAddress = accounts[0];
 
-    const mnemonicAddress = await mnemonicWalletProvider.getDefaultAccount();
+    const mnemonicAddress = await mnemonicWalletProvider.getDefaultAddress();
 
     const message = await mnemonicWalletProvider.createMessage({
       From: mnemonicAddress,

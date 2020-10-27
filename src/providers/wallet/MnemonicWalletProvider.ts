@@ -1,28 +1,48 @@
-import { Message, SignedMessage, Signature } from "../Types";
-import { HttpJsonRpcWalletProvider } from "./HttpJsonRpcWalletProvider";
+import { Message, SignedMessage, Signature, KeyInfo } from "../Types";
+import { WalletProvider, WalletProviderInterface } from "./WalletProvider";
 import { MnemonicSigner } from "../../signers/MnemonicSigner";
 import { StringGetter } from "../Types";
-import { Connector } from "../../connectors/Connector";
+import { LotusClient } from "../..";
 
-export class MnemonicWalletProvider extends HttpJsonRpcWalletProvider {
+export class MnemonicWalletProvider extends WalletProvider implements WalletProviderInterface{
 
   private signer:MnemonicSigner;
 
-  constructor(connector: Connector,
+  constructor(client: LotusClient,
     mnemonic: string | StringGetter,
     password: string | StringGetter,
     path: string = `m/44'/461'/0/0/1`,
   ) {
-    super(connector);
+    super(client);
     this.signer = new MnemonicSigner(mnemonic, password, path);
   }
 
-  public async getAccounts(): Promise<string[]> {
-    return [await this.getDefaultAccount()];
+  public async  newAddress(): Promise<string>{
+    return undefined as any;
   }
 
-  public async getDefaultAccount(): Promise<string> {
+  public async deleteAddress(address: string): Promise<any>{
+    return undefined as any;
+  }
+
+  public async hasAddress(address: string): Promise<any>{
+    return undefined as any;
+  }
+
+  public async exportPrivateKey(address: string): Promise<KeyInfo>{
+    return undefined as any;
+  }
+
+  public async getAddresses(): Promise<string[]> {
+    return [await this.getDefaultAddress()];
+  }
+
+  public async getDefaultAddress(): Promise<string> {
     return await this.signer.getDefaultAccount();
+  }
+
+  public async setDefaultAddress(address: string): Promise<undefined> {
+    return undefined;
   }
 
   public async sendMessage(msg: Message): Promise<SignedMessage> {
@@ -39,11 +59,11 @@ export class MnemonicWalletProvider extends HttpJsonRpcWalletProvider {
     return undefined as any;
   }
 
-  public getSigner(): MnemonicSigner {
-    return this.signer;
-  }
-
   public async verify(address: string, data: string | ArrayBuffer, sign: Signature): Promise<boolean> {
     return undefined as any;
+  }
+
+  public getSigner(): MnemonicSigner {
+    return this.signer;
   }
 }
