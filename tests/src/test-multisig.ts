@@ -84,11 +84,13 @@ describe("Multisig Wallets", function () {
     const walletLotusHttp = new LotusWalletProvider(con);
 
     const addresses = await walletLotusHttp.getAddresses();
+    const { blsAddresses, secpAddreses } = await extractAddressesWithFunds (addresses, walletLotusHttp);
+
     const defaultAccount = await walletLotusHttp.getDefaultAddress();
 
-    const t3address = addresses[2];
-    const t11address = addresses[1];
-    const t12address = addresses[0];
+    const t3address = blsAddresses[0];
+    const t11address = secpAddreses[1];
+    const t12address = secpAddreses[0];
 
     const mnemonicAddress = await mnemonicWalletProvider.getDefaultAddress();
 
