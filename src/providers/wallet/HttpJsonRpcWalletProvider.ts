@@ -66,7 +66,7 @@ export class HttpJsonRpcWalletProvider implements WalletProvider {
   * check if address is in keystore
   * @param address
   */
-  public async hasWallet(address: string): Promise<any> {
+  public async hasWallet(address: string): Promise<boolean> {
     const ret = await this.lotusClient.wallet.has(address);
     return ret as boolean;
   }
