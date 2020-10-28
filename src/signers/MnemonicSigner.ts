@@ -4,6 +4,10 @@ import { Signer } from './Signer';
 import { StringGetter } from '../providers/Types'
 
 export class MnemonicSigner implements Signer {
+  private privKeys!: any;
+  public addresses!: string[];
+  private defaultAddressIndex: number = 0;
+  private hdIndex = 0;
 
   constructor(
     private mnemonic: string | StringGetter,
@@ -11,15 +15,62 @@ export class MnemonicSigner implements Signer {
     private path: string = `m/44'/461'/0/0/1`,
   ) { }
 
-  public async sign(message: Message): Promise<SignedMessage> {
+  public async initAddresses(): Promise<void> {
     const key = filecoin_signer.keyDerive(await this.getMenmonic(), this.path, await this.getPassword());
-    const signedTx = filecoin_signer.transactionSignLotus(this.messageToSigner(message), key.private_hexstring);
-    return JSON.parse(signedTx);
+    this.addresses.push(key.address);
+    this.privKeys[key.address] = key.private_hexstring;
   }
 
-  public async getDefaultAccount(): Promise<string> {
-    const keypair = filecoin_signer.keyDerive(await this.getMenmonic(), this.path, await this.getPassword());
-    return keypair.address;
+  async newAddress(n: number) {
+    for (let i = 0; i < n; i++) {
+      const key = filecoin_signer.keyDerive(this.mnemonic, `this.hdPathString/${i + this.hdIndex}`, '');
+      this.addresses.push(key.address);
+      this.privKeys[key.address] = key.private_hexstring;
+    }
+
+    this.hdIndex += n;
+  };
+
+  async deleteAddress(address: string) {
+    const addressIndex = this.addresses.indexOf(address);
+    if (addressIndex >= 0) {
+      this.addresses[addressIndex] = '';
+      this.privKeys[address] = '';
+      if (this.defaultAddressIndex === addressIndex) {
+        this.defaultAddressIndex = 0;
+      }
+    }
+  }
+
+  async getPrivateKey(address: string) {
+    return this.privKeys[address];
+  };
+
+  async getDefaultAddress(): Promise<string> {
+    return this.addresses[this.defaultAddressIndex];
+  }
+
+  async setDefaultAddress(address: string): Promise<void> {
+    const addressIndex = this.addresses.indexOf(address);
+    if (addressIndex >= 0) {
+      this.defaultAddressIndex = addressIndex;
+    }
+  }
+
+  async hasAddress(address: string): Promise<boolean> {
+    return this.addresses.indexOf(address) >= 0;
+  }
+
+  public async sign(message: Message): Promise<SignedMessage> {
+    let key;
+    if (this.defaultAddressIndex === 0) {
+      key = filecoin_signer.keyDerive(await this.getMenmonic(), this.path, await this.getPassword());
+    } else {
+      key = this.privKeys[this.addresses[this.defaultAddressIndex]];
+    }
+
+    const signedTx = filecoin_signer.transactionSignLotus(this.messageToSigner(message), key.private_hexstring);
+    return JSON.parse(signedTx);
   }
 
   private async getPassword(): Promise<string> {

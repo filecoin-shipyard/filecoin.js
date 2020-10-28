@@ -2,16 +2,16 @@ import { Message, SignedMessage, Signature, KeyInfo, Cid, MessagePartial, Vouche
 
 export interface WalletProviderInterface {
     newAddress(): Promise<string>;
-    deleteAddress(address: string): Promise<any>
+    deleteAddress(address: string): Promise<void>
     getAddresses(): Promise<string[]>
     hasAddress(address: string): Promise<any>
-    setDefaultAddress(address: string): Promise<undefined>
+    setDefaultAddress(address: string): Promise<void>
     getDefaultAddress(): Promise<string>
     exportPrivateKey(address: string): Promise<KeyInfo>
     //getBalance(address: string): Promise<any>;
     sendMessage(msg: Message): Promise<SignedMessage>;
-    signMessage(msg: Message, pk?: string): Promise<SignedMessage>;
-    sign(data: string, pk?: string): Promise<Signature>;
+    signMessage(msg: Message): Promise<SignedMessage>;
+    sign(data: string): Promise<Signature>;
     verify(address: string, data: string | ArrayBuffer, sign: Signature): Promise<boolean>;
   }
 

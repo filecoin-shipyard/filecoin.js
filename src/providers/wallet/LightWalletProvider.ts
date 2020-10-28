@@ -12,47 +12,54 @@ interface LighWalletOptions {
   password?: string;
 }
 
-export class LightWalletProvider extends WalletProvider implements WalletProviderInterface{
+export class LightWalletProvider extends WalletProvider implements WalletProviderInterface {
 
   public keystore!: Keystore;
   private hdPathString = "m/44'/1'/0/0/1";
   private signer!: LightWalletSigner;
+  private pwdCallback: Function;
 
-  constructor(client: LotusClient
-  ) {
+  constructor(client: LotusClient, pwdCallback: Function) {
     super(client);
+    this.pwdCallback = pwdCallback;
   }
 
-  public async  newAddress(): Promise<string>{
-    return undefined as any;
+  public async newAddress(): Promise<string> {
+    await this.keystore.newAddress(1, this.pwdCallback())
+    const addresses = await this.getAddresses();
+    return addresses[addresses.length -1];
   }
 
-  public async deleteAddress(address: string): Promise<any>{
-    return undefined as any;
+  public async deleteAddress(address: string): Promise<void> {
+    this.keystore.deleteAddress(address, this.pwdCallback());
   }
 
-  public async hasAddress(address: string): Promise<any>{
-    return undefined as any;
+  public async hasAddress(address: string): Promise<boolean> {
+    return this.keystore.hasAddress(address);
   }
 
-  public async exportPrivateKey(address: string): Promise<KeyInfo>{
-    return undefined as any;
+  public async exportPrivateKey(address: string): Promise<KeyInfo> {
+    const pk = await this.keystore.getPrivateKey(address, this.pwdCallback());
+    return {
+      Type: '1',
+      PrivateKey: pk as any, //convert to uint8 array ?
+    };
   }
 
   public async getAddresses(): Promise<string[]> {
-    return [await this.getDefaultAddress()];
+    return this.keystore.addresses;
   }
 
   public async getDefaultAddress(): Promise<string> {
-    return await this.signer.getDefaultAccount();
+    return await this.keystore.getDefaultAddress();
   }
 
-  public async setDefaultAddress(address: string): Promise<undefined> {
-    return undefined;
+  public async setDefaultAddress(address: string): Promise<void> {
+    this.keystore.setDefaultAddress(address)
   }
 
-  public async sendMessage(msg: Message, password?: string): Promise<SignedMessage> {
-    const signedMessage: SignedMessage | undefined = await this.signMessage(msg, password);
+  public async sendMessage(msg: Message): Promise<SignedMessage> {
+    const signedMessage: SignedMessage | undefined = await this.signMessage(msg);
     if (signedMessage) {
       await this.sendSignedMessage(signedMessage);
       return signedMessage as SignedMessage;
@@ -60,14 +67,16 @@ export class LightWalletProvider extends WalletProvider implements WalletProvide
     return undefined as any;
   }
 
-  public async signMessage(msg: Message, password?: string): Promise<SignedMessage> {
-    return await this.signer.sign(msg, password);
+  public async signMessage(msg: Message): Promise<SignedMessage> {
+    return await this.signer.sign(msg, this.pwdCallback());
   }
 
+  //todo
   public async sign(data: string | ArrayBuffer): Promise<Signature> {
     return undefined as any;
   }
 
+  //todo
   public async verify(address: string, data: string | ArrayBuffer, sign: Signature): Promise<boolean> {
     return undefined as any;
   }

@@ -4,9 +4,9 @@ import { MnemonicSigner } from "../../signers/MnemonicSigner";
 import { StringGetter } from "../Types";
 import { LotusClient } from "../..";
 
-export class MnemonicWalletProvider extends WalletProvider implements WalletProviderInterface{
+export class MnemonicWalletProvider extends WalletProvider implements WalletProviderInterface {
 
-  private signer:MnemonicSigner;
+  private signer: MnemonicSigner;
 
   constructor(client: LotusClient,
     mnemonic: string | StringGetter,
@@ -15,34 +15,41 @@ export class MnemonicWalletProvider extends WalletProvider implements WalletProv
   ) {
     super(client);
     this.signer = new MnemonicSigner(mnemonic, password, path);
+    this.signer.initAddresses();
   }
 
-  public async  newAddress(): Promise<string>{
-    return undefined as any;
+  public async newAddress(): Promise<string> {
+    await this.signer.newAddress(1)
+    const addresses = await this.getAddresses();
+    return addresses[addresses.length - 1];
   }
 
-  public async deleteAddress(address: string): Promise<any>{
-    return undefined as any;
+  public async deleteAddress(address: string): Promise<any> {
+    this.signer.deleteAddress(address);
   }
 
-  public async hasAddress(address: string): Promise<any>{
-    return undefined as any;
+  public async hasAddress(address: string): Promise<boolean> {
+    return this.signer.hasAddress(address);
   }
 
-  public async exportPrivateKey(address: string): Promise<KeyInfo>{
-    return undefined as any;
+  public async exportPrivateKey(address: string): Promise<KeyInfo> {
+    const pk = await this.signer.getPrivateKey(address);
+    return {
+      Type: '1',
+      PrivateKey: pk as any, //convert to uint8 array ?
+    };
   }
 
   public async getAddresses(): Promise<string[]> {
-    return [await this.getDefaultAddress()];
+    return this.signer.addresses;
   }
 
   public async getDefaultAddress(): Promise<string> {
-    return await this.signer.getDefaultAccount();
+    return await this.signer.getDefaultAddress();
   }
 
-  public async setDefaultAddress(address: string): Promise<undefined> {
-    return undefined;
+  public async setDefaultAddress(address: string): Promise<void> {
+    this.signer.setDefaultAddress(address);
   }
 
   public async sendMessage(msg: Message): Promise<SignedMessage> {

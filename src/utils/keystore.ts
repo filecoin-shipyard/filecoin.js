@@ -14,6 +14,7 @@ export class Keystore {
     public hdIndex = 0;
     public encPrivKeys!: any;
     public addresses!: string[];
+    private defaultAddressIndex: number = 0;
 
     public serialize() {
         return JSON.stringify({
@@ -201,7 +202,30 @@ export class Keystore {
             this.encPrivKeys[address] = keyObj.encPrivKey;
             this.addresses.push(address);
         }
+
+        this.hdIndex += n;
     };
+
+    async newAddress(n: number, password: string) {
+        const pwDerivedKey: Uint8Array = await this.deriveKeyFromPasswordAndSalt(password, this.salt);
+        this.generateNewAddress(pwDerivedKey, n);
+    };
+
+    async deleteAddress(address: string, password: string) {
+        const addressIndex = this.addresses.indexOf(address);
+        if (addressIndex >= 0) {
+            const pwDerivedKey: Uint8Array = await this.deriveKeyFromPasswordAndSalt(password, this.salt);
+            const encPrivateKey = this.encPrivKeys[address];
+
+            if (this._decryptKey(encPrivateKey, pwDerivedKey)){
+                this.addresses[addressIndex] = '';
+                this.encPrivKeys[address] = '';
+                if (this.defaultAddressIndex === addressIndex) {
+                    this.defaultAddressIndex = 0;
+                }
+            };
+        }
+    }
 
     private _generatePrivKeys(pwDerivedKey: Uint8Array, n: number) {
         //Assert.derivedKey(this, pwDerivedKey);
@@ -214,7 +238,7 @@ export class Keystore {
         const keys = [];
 
         for (let i = 0; i < n; i++) {
-            const key = filecoin_signer.keyDerive(seed, this.hdPathString, '');
+            const key = filecoin_signer.keyDerive(seed, `this.hdPathString/${i + this.hdIndex}`, '');
 
             const encPrivateKey = this._encryptKey(key.private_hexstring, pwDerivedKey);
 
@@ -238,6 +262,21 @@ export class Keystore {
 
         return this._decryptKey(encPrivateKey, pwDerivedKey);
     };
+
+    async getDefaultAddress (): Promise<string> {
+        return this.addresses[this.defaultAddressIndex];
+    }
+
+    async setDefaultAddress (address: string): Promise<void> {
+        const addressIndex = this.addresses.indexOf(address);
+        if (addressIndex >= 0) {
+            this.defaultAddressIndex = addressIndex;
+        }
+    }
+
+    async hasAddress (address: string): Promise<boolean> {
+        return this.addresses.indexOf(address) >= 0;
+    }
 
     generateRandomSeed(extraEntropy?: any) {
         let seed = '';
