@@ -1,9 +1,10 @@
 import { Message, SignedMessage, Signature, KeyInfo } from "../Types";
 import { MetamaskSigner } from "../../signers/MetamaskSigner";
-import { WalletProvider, WalletProviderInterface } from "./WalletProvider";
+import { WalletProvider } from "./WalletProvider";
 import { Connector } from "../../connectors/Connector";
 import { FilecoinSnapApi } from "@nodefactory/filsnap-types";
 import { LotusClient } from "../..";
+import { WalletProviderInterface } from "../ProviderInterfaces";
 
 export class MetamaskWalletProvider extends WalletProvider implements WalletProviderInterface{
 

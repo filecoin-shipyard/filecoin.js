@@ -1,8 +1,6 @@
 import { Message, SignedMessage, Signature, KeyInfo } from "../Types";
-import { WalletProvider, WalletProviderInterface } from "./WalletProvider";
-import { MnemonicSigner } from "../../signers/MnemonicSigner";
-import { StringGetter } from "../Types";
-import { Connector } from "../../connectors/Connector";
+import { WalletProvider } from "./WalletProvider";
+import { WalletProviderInterface } from "../ProviderInterfaces";
 import { Keystore } from "../../utils/keystore";
 import { LightWalletSigner } from "../../signers/LightWalletSigner";
 import { LotusClient } from "../..";
