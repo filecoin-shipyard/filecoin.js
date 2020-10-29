@@ -1,5 +1,5 @@
 import { Connector } from '../../connectors/Connector';
-import { MpoolConfig, MpoolUpdate, SignedMessage, TipSetKey } from '../Types';
+import { Cid, Message, MpoolConfig, MpoolUpdate, SignedMessage, TipSetKey } from '../Types';
 import { WsJsonRpcConnector } from '../../index';
 
 /**
@@ -69,8 +69,40 @@ export class JsonRpcMPoolMethodGroup {
       this.conn.on(subscriptionId, cb);
     }
   }
-  /*
-  needs implementing
-  MpoolSub(context.Context) (<-chan MpoolUpdate, error)
-  */
+
+  /**
+   * pushes a signed message to mempool from untrusted sources.
+   * @param message
+   */
+  public async pushUntrusted(message: SignedMessage): Promise<Cid> {
+    const ret = await this.conn.request({ method: 'Filecoin.MpoolPushUntrusted', params: [message] });
+    return ret;
+  }
+
+  /**
+   * batch pushes a signed message to mempool.
+   * @param messages
+   */
+  public async batchPush(messages: SignedMessage[]): Promise<Cid[]> {
+    const ret = await this.conn.request({ method: 'Filecoin.MpoolBatchPush', params: [messages] });
+    return ret;
+  }
+
+  /**
+   * batch pushes a signed message to mempool from untrusted sources
+   * @param messages
+   */
+  public async batchPushUntrusted(messages: SignedMessage[]): Promise<Cid[]> {
+    const ret = await this.conn.request({ method: 'Filecoin.MpoolBatchPushUntrusted', params: [messages] });
+    return ret;
+  }
+
+  /**
+   * batch pushes a unsigned message to mempool
+   * @param messages
+   */
+  public async batchPushMessage(messages: Message[]): Promise<SignedMessage[]> {
+    const ret = await this.conn.request({ method: 'Filecoin.MpoolBatchPushMessage', params: [messages] });
+    return ret;
+  }
 }
