@@ -50,7 +50,7 @@ describe("Send message", function () {
     const httpConnector = new HttpJsonRpcConnector({ url: 'http://localhost:8000/rpc/v0', token: LOTUS_AUTH_TOKEN });
     const con = new LotusClient(httpConnector);
 
-    const mnemonicWalletProvider = new MnemonicWalletProvider( con, testMnemonic, '');
+    const mnemonicWalletProvider = new MnemonicWalletProvider(con, testMnemonic, '');
 
     const lightWalletHttp = new LightWalletProvider(con, () => { return 'testPwd' });
     await lightWalletHttp.recoverLightWallet(mnemonic, 'testPwd');
@@ -76,7 +76,7 @@ describe("Send message", function () {
 
     const httpConnector = new HttpJsonRpcConnector({ url: 'http://localhost:8000/rpc/v0', token: LOTUS_AUTH_TOKEN });
     const con = new LotusClient(httpConnector);
-    const mnemonicWalletProvider = new MnemonicWalletProvider( con, testMnemonic, '' );
+    const mnemonicWalletProvider = new MnemonicWalletProvider(con, testMnemonic, '');
 
     const lightWalletHttp = new LightWalletProvider(con, () => { return 'testPwd' });
     lightWalletHttp.loadLightWallet(encryptedWallet);
@@ -101,70 +101,89 @@ describe("Send message", function () {
 
 describe("LightWallet Wallet methods", function () {
   it("should retrieve address list [http]", async function () {
-      const httpConnector = new HttpJsonRpcConnector({ url: 'http://localhost:8000/rpc/v0', token: LOTUS_AUTH_TOKEN });
-      const lotusClient = new LotusClient(httpConnector);
-      const lightWalletHttp = new LightWalletProvider(lotusClient, () => { return 'testPwd' });
-      mnemonic = await lightWalletHttp.createLightWallet('testPwd');
+    const httpConnector = new HttpJsonRpcConnector({ url: 'http://localhost:8000/rpc/v0', token: LOTUS_AUTH_TOKEN });
+    const lotusClient = new LotusClient(httpConnector);
+    const lightWalletHttp = new LightWalletProvider(lotusClient, () => { return 'testPwd' });
+    mnemonic = await lightWalletHttp.createLightWallet('testPwd');
 
-      const accountsList = await lightWalletHttp.getAddresses();
-      assert.strictEqual(typeof accountsList, "object", 'couldn not retrieve address list');
+    const accountsList = await lightWalletHttp.getAddresses();
+    assert.strictEqual(typeof accountsList, "object", 'couldn not retrieve address list');
   });
 
   it("should create new address [http]", async function () {
-      const httpConnector = new HttpJsonRpcConnector({ url: 'http://localhost:8000/rpc/v0', token: LOTUS_AUTH_TOKEN });
-      const lotusClient = new LotusClient(httpConnector);
-      const lightWalletHttp = new LightWalletProvider(lotusClient, () => { return 'testPwd' });
-      mnemonic = await lightWalletHttp.createLightWallet('testPwd');
+    const httpConnector = new HttpJsonRpcConnector({ url: 'http://localhost:8000/rpc/v0', token: LOTUS_AUTH_TOKEN });
+    const lotusClient = new LotusClient(httpConnector);
+    const lightWalletHttp = new LightWalletProvider(lotusClient, () => { return 'testPwd' });
+    mnemonic = await lightWalletHttp.createLightWallet('testPwd');
 
-      const account = await lightWalletHttp.newAddress();
+    const account = await lightWalletHttp.newAddress();
 
-      const hasWallet = await lightWalletHttp.hasAddress(account);
-      assert.strictEqual(hasWallet, true, 'newly created wallet not found in key store');
+    const hasWallet = await lightWalletHttp.hasAddress(account);
+    assert.strictEqual(hasWallet, true, 'newly created wallet not found in key store');
+  });
+
+  it("should persist new address [http]", async function () {
+    const httpConnector = new HttpJsonRpcConnector({ url: 'http://localhost:8000/rpc/v0', token: LOTUS_AUTH_TOKEN });
+    const lotusClient = new LotusClient(httpConnector);
+    const lightWalletHttp = new LightWalletProvider(lotusClient, () => { return 'testPwd' });
+    mnemonic = await lightWalletHttp.createLightWallet('testPwd');
+
+    const account = await lightWalletHttp.newAddress();
+
+    const hasWallet = await lightWalletHttp.hasAddress(account);
+    assert.strictEqual(hasWallet, true, 'newly created wallet not found in key store');
+
+    const encWallet = lightWalletHttp.prepareToSave();
+    const lightWalletRestoredHttp = new LightWalletProvider(lotusClient, () => { return 'testPwd' });
+    lightWalletRestoredHttp.loadLightWallet(encWallet);
+
+    const hasWalletRestored = await lightWalletHttp.hasAddress(account);
+    assert.strictEqual(hasWalletRestored, true, 'newly created wallet not found in key store');
   });
 
   it("should change default address [http]", async function () {
-      const httpConnector = new HttpJsonRpcConnector({ url: 'http://localhost:8000/rpc/v0', token: LOTUS_AUTH_TOKEN });
-      const lotusClient = new LotusClient(httpConnector);
-      const lightWalletHttp = new LightWalletProvider(lotusClient, () => { return 'testPwd' });
-      mnemonic = await lightWalletHttp.createLightWallet('testPwd');
+    const httpConnector = new HttpJsonRpcConnector({ url: 'http://localhost:8000/rpc/v0', token: LOTUS_AUTH_TOKEN });
+    const lotusClient = new LotusClient(httpConnector);
+    const lightWalletHttp = new LightWalletProvider(lotusClient, () => { return 'testPwd' });
+    mnemonic = await lightWalletHttp.createLightWallet('testPwd');
 
-      await lightWalletHttp.newAddress();
+    await lightWalletHttp.newAddress();
 
-      const addressList = await lightWalletHttp.getAddresses();
-      const defaultAccount = await lightWalletHttp.getDefaultAddress();
+    const addressList = await lightWalletHttp.getAddresses();
+    const defaultAccount = await lightWalletHttp.getDefaultAddress();
 
-      await lightWalletHttp.setDefaultAddress(addressList[1]);
+    await lightWalletHttp.setDefaultAddress(addressList[1]);
 
-      let newDefault = await lightWalletHttp.getDefaultAddress();
+    let newDefault = await lightWalletHttp.getDefaultAddress();
 
-      assert.strictEqual(newDefault, addressList[1], 'incorrect default address');
+    assert.strictEqual(newDefault, addressList[1], 'incorrect default address');
 
-      await lightWalletHttp.setDefaultAddress(defaultAccount);
+    await lightWalletHttp.setDefaultAddress(defaultAccount);
 
-      newDefault = await lightWalletHttp.getDefaultAddress();
+    newDefault = await lightWalletHttp.getDefaultAddress();
 
-      assert.strictEqual(newDefault, defaultAccount, 'incorrect default address');
+    assert.strictEqual(newDefault, defaultAccount, 'incorrect default address');
   });
 
   it("should delete address[http]", async function () {
-      this.timeout(6000);
+    this.timeout(6000);
 
-      const httpConnector = new HttpJsonRpcConnector({ url: 'http://localhost:8000/rpc/v0', token: LOTUS_AUTH_TOKEN });
-      const lotusClient = new LotusClient(httpConnector);
-      const lightWalletHttp = new LightWalletProvider(lotusClient, () => { return 'testPwd' });
-      mnemonic = await lightWalletHttp.createLightWallet('testPwd');
+    const httpConnector = new HttpJsonRpcConnector({ url: 'http://localhost:8000/rpc/v0', token: LOTUS_AUTH_TOKEN });
+    const lotusClient = new LotusClient(httpConnector);
+    const lightWalletHttp = new LightWalletProvider(lotusClient, () => { return 'testPwd' });
+    mnemonic = await lightWalletHttp.createLightWallet('testPwd');
 
-      const defaultAddress = await lightWalletHttp.getDefaultAddress();
-      const privateKey = await lightWalletHttp.exportPrivateKey(defaultAddress);
-      assert.strictEqual(typeof privateKey.PrivateKey, "string", 'could not private key');
+    const defaultAddress = await lightWalletHttp.getDefaultAddress();
+    const privateKey = await lightWalletHttp.exportPrivateKey(defaultAddress);
+    assert.strictEqual(typeof privateKey.PrivateKey, "string", 'could not private key');
 
-      await lightWalletHttp.newAddress();
+    await lightWalletHttp.newAddress();
 
-      const addresseseBeforeDelete = await lightWalletHttp.getAddresses();
+    const addresseseBeforeDelete = await lightWalletHttp.getAddresses();
 
-      await lightWalletHttp.deleteAddress(defaultAddress);
+    await lightWalletHttp.deleteAddress(defaultAddress);
 
-      const addressesAfterDelete = await lightWalletHttp.getAddresses();
-      assert.strictEqual(addresseseBeforeDelete.length - 1, addressesAfterDelete.length, 'wallet not deleted');
+    const addressesAfterDelete = await lightWalletHttp.getAddresses();
+    assert.strictEqual(addresseseBeforeDelete.length - 1, addressesAfterDelete.length, 'wallet not deleted');
   });
 });
