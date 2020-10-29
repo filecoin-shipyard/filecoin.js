@@ -1,9 +1,9 @@
 import { KeyInfo, Message, Signature, SignedMessage } from '../Types';
-import { WalletProvider } from './WalletProvider';
+import { BaseWalletProvider } from './BaseWalletProvider';
 import { WalletProviderInterface } from "../ProviderInterfaces";
 import { LotusClient } from '../..';
 
-export class LotusWalletProvider extends WalletProvider implements WalletProviderInterface {
+export class LotusWalletProvider extends BaseWalletProvider implements WalletProviderInterface {
 
   constructor(client: LotusClient) {
     super(client);

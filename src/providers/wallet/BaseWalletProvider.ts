@@ -2,7 +2,7 @@ import { Message, SignedMessage, Cid, MessagePartial } from '../Types';
 import BigNumber from 'bignumber.js';
 import { LotusClient } from '../..';
 
-export class WalletProvider {
+export class BaseWalletProvider {
 
   public client: LotusClient;
 

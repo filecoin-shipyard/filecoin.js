@@ -217,11 +217,14 @@ export class Keystore {
             const pwDerivedKey: Uint8Array = await this.deriveKeyFromPasswordAndSalt(password, this.salt);
             const encPrivateKey = this.encPrivKeys[address];
 
-            if (this._decryptKey(encPrivateKey, pwDerivedKey)){
+            if (this._decryptKey(encPrivateKey, pwDerivedKey)) {
                 this.addresses[addressIndex] = '';
                 this.encPrivKeys[address] = '';
                 if (this.defaultAddressIndex === addressIndex) {
-                    this.defaultAddressIndex = 0;
+                    const addresses = await this.getAddresses();
+                    if (addresses.length > 0) {
+                        await this.setDefaultAddress(addresses[0]);
+                    }
                 }
             };
         }
@@ -238,7 +241,7 @@ export class Keystore {
         const keys = [];
 
         for (let i = 0; i < n; i++) {
-            const key = filecoin_signer.keyDerive(seed, `this.hdPathString/${i + this.hdIndex}`, '');
+            const key = filecoin_signer.keyDerive(seed, `${this.hdPathString}/${i + this.hdIndex}`, '');
 
             const encPrivateKey = this._encryptKey(key.private_hexstring, pwDerivedKey);
 
@@ -263,18 +266,22 @@ export class Keystore {
         return this._decryptKey(encPrivateKey, pwDerivedKey);
     };
 
-    async getDefaultAddress (): Promise<string> {
+    async getDefaultAddress(): Promise<string> {
         return this.addresses[this.defaultAddressIndex];
     }
 
-    async setDefaultAddress (address: string): Promise<void> {
+    async setDefaultAddress(address: string): Promise<void> {
         const addressIndex = this.addresses.indexOf(address);
         if (addressIndex >= 0) {
             this.defaultAddressIndex = addressIndex;
         }
     }
 
-    async hasAddress (address: string): Promise<boolean> {
+    public async getAddresses(): Promise<string[]> {
+        return this.addresses.filter((a, i) => { return a != '' });
+    }
+
+    async hasAddress(address: string): Promise<boolean> {
         return this.addresses.indexOf(address) >= 0;
     }
 

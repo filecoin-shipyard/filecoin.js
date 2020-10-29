@@ -1,10 +1,11 @@
 import { Message, SignedMessage, Signature, KeyInfo } from "../Types";
-import { WalletProvider, WalletProviderInterface } from "./WalletProvider";
+import { BaseWalletProvider } from "./BaseWalletProvider";
 import { MnemonicSigner } from "../../signers/MnemonicSigner";
 import { StringGetter } from "../Types";
 import { LotusClient } from "../..";
+import { WalletProviderInterface } from "../ProviderInterfaces";
 
-export class MnemonicWalletProvider extends WalletProvider implements WalletProviderInterface {
+export class MnemonicWalletProvider extends BaseWalletProvider implements WalletProviderInterface {
 
   private signer: MnemonicSigner;
 
@@ -15,7 +16,6 @@ export class MnemonicWalletProvider extends WalletProvider implements WalletProv
   ) {
     super(client);
     this.signer = new MnemonicSigner(mnemonic, password, path);
-    this.signer.initAddresses();
   }
 
   public async newAddress(): Promise<string> {
@@ -41,7 +41,7 @@ export class MnemonicWalletProvider extends WalletProvider implements WalletProv
   }
 
   public async getAddresses(): Promise<string[]> {
-    return this.signer.addresses;
+    return this.signer.getAddresses();
   }
 
   public async getDefaultAddress(): Promise<string> {

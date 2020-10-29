@@ -1,5 +1,5 @@
 import { Message, SignedMessage, Signature, KeyInfo } from "../Types";
-import { WalletProvider } from "./WalletProvider";
+import { BaseWalletProvider } from "./BaseWalletProvider";
 import { WalletProviderInterface } from "../ProviderInterfaces";
 import { Keystore } from "../../utils/keystore";
 import { LightWalletSigner } from "../../signers/LightWalletSigner";
@@ -12,7 +12,7 @@ interface LighWalletOptions {
   password?: string;
 }
 
-export class LightWalletProvider extends WalletProvider implements WalletProviderInterface {
+export class LightWalletProvider extends BaseWalletProvider implements WalletProviderInterface {
 
   public keystore!: Keystore;
   private hdPathString = "m/44'/1'/0/0/1";
@@ -31,7 +31,7 @@ export class LightWalletProvider extends WalletProvider implements WalletProvide
   }
 
   public async deleteAddress(address: string): Promise<void> {
-    this.keystore.deleteAddress(address, this.pwdCallback());
+    await this.keystore.deleteAddress(address, this.pwdCallback());
   }
 
   public async hasAddress(address: string): Promise<boolean> {
@@ -47,7 +47,7 @@ export class LightWalletProvider extends WalletProvider implements WalletProvide
   }
 
   public async getAddresses(): Promise<string[]> {
-    return this.keystore.addresses;
+    return await this.keystore.getAddresses();
   }
 
   public async getDefaultAddress(): Promise<string> {

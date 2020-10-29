@@ -4,8 +4,8 @@ import { Signer } from './Signer';
 import { StringGetter } from '../providers/Types'
 
 export class MnemonicSigner implements Signer {
-  private privKeys!: any;
-  public addresses!: string[];
+  private privKeys: any = [];
+  public addresses: string[] = [];
   private defaultAddressIndex: number = 0;
   private hdIndex = 0;
 
@@ -16,14 +16,19 @@ export class MnemonicSigner implements Signer {
   ) { }
 
   public async initAddresses(): Promise<void> {
-    const key = filecoin_signer.keyDerive(await this.getMenmonic(), this.path, await this.getPassword());
+    const key = filecoin_signer.keyDerive(await this.getMnemonic(), this.path, await this.getPassword());
     this.addresses.push(key.address);
     this.privKeys[key.address] = key.private_hexstring;
   }
 
+  public async getAddresses(): Promise<string[]> {
+    return this.addresses.filter((a, i) => { return a != '' });
+  }
+
   async newAddress(n: number) {
+    if (this.addresses.length === 0) await this.initAddresses();
     for (let i = 0; i < n; i++) {
-      const key = filecoin_signer.keyDerive(this.mnemonic, `this.hdPathString/${i + this.hdIndex}`, '');
+      const key = filecoin_signer.keyDerive(this.mnemonic, `${this.path}/${i + this.hdIndex}`, '');
       this.addresses.push(key.address);
       this.privKeys[key.address] = key.private_hexstring;
     }
@@ -37,7 +42,10 @@ export class MnemonicSigner implements Signer {
       this.addresses[addressIndex] = '';
       this.privKeys[address] = '';
       if (this.defaultAddressIndex === addressIndex) {
-        this.defaultAddressIndex = 0;
+        const addresses = await this.getAddresses();
+        if (addresses.length > 0) {
+          await this.setDefaultAddress(addresses[0]);
+        }
       }
     }
   }
@@ -47,6 +55,7 @@ export class MnemonicSigner implements Signer {
   };
 
   async getDefaultAddress(): Promise<string> {
+    if (this.addresses.length === 0) await this.initAddresses();
     return this.addresses[this.defaultAddressIndex];
   }
 
@@ -62,14 +71,9 @@ export class MnemonicSigner implements Signer {
   }
 
   public async sign(message: Message): Promise<SignedMessage> {
-    let key;
-    if (this.defaultAddressIndex === 0) {
-      key = filecoin_signer.keyDerive(await this.getMenmonic(), this.path, await this.getPassword());
-    } else {
-      key = this.privKeys[this.addresses[this.defaultAddressIndex]];
-    }
-
-    const signedTx = filecoin_signer.transactionSignLotus(this.messageToSigner(message), key.private_hexstring);
+    if (this.addresses.length === 0) await this.initAddresses();
+    const key = this.privKeys[this.addresses[this.defaultAddressIndex]];;
+    const signedTx = filecoin_signer.transactionSignLotus(this.messageToSigner(message), key);
     return JSON.parse(signedTx);
   }
 
@@ -77,7 +81,7 @@ export class MnemonicSigner implements Signer {
     return (typeof this.password == 'string') ? this.password : await this.password();
   }
 
-  private async getMenmonic(): Promise<string> {
+  private async getMnemonic(): Promise<string> {
     return (typeof this.mnemonic == 'string') ? this.mnemonic : await this.mnemonic();
   }
 
