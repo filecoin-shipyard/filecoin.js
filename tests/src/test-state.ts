@@ -7,7 +7,7 @@ import { WsJsonRpcConnector } from '../../src/connectors/WsJsonRpcConnector';
 const httpConnector = new HttpJsonRpcConnector({ url: 'http://localhost:8000/rpc/v0', token: LOTUS_AUTH_TOKEN });
 const wsConnector = new WsJsonRpcConnector({ url: 'ws://localhost:8000/rpc/v0', token: LOTUS_AUTH_TOKEN });
 
-describe("Connection test", function () {
+describe("State", function () {
   const blocksWithMessages: any = [];
 
   it("get blocks with messages [http]", async function() {
@@ -232,19 +232,30 @@ describe("Connection test", function () {
   it("should search for message and return its receipt and the tipset where it was executed", async function() {
     const con = new JsonRpcProvider(httpConnector);
     const messages = await con.state.listMessages({
-      To: 't01000'
+      To: 't01000',
     });
     const receipt = await con.state.searchMsg(messages[0]);
     assert.strictEqual(typeof receipt.Height === 'number', true, "invalid height for searched messages");
   });
 
   it("should wait for message", async function() {
+    this.timeout(10000);
+    const con = new JsonRpcProvider(httpConnector);
+    const messages = await con.state.listMessages({
+      To: 't01000',
+    });
+    const lookup = await con.state.waitMsg(messages[0], 10);
+    assert.strictEqual(typeof lookup.Height === 'number', true, "invalid lookup info for waited messages");
+  });
+
+  it("should wait message limited", async function() {
+    this.timeout(10000);
     const con = new JsonRpcProvider(httpConnector);
     const messages = await con.state.listMessages({
       To: 't01000'
     });
-    const lookup = await con.state.waitMsg(messages[0], 10);
-    assert.strictEqual(typeof lookup.Height === 'number', true, "invalid lookup info for waited messages");
+    const lookup = await con.state.waitMsgLimited(messages[0], 10, 10000000);
+    assert.strictEqual(typeof lookup.Height === 'number', true, "invalid lookup info for limited waited messages");
   });
 
   it("should list miners", async function() {
@@ -358,5 +369,50 @@ describe("Connection test", function () {
       .keys(supply)
       .reduce((acc, key) => acc === false ? acc : typeof key === 'string', true);
     assert.strictEqual(valid, true, "invalid circulating supply of Filecoin");
+  });
+
+  it("the vm circulating supply of Filecoin at the given tipset", async function() {
+    const con = new JsonRpcProvider(httpConnector);
+    const supply = await con.state.vmCirculatingSupply();
+    const valid = Object
+      .keys(supply)
+      .reduce((acc, key) => acc === false ? acc : typeof key === 'string', true);
+    assert.strictEqual(valid, true, "invalid vm circulating supply of Filecoin");
+  });
+
+  it("should return the data cap for the verifier address [http]", async function() {
+    const con = new JsonRpcProvider(httpConnector);
+    const status = await con.state.verifierStatus('t01000');
+    assert.strictEqual(status === null || typeof status === 'string', true, "invalid data cap");
+  });
+
+  it("should return the data cap for the verifier address [ws]", async function() {
+    const con = new JsonRpcProvider(wsConnector);
+    const status = await con.state.verifierStatus('t01000');
+    assert.strictEqual(status === null || typeof status === 'string', true, "invalid data cap");
+  });
+
+  it("should return the network version [http]", async function() {
+    const con = new JsonRpcProvider(httpConnector);
+    const version = await con.state.networkVersion();
+    assert.strictEqual(typeof version === 'number', true, "invalid network version");
+  });
+
+  it("should return the network version [ws]", async function() {
+    const con = new JsonRpcProvider(wsConnector);
+    const version = await con.state.networkVersion()
+    assert.strictEqual(typeof version === 'number', true, "invalid network version");
+  });
+
+  it("should return the address of the Verified Registry's root key [http]", async function() {
+    const con = new JsonRpcProvider(httpConnector);
+    const address = await con.state.verifiedRegistryRootKey();
+    assert.strictEqual(typeof address === 'string', true, "invalid address");
+  });
+
+  it("should return the address of the Verified Registry's root key [ws]", async function() {
+    const con = new JsonRpcProvider(wsConnector);
+    const address = await con.state.verifiedRegistryRootKey()
+    assert.strictEqual(typeof address === 'string', true, "invalid address");
   });
 });
