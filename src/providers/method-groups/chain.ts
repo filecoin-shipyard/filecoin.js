@@ -34,6 +34,15 @@ export class JsonRpcChainMethodGroup {
   }
 
   /**
+   * deletes node referenced by the given CID
+   * @param cid
+   */
+  public async deleteObj(cid: Cid): Promise<string> {
+    const error = await this.conn.request({ method: 'Filecoin.ChainDeleteObj', params: [cid] });
+    return error as string;
+  }
+
+  /**
    * returns messages stored in the specified block.
    * @param blockCid
    */
