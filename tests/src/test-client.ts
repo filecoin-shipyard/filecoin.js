@@ -230,4 +230,16 @@ describe("Client tests", function() {
       con.release().then(() => { done() });
     });
   });
+
+  it("should return deal status given a code [http]", async function() {
+    const provider = new JsonRpcProvider(httpConnector);
+    const status = await provider.client.getDealStatus(0);
+    assert.strictEqual(status === 'StorageDealUnknown', true, 'wrong deal status given a code');
+  });
+
+  it("should return deal status given a code [ws]", async function() {
+    const provider = new JsonRpcProvider(wsConnector);
+    const status = await provider.client.getDealStatus(0);
+    assert.strictEqual(status === 'StorageDealUnknown', true, 'wrong deal status given a code');
+  });
 });

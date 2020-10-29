@@ -1,14 +1,14 @@
 import { Connector } from '../../connectors/Connector';
 import {
   Address,
-  Cid, CommPRet, DataSize, DataTransferChannel,
+  Cid, CommPRet, DataCIDSize, DataSize, DataTransferChannel,
   DealInfo,
   FileRef, Import,
   ImportRes, PeerID,
   QueryOffer, RetrievalEvent,
   RetrievalOrder,
   StartDealParams, StorageAsk,
-  StoreID,
+  StoreID, TransferID,
 } from '../Types';
 import { WsJsonRpcConnector } from '../../connectors/WsJsonRpcConnector';
 
@@ -251,5 +251,53 @@ export class JsonRpcClientMethodGroup {
       });
       this.conn.on(subscriptionId, cb);
     }
+  }
+
+  /**
+   * returns deal status given a code
+   * @param code
+   */
+  public async getDealStatus(code: number): Promise<string> {
+    const status: string = await this.conn.request({
+      method: 'Filecoin.ClientGetDealStatus',
+      params: [code],
+    });
+
+    return status;
+  }
+
+  /**
+   * attempts to restart a data transfer with the given transfer ID and other peer
+   * @param transferId
+   * @param otherPeer
+   * @param isInitiator
+   */
+  public async restartDataTransfer(transferId: TransferID, otherPeer: PeerID, isInitiator: boolean) {
+    await this.conn.request({
+      method: 'Filecoin.ClientRestartDataTransfer',
+      params: [transferId, otherPeer, isInitiator],
+    });
+  }
+
+  /**
+   * cancels a data transfer with the given transfer ID and other peer
+   * @param transferId
+   * @param otherPeer
+   * @param isInitiator
+   */
+  public async cancelDataTransfer(transferId: TransferID, otherPeer: PeerID, isInitiator: boolean) {
+    await this.conn.request({
+      method: 'Filecoin.ClientCancelDataTransfer',
+      params: [transferId, otherPeer, isInitiator],
+    });
+  }
+
+  public async dealPieceCID(rootCid: Cid): Promise<DataCIDSize> {
+    const dataCIDSize: DataCIDSize = await this.conn.request({
+      method: 'Filecoin.ClientDealPieceCID',
+      params: [rootCid],
+    });
+
+    return dataCIDSize;
   }
 }
