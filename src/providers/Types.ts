@@ -158,11 +158,24 @@ export class WrappedMessage {
 export type TipSetKey = Cid[];
 
 export class InvocResult {
+  MsgCid!: Cid;
   Msg!: Message;
   MsgRct!: MessageReceipt;
+  GasCost!: MsgGasCost;
   ExecutionTrace!: ExecutionTrace;
   Error!: string;
   Duration!: number;
+}
+
+export class MsgGasCost {
+  Message!: Cid;
+  GasUsed!: TokenAmount;
+  BaseFeeBurn!: TokenAmount;
+  OverEstimationBurn!: TokenAmount;
+  MinerPenalty!: TokenAmount;
+  MinerTip!: TokenAmount;
+  Refund!: TokenAmount;
+  TotalCost!: TokenAmount;
 }
 
 export class Loc {
@@ -298,11 +311,6 @@ export class SectorOnChainInfo {
   ReplacedDayReward!: TokenAmount;
 }
 
-export class ChainSectorInfo {
-  Info!: SectorOnChainInfo;
-  ID!: SectorNumber;
-}
-
 /**
  * Deadline calculations with respect to a current epoch.
  *
@@ -362,6 +370,7 @@ export class Claim {
 export class MinerPower {
   MinerPower!: Claim;
   TotalPower!: Claim;
+  HasMinPower!: boolean;
 }
 
 export type Address = string;
@@ -774,6 +783,7 @@ export class DealInfo {
 
   DealID!: DealID;
   CreationTime!: string;
+  Verified!: boolean;
 }
 
 export class StartDealParams {
@@ -1147,6 +1157,27 @@ export class SectorInfo {
 	SectorNumber!: number;
 	SealedCID!: Cid // CommR
 }
+
+export class MsigVesting {
+  InitialBalance!: TokenAmount;
+  StartEpoch!: ChainEpoch;
+  UnlockDuration!: ChainEpoch;
+}
+
+export type NetworkVersion = number;
+
+
+export class MessageMatch {
+  To?: Address;
+  From?: Address;
+}
+
+export class DataCIDSize {
+  PayloadSize!: number;
+  PieceSize!: PaddedPieceSize;
+  PieceCID!: Cid;
+}
+
 /**
  * Interface to be implemented by all providers.
  *
