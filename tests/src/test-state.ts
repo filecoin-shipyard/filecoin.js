@@ -390,6 +390,7 @@ describe("State", function () {
     const con = new JsonRpcProvider(wsConnector);
     const status = await con.state.verifierStatus('t01000');
     assert.strictEqual(status === null || typeof status === 'string', true, "invalid data cap");
+    await con.release();
   });
 
   it("should return the network version [http]", async function() {
@@ -402,6 +403,7 @@ describe("State", function () {
     const con = new JsonRpcProvider(wsConnector);
     const version = await con.state.networkVersion()
     assert.strictEqual(typeof version === 'number', true, "invalid network version");
+    await con.release();
   });
 
   it("should return the address of the Verified Registry's root key [http]", async function() {
@@ -414,5 +416,6 @@ describe("State", function () {
     const con = new JsonRpcProvider(wsConnector);
     const address = await con.state.verifiedRegistryRootKey()
     assert.strictEqual(typeof address === 'string', true, "invalid address");
+    await con.release();
   });
 });
