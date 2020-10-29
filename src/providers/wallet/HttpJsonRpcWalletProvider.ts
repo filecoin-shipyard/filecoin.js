@@ -1,4 +1,4 @@
-import { Message, SignedMessage, Signature, Cid, MessagePartial, KeyInfo } from '../Types';
+import { Message, SignedMessage, Signature, Cid, MessagePartial, KeyInfo, Address } from '../Types';
 import { WalletProvider } from './WalletProvider';
 import { HttpJsonRpcConnector, JsonRpcConnectionOptions } from '../../connectors/HttpJsonRpcConnector';
 import { toBase64 } from '../../utils/data';
@@ -19,10 +19,12 @@ export class HttpJsonRpcWalletProvider implements WalletProvider {
   }
 
   /**
-   * create new wallet
+   * creates a new address in the wallet with the given sigType.
    * @param type
+   *
+   * @remarks Available key types: bls, secp256k1, secp256k1-ledger. Support for numerical types: 1 - secp256k1, 2 - BLS is deprecated
    */
-  public async newAccount(type = 1): Promise<string> {
+  public async newAccount(type = 1): Promise<Address> {
     const ret = await this.conn.request({ method: 'Filecoin.WalletNew', params: [type] });
     return ret as string;
   }
@@ -224,5 +226,14 @@ export class HttpJsonRpcWalletProvider implements WalletProvider {
     data = toBase64(data);
     const ret = await this.conn.request({ method: 'Filecoin.WalletVerify', params: [address, data, sign] });
     return ret as boolean;
+  }
+
+  /**
+   * validates whether a given string can be decoded as a well-formed address
+   * @param address
+   */
+  public async validateAddress(address: string): Promise<Address> {
+    const addressResponse: Address = await this.conn.request({ method: 'Filecoin.WalletValidateAddress', params: [address] });
+    return addressResponse;
   }
 }
