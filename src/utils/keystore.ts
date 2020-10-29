@@ -43,7 +43,12 @@ export class Keystore {
 
     public init(mnemonic: string, pwDerivedKey: Uint8Array, hdPathString: string, salt: string) {
         this.salt = salt;
-        this.hdPathString = hdPathString;
+        const pathParts = hdPathString.split('/');
+        if (pathParts.length === 6) {
+            const hdPathIndex = pathParts.splice(pathParts.length - 1, 1);
+            this.hdIndex = parseInt(hdPathIndex[0].replace("'", ""));
+        }
+        this.hdPathString = pathParts.join('/');
         this.encSeed = undefined;
         this.encPrivKeys = {};
         this.addresses = [];
@@ -69,7 +74,7 @@ export class Keystore {
 
         // Default hdPathString
         if (!hdPathString) {
-            const err = new Error('Keystore: Must include hdPathString in createVault inputs. Suggested alternatives are m/0\'/0\'/0\' for previous lightwallet default, or m/44\'/60\'/0\'/0 for BIP44 (used by Jaxx & MetaMask)');
+            const err = new Error("Keystore: Must include hdPathString in createVault inputs. Suggested value m/44'/461'/0/0/1");
             return err;
         }
 

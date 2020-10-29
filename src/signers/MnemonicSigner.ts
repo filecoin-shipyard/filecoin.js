@@ -8,12 +8,20 @@ export class MnemonicSigner implements Signer {
   public addresses: string[] = [];
   private defaultAddressIndex: number = 0;
   private hdIndex = 0;
+  private path: string;
 
   constructor(
     private mnemonic: string | StringGetter,
     private password: string | StringGetter,
-    private path: string = `m/44'/461'/0/0/1`,
-  ) { }
+    path: string = `m/44'/461'/0/0/1`,
+  ) {
+    const pathParts = path.split('/');
+    if (pathParts.length === 6) {
+      const hdPathIndex = pathParts.splice(pathParts.length - 1, 1);
+      this.hdIndex = parseInt(hdPathIndex[0].replace("'",""));
+    }
+    this.path = pathParts.join('/');
+  }
 
   public async initAddresses(): Promise<void> {
     const key = filecoin_signer.keyDerive(await this.getMnemonic(), this.path, await this.getPassword());
