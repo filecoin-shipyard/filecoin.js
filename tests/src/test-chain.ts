@@ -9,7 +9,7 @@ import { ObjStat } from '../../src/providers/Types';
 const httpConnector = new HttpJsonRpcConnector({ url: 'http://localhost:8000/rpc/v0', token: LOTUS_AUTH_TOKEN });
 const wsConnector = new WsJsonRpcConnector({ url: 'ws://localhost:8000/rpc/v0' });
 
-describe("Chain methods", function() {
+describe.only("Chain methods", function() {
   it("statistics about the graph", async () => {
     const provider = new LotusClient(httpConnector);
     const tipset1 = await provider.chain.getTipSetByHeight(1);
@@ -137,13 +137,13 @@ describe("Chain methods", function() {
     await provider.release();
   });
 
-  // TODO: Fix error
+  // This test fails in the current testnet setup with the following error: RPC Error: method 'Filecoin.ChainExport' not supported in this mode (no out channel support)
   // it("export chain", async () => {
   //   const provider = new LotusClient(httpConnector);
-  //   const tipSet = await provider.getTipSetByHeight(1);
-  //   const tipSet2 = await provider.getTipSetByHeight(10);
-  //   const path = await provider.export(100, [tipSet2.Cids[0]]);
+  //   const tipSet = await provider.chain.getTipSetByHeight(1);
+  //   const tipSet2 = await provider.chain.getTipSetByHeight(10)
+  //   const path = await provider.chain.export(100, true, [tipSet2.Cids[0]]);
   //   console.log('path', path);
-  //   // assert.strictEqual(typeValid, true, 'invalid path');
+  //   assert.strictEqual(typeValid, true, 'invalid path');
   // });
 });
