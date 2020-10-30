@@ -9,7 +9,7 @@ import { ObjStat } from '../../src/providers/Types';
 const httpConnector = new HttpJsonRpcConnector({ url: 'http://localhost:8000/rpc/v0', token: LOTUS_AUTH_TOKEN });
 const wsConnector = new WsJsonRpcConnector({ url: 'ws://localhost:8000/rpc/v0' });
 
-describe.only("Chain methods", function() {
+describe("Chain methods", function() {
   it("statistics about the graph", async () => {
     const provider = new LotusClient(httpConnector);
     const tipset1 = await provider.chain.getTipSetByHeight(1);
