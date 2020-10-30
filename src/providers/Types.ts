@@ -1,10 +1,17 @@
 import { BigNumber } from 'bignumber.js';
 
+export const DEFAULT_HD_PATH = `m/44'/461'/0/0/1`;
 export type StringGetter = () => Promise<string>;
 
 export enum SigType {
   SigTypeSecp256k1 = 1,
   SigTypeBLS = 2,
+}
+
+export enum NewAddressType {
+  BLS = 'bls',
+  SECP256K1 = 'secp256k1',
+  SECP256K1_LEDGER = 'secp256k1-ledger'
 }
 
 export class Cid {

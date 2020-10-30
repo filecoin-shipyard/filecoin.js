@@ -1,4 +1,4 @@
-import { Message, SignedMessage, Signature, KeyInfo } from "../Types";
+import { Message, SignedMessage, Signature, KeyInfo, DEFAULT_HD_PATH } from "../Types";
 import { BaseWalletProvider } from "./BaseWalletProvider";
 import { WalletProviderInterface } from "../ProviderInterfaces";
 import { Keystore } from "../../utils/keystore";
@@ -15,7 +15,7 @@ interface LighWalletOptions {
 export class LightWalletProvider extends BaseWalletProvider implements WalletProviderInterface {
 
   public keystore!: Keystore;
-  private hdPathString = "m/44'/1'/0/0/1";
+  private hdPathString = DEFAULT_HD_PATH;
   private signer!: LightWalletSigner;
   private pwdCallback: Function;
 

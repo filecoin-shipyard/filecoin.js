@@ -1,4 +1,4 @@
-import { KeyInfo, Message, Signature, SignedMessage } from '../Types';
+import { KeyInfo, Message, NewAddressType, Signature, SignedMessage } from '../Types';
 import { BaseWalletProvider } from './BaseWalletProvider';
 import { WalletProviderInterface } from "../ProviderInterfaces";
 import { LotusClient } from '../..';
@@ -14,7 +14,7 @@ export class LotusWalletProvider extends BaseWalletProvider implements WalletPro
    * create new wallet
    * @param type
    */
-  public async newAddress(type = 1): Promise<string> {
+  public async newAddress(type: NewAddressType  = NewAddressType.SECP256K1): Promise<string> {
     const ret = await this.client.wallet.new(type);
     return ret as string;
   }

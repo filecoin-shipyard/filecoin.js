@@ -1,6 +1,6 @@
 import { Connector } from '../../connectors/Connector';
 import { toBase64 } from '../../utils/data';
-import { KeyInfo, Message, Signature, SignedMessage } from '../Types';
+import { KeyInfo, Message, NewAddressType, Signature, SignedMessage } from '../Types';
 
 export class JsonRpcWalletMethodGroup {
     private conn: Connector;
@@ -12,7 +12,7 @@ export class JsonRpcWalletMethodGroup {
        * create new wallet
        * @param type
        */
-    public async new(type = 1): Promise<string> {
+    public async new(type: NewAddressType  = NewAddressType.SECP256K1): Promise<string> {
         const ret = await this.conn.request({ method: 'Filecoin.WalletNew', params: [type] });
         return ret as string;
     }

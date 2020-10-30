@@ -8,22 +8,10 @@ export interface WalletProviderInterface {
     setDefaultAddress(address: string): Promise<void>
     getDefaultAddress(): Promise<string>
     exportPrivateKey(address: string): Promise<KeyInfo>
-    //getBalance(address: string): Promise<any>;
     sendMessage(msg: Message): Promise<SignedMessage>;
     signMessage(msg: Message): Promise<SignedMessage>;
     sign(data: string): Promise<Signature>;
     verify(address: string, data: string | ArrayBuffer, sign: Signature): Promise<boolean>;
-  }
-
-  export interface MessageProviderInterface {
-    //getNonce(address: string): Promise<number>;
-    //sendSignedMessage(msg: SignedMessage): Promise<Cid>;
-
-    //estimateMessageGasFeeCap(message: Message, nblocksincl: number): Promise<string>
-    //estimateMessageGasLimit(message: Message): Promise<number>;
-    //estimateMessageGasPremium(nblocksincl: number, sender: string, gasLimit: number): Promise<string>;
-    //estimateMessageGas(message: Message): Promise<Message>
-    //createMessage(message: MessagePartial): Promise<Message>
   }
 
   export interface PaymentChannelsProviderInterface {

@@ -1,5 +1,5 @@
 import * as filecoin_signer from '@zondax/filecoin-signing-tools/js';
-import { Message, SignedMessage } from '../providers/Types';
+import { DEFAULT_HD_PATH, Message, SignedMessage } from '../providers/Types';
 import { Signer } from './Signer';
 import { StringGetter } from '../providers/Types'
 
@@ -13,7 +13,7 @@ export class MnemonicSigner implements Signer {
   constructor(
     private mnemonic: string | StringGetter,
     private password: string | StringGetter,
-    path: string = `m/44'/461'/0/0/1`,
+    path: string = DEFAULT_HD_PATH,
   ) {
     const pathParts = path.split('/');
     if (pathParts.length === 6) {
@@ -30,6 +30,7 @@ export class MnemonicSigner implements Signer {
   }
 
   public async getAddresses(): Promise<string[]> {
+    if (this.addresses.length === 0) await this.initAddresses();
     return this.addresses.filter((a, i) => { return a != '' });
   }
 
