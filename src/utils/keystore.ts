@@ -14,6 +14,7 @@ export class Keystore {
     public hdIndex = 0;
     public encPrivKeys!: any;
     public addresses!: string[];
+    private defaultAddressIndex: number = 0;
 
     public serialize() {
         return JSON.stringify({
@@ -42,7 +43,12 @@ export class Keystore {
 
     public init(mnemonic: string, pwDerivedKey: Uint8Array, hdPathString: string, salt: string) {
         this.salt = salt;
-        this.hdPathString = hdPathString;
+        const pathParts = hdPathString.split('/');
+        if (pathParts.length === 6) {
+            const hdPathIndex = pathParts.splice(pathParts.length - 1, 1);
+            this.hdIndex = parseInt(hdPathIndex[0].replace("'", ""));
+        }
+        this.hdPathString = pathParts.join('/');
         this.encSeed = undefined;
         this.encPrivKeys = {};
         this.addresses = [];
@@ -68,7 +74,7 @@ export class Keystore {
 
         // Default hdPathString
         if (!hdPathString) {
-            const err = new Error('Keystore: Must include hdPathString in createVault inputs. Suggested alternatives are m/0\'/0\'/0\' for previous lightwallet default, or m/44\'/60\'/0\'/0 for BIP44 (used by Jaxx & MetaMask)');
+            const err = new Error("Keystore: Must include hdPathString in createVault inputs. Suggested value m/44'/461'/0/0/1");
             return err;
         }
 
@@ -201,7 +207,33 @@ export class Keystore {
             this.encPrivKeys[address] = keyObj.encPrivKey;
             this.addresses.push(address);
         }
+
+        this.hdIndex += n;
     };
+
+    async newAddress(n: number, password: string) {
+        const pwDerivedKey: Uint8Array = await this.deriveKeyFromPasswordAndSalt(password, this.salt);
+        this.generateNewAddress(pwDerivedKey, n);
+    };
+
+    async deleteAddress(address: string, password: string) {
+        const addressIndex = this.addresses.indexOf(address);
+        if (addressIndex >= 0) {
+            const pwDerivedKey: Uint8Array = await this.deriveKeyFromPasswordAndSalt(password, this.salt);
+            const encPrivateKey = this.encPrivKeys[address];
+
+            if (this._decryptKey(encPrivateKey, pwDerivedKey)) {
+                this.addresses[addressIndex] = '';
+                this.encPrivKeys[address] = '';
+                if (this.defaultAddressIndex === addressIndex) {
+                    const addresses = await this.getAddresses();
+                    if (addresses.length > 0) {
+                        await this.setDefaultAddress(addresses[0]);
+                    }
+                }
+            };
+        }
+    }
 
     private _generatePrivKeys(pwDerivedKey: Uint8Array, n: number) {
         //Assert.derivedKey(this, pwDerivedKey);
@@ -214,7 +246,7 @@ export class Keystore {
         const keys = [];
 
         for (let i = 0; i < n; i++) {
-            const key = filecoin_signer.keyDerive(seed, this.hdPathString, '');
+            const key = filecoin_signer.keyDerive(seed, `${this.hdPathString}/${i + this.hdIndex}`, '');
 
             const encPrivateKey = this._encryptKey(key.private_hexstring, pwDerivedKey);
 
@@ -238,6 +270,25 @@ export class Keystore {
 
         return this._decryptKey(encPrivateKey, pwDerivedKey);
     };
+
+    async getDefaultAddress(): Promise<string> {
+        return this.addresses[this.defaultAddressIndex];
+    }
+
+    async setDefaultAddress(address: string): Promise<void> {
+        const addressIndex = this.addresses.indexOf(address);
+        if (addressIndex >= 0) {
+            this.defaultAddressIndex = addressIndex;
+        }
+    }
+
+    public async getAddresses(): Promise<string[]> {
+        return this.addresses.filter((a, i) => { return a != '' });
+    }
+
+    async hasAddress(address: string): Promise<boolean> {
+        return this.addresses.indexOf(address) >= 0;
+    }
 
     generateRandomSeed(extraEntropy?: any) {
         let seed = '';

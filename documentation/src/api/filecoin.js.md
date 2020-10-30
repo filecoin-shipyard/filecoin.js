@@ -14,7 +14,7 @@ hide_title: true
 |  --- | --- |
 |  [HttpJsonRpcConnector](./filecoin.js.httpjsonrpcconnector.md) |  |
 |  [HttpJsonRpcWalletProvider](./filecoin.js.httpjsonrpcwalletprovider.md) |  |
-|  [JsonRpcProvider](./filecoin.js.jsonrpcprovider.md) |  |
+|  [LotusClient](./filecoin.js.jsonrpcprovider.md) |  |
 |  [LightWalletProvider](./filecoin.js.lightwalletprovider.md) |  |
 |  [LightWalletSigner](./filecoin.js.lightwalletsigner.md) |  |
 |  [MetamaskSigner](./filecoin.js.metamasksigner.md) |  |

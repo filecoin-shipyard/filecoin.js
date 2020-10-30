@@ -17,7 +17,7 @@ It's up to the user to use the appropiate connection method depending on their n
 ```javascript
 import { HttpJsonRpcConnector, HttpJsonRpcWalletProvider } from 'filecoin.js';
 const connector = new HttpJsonRpcConnector({ url: __HTTP_LOTUS_RPC_ENDPOINT__, token: __LOTUS_AUTH_TOKEN__ });
-const jsonRpcProvider = new JsonRpcProvider(connector);
+const jsonRpcProvider = new LotusClient(connector);
 
 ```
 
@@ -26,7 +26,7 @@ const jsonRpcProvider = new JsonRpcProvider(connector);
 ```javascript
 import { WsJsonRpcConnector, HttpJsonRpcWalletProvider } from 'filecoin.js';
 const connector = new WsJsonRpcConnector({ url: __WS_LOTUS_RPC_ENDPOINT__, token: __LOTUS_AUTH_TOKEN__ });
-const jsonRpcProvider = new JsonRpcProvider(connector);
+const jsonRpcProvider = new LotusClient(connector);
 
 ```
 

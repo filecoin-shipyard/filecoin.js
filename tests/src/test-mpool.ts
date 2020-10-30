@@ -2,11 +2,11 @@ import assert from "assert";
 import BigNumber from "bignumber.js";
 
 import { LOTUS_AUTH_TOKEN } from "../tools/testnet/credentials/credentials";
-import { JsonRpcProvider } from '../../src/providers/JsonRpcProvider';
+import { LotusClient } from '../../src/providers/LotusClient';
 import { HttpJsonRpcConnector } from '../../src/connectors/HttpJsonRpcConnector';
 import { WsJsonRpcConnector } from '../../src/connectors/WsJsonRpcConnector';
 import { MnemonicWalletProvider } from "../../src/providers/wallet/MnemonicWalletProvider";
-import { HttpJsonRpcWalletProvider } from "../../src/providers/wallet/HttpJsonRpcWalletProvider";
+import { LotusWalletProvider } from "../../src/providers/wallet/LotusWalletProvider";
 import { MpoolUpdate, SignedMessage } from "../../src/providers/Types";
 
 const testMnemonic = 'equip will roof matter pink blind book anxiety banner elbow sun young';
@@ -19,16 +19,15 @@ function sleep(ms: any) {
 describe("Mpool tests", function () {
   it("should get and delete messages from mpool [http]", async function () {
     const httpConnector = new HttpJsonRpcConnector({ url: 'http://localhost:8000/rpc/v0', token: LOTUS_AUTH_TOKEN });
-
-    const mnemonicWalletProvider = new MnemonicWalletProvider(httpConnector, testMnemonic, '');
-    const walletLotusHttp = new HttpJsonRpcWalletProvider(httpConnector);
-    const con = new JsonRpcProvider(httpConnector);
+    const con = new LotusClient(httpConnector);
+    const mnemonicWalletProvider = new MnemonicWalletProvider(con, testMnemonic, '');
+    const walletLotusHttp = new LotusWalletProvider(con);
 
     //clear mpool
     await con.mpool.clear();
 
-    const defaultAccount = await walletLotusHttp.getDefaultAccount();
-    const mnemonicAddress = await mnemonicWalletProvider.getDefaultAccount();
+    const defaultAccount = await walletLotusHttp.getDefaultAddress();
+    const mnemonicAddress = await mnemonicWalletProvider.getDefaultAddress();
 
     const nonce = await walletLotusHttp.getNonce(defaultAccount);
     const message = await walletLotusHttp.createMessage({
@@ -64,7 +63,7 @@ describe("Mpool tests", function () {
   it("should get and set mpool config [http]", async function () {
     const httpConnector = new HttpJsonRpcConnector({ url: 'http://localhost:8000/rpc/v0', token: LOTUS_AUTH_TOKEN });
 
-    const con = new JsonRpcProvider(httpConnector);
+    const con = new LotusClient(httpConnector);
 
     //clear mpool
     const initialConfig = await con.mpool.getMpoolConfig();
@@ -86,9 +85,8 @@ describe("Mpool tests", function () {
   it("should subscribe to mpool changes and get notified [http]", function (done) {
     const httpConnector = new HttpJsonRpcConnector({ url: 'http://localhost:8000/rpc/v0', token: LOTUS_AUTH_TOKEN });
     const wsConnector = new WsJsonRpcConnector({ url: 'ws://localhost:8000/rpc/v0', token: LOTUS_AUTH_TOKEN });
-
-    const walletLotusHttp = new HttpJsonRpcWalletProvider(httpConnector);
-    const con = new JsonRpcProvider(wsConnector);
+    const con = new LotusClient(wsConnector);
+    const walletLotusHttp = new LotusWalletProvider(con);
 
     con.mpool.sub((data: MpoolUpdate) => {
       con.release().then(() => { done() });

@@ -1101,7 +1101,7 @@ declare class JsonRpcPaychMethodGroup {
     voucherSubmit(address: string, signedVoucher: SignedVoucher, secret: any, proof: any): Promise<Cid>;
 }
 
-export declare class JsonRpcProvider {
+export declare class LotusClient {
     conn: Connector;
     chain: JsonRpcChainMethodGroup;
     state: JsonRpcStateMethodGroup;
