@@ -96,7 +96,7 @@ describe("Wallet methods", function () {
   });
 
   it("should check if a given string can be decoded as an address [ws]", async function () {
-    const wsConnector = new WsJsonRpcConnector({ url: 'http://localhost:8000/rpc/v0', token: LOTUS_AUTH_TOKEN });
+    const wsConnector = new WsJsonRpcConnector({ url: 'ws://localhost:8000/rpc/v0', token: LOTUS_AUTH_TOKEN });
     const lotusClient = new LotusClient(wsConnector);
     const walletLotus = new LotusWalletProvider(lotusClient);
     const address = await walletLotus.getDefaultAddress();
