@@ -22,7 +22,7 @@ describe("Miner tests", function() {
     const headTipset = await provider.chain.getHead();
     const tipsetHeight = headTipset.Blocks[0].Height;
     const minerInfo = await provider.miner.getBaseInfo('t01000', tipsetHeight, [headTipset.Cids[0]]);
-    await provider.release();
     assert.strictEqual(minerInfo.EligibleForMining, true, 'invalid response');
+    await provider.release();
   });
 });

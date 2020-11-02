@@ -103,5 +103,6 @@ describe("Wallet methods", function () {
     const check = await lotusClient.wallet.validateAddress(address);
 
     assert.strictEqual(check === address, true, 'failed to decode address ');
+    await lotusClient.release();
   });
 });
