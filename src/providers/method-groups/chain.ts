@@ -197,10 +197,10 @@ export class JsonRpcChainMethodGroup {
    * @param nroots
    * @param tipSetKey
    *
-   * @remarks The exported chain data includes the header chain from the given tipset back to genesis, the entire genesis state, and the most recent 'nroots' state trees.
+   * @remarks The exported chain data includes the header chain from the given tipset back to genesis, the entire genesis state, and the most recent 'nroots' state trees. If oldmsgskip is set, messages from before the requested roots are also not included.
    */
-  public async export(nroots: ChainEpoch, tipSetKey: TipSetKey): Promise<any> {
-    const path: HeadChange[] = await this.conn.request({ method: 'Filecoin.ChainExport', params: [nroots, tipSetKey] });
+  public async export(nroots: ChainEpoch, oldmsgskip: boolean, tipSetKey: TipSetKey): Promise<any> {
+    const path: HeadChange[] = await this.conn.request({ method: 'Filecoin.ChainExport', params: [nroots, oldmsgskip, tipSetKey] });
     return path;
   }
 }

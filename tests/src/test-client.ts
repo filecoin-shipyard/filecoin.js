@@ -1,4 +1,4 @@
-import { HttpJsonRpcWalletProvider, JsonRpcProvider } from '../../src';
+import { LotusWalletProvider, LotusClient } from '../../src';
 import assert from "assert";
 import { HttpJsonRpcConnector } from '../../src/connectors/HttpJsonRpcConnector';
 import { LOTUS_AUTH_TOKEN } from "../tools/testnet/credentials/credentials";
@@ -6,11 +6,12 @@ import { WsJsonRpcConnector } from '../../src/connectors/WsJsonRpcConnector';
 
 const httpConnector = new HttpJsonRpcConnector({ url: 'http://localhost:8000/rpc/v0', token: LOTUS_AUTH_TOKEN });
 const wsConnector = new WsJsonRpcConnector({ url: 'ws://localhost:8000/rpc/v0', token: LOTUS_AUTH_TOKEN });
-const walletLotus = new HttpJsonRpcWalletProvider(httpConnector);
+const lotusClient = new LotusClient(httpConnector);
+const walletLotus = new LotusWalletProvider(lotusClient);
 
 describe("Client tests", function() {
   it("should import file", async function() {
-    const provider = new JsonRpcProvider(httpConnector);
+    const provider = new LotusClient(httpConnector);
     const result = await provider.client.import({
       Path: "/filecoin_miner/original-data.txt",
       IsCAR: false,
@@ -20,7 +21,7 @@ describe("Client tests", function() {
   });
 
   it("should delete imported file", async function() {
-    const provider = new JsonRpcProvider(httpConnector);
+    const provider = new LotusClient(httpConnector);
     const importResult = await provider.client.import({
       Path: "/filecoin_miner/original-data.txt",
       IsCAR: false,
@@ -29,7 +30,7 @@ describe("Client tests", function() {
   });
 
   it("should start deal", async function() {
-    const provider = new JsonRpcProvider(httpConnector);
+    const provider = new LotusClient(httpConnector);
     const importResult = await provider.client.import({
       Path: "/filecoin_miner/original-data.txt",
       IsCAR: false,
@@ -40,7 +41,7 @@ describe("Client tests", function() {
         Root: importResult.Root,
       },
       Miner: 't01000',
-      Wallet: await walletLotus.getDefaultAccount(),
+      Wallet: await walletLotus.getDefaultAddress(),
       EpochPrice: '1001',
       MinBlocksDuration: 800,
     });
@@ -48,7 +49,7 @@ describe("Client tests", function() {
   });
 
   it("should get deal info", async function() {
-    const provider = new JsonRpcProvider(httpConnector);
+    const provider = new LotusClient(httpConnector);
     const importResult = await provider.client.import({
       Path: "/filecoin_miner/original-data.txt",
       IsCAR: false,
@@ -59,7 +60,7 @@ describe("Client tests", function() {
         Root: importResult.Root,
       },
       Miner: 't01000',
-      Wallet: await walletLotus.getDefaultAccount(),
+      Wallet: await walletLotus.getDefaultAddress(),
       EpochPrice: '1002',
       MinBlocksDuration: 800,
     });
@@ -69,13 +70,13 @@ describe("Client tests", function() {
   });
 
   it("should list all deals", async function() {
-    const provider = new JsonRpcProvider(httpConnector);
+    const provider = new LotusClient(httpConnector);
     const deals = await provider.client.listDeals();
     assert.strictEqual(Array.isArray(deals), true, 'invalid deals list');
   });
 
   it("should verify if has local", async function() {
-    const provider = new JsonRpcProvider(httpConnector);
+    const provider = new LotusClient(httpConnector);
     const importResult = await provider.client.import({
       Path: "/filecoin_miner/original-data.txt",
       IsCAR: false,
@@ -85,7 +86,7 @@ describe("Client tests", function() {
   });
 
   it("should find data", async function() {
-    const provider = new JsonRpcProvider(httpConnector);
+    const provider = new LotusClient(httpConnector);
     const importResult = await provider.client.import({
       Path: "/filecoin_miner/original-data.txt",
       IsCAR: false,
@@ -96,7 +97,7 @@ describe("Client tests", function() {
         Root: importResult.Root,
       },
       Miner: 't01000',
-      Wallet: await walletLotus.getDefaultAccount(),
+      Wallet: await walletLotus.getDefaultAddress(),
       EpochPrice: '1003',
       MinBlocksDuration: 800,
     });
@@ -106,7 +107,7 @@ describe("Client tests", function() {
   });
 
   it("should get miner query offer", async function() {
-    const provider = new JsonRpcProvider(httpConnector);
+    const provider = new LotusClient(httpConnector);
     const importResult = await provider.client.import({
       Path: "/filecoin_miner/original-data.txt",
       IsCAR: false,
@@ -118,7 +119,7 @@ describe("Client tests", function() {
 
   // Sealing takes too much
   // it.only("should retrieve file", async function() {
-  //   const provider = new JsonRpcProvider(httpConnector);
+  //   const provider = new LotusClient(httpConnector);
   //   const importResult = await provider.import({
   //     Path: "/filecoin_miner/original-data.txt",
   //     IsCAR: false,
@@ -129,7 +130,7 @@ describe("Client tests", function() {
   //       Root: importResult.Root,
   //     },
   //     Miner: 't01000',
-  //     Wallet: await walletLotus.getDefaultAccount(),
+  //     Wallet: await walletLotus.getDefaultAddress(),
   //     EpochPrice: '1000',
   //     MinBlocksDuration: 700000,
   //   });
@@ -154,7 +155,7 @@ describe("Client tests", function() {
   // });
 
   it("should perform query ask ", async function() {
-    const provider = new JsonRpcProvider(httpConnector);
+    const provider = new LotusClient(httpConnector);
     const minerInfo = await provider.state.minerInfo('t01000');
     const queryAsk = await provider.client.queryAsk(minerInfo.PeerId, 't01000');
     const valid = typeof queryAsk.Price === 'string' && typeof queryAsk.Miner === 'string';
@@ -162,13 +163,13 @@ describe("Client tests", function() {
   });
 
   it("should compute commP", async function() {
-    const provider = new JsonRpcProvider(httpConnector);
+    const provider = new LotusClient(httpConnector);
     const { Root, Size } = await provider.client.calcCommP("/filecoin_miner/original-data.txt");
     assert.strictEqual(!!Root && !!Size, true, 'failed to compute commP');
   });
 
   it("should generate CAR file", async function() {
-    const provider = new JsonRpcProvider(httpConnector);
+    const provider = new LotusClient(httpConnector);
     const car = await provider.client.genCar({
       IsCAR: false,
       Path: "/filecoin_miner/original-data.txt",
@@ -176,7 +177,7 @@ describe("Client tests", function() {
   });
 
   it("should calculate deal size", async function() {
-    const provider = new JsonRpcProvider(httpConnector);
+    const provider = new LotusClient(httpConnector);
     const importResult = await provider.client.import({
       Path: "/filecoin_miner/original-data.txt",
       IsCAR: false,
@@ -187,13 +188,13 @@ describe("Client tests", function() {
   });
 
   it("should get transfers status", async function() {
-    const provider = new JsonRpcProvider(httpConnector);
+    const provider = new LotusClient(httpConnector);
     const transfers = await provider.client.listDataTransfers();
     assert.strictEqual(Array.isArray(transfers), true, 'invalid transfers status');
   });
 
   it("should list imports", async function() {
-    const provider = new JsonRpcProvider(httpConnector);
+    const provider = new LotusClient(httpConnector);
     const importResult = await provider.client.import({
       Path: "/filecoin_miner/original-data.txt",
       IsCAR: false,
@@ -207,8 +208,8 @@ describe("Client tests", function() {
 
   it("should get updated deals", function(done) {
     this.timeout(10000);
-    const con = new JsonRpcProvider(wsConnector);
-    walletLotus.getDefaultAccount().then((account: string) => {
+    const con = new LotusClient(wsConnector);
+    walletLotus.getDefaultAddress().then((account: string) => {
       con.client.import({
         Path: "/filecoin_miner/original-data.txt",
         IsCAR: false,

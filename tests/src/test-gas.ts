@@ -1,8 +1,8 @@
 import assert from "assert";
 import { LOTUS_AUTH_TOKEN } from "../tools/testnet/credentials/credentials";
-import { JsonRpcProvider } from '../../src/providers/JsonRpcProvider';
+import { LotusClient } from '../../src/providers/LotusClient';
 import { HttpJsonRpcConnector } from '../../src/connectors/HttpJsonRpcConnector';
-import { HttpJsonRpcWalletProvider } from '../../src/providers/wallet/HttpJsonRpcWalletProvider';
+import { LotusWalletProvider } from '../../src/providers/wallet/LotusWalletProvider';
 import { MnemonicWalletProvider } from '../../src/providers/wallet/MnemonicWalletProvider';
 
 import BigNumber from 'bignumber.js';
@@ -13,13 +13,12 @@ const testMnemonic = 'equip will roof matter pink blind book anxiety banner elbo
 describe("Gas estimates", function () {
   it("Gas estimates computations [http]", async function () {
     const httpConnector = new HttpJsonRpcConnector({ url: 'http://localhost:8000/rpc/v0', token: LOTUS_AUTH_TOKEN });
+    const con = new LotusClient(httpConnector);
+    const mnemonicWalletProvider = new MnemonicWalletProvider( con, testMnemonic, '');
+    const walletLotusHttp = new LotusWalletProvider(con);
 
-    const mnemonicWalletProvider = new MnemonicWalletProvider( httpConnector, testMnemonic, '');
-    const walletLotusHttp = new HttpJsonRpcWalletProvider(httpConnector);
-    const con = new JsonRpcProvider(httpConnector);
-
-    const defaultAccount = await walletLotusHttp.getDefaultAccount();
-    const mnemonicAddress = await mnemonicWalletProvider.getDefaultAccount();
+    const defaultAccount = await walletLotusHttp.getDefaultAddress();
+    const mnemonicAddress = await mnemonicWalletProvider.getDefaultAddress();
 
     const message = await walletLotusHttp.createMessage({
       From: defaultAccount,

@@ -1,6 +1,6 @@
-import { JsonRpcProvider } from './providers/JsonRpcProvider';
+import { LotusClient } from './providers/LotusClient';
 import { MnemonicWalletProvider } from './providers/wallet/MnemonicWalletProvider';
-import { HttpJsonRpcWalletProvider } from './providers/wallet/HttpJsonRpcWalletProvider';
+import { LotusWalletProvider } from './providers/wallet/LotusWalletProvider';
 import { MetamaskWalletProvider } from './providers/wallet/MetamaskWalletProvider';
 import { LightWalletProvider } from './providers/wallet/LightWalletProvider';
 
@@ -16,9 +16,9 @@ import { WsJsonRpcConnector} from './connectors/WsJsonRpcConnector'
 import { MetamaskSnapHelper } from './utils/metamask'
 
 export {
-  JsonRpcProvider,
+  LotusClient,
   MnemonicWalletProvider,
-  HttpJsonRpcWalletProvider,
+  LotusWalletProvider,
   MetamaskWalletProvider,
   MnemonicSigner,
   MetamaskSigner,

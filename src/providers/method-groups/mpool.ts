@@ -71,6 +71,40 @@ export class JsonRpcMPoolMethodGroup {
   }
 
   /**
+   * get nonce for address.  Note that this method may not be atomic. Use MpoolPushMessage instead.
+   * @param address
+   */
+  public async getNonce(address: string): Promise<number> {
+    const ret = await this.conn.request({ method: 'Filecoin.MpoolGetNonce', params: [address] });
+    return ret as number;
+  }
+
+  /**
+   * send message, signed with default lotus wallet
+   *
+   * @remarks
+   * MpoolPushMessage atomically assigns a nonce, signs, and pushes a message
+   * to mempool.
+   * maxFee is only used when GasFeeCap/GasPremium fields aren't specified
+   * When maxFee is set to 0, MpoolPushMessage will guess appropriate fee
+   * based on current chain conditions
+   * @param msg
+   */
+  public async pushMessage(msg: Message): Promise<SignedMessage> {
+    const ret = await this.conn.request({ method: 'Filecoin.MpoolPushMessage', params: [msg, { MaxFee: "30000000000000" }] });
+    return ret as SignedMessage;
+  }
+
+  /**
+   * send signed message
+   * @param msg
+   */
+  public async push(msg: SignedMessage): Promise<Cid> {
+    const ret = await this.conn.request({ method: 'Filecoin.MpoolPush', params: [msg] });
+    return ret as Cid;
+  }
+
+  /**
    * pushes a signed message to mempool from untrusted sources.
    * @param message
    */
