@@ -54,14 +54,14 @@ describe("Sync", function() {
   });
 
   it("should check if the tipset is valid [http]", async function() {
-    const provider = new JsonRpcProvider(httpConnector);
+    const provider = new LotusClient(httpConnector);
     const tipset = await provider.chain.getTipSetByHeight(1);
     const valid = await provider.sync.validateTipset(tipset.Cids);
     assert.strictEqual(typeof valid === 'boolean', true, 'invalid tipset')
   });
 
   it("should check if the tipset is valid [ws]", async function() {
-    const provider = new JsonRpcProvider(wsConnector);
+    const provider = new LotusClient(wsConnector);
     const tipset = await provider.chain.getTipSetByHeight(1);
     const valid = await provider.sync.validateTipset(tipset.Cids);
     await provider.release();
