@@ -223,12 +223,13 @@ describe("Client tests", function() {
           Wallet: account,
           EpochPrice: '1004',
           MinBlocksDuration: 800,
+        }).then(() => {
+          con.client.getDealUpdates((dealInfo) => {
+            assert.strictEqual(typeof dealInfo.State === 'number', true, 'invalid updated deal info');
+            con.release().then(() => { done() });
+          });
         });
       });
-    });
-    con.client.getDealUpdates((dealInfo) => {
-      assert.strictEqual(typeof dealInfo.State === 'number', true, 'invalid updated deal info');
-      con.release().then(() => { done() });
     });
   });
 
@@ -242,5 +243,6 @@ describe("Client tests", function() {
     const provider = new LotusClient(wsConnector);
     const status = await provider.client.getDealStatus(0);
     assert.strictEqual(status === 'StorageDealUnknown', true, 'wrong deal status given a code');
+    provider.release();
   });
 });
