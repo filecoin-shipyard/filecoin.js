@@ -150,49 +150,49 @@
         "title": "HttpJsonRpcWalletProvider.walletImport() method"
       },
       "api/filecoin.js.jsonrpcprovider._constructor_": {
-        "title": "JsonRpcProvider.(constructor)"
+        "title": "LotusClient.(constructor)"
       },
       "api/filecoin.js.jsonrpcprovider.auth": {
-        "title": "JsonRpcProvider.auth property"
+        "title": "LotusClient.auth property"
       },
       "api/filecoin.js.jsonrpcprovider.chain": {
-        "title": "JsonRpcProvider.chain property"
+        "title": "LotusClient.chain property"
       },
       "api/filecoin.js.jsonrpcprovider.client": {
-        "title": "JsonRpcProvider.client property"
+        "title": "LotusClient.client property"
       },
       "api/filecoin.js.jsonrpcprovider.common": {
-        "title": "JsonRpcProvider.common property"
+        "title": "LotusClient.common property"
       },
       "api/filecoin.js.jsonrpcprovider.conn": {
-        "title": "JsonRpcProvider.conn property"
+        "title": "LotusClient.conn property"
       },
       "api/filecoin.js.jsonrpcprovider": {
-        "title": "JsonRpcProvider class"
+        "title": "LotusClient class"
       },
       "api/filecoin.js.jsonrpcprovider.miner": {
-        "title": "JsonRpcProvider.miner property"
+        "title": "LotusClient.miner property"
       },
       "api/filecoin.js.jsonrpcprovider.mpool": {
-        "title": "JsonRpcProvider.mpool property"
+        "title": "LotusClient.mpool property"
       },
       "api/filecoin.js.jsonrpcprovider.msig": {
-        "title": "JsonRpcProvider.msig property"
+        "title": "LotusClient.msig property"
       },
       "api/filecoin.js.jsonrpcprovider.net": {
-        "title": "JsonRpcProvider.net property"
+        "title": "LotusClient.net property"
       },
       "api/filecoin.js.jsonrpcprovider.paych": {
-        "title": "JsonRpcProvider.paych property"
+        "title": "LotusClient.paych property"
       },
       "api/filecoin.js.jsonrpcprovider.release": {
-        "title": "JsonRpcProvider.release() method"
+        "title": "LotusClient.release() method"
       },
       "api/filecoin.js.jsonrpcprovider.state": {
-        "title": "JsonRpcProvider.state property"
+        "title": "LotusClient.state property"
       },
       "api/filecoin.js.jsonrpcprovider.sync": {
-        "title": "JsonRpcProvider.sync property"
+        "title": "LotusClient.sync property"
       },
       "api/filecoin.js.lightwalletprovider._constructor_": {
         "title": "LightWalletProvider.(constructor)"
