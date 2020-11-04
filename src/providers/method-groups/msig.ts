@@ -348,7 +348,7 @@ export class JsonRpcMsigMethodGroup {
    * @param oldSignerAddress
    * @param newSignerAddress
    */
-  public async multiSigSwapCancel(
+  public async swapCancel(
     address: string,
     senderAddressOfCancelMsg: string,
     proposedMessageId: number,
