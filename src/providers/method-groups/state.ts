@@ -3,11 +3,11 @@ import {
   ActorState, Address, BitField, ChainEpoch,
   Cid, CirculatingSupply, ComputeStateOutput, DataCap, Deadline, DeadlineInfo, DealCollateralBounds, DealID, Fault,
   InvocResult, MarketBalance, MarketDeal,
-  Message, MessageReceipt, MinerInfo, MinerPower, MinerSectors, MsgLookup,
-  NetworkName, PaddedPieceSize, Partition, SectorExpiration, SectorLocation, SectorNumber,
-  SectorOnChainInfo, SectorPreCommitInfo, SectorPreCommitOnChainInfo,
+  Message, MessageMatch, MessageReceipt, MinerInfo, MinerPower, MinerSectors, MsgLookup,
+  NetworkName, NetworkVersion, PaddedPieceSize, Partition, SectorExpiration, SectorLocation, SectorNumber,
+  SectorOnChainInfo, SectorPreCommitInfo, SectorPreCommitOnChainInfo, StoragePower,
   TipSet,
-  TipSetKey,
+  TipSetKey, Version,
 } from '../Types';
 import { Connector } from '../../connectors/Connector';
 
@@ -34,11 +34,13 @@ export class JsonRpcStateMethodGroup {
   }
 
   /**
-   * returns the result of executing the indicated message, assuming it was executed in the indicated tipset
+   * replays a given message, assuming it was included in a block in the specified tipset. If no tipset key is provided, the appropriate tipset is looked up.
+   * @param tipSetKey
+   * @param cid
    */
   public async stateReplay(tipSetKey: TipSetKey, cid: Cid): Promise<InvocResult> {
-    const data = await this.conn.request({ method: 'Filecoin.StateReplay', params: [] });
-    return data as InvocResult;
+    const result: InvocResult = await this.conn.request({ method: 'Filecoin.StateReplay', params: [cid] });
+    return result;
   }
 
   /**
@@ -67,8 +69,8 @@ export class JsonRpcStateMethodGroup {
    * @param tipSetKey
    * @param toHeight
    */
-  public async listMessages(filter: { To?: string, From?: string }, tipSetKey?: TipSetKey, toHeight?: number): Promise<Cid[]> {
-    const messages: Cid[] = await this.conn.request({ method: 'Filecoin.StateListMessages', params: [filter, tipSetKey, toHeight] });
+  public async listMessages(match: MessageMatch, tipSetKey?: TipSetKey, toHeight?: number): Promise<Cid[]> {
+    const messages: Cid[] = await this.conn.request({ method: 'Filecoin.StateListMessages', params: [match, tipSetKey, toHeight] });
 
     return messages ? messages : [];
   }
@@ -304,6 +306,17 @@ export class JsonRpcStateMethodGroup {
   }
 
   /**
+   * looks back up to limit epochs in the chain for a message. If not found, it blocks until the message arrives on chain, and gets to the indicated confidence depth.
+   * @param cid
+   * @param confidence
+   * @param limit
+   */
+  public async waitMsgLimited(cid: Cid, confidence: number, limit: ChainEpoch): Promise<MsgLookup> {
+    const lookup: MsgLookup = await this.conn.request({ method: 'Filecoin.StateWaitMsgLimited', params: [cid, confidence, limit] });
+    return lookup;
+  }
+
+  /**
    * returns the addresses of every miner that has claimed power in the Power Actor
    * @param tipSetKey
    */
@@ -452,7 +465,7 @@ export class JsonRpcStateMethodGroup {
    * @remarks
    * Returns nil if there is no entry in the data cap table for the address.
    */
-  public async verifiedClientStatus(address: Address, tipSetKey?: TipSetKey): Promise<DataCap | null> {
+  public async verifiedClientStatus(address: Address, tipSetKey?: TipSetKey): Promise<StoragePower> {
     const cap: DataCap = await this.conn.request({
       method: 'Filecoin.StateVerifiedClientStatus',
       params: [address, tipSetKey],
@@ -484,5 +497,72 @@ export class JsonRpcStateMethodGroup {
       params: [tipSetKey],
     });
     return supply;
+  }
+
+  /**
+   * returns an approximation of the circulating supply of Filecoin at the given tipset.
+   *
+   * @param tipSetKey
+   *
+   * @remarks This is the value reported by the runtime interface to actors code.
+   */
+  public async vmCirculatingSupply(tipSetKey?: TipSetKey): Promise<CirculatingSupply> {
+    const supply: CirculatingSupply = await this.conn.request({
+      method: 'Filecoin.StateVMCirculatingSupplyInternal',
+      params: [tipSetKey],
+    });
+    return supply;
+  }
+
+  /**
+   * returns the data cap for the given address.
+   * @param address
+   * @param tipSetKey
+   */
+  public async verifierStatus(address: Address, tipSetKey?: TipSetKey): Promise<StoragePower | null> {
+    const status: StoragePower = await this.conn.request({
+      method: 'Filecoin.StateVerifierStatus',
+      params: [address, tipSetKey],
+    });
+    return status;
+  }
+
+  /**
+   * returns the network version at the given tipset
+   * @param tipSetKey
+   */
+  public async networkVersion(tipSetKey?: TipSetKey): Promise<NetworkVersion> {
+    const version: NetworkVersion = await this.conn.request({
+      method: 'Filecoin.StateNetworkVersion',
+      params: [tipSetKey],
+    });
+    return version;
+  }
+
+  /**
+   * returns the address of the Verified Registry's root key
+   * @param tipSetKey
+   */
+  public async verifiedRegistryRootKey(tipSetKey?: TipSetKey): Promise<Address> {
+    const address: Address = await this.conn.request({
+      method: 'Filecoin.StateVerifiedRegistryRootKey',
+      params: [tipSetKey],
+    });
+    return address;
+  }
+
+  /**
+   * checks if a sector is allocated
+   * @param address
+   * @param sectorNumber
+   * @param tipSetKey
+   */
+  public async minerSectorAllocated(address: Address, sectorNumber: SectorNumber, tipSetKey?: TipSetKey): Promise<boolean> {
+    const allocated: boolean = await this.conn.request({
+      method: 'Filecoin.StateMinerSectorAllocated',
+      params: [address, sectorNumber, tipSetKey],
+    });
+
+    return allocated;
   }
 }

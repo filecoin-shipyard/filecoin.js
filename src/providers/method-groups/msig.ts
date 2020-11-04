@@ -1,5 +1,5 @@
 import { Connector } from '../../connectors/Connector';
-import { ChainEpoch, Cid, TipSetKey } from '../Types';
+import { Address, ChainEpoch, Cid, MsigVesting, TipSetKey } from '../Types';
 
 /**
  * The Msig methods are used to interact with multisig wallets on the filecoin network
@@ -118,7 +118,6 @@ export class JsonRpcMsigMethodGroup {
       });
     return ret;
   }
-
 
   /**
    * approves a previously-proposed multisig message
@@ -370,4 +369,51 @@ export class JsonRpcMsigMethodGroup {
     return ret;
   }
 
+  /**
+   * returns the vesting details of a given multisig.
+   * @param address
+   * @param tipSetKey
+   */
+  public async getVestingSchedule(
+    address: string,
+    tipSetKey: TipSetKey,
+  ): Promise<MsigVesting> {
+    const schedule = await this.conn.request(
+      {
+        method: 'Filecoin.MsigGetVestingSchedule',
+        params: [
+          address,
+          tipSetKey
+        ]
+      });
+    return schedule;
+  }
+
+  /**
+   * proposes the removal of a signer from the multisig.
+   * @param msigAddress
+   * @param proposerAddress
+   * @param toRemoveAddress
+   * @param decrease
+   *
+   * @remarks It accepts the multisig to make the change on, the proposer address to send the message from, the address to be removed, and a boolean indicating whether or not the signing threshold should be lowered by one along with the address removal.
+   */
+  public async removeSigner(
+    msigAddress: Address,
+    proposerAddress: Address,
+    toRemoveAddress: Address,
+    decrease: boolean
+  ): Promise<Cid> {
+    const cid = await this.conn.request(
+      {
+        method: 'Filecoin.MsigRemoveSigner',
+        params: [
+          msigAddress,
+          proposerAddress,
+          toRemoveAddress,
+          decrease
+        ]
+      });
+    return cid;
+  }
 }

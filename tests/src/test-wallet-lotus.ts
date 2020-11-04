@@ -2,10 +2,11 @@ import assert from "assert";
 import { LOTUS_AUTH_TOKEN } from "../tools/testnet/credentials/credentials";
 import { HttpJsonRpcConnector } from '../../src/connectors/HttpJsonRpcConnector';
 import { LotusWalletProvider } from '../../src/providers/wallet/LotusWalletProvider';
-import { LotusClient } from "../../src";
+import { LotusClient } from "../../src/providers/LotusClient";
+import { WsJsonRpcConnector } from '../../src/connectors/WsJsonRpcConnector';
 
 function sleep(ms: any) {
-    return new Promise(resolve => setTimeout(resolve, ms));
+  return new Promise(resolve => setTimeout(resolve, ms));
 }
 
 let addressList: string[];
@@ -81,6 +82,27 @@ describe("Wallet methods", function () {
 
         const addresseseAfterImport = await walletLotusHttp.getAddresses();
 
-        assert.strictEqual(addresseseBeforeDelete.length, addresseseAfterImport.length, 'wallet not imported');
-    });
+    assert.strictEqual(addresseseBeforeDelete.length, addresseseAfterImport.length, 'wallet not imported');
+  });
+
+  it("should check if a given string can be decoded as an address [http]", async function () {
+    const httpConnector = new HttpJsonRpcConnector({ url: 'http://localhost:8000/rpc/v0', token: LOTUS_AUTH_TOKEN });
+    const lotusClient = new LotusClient(httpConnector);
+    const walletLotus = new LotusWalletProvider(lotusClient);
+    const address = await walletLotus.getDefaultAddress();
+    const check = await lotusClient.wallet.validateAddress(address);
+
+    assert.strictEqual(check === address, true, 'failed to decode address ');
+  });
+
+  it("should check if a given string can be decoded as an address [ws]", async function () {
+    const wsConnector = new WsJsonRpcConnector({ url: 'ws://localhost:8000/rpc/v0', token: LOTUS_AUTH_TOKEN });
+    const lotusClient = new LotusClient(wsConnector);
+    const walletLotus = new LotusWalletProvider(lotusClient);
+    const address = await walletLotus.getDefaultAddress();
+    const check = await lotusClient.wallet.validateAddress(address);
+
+    assert.strictEqual(check === address, true, 'failed to decode address ');
+    await lotusClient.release();
+  });
 });

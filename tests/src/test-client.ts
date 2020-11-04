@@ -209,6 +209,8 @@ describe("Client tests", function() {
   it("should get updated deals", function(done) {
     this.timeout(10000);
     const con = new LotusClient(wsConnector);
+    let isDone = false;
+
     walletLotus.getDefaultAddress().then((account: string) => {
       con.client.import({
         Path: "/filecoin_miner/original-data.txt",
@@ -223,12 +225,29 @@ describe("Client tests", function() {
           Wallet: account,
           EpochPrice: '1004',
           MinBlocksDuration: 800,
+        }).then(() => {
+          con.client.getDealUpdates((dealInfo) => {
+            if (!isDone) {
+              isDone = true;
+              assert.strictEqual(typeof dealInfo.State === 'number', true, 'invalid updated deal info');
+              con.release().then(() => { done() });
+            }
+          });
         });
       });
     });
-    con.client.getDealUpdates((dealInfo) => {
-      assert.strictEqual(typeof dealInfo.State === 'number', true, 'invalid updated deal info');
-      con.release().then(() => { done() });
-    });
+  });
+
+  it("should return deal status given a code [http]", async function() {
+    const provider = new LotusClient(httpConnector);
+    const status = await provider.client.getDealStatus(0);
+    assert.strictEqual(status === 'StorageDealUnknown', true, 'wrong deal status given a code');
+  });
+
+  it("should return deal status given a code [ws]", async function() {
+    const provider = new LotusClient(wsConnector);
+    const status = await provider.client.getDealStatus(0);
+    assert.strictEqual(status === 'StorageDealUnknown', true, 'wrong deal status given a code');
+    provider.release();
   });
 });
