@@ -37,6 +37,13 @@ export class JsonRpcSyncMethodGroup {
     await this.conn.request({ method: 'Filecoin.SyncMarkBad', params: [blockCid] });
   }
 
+  /**
+   * purges bad block cache, making it possible to sync to chains previously marked as bad
+   */
+  public async unmarkAllBad() {
+    await this.conn.request({ method: 'Filecoin.SyncUnmarkAllBad', params: [] });
+  }
+
 // TODO: Method not working. Returns 500 "Internal Server Error"
   /**
    * unmarks a block as bad, making it possible to be validated and synced again.
@@ -71,5 +78,14 @@ export class JsonRpcSyncMethodGroup {
   public async incomingBlocks(cb: (blockHeader: BlockHeader) => void) {
     const subscriptionId = await this.conn.request({ method: 'Filecoin.SyncIncomingBlocks' });
     this.conn.on(subscriptionId, cb);
+  }
+
+  /**
+   * indicates whether the provided tipset is valid or not
+   * @param tipSetKey
+   */
+  public async validateTipset(tipSetKey: TipSetKey): Promise<boolean> {
+    const valid: boolean = await this.conn.request({ method: 'Filecoin.SyncValidateTipset', params: [tipSetKey] });
+    return valid;
   }
 }

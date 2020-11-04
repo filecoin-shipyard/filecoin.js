@@ -52,4 +52,19 @@ describe("Sync", function() {
       provider.release().then(() => { done() });
     });
   });
+
+  it("should check if the tipset is valid [http]", async function() {
+    const provider = new LotusClient(httpConnector);
+    const tipset = await provider.chain.getTipSetByHeight(1);
+    const valid = await provider.sync.validateTipset(tipset.Cids);
+    assert.strictEqual(typeof valid === 'boolean', true, 'invalid tipset')
+  });
+
+  it("should check if the tipset is valid [ws]", async function() {
+    const provider = new LotusClient(wsConnector);
+    const tipset = await provider.chain.getTipSetByHeight(1);
+    const valid = await provider.sync.validateTipset(tipset.Cids);
+    await provider.release();
+    assert.strictEqual(typeof valid === 'boolean', true, 'invalid tipset')
+  });
 });

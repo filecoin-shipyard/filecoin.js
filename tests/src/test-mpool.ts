@@ -89,8 +89,8 @@ describe("Mpool tests", function () {
     const walletLotusHttp = new LotusWalletProvider(con);
 
     con.mpool.sub((data: MpoolUpdate) => {
-      con.release().then(() => { done() });
       assert.strictEqual(data.Type, 0, 'wrong type received on subscription');
+      con.release().then(() => { done() });
     })
     walletLotusHttp.sendSignedMessage(signedMessageForSub);
   });

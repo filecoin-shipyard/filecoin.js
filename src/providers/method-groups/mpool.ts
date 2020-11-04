@@ -71,9 +71,9 @@ export class JsonRpcMPoolMethodGroup {
   }
 
   /**
-  * get nonce for address.  Note that this method may not be atomic. Use MpoolPushMessage instead.
-  * @param address
-  */
+   * get nonce for address.  Note that this method may not be atomic. Use MpoolPushMessage instead.
+   * @param address
+   */
   public async getNonce(address: string): Promise<number> {
     const ret = await this.conn.request({ method: 'Filecoin.MpoolGetNonce', params: [address] });
     return ret as number;
@@ -102,5 +102,41 @@ export class JsonRpcMPoolMethodGroup {
   public async push(msg: SignedMessage): Promise<Cid> {
     const ret = await this.conn.request({ method: 'Filecoin.MpoolPush', params: [msg] });
     return ret as Cid;
+  }
+
+  /**
+   * pushes a signed message to mempool from untrusted sources.
+   * @param message
+   */
+  public async pushUntrusted(message: SignedMessage): Promise<Cid> {
+    const ret = await this.conn.request({ method: 'Filecoin.MpoolPushUntrusted', params: [message] });
+    return ret;
+  }
+
+  /**
+   * batch pushes a signed message to mempool.
+   * @param messages
+   */
+  public async batchPush(messages: SignedMessage[]): Promise<Cid[]> {
+    const ret = await this.conn.request({ method: 'Filecoin.MpoolBatchPush', params: [messages] });
+    return ret;
+  }
+
+  /**
+   * batch pushes a signed message to mempool from untrusted sources
+   * @param messages
+   */
+  public async batchPushUntrusted(messages: SignedMessage[]): Promise<Cid[]> {
+    const ret = await this.conn.request({ method: 'Filecoin.MpoolBatchPushUntrusted', params: [messages] });
+    return ret;
+  }
+
+  /**
+   * batch pushes a unsigned message to mempool
+   * @param messages
+   */
+  public async batchPushMessage(messages: Message[]): Promise<SignedMessage[]> {
+    const ret = await this.conn.request({ method: 'Filecoin.MpoolBatchPushMessage', params: [messages] });
+    return ret;
   }
 }
