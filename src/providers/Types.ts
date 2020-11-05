@@ -1,6 +1,8 @@
 import { BigNumber } from 'bignumber.js';
 
 export const DEFAULT_HD_PATH = `m/44'/461'/0/0/1`;
+export const TEST_DEFAULT_HD_PATH = `m/44'/1'/0/0/1`;
+
 export type StringGetter = () => Promise<string>;
 
 export enum SigType {

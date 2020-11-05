@@ -1,4 +1,4 @@
-import { Message, SignedMessage, Signature, KeyInfo, Cid, ChainEpoch, MessagePartial } from "../Types";
+import { Message, SignedMessage, Signature, KeyInfo, Cid, ChainEpoch, MessagePartial, DEFAULT_HD_PATH, TEST_DEFAULT_HD_PATH } from "../Types";
 import { BaseWalletProvider } from "./BaseWalletProvider";
 import { MnemonicSigner } from "../../signers/MnemonicSigner";
 import { StringGetter } from "../Types";
@@ -33,11 +33,11 @@ export class MnemonicWalletProvider extends BaseWalletProvider implements Wallet
 
   constructor(client: LotusClient,
     mnemonic: string | StringGetter,
-    password: string | StringGetter,
-    path: string = `m/44'/461'/0/0/1`,
+    path: string = DEFAULT_HD_PATH,
   ) {
     super(client);
-    this.signer = new MnemonicSigner(mnemonic, password, path);
+    if (path === 'test' || !path) path = TEST_DEFAULT_HD_PATH;
+    this.signer = new MnemonicSigner(mnemonic, '', path);
   }
 
   public async newAddress(): Promise<string> {

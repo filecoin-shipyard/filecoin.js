@@ -63,7 +63,6 @@ describe.only("Multisig Wallets", function () {
 
     //await fundTestAddresses(await walletLotusHttp.getDefaultAddress(), addresses, walletLotusHttp, con);
 
-    await mnemonicWalletProvider.setDefaultAddress(addresses[0]);
     const multisigCid = await mnemonicWalletProvider.msigCreate(2, addresses, 0, '1000', addresses[0], '4000');
     const receipt = await con.state.waitMsg(multisigCid, 0);
     console.log('receipt create:', receipt);
@@ -72,7 +71,6 @@ describe.only("Multisig Wallets", function () {
     const balance = await con.msig.getAvailableBalance(multisigAddress, []);
     assert.strictEqual(balance, '1000', 'wrong balance');
 
-    await mnemonicWalletProvider.setDefaultAddress(addresses[0]);
     const initTransferCid = await mnemonicWalletProvider.msigProposeTransfer(multisigAddress, mnemonicAddress, '1', addresses[0], 0, []);
     const receiptTransferStart = await con.state.waitMsg(initTransferCid, 0);
     console.log('receipt init transfer:', receiptTransferStart);
@@ -80,7 +78,6 @@ describe.only("Multisig Wallets", function () {
     const txnID = receiptTransferStart.ReturnDec.TxnID;
     assert.strictEqual(txnID, 0, 'error initiating transfer');
 
-    await mnemonicWalletProvider.setDefaultAddress(addresses[1]);
     const approveTransferCid = await mnemonicWalletProvider.msigApproveTransferTxHash(multisigAddress, txnID, addresses[0], mnemonicAddress, '1', addresses[1], 0, []);
     const receiptTransferApprove = await con.state.waitMsg(approveTransferCid, 0);
     console.log('receipt approve transfer:', receiptTransferApprove);
@@ -96,14 +93,13 @@ describe.only("Multisig Wallets", function () {
     const httpConnector = new HttpJsonRpcConnector({ url: 'http://localhost:8000/rpc/v0', token: LOTUS_AUTH_TOKEN });
     const con = new LotusClient(httpConnector);
     const walletLotusHttp = new LotusWalletProvider(con);
-    const mnemonicWalletProvider = new MnemonicWalletProvider(con, testMnemonic, '');
+    const mnemonicWalletProvider = new MnemonicWalletProvider(con, testMnemonic, 'test');
     await mnemonicWalletProvider.newAddress();
     await mnemonicWalletProvider.newAddress();
     const addresses = await mnemonicWalletProvider.getAddresses();
 
     //await fundTestAddresses(await walletLotusHttp.getDefaultAddress(), addresses, walletLotusHttp, con);
 
-    await mnemonicWalletProvider.setDefaultAddress(addresses[0]);
     const multisigCid = await mnemonicWalletProvider.msigCreate(2, [addresses[0], addresses[1]], 0, '1000', addresses[0], '4000');
     const receipt = await con.state.waitMsg(multisigCid, 0);
     console.log('receipt create:', receipt);
@@ -112,7 +108,6 @@ describe.only("Multisig Wallets", function () {
     const balance = await con.msig.getAvailableBalance(multisigAddress, []);
     assert.strictEqual(balance, '1000', 'wrong balance');
 
-    await mnemonicWalletProvider.setDefaultAddress(addresses[0]);
     const initAddProposeCid = await mnemonicWalletProvider.msigProposeAddSigner(multisigAddress, addresses[0], addresses[2], true);
     const receiptAddProposeCid = await con.state.waitMsg(initAddProposeCid, 0);
     console.log('receipt init add signer:', receiptAddProposeCid);
@@ -120,7 +115,6 @@ describe.only("Multisig Wallets", function () {
     const txnID = receiptAddProposeCid.ReturnDec.TxnID;
     assert.strictEqual(txnID, 0, 'error initiating add proposal');
 
-    await mnemonicWalletProvider.setDefaultAddress(addresses[1]);
     const approveAddCid = await mnemonicWalletProvider.msigApproveAddSigner(multisigAddress, addresses[1], txnID, addresses[0], addresses[2], true);
     const receiptAddApprove = await con.state.waitMsg(approveAddCid, 0);
     console.log('receipt approve add signer:', receiptAddApprove);
@@ -133,14 +127,13 @@ describe.only("Multisig Wallets", function () {
     const httpConnector = new HttpJsonRpcConnector({ url: 'http://localhost:8000/rpc/v0', token: LOTUS_AUTH_TOKEN });
     const con = new LotusClient(httpConnector);
     const walletLotusHttp = new LotusWalletProvider(con);
-    const mnemonicWalletProvider = new MnemonicWalletProvider(con, testMnemonic, '');
+    const mnemonicWalletProvider = new MnemonicWalletProvider(con, testMnemonic, 'test');
     await mnemonicWalletProvider.newAddress();
     await mnemonicWalletProvider.newAddress();
     const addresses = await mnemonicWalletProvider.getAddresses();
 
     //await fundTestAddresses(await walletLotusHttp.getDefaultAddress(), addresses, walletLotusHttp, con);
 
-    await mnemonicWalletProvider.setDefaultAddress(addresses[0]);
     const multisigCid = await mnemonicWalletProvider.msigCreate(2, [addresses[0], addresses[1]], 0, '1000', addresses[0], '4000');
     const receipt = await con.state.waitMsg(multisigCid, 0);
     console.log('receipt create:', receipt);
@@ -149,7 +142,6 @@ describe.only("Multisig Wallets", function () {
     const balance = await con.msig.getAvailableBalance(multisigAddress, []);
     assert.strictEqual(balance, '1000', 'wrong balance');
 
-    await mnemonicWalletProvider.setDefaultAddress(addresses[0]);
     const initSwapProposeCid = await mnemonicWalletProvider.msigProposeSwapSigner(multisigAddress, addresses[0], addresses[1], addresses[2]);
     const receiptSwapProposeCid = await con.state.waitMsg(initSwapProposeCid, 0);
     console.log('receipt init swap signer:', receiptSwapProposeCid);
@@ -157,7 +149,6 @@ describe.only("Multisig Wallets", function () {
     const txnID = receiptSwapProposeCid.ReturnDec.TxnID;
     assert.strictEqual(txnID, 0, 'error initiating swap proposal');
 
-    await mnemonicWalletProvider.setDefaultAddress(addresses[1]);
     const approveSwapCid = await mnemonicWalletProvider.msigApproveSwapSigner(multisigAddress, addresses[1], txnID, addresses[0], addresses[1], addresses[2] );
     const receiptSwapApprove = await con.state.waitMsg(approveSwapCid, 0);
     console.log('receipt approve swap signer:', receiptSwapApprove);

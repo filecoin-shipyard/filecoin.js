@@ -81,7 +81,10 @@ export class MnemonicSigner implements Signer {
 
   public async sign(message: Message): Promise<SignedMessage> {
     if (this.addresses.length === 0) await this.initAddresses();
-    const key = this.privKeys[this.addresses[this.defaultAddressIndex]];;
+    if (!this.privKeys[message.From]){
+      throw new Error('From address not found');
+    }
+    const key = this.privKeys[message.From];
     const signedTx = filecoin_signer.transactionSignLotus(this.messageToSigner(message), key);
     return JSON.parse(signedTx);
   }
