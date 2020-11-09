@@ -266,6 +266,7 @@ export class LotusWalletProvider extends BaseWalletProvider implements WalletPro
     address: string,
     senderAddressOfCancelMsg: string,
     proposedMessageId: number,
+    proposerAddress: string,
     newSignerAddress: string,
     increaseNumberOfRequiredSigners: boolean
   ): Promise<Cid> {
@@ -323,6 +324,7 @@ export class LotusWalletProvider extends BaseWalletProvider implements WalletPro
     address: string,
     senderAddressOfCancelMsg: string,
     proposedMessageId: number,
+    proposerAddress: string,
     oldSignerAddress: string,
     newSignerAddress: string,
   ): Promise<Cid> {

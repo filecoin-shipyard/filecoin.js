@@ -1,4 +1,4 @@
-import { Message, SignedMessage, Signature, KeyInfo, Cid, ChainEpoch, MessagePartial, DEFAULT_HD_PATH, TEST_DEFAULT_HD_PATH } from "../Types";
+import { Message, SignedMessage, Signature, KeyInfo, Cid, ChainEpoch, MessagePartial, DEFAULT_HD_PATH, TEST_DEFAULT_HD_PATH, MethodInit, MethodMultisig } from "../Types";
 import { BaseWalletProvider } from "./BaseWalletProvider";
 import { MnemonicSigner } from "../../signers/MnemonicSigner";
 import { StringGetter } from "../Types";
@@ -11,22 +11,7 @@ import BigNumber from "bignumber.js";
 import { serializeBigNum } from '../../utils/data';
 const blake = require("blakejs");
 
-export const MethodInit = {
-  Constructor: 1,
-  Exec: 2,
-};
 
-
-const MethodMultisig = {
-  Constructor: 1,
-  Propose: 2,
-  Approve: 3,
-  Cancel: 4,
-  AddSigner: 5,
-  RemoveSigner: 6,
-  SwapSigner: 7,
-  ChangeNumApprovalsThreshold: 8,
-};
 export class MnemonicWalletProvider extends BaseWalletProvider implements WalletProviderInterface, MultisigProviderInterface {
 
   private signer: MnemonicSigner;
@@ -248,7 +233,24 @@ export class MnemonicWalletProvider extends BaseWalletProvider implements Wallet
     methodToCallInProposeMsg: number,
     paramsToIncludeInProposeMsg: []
   ): Promise<Cid> {
-    return null as any;
+    const proposerId = await this.client.state.lookupId(proposerAddress);
+
+    const messageWithoutGasParams = await this.createCancelMessage(
+      address,
+      senderAddressOfCancelMsg,
+      proposedMessageId,
+      proposerId,
+      recipientAddres,
+      0,
+      value,
+      []
+    );
+
+    const message = await this.createMessage(messageWithoutGasParams as any);
+    const signedMessage = await this.signMessage(message);
+    const msgCid = await this.sendSignedMessage(signedMessage);
+
+    return msgCid;
   }
 
   /**
@@ -260,7 +262,6 @@ export class MnemonicWalletProvider extends BaseWalletProvider implements Wallet
    */
   public async msigProposeAddSigner(
     address: string,
-    //this can be the wallet default address
     senderAddressOfProposeMsg: string,
     newSignerAddress: string,
     increaseNumberOfRequiredSigners: boolean,
@@ -322,10 +323,28 @@ export class MnemonicWalletProvider extends BaseWalletProvider implements Wallet
     address: string,
     senderAddressOfCancelMsg: string,
     proposedMessageId: number,
+    proposerAddress: string,
     newSignerAddress: string,
     increaseNumberOfRequiredSigners: boolean
   ): Promise<Cid> {
-    return null as any;
+    const values = [addressAsBytes(newSignerAddress), increaseNumberOfRequiredSigners];
+    const proposerId = await this.client.state.lookupId(proposerAddress);
+
+    const messageWithoutGasParams = await this.createApproveMessage(
+      address,
+      senderAddressOfCancelMsg,
+      proposedMessageId,
+      proposerId,
+      address,
+      MethodMultisig.AddSigner,
+      '0',
+      values
+    )
+    const message = await this.createMessage(messageWithoutGasParams as any);
+    const signedMessage = await this.signMessage(message);
+    const msgCid = await this.sendSignedMessage(signedMessage);
+
+    return msgCid;
   }
 
   /**
@@ -401,22 +420,120 @@ export class MnemonicWalletProvider extends BaseWalletProvider implements Wallet
     address: string,
     senderAddressOfCancelMsg: string,
     proposedMessageId: number,
+    proposerAddress: string,
     oldSignerAddress: string,
     newSignerAddress: string,
   ): Promise<Cid> {
-    return null as any;
+    const values = [addressAsBytes(oldSignerAddress), addressAsBytes(newSignerAddress)];
+    const proposerId = await this.client.state.lookupId(proposerAddress);
+
+    const messageWithoutGasParams = await this.createApproveMessage(
+      address,
+      senderAddressOfCancelMsg,
+      proposedMessageId,
+      proposerId,
+      address,
+      MethodMultisig.SwapSigner,
+      '0',
+      values
+    );
+
+    const message = await this.createMessage(messageWithoutGasParams as any);
+    const signedMessage = await this.signMessage(message);
+    const msgCid = await this.sendSignedMessage(signedMessage);
+
+    return msgCid;
   }
 
-  public async msigProposeRemoveSigner(): Promise<Cid> {
-    return null as any;
+  /**
+   * proposes removing a signer from the multisig
+   * @param address
+   * @param senderAddressOfProposeMsg
+   * @param addressToRemove
+   * @param decreaseNumberOfRequiredSigners
+   */
+  public async msigProposeRemoveSigner(
+    address: string,
+    senderAddressOfProposeMsg: string,
+    addressToRemove: string,
+    decreaseNumberOfRequiredSigners: boolean,
+  ): Promise<Cid> {
+    const params: any[] = [addressAsBytes(addressToRemove), decreaseNumberOfRequiredSigners];
+    const messageWithoutGasParams = await this.createProposeMessage(address, senderAddressOfProposeMsg, address, '0', MethodMultisig.RemoveSigner, params)
+    const message = await this.createMessage(messageWithoutGasParams);
+    const signedMessage = await this.signMessage(message);
+    const msgCid = await this.sendSignedMessage(signedMessage);
+    return msgCid;
   };
 
-  public async msigApproveRemoveSigner(): Promise<Cid> {
-    return null as any;
+  /**
+   * approves a previously proposed RemoveSigner message
+   * @param address
+   * @param senderAddressOfApproveMsg
+   * @param proposedMessageId
+   * @param proposerAddress
+   * @param addressToRemove
+   * @param decreaseNumberOfRequiredSigners
+   */
+  public async msigApproveRemoveSigner(address: string,
+    senderAddressOfApproveMsg: string,
+    proposedMessageId: number,
+    proposerAddress: string,
+    addressToRemove: string,
+    decreaseNumberOfRequiredSigners: boolean): Promise<Cid> {
+      const values = [addressAsBytes(addressToRemove), decreaseNumberOfRequiredSigners];
+      const proposerId = await this.client.state.lookupId(proposerAddress);
+
+      const messageWithoutGasParams = await this.createApproveMessage(
+        address,
+        senderAddressOfApproveMsg,
+        proposedMessageId,
+        proposerId,
+        address,
+        MethodMultisig.RemoveSigner,
+        '0',
+        values
+      )
+      const message = await this.createMessage(messageWithoutGasParams as any);
+      const signedMessage = await this.signMessage(message);
+      const msgCid = await this.sendSignedMessage(signedMessage);
+
+      return msgCid;
   };
 
-  public async msigCancelRemoveSigner(): Promise<Cid> {
-    return null as any;
+  /**
+   * cancels a previously proposed RemoveSigner message
+   * @param address
+   * @param senderAddressOfApproveMsg
+   * @param proposedMessageId
+   * @param proposerAddress
+   * @param addressToRemove
+   * @param decreaseNumberOfRequiredSigners
+   */
+  public async msigCancelRemoveSigner(address: string,
+    senderAddressOfCancelMsg: string,
+    proposedMessageId: number,
+    proposerAddress: string,
+    addressToRemove: string,
+    decreaseNumberOfRequiredSigners: boolean): Promise<Cid> {
+      const values = [addressAsBytes(addressToRemove), decreaseNumberOfRequiredSigners];
+      const proposerId = await this.client.state.lookupId(proposerAddress);
+
+      const messageWithoutGasParams = await this.createApproveMessage(
+        address,
+        senderAddressOfCancelMsg,
+        proposedMessageId,
+        proposerId,
+        address,
+        MethodMultisig.RemoveSigner,
+        '0',
+        values
+      )
+      const message = await this.createMessage(messageWithoutGasParams as any);
+      const signedMessage = await this.signMessage(message);
+      const msgCid = await this.sendSignedMessage(signedMessage);
+
+      return msgCid;
   };
 
   public async createProposeMessage(multisigAddress: string, senderAddressOfProposeMsg: string, recipientAddress: string, value: string, method: number, params: any[]): Promise<MessagePartial> {
