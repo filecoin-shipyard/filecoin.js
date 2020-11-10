@@ -96,7 +96,6 @@ export class MnemonicWalletProvider extends BaseWalletProvider implements Wallet
     unlockDuration: ChainEpoch,
     initialBalance: string,
     senderAddressOfCreateMsg: string,
-    gasPrice: string
   ): Promise<Cid> {
     const addresses: any[] = [];
     approvingAddresses.forEach(address => {
@@ -135,17 +134,12 @@ export class MnemonicWalletProvider extends BaseWalletProvider implements Wallet
    * @param recipientAddres
    * @param value
    * @param senderAddressOfProposeMsg
-   * @param methodToCallInProposeMsg
-   * @param paramsToIncludeInProposeMsg
    */
   public async msigProposeTransfer(
     address: string,
     recipientAddres: string,
     value: string,
     senderAddressOfProposeMsg: string,
-    //we could remove these or make them optional
-    methodToCallInProposeMsg: number,
-    paramsToIncludeInProposeMsg: []
   ): Promise<Cid> {
     const params: any[] = [];
     const messageWithoutGasParams = await createProposeMessage(address, senderAddressOfProposeMsg, recipientAddres, value, 0, params)
@@ -177,8 +171,6 @@ export class MnemonicWalletProvider extends BaseWalletProvider implements Wallet
    * @param recipientAddres
    * @param value
    * @param senderAddressOfApproveMsg
-   * @param methodToCallInProposeMsg
-   * @param paramsToIncludeInProposeMsg
    */
   public async msigApproveTransferTxHash(
     address: string,
@@ -187,9 +179,6 @@ export class MnemonicWalletProvider extends BaseWalletProvider implements Wallet
     recipientAddres: string,
     value: string,
     senderAddressOfApproveMsg: string,
-    //we could remove this 2
-    methodToCallInProposeMsg: number,
-    paramsToIncludeInProposeMsg: []
   ): Promise<Cid> {
     const proposerId = await this.client.state.lookupId(proposerAddress);
 
@@ -219,8 +208,6 @@ export class MnemonicWalletProvider extends BaseWalletProvider implements Wallet
    * @param recipientAddres
    * @param value
    * @param senderAddressOfCancelMsg
-   * @param methodToCallInProposeMsg
-   * @param paramsToIncludeInProposeMsg
    */
   public async msigCancelTransfer(
     address: string,
@@ -229,8 +216,6 @@ export class MnemonicWalletProvider extends BaseWalletProvider implements Wallet
     recipientAddres: string,
     value: string,
     senderAddressOfCancelMsg: string,
-    methodToCallInProposeMsg: number,
-    paramsToIncludeInProposeMsg: []
   ): Promise<Cid> {
     const proposerId = await this.client.state.lookupId(proposerAddress);
 

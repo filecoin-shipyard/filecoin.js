@@ -16,13 +16,13 @@ function sleep(ms: any) {
 }
 
 describe("Send message", function () {
-  it("should send signed message, lotus default wallet [http]", async function () {
+  it("should create light wallet and send message [http]", async function () {
     this.timeout(15000);
 
     const httpConnector = new HttpJsonRpcConnector({ url: 'http://localhost:8000/rpc/v0', token: LOTUS_AUTH_TOKEN });
     const con = new LotusClient(httpConnector);
 
-    const lightWalletHttp = new LightWalletProvider(con, () => { return 'testPwd' });
+    const lightWalletHttp = new LightWalletProvider(con, () => { return 'testPwd' }, 'test');
     mnemonic = await lightWalletHttp.createLightWallet('testPwd');
     encryptedWallet = lightWalletHttp.keystore.serialize();
 
@@ -44,7 +44,7 @@ describe("Send message", function () {
     assert.strictEqual(receipt.Receipt.ExitCode, 0, 'message not mined');
   });
 
-  it("should create vault and send message [http]", async function () {
+  it("should recover light wallet and send message [http]", async function () {
     this.timeout(15000);
 
     const httpConnector = new HttpJsonRpcConnector({ url: 'http://localhost:8000/rpc/v0', token: LOTUS_AUTH_TOKEN });
@@ -52,7 +52,7 @@ describe("Send message", function () {
 
     const mnemonicWalletProvider = new MnemonicWalletProvider(con, testMnemonic, '');
 
-    const lightWalletHttp = new LightWalletProvider(con, () => { return 'testPwd' });
+    const lightWalletHttp = new LightWalletProvider(con, () => { return 'testPwd' }, 'test');
     await lightWalletHttp.recoverLightWallet(mnemonic, 'testPwd');
 
     const defaultAccount = await lightWalletHttp.getDefaultAddress();
@@ -71,7 +71,7 @@ describe("Send message", function () {
     assert.strictEqual(receipt.Receipt.ExitCode, 0, 'message not mined');
   });
 
-  it("should load vault and send message [http]", async function () {
+  it("should load light wallet and send message [http]", async function () {
     this.timeout(15000);
 
     const httpConnector = new HttpJsonRpcConnector({ url: 'http://localhost:8000/rpc/v0', token: LOTUS_AUTH_TOKEN });

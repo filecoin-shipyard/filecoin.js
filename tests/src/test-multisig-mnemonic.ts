@@ -9,28 +9,6 @@ import { MnemonicWalletProvider } from '../../src/providers/wallet/MnemonicWalle
 
 const testMnemonic = 'equip will roof matter pink blind book anxiety banner elbow sun young';
 
-function sleep(ms: any) {
-  return new Promise(resolve => setTimeout(resolve, ms));
-}
-
-async function extractAddressesWithFunds(addresses: string[], wallet: LotusWalletProvider): Promise<{ blsAddresses: string[], secpAddreses: string[] }> {
-  let blsAddresses: string[] = [];
-  let secpAddreses: string[] = [];
-
-  for (let i = 0; i < addresses.length; i++) {
-    const address = addresses[i];
-    const balance: BigNumber = new BigNumber(await wallet.getBalance(address));
-    if (balance.gt(new BigNumber(0)) && address.startsWith('t3')) {
-      blsAddresses.push(address);
-    }
-    if (balance.gt(new BigNumber(0)) && address.startsWith('t1')) {
-      secpAddreses.push(address);
-    }
-  };
-
-  return { blsAddresses, secpAddreses };
-}
-
 async function fundTestAddresses(source: string, destinations: string[], walletLotusHttp: LotusWalletProvider, con: LotusClient) {
   for (let i = 0; i < destinations.length; i++) {
     const destination = destinations[i];
@@ -74,7 +52,7 @@ describe("Multisig Wallets Mnemonic implementation", function () {
     const addresses = await mnemonicWalletProvider.getAddresses();
     const mnemonicAddress = await mnemonicWalletProvider.newAddress();
 
-    const multisigCid = await mnemonicWalletProvider.msigCreate(2, addresses, 0, '1000', addresses[0], '4000');
+    const multisigCid = await mnemonicWalletProvider.msigCreate(2, addresses, 0, '1000', addresses[0]);
     const receipt = await con.state.waitMsg(multisigCid, 0);
     console.log('receipt create:', receipt);
 
@@ -82,14 +60,14 @@ describe("Multisig Wallets Mnemonic implementation", function () {
     const balance = await con.msig.getAvailableBalance(multisigAddress, []);
     assert.strictEqual(balance, '1000', 'wrong balance');
 
-    const initTransferCid = await mnemonicWalletProvider.msigProposeTransfer(multisigAddress, mnemonicAddress, '1', addresses[0], 0, []);
+    const initTransferCid = await mnemonicWalletProvider.msigProposeTransfer(multisigAddress, mnemonicAddress, '1', addresses[0]);
     const receiptTransferStart = await con.state.waitMsg(initTransferCid, 0);
     console.log('receipt init transfer:', receiptTransferStart);
 
     const txnID = receiptTransferStart.ReturnDec.TxnID;
     assert.strictEqual(txnID, 0, 'error initiating transfer');
 
-    const approveTransferCid = await mnemonicWalletProvider.msigApproveTransferTxHash(multisigAddress, txnID, addresses[0], mnemonicAddress, '1', addresses[1], 0, []);
+    const approveTransferCid = await mnemonicWalletProvider.msigApproveTransferTxHash(multisigAddress, txnID, addresses[0], mnemonicAddress, '1', addresses[1]);
     const receiptTransferApprove = await con.state.waitMsg(approveTransferCid, 0);
     console.log('receipt approve transfer:', receiptTransferApprove);
 
@@ -108,7 +86,7 @@ describe("Multisig Wallets Mnemonic implementation", function () {
     await mnemonicWalletProvider.newAddress();
     const addresses = await mnemonicWalletProvider.getAddresses();
 
-    const multisigCid = await mnemonicWalletProvider.msigCreate(2, [addresses[0], addresses[1]], 0, '1000', addresses[0], '4000');
+    const multisigCid = await mnemonicWalletProvider.msigCreate(2, [addresses[0], addresses[1]], 0, '1000', addresses[0]);
     const receipt = await con.state.waitMsg(multisigCid, 0);
     console.log('receipt create:', receipt);
 
@@ -139,7 +117,7 @@ describe("Multisig Wallets Mnemonic implementation", function () {
     await mnemonicWalletProvider.newAddress();
     const addresses = await mnemonicWalletProvider.getAddresses();
 
-    const multisigCid = await mnemonicWalletProvider.msigCreate(2, [addresses[0], addresses[1]], 0, '1000', addresses[0], '4000');
+    const multisigCid = await mnemonicWalletProvider.msigCreate(2, [addresses[0], addresses[1]], 0, '1000', addresses[0]);
     const receipt = await con.state.waitMsg(multisigCid, 0);
     console.log('receipt create:', receipt);
 
@@ -172,7 +150,7 @@ describe("Multisig Wallets Mnemonic implementation", function () {
     const addresses = await mnemonicWalletProvider.getAddresses();
     const mnemonicAddress = await mnemonicWalletProvider.newAddress();
 
-    const multisigCid = await mnemonicWalletProvider.msigCreate(2, addresses, 0, '1000', addresses[0], '4000');
+    const multisigCid = await mnemonicWalletProvider.msigCreate(2, addresses, 0, '1000', addresses[0]);
     const receipt = await con.state.waitMsg(multisigCid, 0);
     console.log('receipt create:', receipt);
 
@@ -180,14 +158,14 @@ describe("Multisig Wallets Mnemonic implementation", function () {
     const balance = await con.msig.getAvailableBalance(multisigAddress, []);
     assert.strictEqual(balance, '1000', 'wrong balance');
 
-    const initTransferCid = await mnemonicWalletProvider.msigProposeTransfer(multisigAddress, mnemonicAddress, '1', addresses[0], 0, []);
+    const initTransferCid = await mnemonicWalletProvider.msigProposeTransfer(multisigAddress, mnemonicAddress, '1', addresses[0]);
     const receiptTransferStart = await con.state.waitMsg(initTransferCid, 0);
     console.log('receipt init transfer:', receiptTransferStart);
 
     const txnID = receiptTransferStart.ReturnDec.TxnID;
     assert.strictEqual(txnID, 0, 'error initiating transfer');
 
-    const cancelTransferCid = await mnemonicWalletProvider.msigCancelTransfer(multisigAddress, txnID, addresses[0], mnemonicAddress, '1', addresses[0], 0, []);
+    const cancelTransferCid = await mnemonicWalletProvider.msigCancelTransfer(multisigAddress, txnID, addresses[0], mnemonicAddress, '1', addresses[0]);
     const receiptTransferCancel = await con.state.waitMsg(cancelTransferCid, 0);
     console.log('receipt cancel transfer:', receiptTransferCancel);
 
@@ -203,7 +181,7 @@ describe("Multisig Wallets Mnemonic implementation", function () {
     await mnemonicWalletProvider.newAddress();
     const addresses = await mnemonicWalletProvider.getAddresses();
 
-    const multisigCid = await mnemonicWalletProvider.msigCreate(2, [addresses[0], addresses[1]], 0, '1000', addresses[0], '4000');
+    const multisigCid = await mnemonicWalletProvider.msigCreate(2, [addresses[0], addresses[1]], 0, '1000', addresses[0]);
     const receipt = await con.state.waitMsg(multisigCid, 0);
     console.log('receipt create:', receipt);
 
@@ -234,7 +212,7 @@ describe("Multisig Wallets Mnemonic implementation", function () {
     await mnemonicWalletProvider.newAddress();
     const addresses = await mnemonicWalletProvider.getAddresses();
 
-    const multisigCid = await mnemonicWalletProvider.msigCreate(2, [addresses[0], addresses[1]], 0, '1000', addresses[0], '4000');
+    const multisigCid = await mnemonicWalletProvider.msigCreate(2, [addresses[0], addresses[1]], 0, '1000', addresses[0]);
     const receipt = await con.state.waitMsg(multisigCid, 0);
     console.log('receipt create:', receipt);
 
@@ -265,7 +243,7 @@ describe("Multisig Wallets Mnemonic implementation", function () {
     await mnemonicWalletProvider.newAddress();
     const addresses = await mnemonicWalletProvider.getAddresses();
 
-    const multisigCid = await mnemonicWalletProvider.msigCreate(2, [addresses[0], addresses[1], addresses[2]], 0, '1000', addresses[0], '4000');
+    const multisigCid = await mnemonicWalletProvider.msigCreate(2, [addresses[0], addresses[1], addresses[2]], 0, '1000', addresses[0]);
     const receipt = await con.state.waitMsg(multisigCid, 0);
     console.log('receipt create:', receipt);
 
@@ -296,7 +274,7 @@ describe("Multisig Wallets Mnemonic implementation", function () {
     await mnemonicWalletProvider.newAddress();
     const addresses = await mnemonicWalletProvider.getAddresses();
 
-    const multisigCid = await mnemonicWalletProvider.msigCreate(2, [addresses[0], addresses[1], addresses[2]], 0, '1000', addresses[0], '4000');
+    const multisigCid = await mnemonicWalletProvider.msigCreate(2, [addresses[0], addresses[1], addresses[2]], 0, '1000', addresses[0]);
     const receipt = await con.state.waitMsg(multisigCid, 0);
     console.log('receipt create:', receipt);
 

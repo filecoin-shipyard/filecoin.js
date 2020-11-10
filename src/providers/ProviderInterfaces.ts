@@ -32,15 +32,12 @@ export interface WalletProviderInterface {
       approvingAddresses: string[],
       unlockDuration: ChainEpoch,
       initialBalance: string,
-      senderAddressOfCreateMsg: string,
-      gasPrice: string): Promise<Cid>;
+      senderAddressOfCreateMsg: string): Promise<Cid>;
 
     msigProposeTransfer(address: string,
       recipientAddres: string,
       value: string,
-      senderAddressOfProposeMsg: string,
-      methodToCallInProposeMsg: number,
-      paramsToIncludeInProposeMsg: []): Promise<Cid>;
+      senderAddressOfProposeMsg: string): Promise<Cid>;
     msigApproveTransfer(address: string,
       proposedTransactionId: number,
       signerAddress: string): Promise<Cid>;
@@ -49,17 +46,14 @@ export interface WalletProviderInterface {
       proposerAddress: string,
       recipientAddres: string,
       value: string,
-      senderAddressOfApproveMsg: string,
-      methodToCallInProposeMsg: number,
-      paramsToIncludeInProposeMsg: []): Promise<Cid>;
+      senderAddressOfApproveMsg: string): Promise<Cid>;
     msigCancelTransfer(address: string,
       proposedMessageId: number,
       proposerAddress: string,
       recipientAddres: string,
       value: string,
       senderAddressOfCancelMsg: string,
-      methodToCallInProposeMsg: number,
-      paramsToIncludeInProposeMsg: []): Promise<Cid>;
+      methodToCallInProposeMsg: number): Promise<Cid>;
 
     msigProposeAddSigner(address: string,
       senderAddressOfProposeMsg: string,

@@ -116,7 +116,6 @@ export class LotusWalletProvider extends BaseWalletProvider implements WalletPro
    * @param unlockDuration
    * @param initialBalance
    * @param senderAddressOfCreateMsg
-   * @param gasPrice
    */
   public async msigCreate(
     requiredNumberOfSenders: number,
@@ -124,9 +123,8 @@ export class LotusWalletProvider extends BaseWalletProvider implements WalletPro
     unlockDuration: ChainEpoch,
     initialBalance: string,
     senderAddressOfCreateMsg: string,
-    gasPrice: string
   ): Promise<Cid> {
-    const ret = await this.client.msig.create(requiredNumberOfSenders, approvingAddresses, unlockDuration, initialBalance, senderAddressOfCreateMsg, gasPrice);
+    const ret = await this.client.msig.create(requiredNumberOfSenders, approvingAddresses, unlockDuration, initialBalance, senderAddressOfCreateMsg, '0');
     return ret;
   }
 
@@ -136,18 +134,14 @@ export class LotusWalletProvider extends BaseWalletProvider implements WalletPro
    * @param recipientAddres
    * @param value
    * @param senderAddressOfProposeMsg
-   * @param methodToCallInProposeMsg
-   * @param paramsToIncludeInProposeMsg
    */
   public async msigProposeTransfer(
     address: string,
     recipientAddres: string,
     value: string,
-    senderAddressOfProposeMsg: string,
-    methodToCallInProposeMsg: number,
-    paramsToIncludeInProposeMsg: []
+    senderAddressOfProposeMsg: string
   ): Promise<Cid> {
-    const ret = await this.client.msig.propose(address, recipientAddres, value, senderAddressOfProposeMsg, methodToCallInProposeMsg, paramsToIncludeInProposeMsg);
+    const ret = await this.client.msig.propose(address, recipientAddres, value, senderAddressOfProposeMsg, 0, []);
     return ret;
   }
 
@@ -174,8 +168,6 @@ export class LotusWalletProvider extends BaseWalletProvider implements WalletPro
    * @param recipientAddres
    * @param value
    * @param senderAddressOfApproveMsg
-   * @param methodToCallInProposeMsg
-   * @param paramsToIncludeInProposeMsg
    */
   public async msigApproveTransferTxHash(
     address: string,
@@ -183,11 +175,9 @@ export class LotusWalletProvider extends BaseWalletProvider implements WalletPro
     proposerAddress: string,
     recipientAddres: string,
     value: string,
-    senderAddressOfApproveMsg: string,
-    methodToCallInProposeMsg: number,
-    paramsToIncludeInProposeMsg: []
+    senderAddressOfApproveMsg: string
   ): Promise<Cid> {
-    const ret = await this.client.msig.approveTxnHash(address, proposedMessageId, proposerAddress, recipientAddres, value, senderAddressOfApproveMsg, methodToCallInProposeMsg, paramsToIncludeInProposeMsg);
+    const ret = await this.client.msig.approveTxnHash(address, proposedMessageId, proposerAddress, recipientAddres, value, senderAddressOfApproveMsg, 0, []);
     return ret;
   }
 
@@ -199,8 +189,6 @@ export class LotusWalletProvider extends BaseWalletProvider implements WalletPro
    * @param recipientAddres
    * @param value
    * @param senderAddressOfCancelMsg
-   * @param methodToCallInProposeMsg
-   * @param paramsToIncludeInProposeMsg
    */
   public async msigCancelTransfer(
     address: string,
@@ -208,11 +196,9 @@ export class LotusWalletProvider extends BaseWalletProvider implements WalletPro
     proposerAddress: string,
     recipientAddres: string,
     value: string,
-    senderAddressOfCancelMsg: string,
-    methodToCallInProposeMsg: number,
-    paramsToIncludeInProposeMsg: []
+    senderAddressOfCancelMsg: string
   ): Promise<Cid> {
-    const ret = await this.client.msig.cancel(address, proposedMessageId, proposerAddress, recipientAddres, value, senderAddressOfCancelMsg, methodToCallInProposeMsg, paramsToIncludeInProposeMsg);
+    const ret = await this.client.msig.cancel(address, proposedMessageId, proposerAddress, recipientAddres, value, senderAddressOfCancelMsg, 0, []);
     return ret;
   }
 
