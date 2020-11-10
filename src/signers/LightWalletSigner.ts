@@ -12,8 +12,10 @@ export class LightWalletSigner implements Signer {
 
   public async sign(message: Message, password?: string): Promise<SignedMessage> {
     if (password) {
-      const signerAddress = await this.keystore.getDefaultAddress();
-      const privateKey = await this.keystore.getPrivateKey(signerAddress, password)
+      const privateKey = await this.keystore.getPrivateKey(message.From, password)
+      if (!privateKey){
+        throw new Error('From address not found');
+      }
       const signedTx = filecoin_signer.transactionSignLotus(this.messageToSigner(message), privateKey);
       return JSON.parse(signedTx);
     }

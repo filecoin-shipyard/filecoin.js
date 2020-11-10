@@ -1,4 +1,4 @@
-import { Message, SignedMessage, Signature, KeyInfo, Cid, ChainEpoch, MessagePartial, DEFAULT_HD_PATH, TEST_DEFAULT_HD_PATH, MethodInit, MethodMultisig } from "../Types";
+import { Message, SignedMessage, Signature, KeyInfo, Cid, ChainEpoch, DEFAULT_HD_PATH, TEST_DEFAULT_HD_PATH, MethodInit, MethodMultisig } from "../Types";
 import { BaseWalletProvider } from "./BaseWalletProvider";
 import { MnemonicSigner } from "../../signers/MnemonicSigner";
 import { StringGetter } from "../Types";
@@ -8,8 +8,7 @@ import { addressAsBytes } from "@zondax/filecoin-signing-tools/js"
 import cbor from "ipld-dag-cbor";
 import cid from "cids";
 import BigNumber from "bignumber.js";
-import { serializeBigNum } from '../../utils/data';
-const blake = require("blakejs");
+import { createApproveMessage, createCancelMessage, createProposeMessage } from "../../utils/msig";
 
 
 export class MnemonicWalletProvider extends BaseWalletProvider implements WalletProviderInterface, MultisigProviderInterface {
@@ -149,7 +148,7 @@ export class MnemonicWalletProvider extends BaseWalletProvider implements Wallet
     paramsToIncludeInProposeMsg: []
   ): Promise<Cid> {
     const params: any[] = [];
-    const messageWithoutGasParams = await this.createProposeMessage(address, senderAddressOfProposeMsg, recipientAddres, value, 0, params)
+    const messageWithoutGasParams = await createProposeMessage(address, senderAddressOfProposeMsg, recipientAddres, value, 0, params)
     const message = await this.createMessage(messageWithoutGasParams);
     const signedMessage = await this.signMessage(message);
     const msgCid = await this.sendSignedMessage(signedMessage);
@@ -194,7 +193,7 @@ export class MnemonicWalletProvider extends BaseWalletProvider implements Wallet
   ): Promise<Cid> {
     const proposerId = await this.client.state.lookupId(proposerAddress);
 
-    const messageWithoutGasParams = await this.createApproveMessage(
+    const messageWithoutGasParams = await createApproveMessage(
       address,
       senderAddressOfApproveMsg,
       proposedMessageId,
@@ -235,7 +234,7 @@ export class MnemonicWalletProvider extends BaseWalletProvider implements Wallet
   ): Promise<Cid> {
     const proposerId = await this.client.state.lookupId(proposerAddress);
 
-    const messageWithoutGasParams = await this.createCancelMessage(
+    const messageWithoutGasParams = await createCancelMessage(
       address,
       senderAddressOfCancelMsg,
       proposedMessageId,
@@ -267,7 +266,7 @@ export class MnemonicWalletProvider extends BaseWalletProvider implements Wallet
     increaseNumberOfRequiredSigners: boolean,
   ): Promise<Cid> {
     const params: any[] = [addressAsBytes(newSignerAddress), increaseNumberOfRequiredSigners];
-    const messageWithoutGasParams = await this.createProposeMessage(address, senderAddressOfProposeMsg, address, '0', MethodMultisig.AddSigner, params)
+    const messageWithoutGasParams = await createProposeMessage(address, senderAddressOfProposeMsg, address, '0', MethodMultisig.AddSigner, params)
     const message = await this.createMessage(messageWithoutGasParams);
     const signedMessage = await this.signMessage(message);
     const msgCid = await this.sendSignedMessage(signedMessage);
@@ -294,7 +293,7 @@ export class MnemonicWalletProvider extends BaseWalletProvider implements Wallet
     const values = [addressAsBytes(newSignerAddress), increaseNumberOfRequiredSigners];
     const proposerId = await this.client.state.lookupId(proposerAddress);
 
-    const messageWithoutGasParams = await this.createApproveMessage(
+    const messageWithoutGasParams = await createApproveMessage(
       address,
       senderAddressOfApproveMsg,
       proposedMessageId,
@@ -330,7 +329,7 @@ export class MnemonicWalletProvider extends BaseWalletProvider implements Wallet
     const values = [addressAsBytes(newSignerAddress), increaseNumberOfRequiredSigners];
     const proposerId = await this.client.state.lookupId(proposerAddress);
 
-    const messageWithoutGasParams = await this.createApproveMessage(
+    const messageWithoutGasParams = await createApproveMessage(
       address,
       senderAddressOfCancelMsg,
       proposedMessageId,
@@ -362,7 +361,7 @@ export class MnemonicWalletProvider extends BaseWalletProvider implements Wallet
   ): Promise<Cid> {
 
     const params: any[] = [addressAsBytes(oldSignerAddress), addressAsBytes(newSignerAddress)];
-    const messageWithoutGasParams = await this.createProposeMessage(address, senderAddressOfProposeMsg, address, '0', MethodMultisig.SwapSigner, params)
+    const messageWithoutGasParams = await createProposeMessage(address, senderAddressOfProposeMsg, address, '0', MethodMultisig.SwapSigner, params)
     const message = await this.createMessage(messageWithoutGasParams);
     const signedMessage = await this.signMessage(message);
     const msgCid = await this.sendSignedMessage(signedMessage);
@@ -390,7 +389,7 @@ export class MnemonicWalletProvider extends BaseWalletProvider implements Wallet
     const values = [addressAsBytes(oldSignerAddress), addressAsBytes(newSignerAddress)];
     const proposerId = await this.client.state.lookupId(proposerAddress);
 
-    const messageWithoutGasParams = await this.createApproveMessage(
+    const messageWithoutGasParams = await createApproveMessage(
       address,
       senderAddressOfApproveMsg,
       proposedMessageId,
@@ -427,7 +426,7 @@ export class MnemonicWalletProvider extends BaseWalletProvider implements Wallet
     const values = [addressAsBytes(oldSignerAddress), addressAsBytes(newSignerAddress)];
     const proposerId = await this.client.state.lookupId(proposerAddress);
 
-    const messageWithoutGasParams = await this.createApproveMessage(
+    const messageWithoutGasParams = await createApproveMessage(
       address,
       senderAddressOfCancelMsg,
       proposedMessageId,
@@ -459,7 +458,7 @@ export class MnemonicWalletProvider extends BaseWalletProvider implements Wallet
     decreaseNumberOfRequiredSigners: boolean,
   ): Promise<Cid> {
     const params: any[] = [addressAsBytes(addressToRemove), decreaseNumberOfRequiredSigners];
-    const messageWithoutGasParams = await this.createProposeMessage(address, senderAddressOfProposeMsg, address, '0', MethodMultisig.RemoveSigner, params)
+    const messageWithoutGasParams = await createProposeMessage(address, senderAddressOfProposeMsg, address, '0', MethodMultisig.RemoveSigner, params)
     const message = await this.createMessage(messageWithoutGasParams);
     const signedMessage = await this.signMessage(message);
     const msgCid = await this.sendSignedMessage(signedMessage);
@@ -484,7 +483,7 @@ export class MnemonicWalletProvider extends BaseWalletProvider implements Wallet
       const values = [addressAsBytes(addressToRemove), decreaseNumberOfRequiredSigners];
       const proposerId = await this.client.state.lookupId(proposerAddress);
 
-      const messageWithoutGasParams = await this.createApproveMessage(
+      const messageWithoutGasParams = await createApproveMessage(
         address,
         senderAddressOfApproveMsg,
         proposedMessageId,
@@ -519,7 +518,7 @@ export class MnemonicWalletProvider extends BaseWalletProvider implements Wallet
       const values = [addressAsBytes(addressToRemove), decreaseNumberOfRequiredSigners];
       const proposerId = await this.client.state.lookupId(proposerAddress);
 
-      const messageWithoutGasParams = await this.createApproveMessage(
+      const messageWithoutGasParams = await createApproveMessage(
         address,
         senderAddressOfCancelMsg,
         proposedMessageId,
@@ -535,90 +534,4 @@ export class MnemonicWalletProvider extends BaseWalletProvider implements Wallet
 
       return msgCid;
   };
-
-  public async createProposeMessage(multisigAddress: string, senderAddressOfProposeMsg: string, recipientAddress: string, value: string, method: number, params: any[]): Promise<MessagePartial> {
-    const serializedParams = params.length ? cbor.util.serialize(params) : Buffer.from([]);
-
-    const msgParams = [
-      addressAsBytes(recipientAddress),
-      serializeBigNum(value),
-      method,
-      serializedParams
-    ]
-    const serializedMsgParams = cbor.util.serialize(msgParams)
-    const buff = Buffer.from(serializedMsgParams);
-
-    let messageWithoutGasParams = {
-      From: senderAddressOfProposeMsg,
-      To: multisigAddress,
-      Value: new BigNumber(0),
-      Method: MethodMultisig.Propose,
-      Params: buff.toString('base64')
-    };
-
-    return messageWithoutGasParams;
-  };
-
-  public async createApproveMessage(multisigAddress: string, senderAddressOfApproveMsg: string, proposedMessageId: number, proposerId: string, recipientAddress: string, method: number, value: string, values: any[]): Promise<MessagePartial> {
-    return await this.createApproveOrCancelMessage (
-      MethodMultisig.Approve,
-      multisigAddress,
-      senderAddressOfApproveMsg,
-      proposedMessageId,
-      proposerId,
-      recipientAddress,
-      method,
-      value,
-      values
-    )
-  }
-
-  public async createCancelMessage(multisigAddress: string, senderAddressOfApproveMsg: string, proposedMessageId: number, proposerId: string, recipientAddress: string, method: number, value: string, values: any[]): Promise<MessagePartial> {
-    return await this.createApproveOrCancelMessage (
-      MethodMultisig.Cancel,
-      multisigAddress,
-      senderAddressOfApproveMsg,
-      proposedMessageId,
-      proposerId,
-      recipientAddress,
-      method,
-      value,
-      values
-    )
-  }
-
-  public async createApproveOrCancelMessage(type: number, multisigAddress: string, senderAddressOfApproveMsg: string, proposedMessageId: number, proposerId: string, recipientAddress: string, method: number, value: string, values: any[]): Promise<MessagePartial> {
-    const serializedValues = values.length ? cbor.util.serialize(values) : Buffer.from([]);
-
-    const proposalHashData = [
-      addressAsBytes(proposerId),
-      addressAsBytes(recipientAddress),
-      serializeBigNum(value),
-      method,
-      serializedValues
-    ];
-
-    const serializedproposalHashData = cbor.util.serialize(proposalHashData);
-    const blakeCtx = blake.blake2bInit(32);
-    blake.blake2bUpdate(blakeCtx, serializedproposalHashData);
-    const hash = Buffer.from(blake.blake2bFinal(blakeCtx));
-
-    const params = [
-      proposedMessageId,
-      hash
-    ];
-    const serializedParams = cbor.util.serialize(params);
-
-    const buff = Buffer.from(serializedParams);
-
-    let messageWithoutGasParams = {
-      From: senderAddressOfApproveMsg,
-      To: multisigAddress,
-      Value: new BigNumber(0),
-      Method: type,
-      Params: buff.toString('base64')
-    };
-
-    return messageWithoutGasParams;
-  }
 }
