@@ -165,7 +165,7 @@ describe("Multisig Wallets Mnemonic implementation", function () {
     const txnID = receiptTransferStart.ReturnDec.TxnID;
     assert.strictEqual(txnID, 0, 'error initiating transfer');
 
-    const cancelTransferCid = await mnemonicWalletProvider.msigCancelTransfer(multisigAddress, txnID, addresses[0], mnemonicAddress, '1', addresses[0]);
+    const cancelTransferCid = await mnemonicWalletProvider.msigCancelTransfer(multisigAddress, addresses[0], txnID,  mnemonicAddress, '1');
     const receiptTransferCancel = await con.state.waitMsg(cancelTransferCid, 0);
     console.log('receipt cancel transfer:', receiptTransferCancel);
 
@@ -196,7 +196,7 @@ describe("Multisig Wallets Mnemonic implementation", function () {
     const txnID = receiptAddProposeCid.ReturnDec.TxnID;
     assert.strictEqual(txnID, 0, 'error initiating add proposal');
 
-    const cancelAddCid = await mnemonicWalletProvider.msigCancelAddSigner(multisigAddress, addresses[1], txnID, addresses[0], addresses[2], true);
+    const cancelAddCid = await mnemonicWalletProvider.msigCancelAddSigner(multisigAddress, addresses[0], txnID, addresses[2], true);
     const receiptAddCancel = await con.state.waitMsg(cancelAddCid, 0);
     console.log('receipt cancel add signer:', receiptAddCancel);
 
@@ -227,11 +227,11 @@ describe("Multisig Wallets Mnemonic implementation", function () {
     const txnID = receiptSwapProposeCid.ReturnDec.TxnID;
     assert.strictEqual(txnID, 0, 'error initiating swap proposal');
 
-    const cancelSwapCid = await mnemonicWalletProvider.msigApproveSwapSigner(multisigAddress, addresses[1], txnID, addresses[0], addresses[1], addresses[2] );
+    const cancelSwapCid = await mnemonicWalletProvider.msigCancelSwapSigner(multisigAddress, addresses[0], txnID, addresses[1], addresses[2] );
     const receiptSwapCancel = await con.state.waitMsg(cancelSwapCid, 0);
     console.log('receipt cancel swap signer:', receiptSwapCancel);
 
-    assert.strictEqual(receiptSwapCancel.ReturnDec.Applied, true, 'error approving swap proposal');
+    assert.strictEqual(receiptSwapCancel.Receipt.ExitCode, 0, 'error canceling swap proposal');
   });
 
   it("should create multisig wallet and remove signer [http]", async function () {
@@ -265,7 +265,7 @@ describe("Multisig Wallets Mnemonic implementation", function () {
     assert.strictEqual(receiptRemoveApprove.ReturnDec.Applied, true, 'error approving add proposal');
   });
 
-  it("should create multisig wallet and remove signer [http]", async function () {
+  it("should create multisig wallet and cancel remove signer [http]", async function () {
     this.timeout(60000);
     const httpConnector = new HttpJsonRpcConnector({ url: 'http://localhost:8000/rpc/v0', token: LOTUS_AUTH_TOKEN });
     const con = new LotusClient(httpConnector);
@@ -289,10 +289,10 @@ describe("Multisig Wallets Mnemonic implementation", function () {
     const txnID = receiptRemoveProposeCid.ReturnDec.TxnID;
     assert.strictEqual(txnID, 0, 'error initiating add proposal');
 
-    const cancelRemoveCid = await mnemonicWalletProvider.msigCancelRemoveSigner(multisigAddress, addresses[1], txnID, addresses[0], addresses[2], true);
+    const cancelRemoveCid = await mnemonicWalletProvider.msigCancelRemoveSigner(multisigAddress, addresses[0], txnID, addresses[2], true);
     const receiptRemoveCancel = await con.state.waitMsg(cancelRemoveCid, 0);
-    console.log('receipt approve remove signer:', receiptRemoveCancel);
+    console.log('receipt cancel remove signer:', receiptRemoveCancel);
 
-    assert.strictEqual(receiptRemoveCancel.ReturnDec.Applied, true, 'error approving add proposal');
+    assert.strictEqual(receiptRemoveCancel.Receipt.ExitCode, 0, 'error canceling remove proposal');
   });
 });

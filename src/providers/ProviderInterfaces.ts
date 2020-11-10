@@ -48,11 +48,10 @@ export interface WalletProviderInterface {
       value: string,
       senderAddressOfApproveMsg: string): Promise<Cid>;
     msigCancelTransfer(address: string,
+      senderAddressOfCancelMsg: string,
       proposedMessageId: number,
-      proposerAddress: string,
       recipientAddres: string,
       value: string,
-      senderAddressOfCancelMsg: string,
       methodToCallInProposeMsg: number): Promise<Cid>;
 
     msigProposeAddSigner(address: string,
@@ -68,7 +67,6 @@ export interface WalletProviderInterface {
     msigCancelAddSigner(address: string,
       senderAddressOfCancelMsg: string,
       proposedMessageId: number,
-      proposerAddress: string,
       newSignerAddress: string,
       increaseNumberOfRequiredSigners: boolean): Promise<Cid>;
 
@@ -85,7 +83,6 @@ export interface WalletProviderInterface {
     msigCancelSwapSigner(address: string,
       senderAddressOfCancelMsg: string,
       proposedMessageId: number,
-      proposerAddress: string,
       oldSignerAddress: string,
       newSignerAddress: string): Promise<Cid>;
 
@@ -102,7 +99,6 @@ export interface WalletProviderInterface {
     msigCancelRemoveSigner(address: string,
       senderAddressOfCancelMsg: string,
       proposedMessageId: number,
-      proposerAddress: string,
       addressToRemove: string,
       decreaseNumberOfRequiredSigners: boolean): Promise<Cid>;
   }

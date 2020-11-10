@@ -203,21 +203,19 @@ export class MnemonicWalletProvider extends BaseWalletProvider implements Wallet
   /**
    * cancels a previously-proposed multisig message
    * @param address
+   * @param senderAddressOfCancelMsg
    * @param proposedMessageId
-   * @param proposerAddress
    * @param recipientAddres
    * @param value
-   * @param senderAddressOfCancelMsg
    */
   public async msigCancelTransfer(
     address: string,
+    senderAddressOfCancelMsg: string,
     proposedMessageId: number,
-    proposerAddress: string,
     recipientAddres: string,
     value: string,
-    senderAddressOfCancelMsg: string,
   ): Promise<Cid> {
-    const proposerId = await this.client.state.lookupId(proposerAddress);
+    const proposerId = await this.client.state.lookupId(senderAddressOfCancelMsg);
 
     const messageWithoutGasParams = await createCancelMessage(
       address,
@@ -307,14 +305,13 @@ export class MnemonicWalletProvider extends BaseWalletProvider implements Wallet
     address: string,
     senderAddressOfCancelMsg: string,
     proposedMessageId: number,
-    proposerAddress: string,
     newSignerAddress: string,
     increaseNumberOfRequiredSigners: boolean
   ): Promise<Cid> {
     const values = [addressAsBytes(newSignerAddress), increaseNumberOfRequiredSigners];
-    const proposerId = await this.client.state.lookupId(proposerAddress);
+    const proposerId = await this.client.state.lookupId(senderAddressOfCancelMsg);
 
-    const messageWithoutGasParams = await createApproveMessage(
+    const messageWithoutGasParams = await createCancelMessage(
       address,
       senderAddressOfCancelMsg,
       proposedMessageId,
@@ -404,14 +401,13 @@ export class MnemonicWalletProvider extends BaseWalletProvider implements Wallet
     address: string,
     senderAddressOfCancelMsg: string,
     proposedMessageId: number,
-    proposerAddress: string,
     oldSignerAddress: string,
     newSignerAddress: string,
   ): Promise<Cid> {
     const values = [addressAsBytes(oldSignerAddress), addressAsBytes(newSignerAddress)];
-    const proposerId = await this.client.state.lookupId(proposerAddress);
+    const proposerId = await this.client.state.lookupId(senderAddressOfCancelMsg);
 
-    const messageWithoutGasParams = await createApproveMessage(
+    const messageWithoutGasParams = await createCancelMessage(
       address,
       senderAddressOfCancelMsg,
       proposedMessageId,
@@ -490,20 +486,18 @@ export class MnemonicWalletProvider extends BaseWalletProvider implements Wallet
    * @param address
    * @param senderAddressOfApproveMsg
    * @param proposedMessageId
-   * @param proposerAddress
    * @param addressToRemove
    * @param decreaseNumberOfRequiredSigners
    */
   public async msigCancelRemoveSigner(address: string,
     senderAddressOfCancelMsg: string,
     proposedMessageId: number,
-    proposerAddress: string,
     addressToRemove: string,
     decreaseNumberOfRequiredSigners: boolean): Promise<Cid> {
       const values = [addressAsBytes(addressToRemove), decreaseNumberOfRequiredSigners];
-      const proposerId = await this.client.state.lookupId(proposerAddress);
+      const proposerId = await this.client.state.lookupId(senderAddressOfCancelMsg);
 
-      const messageWithoutGasParams = await createApproveMessage(
+      const messageWithoutGasParams = await createCancelMessage(
         address,
         senderAddressOfCancelMsg,
         proposedMessageId,

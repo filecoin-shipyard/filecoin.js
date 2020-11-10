@@ -1,4 +1,4 @@
-import { ChainEpoch, Cid, KeyInfo, Message, NewAddressType, Signature, SignedMessage } from '../Types';
+import { ChainEpoch, Cid, KeyInfo, Message, MethodMultisig, NewAddressType, Signature, SignedMessage } from '../Types';
 import { BaseWalletProvider } from './BaseWalletProvider';
 import { MultisigProviderInterface, WalletProviderInterface } from "../ProviderInterfaces";
 import { LotusClient } from '../..';
@@ -192,13 +192,12 @@ export class LotusWalletProvider extends BaseWalletProvider implements WalletPro
    */
   public async msigCancelTransfer(
     address: string,
+    senderAddressOfCancelMsg: string,
     proposedMessageId: number,
-    proposerAddress: string,
     recipientAddres: string,
     value: string,
-    senderAddressOfCancelMsg: string
   ): Promise<Cid> {
-    const ret = await this.client.msig.cancel(address, proposedMessageId, proposerAddress, recipientAddres, value, senderAddressOfCancelMsg, 0, []);
+    const ret = await this.client.msig.cancel(address, proposedMessageId, senderAddressOfCancelMsg, recipientAddres, value, senderAddressOfCancelMsg, 0, []);
     return ret;
   }
 
@@ -252,7 +251,6 @@ export class LotusWalletProvider extends BaseWalletProvider implements WalletPro
     address: string,
     senderAddressOfCancelMsg: string,
     proposedMessageId: number,
-    proposerAddress: string,
     newSignerAddress: string,
     increaseNumberOfRequiredSigners: boolean
   ): Promise<Cid> {
@@ -310,7 +308,6 @@ export class LotusWalletProvider extends BaseWalletProvider implements WalletPro
     address: string,
     senderAddressOfCancelMsg: string,
     proposedMessageId: number,
-    proposerAddress: string,
     oldSignerAddress: string,
     newSignerAddress: string,
   ): Promise<Cid> {
@@ -318,16 +315,57 @@ export class LotusWalletProvider extends BaseWalletProvider implements WalletPro
     return ret;
   }
 
-  public async msigProposeRemoveSigner(): Promise<Cid> {
-    return null as any;
+  /**
+    * proposes removing a signer from the multisig
+    * @param address
+    * @param senderAddressOfProposeMsg
+    * @param addressToRemove
+    * @param decreaseNumberOfRequiredSigners
+    */
+  public async msigProposeRemoveSigner(
+    address: string,
+    senderAddressOfProposeMsg: string,
+    addressToRemove: string,
+    decreaseNumberOfRequiredSigners: boolean,
+  ): Promise<Cid> {
+    const ret = await this.client.msig.removeSigner(address, senderAddressOfProposeMsg, addressToRemove, decreaseNumberOfRequiredSigners);
+    return ret;
   };
 
-  public async msigApproveRemoveSigner(): Promise<Cid> {
-    return null as any;
+  /**
+   * approves a previously proposed RemoveSigner message
+   * @param address
+   * @param senderAddressOfApproveMsg
+   * @param proposedMessageId
+   * @param proposerAddress
+   * @param addressToRemove
+   * @param decreaseNumberOfRequiredSigners
+   */
+  public async msigApproveRemoveSigner(address: string,
+    senderAddressOfApproveMsg: string,
+    proposedMessageId: number,
+    proposerAddress: string,
+    addressToRemove: string,
+    decreaseNumberOfRequiredSigners: boolean): Promise<Cid> {
+
+    return undefined as any;
   };
 
-  public async msigCancelRemoveSigner(): Promise<Cid> {
-    return null as any;
+  /**
+   * cancels a previously proposed RemoveSigner message
+   * @param address
+   * @param senderAddressOfApproveMsg
+   * @param proposedMessageId
+   * @param addressToRemove
+   * @param decreaseNumberOfRequiredSigners
+   */
+  public async msigCancelRemoveSigner(address: string,
+    senderAddressOfCancelMsg: string,
+    proposedMessageId: number,
+    addressToRemove: string,
+    decreaseNumberOfRequiredSigners: boolean): Promise<Cid> {
+
+    return undefined as any;
   };
   // Own functions
   /**
