@@ -1,4 +1,4 @@
-import * as filecoin_signer from '@zondax/filecoin-signing-tools/js';
+import * as filecoin_signer from '@zondax/filecoin-signing-tools';
 import { DEFAULT_HD_PATH, Message, SignedMessage } from '../providers/Types';
 import { Signer } from './Signer';
 import { StringGetter } from '../providers/Types'

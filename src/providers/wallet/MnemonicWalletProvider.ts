@@ -4,7 +4,7 @@ import { MnemonicSigner } from "../../signers/MnemonicSigner";
 import { StringGetter } from "../Types";
 import { LotusClient } from "../..";
 import { MultisigProviderInterface, WalletProviderInterface } from "../ProviderInterfaces";
-import { addressAsBytes } from "@zondax/filecoin-signing-tools/js"
+import { addressAsBytes } from "@zondax/filecoin-signing-tools"
 import cbor from "ipld-dag-cbor";
 import cid from "cids";
 import BigNumber from "bignumber.js";

@@ -1,4 +1,4 @@
-import * as filecoin_signer from '@zondax/filecoin-signing-tools/js';
+import * as filecoin_signer from '@zondax/filecoin-signing-tools';
 import { Message, SignedMessage } from '../providers/Types';
 import { Signer } from './Signer';
 import { Keystore } from '../utils/keystore';

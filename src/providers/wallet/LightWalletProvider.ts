@@ -4,7 +4,7 @@ import { MultisigProviderInterface, WalletProviderInterface } from "../ProviderI
 import { Keystore } from "../../utils/keystore";
 import { LightWalletSigner } from "../../signers/LightWalletSigner";
 import { LotusClient } from "../..";
-import { addressAsBytes } from "@zondax/filecoin-signing-tools/js"
+import { addressAsBytes } from "@zondax/filecoin-signing-tools"
 import cbor from "ipld-dag-cbor";
 import cid from "cids";
 import BigNumber from "bignumber.js";

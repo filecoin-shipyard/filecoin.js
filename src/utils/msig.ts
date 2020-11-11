@@ -1,5 +1,5 @@
 import { MessagePartial, MethodMultisig } from "../providers/Types";
-import { addressAsBytes } from "@zondax/filecoin-signing-tools/js"
+import { addressAsBytes } from "@zondax/filecoin-signing-tools"
 import cbor from "ipld-dag-cbor";
 import BigNumber from "bignumber.js";
 import { serializeBigNum } from './data';

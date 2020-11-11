@@ -1,4 +1,3 @@
-declare module '@zondax/filecoin-signing-tools/js';
 declare module '@zondax/filecoin-signing-tools';
 declare module 'bitcore-mnemonic';
 declare module 'ipld-dag-cbor';
