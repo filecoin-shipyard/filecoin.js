@@ -1,4 +1,4 @@
-import { Message, SignedMessage, Cid, MessagePartial, HeadChange, TipSet, BlockHeader, BlockMessages, MessageReceipt, WrappedMessage, ObjStat, TipSetKey, SyncState, MpoolUpdate, PeerID, Address, StorageAsk, Actor, ActorState, NetworkName, SectorOnChainInfo, DeadlineInfo, MinerPower, MinerInfo, Deadline, Partition, BitField, ChainEpoch, Fault, SectorPreCommitInfo, SectorNumber, SectorPreCommitOnChainInfo, SectorExpiration, SectorLocation, MsgLookup, MarketBalance, MarketDeal, DealID, MinerSectors } from '../Types';
+import { Message, SignedMessage, Cid, MessagePartial, HeadChange, TipSet, BlockHeader, BlockMessages, MessageReceipt, WrappedMessage, ObjStat, TipSetKey, SyncState, MpoolUpdate, PeerID, Address, StorageAsk, Actor, ActorState, NetworkName, SectorOnChainInfo, DeadlineInfo, MinerPower, MinerInfo, Deadline, Partition, BitField, ChainEpoch, Fault, SectorPreCommitInfo, SectorNumber, SectorPreCommitOnChainInfo, SectorExpiration, SectorLocation, MsgLookup, MarketBalance, MarketDeal, DealID, MinerSectors, MsigVesting } from '../Types';
 import BigNumber from 'bignumber.js';
 import { LotusClient } from '../..';
 
@@ -622,6 +622,42 @@ export class BaseWalletProvider {
   public async minerSectorCount(address: Address, tipSetKey?: TipSetKey): Promise<MinerSectors> {
     const sectors = await this.client.state.minerSectorCount(address, tipSetKey);
     return sectors;
+  }
+
+  //Multisig wallet methods
+
+  /**
+  * returns the vesting details of a given multisig.
+  * @param address
+  * @param tipSetKey
+  */
+  public async msigGetVestingSchedule(
+    address: string,
+    tipSetKey: TipSetKey,
+  ): Promise<MsigVesting> {
+    const schedule = await this.client.msig.getVestingSchedule(address, tipSetKey);
+    return schedule;
+  }
+
+  /**
+   * returns the portion of a multisig's balance that can be withdrawn or spent
+   * @param address
+   * @param tipSetKey
+   */
+  public async msigGetAvailableBalance(address: string, tipSetKey: TipSetKey): Promise<string> {
+    const ret = await this.client.msig.getAvailableBalance(address, tipSetKey);
+    return ret;
+  }
+
+  /**
+   * returns the amount of FIL that vested in a multisig in a certain period.
+   * @param address
+   * @param startEpoch
+   * @param endEpoch
+   */
+  public async msigGetVested(address: string, startEpoch: TipSetKey, endEpoch: TipSetKey): Promise<string> {
+    const ret = await this.client.msig.getVested(address, startEpoch, endEpoch);
+    return ret;
   }
 }
 

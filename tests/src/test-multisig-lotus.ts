@@ -54,7 +54,7 @@ describe("Multisig Wallets Lotus implementation", function () {
     const receipt = await con.state.waitMsg(multisigCid, 0);
     const multisigAddress = receipt.ReturnDec.RobustAddress;
 
-    const balance = await con.msig.getAvailableBalance(multisigAddress, []);
+    const balance = await walletLotusHttp.msigGetAvailableBalance(multisigAddress, []);
     assert.strictEqual(balance, '1000', 'wrong balance');
 
     const initialDefaultWallet = await walletLotusHttp.getDefaultAddress();
@@ -70,7 +70,7 @@ describe("Multisig Wallets Lotus implementation", function () {
     const receiptTransferApprove = await con.state.waitMsg(approveTransferCid, 0);
     assert.strictEqual(receiptTransferApprove.ReturnDec.Applied, true, 'error approving transfer');
 
-    const balanceAfterTransfer = await con.msig.getAvailableBalance(multisigAddress, []);
+    const balanceAfterTransfer = await walletLotusHttp.msigGetAvailableBalance(multisigAddress, []);
     assert.strictEqual(balanceAfterTransfer, '999', 'wrong balance after approve transfer');
 
     await walletLotusHttp.setDefaultAddress(initialDefaultWallet);
@@ -99,7 +99,7 @@ describe("Multisig Wallets Lotus implementation", function () {
     const receipt = await con.state.waitMsg(multisigCid, 0);
     const multisigAddress = receipt.ReturnDec.RobustAddress;
 
-    const balance = await con.msig.getAvailableBalance(multisigAddress, []);
+    const balance = await walletLotusHttp.msigGetAvailableBalance(multisigAddress, []);
     assert.strictEqual(balance, '1000', 'wrong balance');
 
     const initialDefaultWallet = await walletLotusHttp.getDefaultAddress();
@@ -140,7 +140,7 @@ describe("Multisig Wallets Lotus implementation", function () {
     const receipt = await con.state.waitMsg(multisigCid, 0);
     const multisigAddress = receipt.ReturnDec.RobustAddress;
 
-    const balance = await con.msig.getAvailableBalance(multisigAddress, []);
+    const balance = await walletLotusHttp.msigGetAvailableBalance(multisigAddress, []);
     assert.strictEqual(balance, '1000', 'wrong balance');
 
     const initialDefaultWallet = await walletLotusHttp.getDefaultAddress();
@@ -168,7 +168,7 @@ describe("Multisig Wallets Lotus implementation", function () {
     const receiptTransferApprove = await con.state.waitMsg(approveTransferCid, 0);
     assert.strictEqual(receiptTransferApprove.ReturnDec.Applied, true, 'error approving transfer');
 
-    const balanceAfterTransfer = await con.msig.getAvailableBalance(multisigAddress, []);
+    const balanceAfterTransfer = await walletLotusHttp.msigGetAvailableBalance(multisigAddress, []);
     assert.strictEqual(balanceAfterTransfer, '999', 'wrong balance after approve transfer');
 
     await walletLotusHttp.setDefaultAddress(initialDefaultWallet);
@@ -194,7 +194,7 @@ describe("Multisig Wallets Lotus implementation", function () {
     const receipt = await con.state.waitMsg(multisigCid, 0);
     const multisigAddress = receipt.ReturnDec.RobustAddress;
 
-    const balance = await con.msig.getAvailableBalance(multisigAddress, []);
+    const balance = await walletLotusHttp.msigGetAvailableBalance(multisigAddress, []);
     assert.strictEqual(balance, '1000', 'wrong balance');
 
     const initRemoveProposeCid = await walletLotusHttp.msigProposeRemoveSigner(multisigAddress, t11address, t3address, true);

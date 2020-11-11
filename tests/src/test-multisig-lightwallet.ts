@@ -60,7 +60,7 @@ describe("Multisig Wallets Lightwallet implementation", function () {
     console.log('receipt create:', receipt);
 
     const multisigAddress = receipt.ReturnDec.RobustAddress;
-    const balance = await con.msig.getAvailableBalance(multisigAddress, []);
+    const balance = await lightWalletHttp.msigGetAvailableBalance(multisigAddress, []);
     assert.strictEqual(balance, '1000', 'wrong balance');
 
     const initTransferCid = await lightWalletHttp.msigProposeTransfer(multisigAddress, mnemonicAddress, '1', addresses[0]);
@@ -76,7 +76,7 @@ describe("Multisig Wallets Lightwallet implementation", function () {
 
     assert.strictEqual(receiptTransferApprove.ReturnDec.Applied, true, 'error approving transfer');
 
-    const balanceAfterTransfer = await con.msig.getAvailableBalance(multisigAddress, []);
+    const balanceAfterTransfer = await lightWalletHttp.msigGetAvailableBalance(multisigAddress, []);
     assert.strictEqual(balanceAfterTransfer, '999', 'wrong balance after approve transfer');
   });
 
@@ -95,7 +95,7 @@ describe("Multisig Wallets Lightwallet implementation", function () {
     console.log('receipt create:', receipt);
 
     const multisigAddress = receipt.ReturnDec.RobustAddress;
-    const balance = await con.msig.getAvailableBalance(multisigAddress, []);
+    const balance = await lightWalletHttp.msigGetAvailableBalance(multisigAddress, []);
     assert.strictEqual(balance, '1000', 'wrong balance');
 
     const initAddProposeCid = await lightWalletHttp.msigProposeAddSigner(multisigAddress, addresses[0], addresses[2], true);
@@ -127,7 +127,7 @@ describe("Multisig Wallets Lightwallet implementation", function () {
     console.log('receipt create:', receipt);
 
     const multisigAddress = receipt.ReturnDec.RobustAddress;
-    const balance = await con.msig.getAvailableBalance(multisigAddress, []);
+    const balance = await lightWalletHttp.msigGetAvailableBalance(multisigAddress, []);
     assert.strictEqual(balance, '1000', 'wrong balance');
 
     const initSwapProposeCid = await lightWalletHttp.msigProposeSwapSigner(multisigAddress, addresses[0], addresses[1], addresses[2]);
@@ -161,7 +161,7 @@ describe("Multisig Wallets Lightwallet implementation", function () {
     console.log('receipt create:', receipt);
 
     const multisigAddress = receipt.ReturnDec.RobustAddress;
-    const balance = await con.msig.getAvailableBalance(multisigAddress, []);
+    const balance = await lightWalletHttp.msigGetAvailableBalance(multisigAddress, []);
     assert.strictEqual(balance, '1000', 'wrong balance');
 
     const initTransferCid = await lightWalletHttp.msigProposeTransfer(multisigAddress, mnemonicAddress, '1', addresses[0]);
@@ -193,7 +193,7 @@ describe("Multisig Wallets Lightwallet implementation", function () {
     console.log('receipt create:', receipt);
 
     const multisigAddress = receipt.ReturnDec.RobustAddress;
-    const balance = await con.msig.getAvailableBalance(multisigAddress, []);
+    const balance = await lightWalletHttp.msigGetAvailableBalance(multisigAddress, []);
     assert.strictEqual(balance, '1000', 'wrong balance');
 
     const initAddProposeCid = await lightWalletHttp.msigProposeAddSigner(multisigAddress, addresses[0], addresses[2], true);
@@ -225,7 +225,7 @@ describe("Multisig Wallets Lightwallet implementation", function () {
     console.log('receipt create:', receipt);
 
     const multisigAddress = receipt.ReturnDec.RobustAddress;
-    const balance = await con.msig.getAvailableBalance(multisigAddress, []);
+    const balance = await lightWalletHttp.msigGetAvailableBalance(multisigAddress, []);
     assert.strictEqual(balance, '1000', 'wrong balance');
 
     const initSwapProposeCid = await lightWalletHttp.msigProposeSwapSigner(multisigAddress, addresses[0], addresses[1], addresses[2]);
@@ -257,7 +257,7 @@ describe("Multisig Wallets Lightwallet implementation", function () {
     console.log('receipt create:', receipt);
 
     const multisigAddress = receipt.ReturnDec.RobustAddress;
-    const balance = await con.msig.getAvailableBalance(multisigAddress, []);
+    const balance = await lightWalletHttp.msigGetAvailableBalance(multisigAddress, []);
     assert.strictEqual(balance, '1000', 'wrong balance');
 
     const initRemoveProposeCid = await lightWalletHttp.msigProposeRemoveSigner(multisigAddress, addresses[0], addresses[2], true);
@@ -289,7 +289,7 @@ describe("Multisig Wallets Lightwallet implementation", function () {
     console.log('receipt create:', receipt);
 
     const multisigAddress = receipt.ReturnDec.RobustAddress;
-    const balance = await con.msig.getAvailableBalance(multisigAddress, []);
+    const balance = await lightWalletHttp.msigGetAvailableBalance(multisigAddress, []);
     assert.strictEqual(balance, '1000', 'wrong balance');
 
     const initRemoveProposeCid = await lightWalletHttp.msigProposeRemoveSigner(multisigAddress, addresses[0], addresses[2], true);
