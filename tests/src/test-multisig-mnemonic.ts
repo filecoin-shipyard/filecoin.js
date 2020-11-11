@@ -15,7 +15,7 @@ async function fundTestAddresses(source: string, destinations: string[], walletL
     let message = await walletLotusHttp.createMessage({
       From: source,
       To: destination,
-      Value: new BigNumber(100000000000000),
+      Value: new BigNumber(1000000000),
     });
 
     console.log(`${source} -> ${destination}`)
