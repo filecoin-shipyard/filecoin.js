@@ -93,7 +93,7 @@ Check out the [tests](./tests/) or [examples](./documentation/examples) folders 
 
 ## Documentation
 
-As with the rest of the library, the documentation is WIP. As it evolves the [documentation site](http://docs.filecoinjs.surge.sh/) will be updated.
+As with the rest of the library, the documentation is WIP. As it evolves the [documentation site](https://filecoin-shipyard.github.io/filecoin.js/) will be updated.
 
 ## Contributing
 
