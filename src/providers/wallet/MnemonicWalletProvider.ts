@@ -85,14 +85,15 @@ export class MnemonicWalletProvider extends BaseWalletProvider implements Wallet
    * creates a multisig wallet
    * @param requiredNumberOfSenders
    * @param approvingAddresses
+   * @param startEpoch
    * @param unlockDuration
    * @param initialBalance
    * @param senderAddressOfCreateMsg
-   * @param gasPrice
    */
   public async msigCreate(
     requiredNumberOfSenders: number,
     approvingAddresses: string[],
+    startEpoch: ChainEpoch,
     unlockDuration: ChainEpoch,
     initialBalance: string,
     senderAddressOfCreateMsg: string,
@@ -101,7 +102,7 @@ export class MnemonicWalletProvider extends BaseWalletProvider implements Wallet
     approvingAddresses.forEach(address => {
       addresses.push(addressAsBytes(address));
     });
-    const constructorParams = [addresses, requiredNumberOfSenders, unlockDuration, 0];
+    const constructorParams = [addresses, requiredNumberOfSenders, unlockDuration, startEpoch];
     const serializedConstructorParams = cbor.util.serialize(constructorParams);
 
     const MultisigActorCodeID = new cid('bafkqadtgnfwc6mrpnv2wy5djonuwo');

@@ -19,7 +19,8 @@
     ],
     "Extra": [
       "payment-channels",
-      "state-methods"
+      "state-methods",
+      "multisig-wallet"
     ],
     "Contributing": [
       "how-to-contribute",

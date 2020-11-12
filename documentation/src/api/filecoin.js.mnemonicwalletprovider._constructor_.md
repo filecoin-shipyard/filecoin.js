@@ -14,14 +14,13 @@ Constructs a new instance of the `MnemonicWalletProvider` class
 <b>Signature:</b>
 
 ```typescript
-constructor(connector: Connector, mnemonic: string | StringGetter, password: string | StringGetter, path?: string);
+constructor(client: LotusClient, mnemonic: string | StringGetter, path?: string);
 ```
 
 ## Parameters
 
 |  Parameter | Type | Description |
 |  --- | --- | --- |
-|  connector | Connector |  |
+|  client | [LotusClient](./filecoin.js.lotusclient.md) |  |
 |  mnemonic | string &#124; StringGetter |  |
-|  password | string &#124; StringGetter |  |
 |  path | string |  |

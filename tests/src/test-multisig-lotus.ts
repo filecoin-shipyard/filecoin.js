@@ -49,7 +49,7 @@ describe("Multisig Wallets Lotus implementation", function () {
 
     const mnemonicAddress = await mnemonicWalletProvider.getDefaultAddress();
 
-    const multisigCid = await walletLotusHttp.msigCreate(2, addresses, 0, '1000', defaultAccount);
+    const multisigCid = await walletLotusHttp.msigCreate(2, addresses, 0, 0, '1000', defaultAccount);
 
     const receipt = await con.state.waitMsg(multisigCid, 0);
     const multisigAddress = receipt.ReturnDec.RobustAddress;
@@ -94,7 +94,7 @@ describe("Multisig Wallets Lotus implementation", function () {
 
     const mnemonicAddress = await mnemonicWalletProvider.getDefaultAddress();
 
-    const multisigCid = await walletLotusHttp.msigCreate(2, [ t3address, t11address ], 0, '1000', defaultAccount);
+    const multisigCid = await walletLotusHttp.msigCreate(2, [ t3address, t11address ], 0, 0, '1000', defaultAccount);
 
     const receipt = await con.state.waitMsg(multisigCid, 0);
     const multisigAddress = receipt.ReturnDec.RobustAddress;
@@ -135,7 +135,7 @@ describe("Multisig Wallets Lotus implementation", function () {
 
     const mnemonicAddress = await mnemonicWalletProvider.getDefaultAddress();
 
-    const multisigCid = await walletLotusHttp.msigCreate(2, [t3address, t11address], 0, '1000', defaultAccount);
+    const multisigCid = await walletLotusHttp.msigCreate(2, [t3address, t11address], 0, 0, '1000', defaultAccount);
 
     const receipt = await con.state.waitMsg(multisigCid, 0);
     const multisigAddress = receipt.ReturnDec.RobustAddress;
@@ -189,7 +189,7 @@ describe("Multisig Wallets Lotus implementation", function () {
     const t12address = secpAddreses[0];
 
 
-    const multisigCid = await walletLotusHttp.msigCreate(2, [t3address, t11address, t12address], 0, '1000', t11address);
+    const multisigCid = await walletLotusHttp.msigCreate(2, [t3address, t11address, t12address], 0, 0, '1000', t11address);
 
     const receipt = await con.state.waitMsg(multisigCid, 0);
     const multisigAddress = receipt.ReturnDec.RobustAddress;

@@ -22,9 +22,22 @@ export declare class MnemonicSigner implements Signer
 |  --- | --- | --- |
 |  [(constructor)(mnemonic, password, path)](./filecoin.js.mnemonicsigner._constructor_.md) |  | Constructs a new instance of the <code>MnemonicSigner</code> class |
 
+## Properties
+
+|  Property | Modifiers | Type | Description |
+|  --- | --- | --- | --- |
+|  [addresses](./filecoin.js.mnemonicsigner.addresses.md) |  | string\[\] |  |
+
 ## Methods
 
 |  Method | Modifiers | Description |
 |  --- | --- | --- |
-|  [getDefaultAccount()](./filecoin.js.mnemonicsigner.getdefaultaccount.md) |  |  |
+|  [deleteAddress(address)](./filecoin.js.mnemonicsigner.deleteaddress.md) |  |  |
+|  [getAddresses()](./filecoin.js.mnemonicsigner.getaddresses.md) |  |  |
+|  [getDefaultAddress()](./filecoin.js.mnemonicsigner.getdefaultaddress.md) |  |  |
+|  [getPrivateKey(address)](./filecoin.js.mnemonicsigner.getprivatekey.md) |  |  |
+|  [hasAddress(address)](./filecoin.js.mnemonicsigner.hasaddress.md) |  |  |
+|  [initAddresses()](./filecoin.js.mnemonicsigner.initaddresses.md) |  |  |
+|  [newAddress(n)](./filecoin.js.mnemonicsigner.newaddress.md) |  |  |
+|  [setDefaultAddress(address)](./filecoin.js.mnemonicsigner.setdefaultaddress.md) |  |  |
 |  [sign(message)](./filecoin.js.mnemonicsigner.sign.md) |  |  |

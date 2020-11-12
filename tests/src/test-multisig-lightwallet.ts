@@ -55,7 +55,7 @@ describe("Multisig Wallets Lightwallet implementation", function () {
     const addresses = await lightWalletHttp.getAddresses();
     const mnemonicAddress = await lightWalletHttp.newAddress();
 
-    const multisigCid = await lightWalletHttp.msigCreate(2, addresses, 0, '1000', addresses[0]);
+    const multisigCid = await lightWalletHttp.msigCreate(2, addresses, 0, 0, '1000', addresses[0]);
     const receipt = await con.state.waitMsg(multisigCid, 0);
     console.log('receipt create:', receipt);
 
@@ -90,7 +90,7 @@ describe("Multisig Wallets Lightwallet implementation", function () {
     await lightWalletHttp.newAddress();
     const addresses = await lightWalletHttp.getAddresses();
 
-    const multisigCid = await lightWalletHttp.msigCreate(2, [addresses[0], addresses[1]], 0, '1000', addresses[0]);
+    const multisigCid = await lightWalletHttp.msigCreate(2, [addresses[0], addresses[1]], 0, 0, '1000', addresses[0]);
     const receipt = await con.state.waitMsg(multisigCid, 0);
     console.log('receipt create:', receipt);
 
@@ -122,7 +122,7 @@ describe("Multisig Wallets Lightwallet implementation", function () {
     await lightWalletHttp.newAddress();
     const addresses = await lightWalletHttp.getAddresses();
 
-    const multisigCid = await lightWalletHttp.msigCreate(2, [addresses[0], addresses[1]], 0, '1000', addresses[0]);
+    const multisigCid = await lightWalletHttp.msigCreate(2, [addresses[0], addresses[1]], 0, 0, '1000', addresses[0]);
     const receipt = await con.state.waitMsg(multisigCid, 0);
     console.log('receipt create:', receipt);
 
@@ -156,7 +156,7 @@ describe("Multisig Wallets Lightwallet implementation", function () {
     const addresses = await lightWalletHttp.getAddresses();
     const mnemonicAddress = await lightWalletHttp.newAddress();
 
-    const multisigCid = await lightWalletHttp.msigCreate(2, addresses, 0, '1000', addresses[0]);
+    const multisigCid = await lightWalletHttp.msigCreate(2, addresses, 0, 0, '1000', addresses[0]);
     const receipt = await con.state.waitMsg(multisigCid, 0);
     console.log('receipt create:', receipt);
 
@@ -188,7 +188,7 @@ describe("Multisig Wallets Lightwallet implementation", function () {
     await lightWalletHttp.newAddress();
     const addresses = await lightWalletHttp.getAddresses();
 
-    const multisigCid = await lightWalletHttp.msigCreate(2, [addresses[0], addresses[1]], 0, '1000', addresses[0]);
+    const multisigCid = await lightWalletHttp.msigCreate(2, [addresses[0], addresses[1]], 0, 0, '1000', addresses[0]);
     const receipt = await con.state.waitMsg(multisigCid, 0);
     console.log('receipt create:', receipt);
 
@@ -220,7 +220,7 @@ describe("Multisig Wallets Lightwallet implementation", function () {
     await lightWalletHttp.newAddress();
     const addresses = await lightWalletHttp.getAddresses();
 
-    const multisigCid = await lightWalletHttp.msigCreate(2, [addresses[0], addresses[1]], 0, '1000', addresses[0]);
+    const multisigCid = await lightWalletHttp.msigCreate(2, [addresses[0], addresses[1]], 0, 0, '1000', addresses[0]);
     const receipt = await con.state.waitMsg(multisigCid, 0);
     console.log('receipt create:', receipt);
 
@@ -252,7 +252,7 @@ describe("Multisig Wallets Lightwallet implementation", function () {
     await lightWalletHttp.newAddress();
     const addresses = await lightWalletHttp.getAddresses();
 
-    const multisigCid = await lightWalletHttp.msigCreate(2, [addresses[0], addresses[1], addresses[2]], 0, '1000', addresses[0]);
+    const multisigCid = await lightWalletHttp.msigCreate(2, [addresses[0], addresses[1], addresses[2]], 0, 0, '1000', addresses[0]);
     const receipt = await con.state.waitMsg(multisigCid, 0);
     console.log('receipt create:', receipt);
 
@@ -284,7 +284,7 @@ describe("Multisig Wallets Lightwallet implementation", function () {
     await lightWalletHttp.newAddress();
     const addresses = await lightWalletHttp.getAddresses();
 
-    const multisigCid = await lightWalletHttp.msigCreate(2, [addresses[0], addresses[1], addresses[2]], 0, '1000', addresses[0]);
+    const multisigCid = await lightWalletHttp.msigCreate(2, [addresses[0], addresses[1], addresses[2]], 0, 0, '1000', addresses[0]);
     const receipt = await con.state.waitMsg(multisigCid, 0);
     console.log('receipt create:', receipt);
 

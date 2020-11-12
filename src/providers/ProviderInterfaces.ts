@@ -30,6 +30,7 @@ export interface WalletProviderInterface {
   export interface MultisigProviderInterface {
     msigCreate(requiredNumberOfSenders: number,
       approvingAddresses: string[],
+      startEpoch: ChainEpoch,
       unlockDuration: ChainEpoch,
       initialBalance: string,
       senderAddressOfCreateMsg: string): Promise<Cid>;

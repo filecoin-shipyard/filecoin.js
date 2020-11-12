@@ -12,15 +12,17 @@ hide_title: true
 <b>Signature:</b>
 
 ```typescript
-export declare class LightWalletProvider extends HttpJsonRpcWalletProvider 
+export declare class LightWalletProvider extends BaseWalletProvider implements WalletProviderInterface, MultisigProviderInterface 
 ```
-<b>Extends:</b> [HttpJsonRpcWalletProvider](./filecoin.js.httpjsonrpcwalletprovider.md)
+<b>Extends:</b> BaseWalletProvider
+
+<b>Implements:</b> WalletProviderInterface, MultisigProviderInterface
 
 ## Constructors
 
 |  Constructor | Modifiers | Description |
 |  --- | --- | --- |
-|  [(constructor)(connector)](./filecoin.js.lightwalletprovider._constructor_.md) |  | Constructs a new instance of the <code>LightWalletProvider</code> class |
+|  [(constructor)(client, pwdCallback, path)](./filecoin.js.lightwalletprovider._constructor_.md) |  | Constructs a new instance of the <code>LightWalletProvider</code> class |
 
 ## Properties
 
@@ -33,13 +35,32 @@ export declare class LightWalletProvider extends HttpJsonRpcWalletProvider
 |  Method | Modifiers | Description |
 |  --- | --- | --- |
 |  [createLightWallet(password)](./filecoin.js.lightwalletprovider.createlightwallet.md) |  |  |
-|  [getAccounts()](./filecoin.js.lightwalletprovider.getaccounts.md) |  |  |
-|  [getDefaultAccount()](./filecoin.js.lightwalletprovider.getdefaultaccount.md) |  |  |
+|  [deleteAddress(address)](./filecoin.js.lightwalletprovider.deleteaddress.md) |  |  |
+|  [exportPrivateKey(address)](./filecoin.js.lightwalletprovider.exportprivatekey.md) |  |  |
+|  [getAddresses()](./filecoin.js.lightwalletprovider.getaddresses.md) |  |  |
+|  [getDefaultAddress()](./filecoin.js.lightwalletprovider.getdefaultaddress.md) |  |  |
 |  [getSigner()](./filecoin.js.lightwalletprovider.getsigner.md) |  |  |
+|  [hasAddress(address)](./filecoin.js.lightwalletprovider.hasaddress.md) |  |  |
 |  [loadLightWallet(encryptedWallet)](./filecoin.js.lightwalletprovider.loadlightwallet.md) |  |  |
+|  [msigApproveAddSigner(address, senderAddressOfApproveMsg, proposedMessageId, proposerAddress, newSignerAddress, increaseNumberOfRequiredSigners)](./filecoin.js.lightwalletprovider.msigapproveaddsigner.md) |  | approves a previously proposed AddSigner message |
+|  [msigApproveRemoveSigner(address, senderAddressOfApproveMsg, proposedMessageId, proposerAddress, addressToRemove, decreaseNumberOfRequiredSigners)](./filecoin.js.lightwalletprovider.msigapproveremovesigner.md) |  | approves a previously proposed RemoveSigner message |
+|  [msigApproveSwapSigner(address, senderAddressOfApproveMsg, proposedMessageId, proposerAddress, oldSignerAddress, newSignerAddress)](./filecoin.js.lightwalletprovider.msigapproveswapsigner.md) |  | approves a previously proposed SwapSigner |
+|  [msigApproveTransfer(address, proposedTransactionId, signerAddress)](./filecoin.js.lightwalletprovider.msigapprovetransfer.md) |  | approves a previously-proposed multisig message by transaction ID |
+|  [msigApproveTransferTxHash(address, proposedMessageId, proposerAddress, recipientAddres, value, senderAddressOfApproveMsg)](./filecoin.js.lightwalletprovider.msigapprovetransfertxhash.md) |  | approves a previously-proposed multisig message |
+|  [msigCancelAddSigner(address, senderAddressOfCancelMsg, proposedMessageId, newSignerAddress, increaseNumberOfRequiredSigners)](./filecoin.js.lightwalletprovider.msigcanceladdsigner.md) |  | cancels a previously proposed AddSigner message |
+|  [msigCancelRemoveSigner(address, senderAddressOfCancelMsg, proposedMessageId, addressToRemove, decreaseNumberOfRequiredSigners)](./filecoin.js.lightwalletprovider.msigcancelremovesigner.md) |  | cancels a previously proposed RemoveSigner message |
+|  [msigCancelSwapSigner(address, senderAddressOfCancelMsg, proposedMessageId, oldSignerAddress, newSignerAddress)](./filecoin.js.lightwalletprovider.msigcancelswapsigner.md) |  | cancels a previously proposed SwapSigner message |
+|  [msigCancelTransfer(address, senderAddressOfCancelMsg, proposedMessageId, recipientAddres, value)](./filecoin.js.lightwalletprovider.msigcanceltransfer.md) |  | cancels a previously-proposed multisig message |
+|  [msigCreate(requiredNumberOfSenders, approvingAddresses, startEpoch, unlockDuration, initialBalance, senderAddressOfCreateMsg)](./filecoin.js.lightwalletprovider.msigcreate.md) |  | creates a multisig wallet |
+|  [msigProposeAddSigner(address, senderAddressOfProposeMsg, newSignerAddress, increaseNumberOfRequiredSigners)](./filecoin.js.lightwalletprovider.msigproposeaddsigner.md) |  | proposes adding a signer in the multisig |
+|  [msigProposeRemoveSigner(address, senderAddressOfProposeMsg, addressToRemove, decreaseNumberOfRequiredSigners)](./filecoin.js.lightwalletprovider.msigproposeremovesigner.md) |  | proposes removing a signer from the multisig |
+|  [msigProposeSwapSigner(address, senderAddressOfProposeMsg, oldSignerAddress, newSignerAddress)](./filecoin.js.lightwalletprovider.msigproposeswapsigner.md) |  | proposes swapping 2 signers in the multisig |
+|  [msigProposeTransfer(address, recipientAddres, value, senderAddressOfProposeMsg)](./filecoin.js.lightwalletprovider.msigproposetransfer.md) |  | proposes a multisig message |
+|  [newAddress()](./filecoin.js.lightwalletprovider.newaddress.md) |  |  |
 |  [prepareToSave()](./filecoin.js.lightwalletprovider.preparetosave.md) |  |  |
 |  [recoverLightWallet(mnemonic, password)](./filecoin.js.lightwalletprovider.recoverlightwallet.md) |  |  |
-|  [sendMessage(msg, password)](./filecoin.js.lightwalletprovider.sendmessage.md) |  |  |
+|  [sendMessage(msg)](./filecoin.js.lightwalletprovider.sendmessage.md) |  |  |
+|  [setDefaultAddress(address)](./filecoin.js.lightwalletprovider.setdefaultaddress.md) |  |  |
 |  [sign(data)](./filecoin.js.lightwalletprovider.sign.md) |  |  |
-|  [signMessage(msg, password)](./filecoin.js.lightwalletprovider.signmessage.md) |  |  |
+|  [signMessage(msg)](./filecoin.js.lightwalletprovider.signmessage.md) |  |  |
 |  [verify(address, data, sign)](./filecoin.js.lightwalletprovider.verify.md) |  |  |

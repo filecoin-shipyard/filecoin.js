@@ -113,6 +113,7 @@ export class LotusWalletProvider extends BaseWalletProvider implements WalletPro
    * creates a multisig wallet
    * @param requiredNumberOfSenders
    * @param approvingAddresses
+   * @param startEpoch
    * @param unlockDuration
    * @param initialBalance
    * @param senderAddressOfCreateMsg
@@ -120,6 +121,7 @@ export class LotusWalletProvider extends BaseWalletProvider implements WalletPro
   public async msigCreate(
     requiredNumberOfSenders: number,
     approvingAddresses: string[],
+    startEpoch: ChainEpoch,
     unlockDuration: ChainEpoch,
     initialBalance: string,
     senderAddressOfCreateMsg: string,

@@ -12,24 +12,45 @@ hide_title: true
 <b>Signature:</b>
 
 ```typescript
-export declare class MnemonicWalletProvider extends HttpJsonRpcWalletProvider 
+export declare class MnemonicWalletProvider extends BaseWalletProvider implements WalletProviderInterface, MultisigProviderInterface 
 ```
-<b>Extends:</b> [HttpJsonRpcWalletProvider](./filecoin.js.httpjsonrpcwalletprovider.md)
+<b>Extends:</b> BaseWalletProvider
+
+<b>Implements:</b> WalletProviderInterface, MultisigProviderInterface
 
 ## Constructors
 
 |  Constructor | Modifiers | Description |
 |  --- | --- | --- |
-|  [(constructor)(connector, mnemonic, password, path)](./filecoin.js.mnemonicwalletprovider._constructor_.md) |  | Constructs a new instance of the <code>MnemonicWalletProvider</code> class |
+|  [(constructor)(client, mnemonic, path)](./filecoin.js.mnemonicwalletprovider._constructor_.md) |  | Constructs a new instance of the <code>MnemonicWalletProvider</code> class |
 
 ## Methods
 
 |  Method | Modifiers | Description |
 |  --- | --- | --- |
-|  [getAccounts()](./filecoin.js.mnemonicwalletprovider.getaccounts.md) |  |  |
-|  [getDefaultAccount()](./filecoin.js.mnemonicwalletprovider.getdefaultaccount.md) |  |  |
+|  [deleteAddress(address)](./filecoin.js.mnemonicwalletprovider.deleteaddress.md) |  |  |
+|  [exportPrivateKey(address)](./filecoin.js.mnemonicwalletprovider.exportprivatekey.md) |  |  |
+|  [getAddresses()](./filecoin.js.mnemonicwalletprovider.getaddresses.md) |  |  |
+|  [getDefaultAddress()](./filecoin.js.mnemonicwalletprovider.getdefaultaddress.md) |  |  |
 |  [getSigner()](./filecoin.js.mnemonicwalletprovider.getsigner.md) |  |  |
+|  [hasAddress(address)](./filecoin.js.mnemonicwalletprovider.hasaddress.md) |  |  |
+|  [msigApproveAddSigner(address, senderAddressOfApproveMsg, proposedMessageId, proposerAddress, newSignerAddress, increaseNumberOfRequiredSigners)](./filecoin.js.mnemonicwalletprovider.msigapproveaddsigner.md) |  | approves a previously proposed AddSigner message |
+|  [msigApproveRemoveSigner(address, senderAddressOfApproveMsg, proposedMessageId, proposerAddress, addressToRemove, decreaseNumberOfRequiredSigners)](./filecoin.js.mnemonicwalletprovider.msigapproveremovesigner.md) |  | approves a previously proposed RemoveSigner message |
+|  [msigApproveSwapSigner(address, senderAddressOfApproveMsg, proposedMessageId, proposerAddress, oldSignerAddress, newSignerAddress)](./filecoin.js.mnemonicwalletprovider.msigapproveswapsigner.md) |  | approves a previously proposed SwapSigner |
+|  [msigApproveTransfer(address, proposedTransactionId, signerAddress)](./filecoin.js.mnemonicwalletprovider.msigapprovetransfer.md) |  | approves a previously-proposed multisig message by transaction ID |
+|  [msigApproveTransferTxHash(address, proposedMessageId, proposerAddress, recipientAddres, value, senderAddressOfApproveMsg)](./filecoin.js.mnemonicwalletprovider.msigapprovetransfertxhash.md) |  | approves a previously-proposed multisig message |
+|  [msigCancelAddSigner(address, senderAddressOfCancelMsg, proposedMessageId, newSignerAddress, increaseNumberOfRequiredSigners)](./filecoin.js.mnemonicwalletprovider.msigcanceladdsigner.md) |  | cancels a previously proposed AddSigner message |
+|  [msigCancelRemoveSigner(address, senderAddressOfCancelMsg, proposedMessageId, addressToRemove, decreaseNumberOfRequiredSigners)](./filecoin.js.mnemonicwalletprovider.msigcancelremovesigner.md) |  | cancels a previously proposed RemoveSigner message |
+|  [msigCancelSwapSigner(address, senderAddressOfCancelMsg, proposedMessageId, oldSignerAddress, newSignerAddress)](./filecoin.js.mnemonicwalletprovider.msigcancelswapsigner.md) |  | cancels a previously proposed SwapSigner message |
+|  [msigCancelTransfer(address, senderAddressOfCancelMsg, proposedMessageId, recipientAddres, value)](./filecoin.js.mnemonicwalletprovider.msigcanceltransfer.md) |  | cancels a previously-proposed multisig message |
+|  [msigCreate(requiredNumberOfSenders, approvingAddresses, startEpoch, unlockDuration, initialBalance, senderAddressOfCreateMsg)](./filecoin.js.mnemonicwalletprovider.msigcreate.md) |  | creates a multisig wallet |
+|  [msigProposeAddSigner(address, senderAddressOfProposeMsg, newSignerAddress, increaseNumberOfRequiredSigners)](./filecoin.js.mnemonicwalletprovider.msigproposeaddsigner.md) |  | proposes adding a signer in the multisig |
+|  [msigProposeRemoveSigner(address, senderAddressOfProposeMsg, addressToRemove, decreaseNumberOfRequiredSigners)](./filecoin.js.mnemonicwalletprovider.msigproposeremovesigner.md) |  | proposes removing a signer from the multisig |
+|  [msigProposeSwapSigner(address, senderAddressOfProposeMsg, oldSignerAddress, newSignerAddress)](./filecoin.js.mnemonicwalletprovider.msigproposeswapsigner.md) |  | proposes swapping 2 signers in the multisig |
+|  [msigProposeTransfer(address, recipientAddres, value, senderAddressOfProposeMsg)](./filecoin.js.mnemonicwalletprovider.msigproposetransfer.md) |  | proposes a multisig message |
+|  [newAddress()](./filecoin.js.mnemonicwalletprovider.newaddress.md) |  |  |
 |  [sendMessage(msg)](./filecoin.js.mnemonicwalletprovider.sendmessage.md) |  |  |
+|  [setDefaultAddress(address)](./filecoin.js.mnemonicwalletprovider.setdefaultaddress.md) |  |  |
 |  [sign(data)](./filecoin.js.mnemonicwalletprovider.sign.md) |  |  |
 |  [signMessage(msg)](./filecoin.js.mnemonicwalletprovider.signmessage.md) |  |  |
 |  [verify(address, data, sign)](./filecoin.js.mnemonicwalletprovider.verify.md) |  |  |

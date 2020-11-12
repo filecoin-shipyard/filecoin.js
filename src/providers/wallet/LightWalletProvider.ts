@@ -99,6 +99,7 @@ export class LightWalletProvider extends BaseWalletProvider implements WalletPro
   public async msigCreate(
     requiredNumberOfSenders: number,
     approvingAddresses: string[],
+    startEpoch: ChainEpoch,
     unlockDuration: ChainEpoch,
     initialBalance: string,
     senderAddressOfCreateMsg: string,
@@ -107,7 +108,7 @@ export class LightWalletProvider extends BaseWalletProvider implements WalletPro
     approvingAddresses.forEach(address => {
       addresses.push(addressAsBytes(address));
     });
-    const constructorParams = [addresses, requiredNumberOfSenders, unlockDuration, 0];
+    const constructorParams = [addresses, requiredNumberOfSenders, unlockDuration, startEpoch];
     const serializedConstructorParams = cbor.util.serialize(constructorParams);
 
     const MultisigActorCodeID = new cid('bafkqadtgnfwc6mrpnv2wy5djonuwo');
