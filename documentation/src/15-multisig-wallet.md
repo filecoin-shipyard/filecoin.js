@@ -170,15 +170,15 @@ const httpConnector = new HttpJsonRpcConnector({
     __LOTUS_RPC_ENDPOINT__,
     token: __LOTUS_AUTH_TOKEN__
 });
-const con = new LotusClient(httpConnector);
-const mnemonicWalletProvider = new MnemonicWalletProvider(con, testMnemonic, '');
+const lotusClient = new LotusClient(httpConnector);
+const mnemonicWalletProvider = new MnemonicWalletProvider(lotusClient, testMnemonic);
 
 const noOfRequiredSigners = 2;
 const signerAdresses = ...
 const msigWalletCreator = ...
 
 const multisigCid = await mnemonicWalletProvider.msigCreate(noOfRequiredSigners, signerAdresses, startEpoch, unlockDuration, initialBalance, msigWalletCreator);
-const receipt = await con.state.waitMsg(multisigCid, 0);
+const receipt = await lotusClient.state.waitMsg(multisigCid, 0);
 // you can retrieve the address of the newly created multisig wallet from the receipt of the create wallet message
 const multisigAddress = receipt.ReturnDec.RobustAddress;
 const balance = await mnemonicWalletProvider.msigGetAvailableBalance(multisigAddress, []);
@@ -186,61 +186,61 @@ const balance = await mnemonicWalletProvider.msigGetAvailableBalance(multisigAdd
 
 // propose transfer
 const initTransferCid = await mnemonicWalletProvider.msigProposeTransfer(multisigAddress, receiverAddress, amountToTransfer, proposerAddress);
-const receiptTransferPropose = await con.state.waitMsg(initTransferCid, 0);
+const receiptTransferPropose = await lotusClient.state.waitMsg(initTransferCid, 0);
 // you can get the transaction id of a propose operation from the receipt of the propose message
 const txnID = receiptTransferStart.ReturnDec.TxnID;
 
 // approve transfer
 const approveTransferCid = await mnemonicWalletProvider.msigApproveTransferTxHash(multisigAddress, txnID, proposerAddress, receiverAddress, amountToTransfer, approverAddress);
-const receiptTransferApprove = await con.state.waitMsg(approveTransferCid, 0);
+const receiptTransferApprove = await lotusClient.state.waitMsg(approveTransferCid, 0);
 
 // cancel transfer - this message can only be sent by the sender of the initial proposal
 const cancelTransferCid = await mnemonicWalletProvider.msigCancelTransfer(multisigAddress, proposerAddress, txnID, mnemonicAddress, amountToTransfer);
-const receiptTransferCancel = await con.state.waitMsg(cancelTransferCid, 0);
+const receiptTransferCancel = await lotusClient.state.waitMsg(cancelTransferCid, 0);
 
 
 // propose add signer
 const initAddProposeCid = await mnemonicWalletProvider.msigProposeAddSigner(multisigAddress, proposerAddress, addressToAdd, increaseNumberOfRequiredSigners);
-const receiptAddProposeCid = await con.state.waitMsg(initAddProposeCid, 0);
+const receiptAddProposeCid = await lotusClient.state.waitMsg(initAddProposeCid, 0);
 // you can get the transaction id of a propose operation from the receipt of the propose message
 const txnID = receiptAddProposeCid.ReturnDec.TxnID;
 
 // approve add signer
 const approveAddCid = await mnemonicWalletProvider.msigApproveAddSigner(multisigAddress, approverAddress, txnID, proposerAddress, addressToAdd, increaseNumberOfRequiredSigners);
-const receiptAddApprove = await con.state.waitMsg(approveAddCid, 0);
+const receiptAddApprove = await lotusClient.state.waitMsg(approveAddCid, 0);
 
 // cancel add signer - this message can only be sent by the sender of the initial proposal
 const cancelAddCid = await mnemonicWalletProvider.msigCancelAddSigner(multisigAddress, proposerAddress, txnID, addressToAdd, increaseNumberOfRequiredSigners);
-const receiptAddCancel = await con.state.waitMsg(cancelAddCid, 0);
+const receiptAddCancel = await lotusClient.state.waitMsg(cancelAddCid, 0);
 
 
 // propose swap signer
 const initSwapProposeCid = await mnemonicWalletProvider.msigProposeSwapSigner(multisigAddress, aproposerAddress, addressToSwapOut, addressToSwapIn);
-const receiptSwapProposeCid = await con.state.waitMsg(initSwapProposeCid, 0);
+const receiptSwapProposeCid = await lotusClient.state.waitMsg(initSwapProposeCid, 0);
 // you can get the transaction id of a propose operation from the receipt of the propose message
 const txnID = receiptSwapProposeCid.ReturnDec.TxnID;
 
 // approve swap signer
 const approveSwapCid = await mnemonicWalletProvider.msigApproveSwapSigner(multisigAddress, approverAddress, txnID, proposerAddress, addressToSwapOut, addressToSwapIn);
-const receiptSwapApprove = await con.state.waitMsg(approveSwapCid, 0);
+const receiptSwapApprove = await lotusClient.state.waitMsg(approveSwapCid, 0);
 
 // cancel swap signer - this message can only be sent by the sender of the initial proposal
 const cancelSwapCid = await mnemonicWalletProvider.msigCancelSwapSigner(multisigAddress, proposerAddress, txnID, addressToSwapOut, addressToSwapIn);
-const receiptSwapCancel = await con.state.waitMsg(cancelSwapCid, 0);
+const receiptSwapCancel = await lotusClient.state.waitMsg(cancelSwapCid, 0);
 
 
 // propose remove signer
 const initRemoveProposeCid = await mnemonicWalletProvider.msigProposeRemoveSigner(multisigAddress, proposerAddress, addressToRemove, decreaseNumberOfSigners);
-const receiptRemoveProposeCid = await con.state.waitMsg(initRemoveProposeCid, 0);
+const receiptRemoveProposeCid = await lotusClient.state.waitMsg(initRemoveProposeCid, 0);
 // you can get the transaction id of a propose operation from the receipt of the propose message
 const txnID = receiptRemoveProposeCid.ReturnDec.TxnID;
 assert.strictEqual(txnID, 0, 'error initiating add proposal');
 
 // approve remove signer
 const approveRemoveCid = await mnemonicWalletProvider.msigApproveRemoveSigner(multisigAddress, approverAddress, txnID, proposerAddress, addressToRemove, decreaseNumberOfSigners);
-const receiptRemoveApprove = await con.state.waitMsg(approveRemoveCid, 0);
+const receiptRemoveApprove = await lotusClient.state.waitMsg(approveRemoveCid, 0);
 
 // cancel remove signer - this message can only be sent by the sender of the initial proposal
 const cancelRemoveCid = await mnemonicWalletProvider.msigCancelRemoveSigner(multisigAddress, proposerAddress, txnID, addressToRemove, decreaseNumberOfSigners);
-const receiptRemoveCancel = await con.state.waitMsg(cancelRemoveCid, 0);
+const receiptRemoveCancel = await lotusClient.state.waitMsg(cancelRemoveCid, 0);
 ```

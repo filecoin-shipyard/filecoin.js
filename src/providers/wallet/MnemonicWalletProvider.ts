@@ -20,7 +20,7 @@ export class MnemonicWalletProvider extends BaseWalletProvider implements Wallet
     path: string = DEFAULT_HD_PATH,
   ) {
     super(client);
-    if (path === 'test' || !path) path = TEST_DEFAULT_HD_PATH;
+    if (path === 'test' || path === '') path = TEST_DEFAULT_HD_PATH;
     this.signer = new MnemonicSigner(mnemonic, '', path);
   }
 

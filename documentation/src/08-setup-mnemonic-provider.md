@@ -13,15 +13,13 @@ import { HttpJsonRpcConnector, MnemonicWalletProvider } from 'filecoin.js';
 (async () => {
 
   const connector = new HttpJsonRpcConnector({ url: __LOTUS_RPC_ENDPOINT__, token: __LOTUS_AUTH_TOKEN__ });
-
+  const lotusClient =  new LotusClient(connector);
   const hdWalletMnemonic = 'equip ... young';
-  const hdWalletPassword = '...';
   const hdDerivationPath = `m/44'/461'/0'/0/0`;
 
   const walletProvider = new MnemonicWalletProvider(
-    connector,
+    lotusClient,
     hdWalletMnemonic,
-    hdWalletPassword,
     hdDerivationPath
   );
 
@@ -42,13 +40,11 @@ Browser:
   const connector = new FilecoinJs.HttpJsonRpcConnector({ url: __LOTUS_RPC_ENDPOINT__, token: __LOTUS_AUTH_TOKEN__ });
 
   const hdWalletMnemonic = 'equip ... young';
-  const hdWalletPassword = async () => await window.prompt(),;
   const hdDerivationPath = `m/44'/461'/0'/0/0`;
-
+  const lotusClient =  new FilecoinJs.LotusClient(connector);
   const walletProvider = new FilecoinJs.MnemonicWalletProvider(
-    connector,
+    lotusClient,
     hdWalletMnemonic,
-    hdWalletPassword,
     hdDerivationPath
   );
 
