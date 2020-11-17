@@ -35,6 +35,384 @@ declare class AddrInfo {
     Addrs: Multiaddr[];
 }
 
+declare class BaseWalletProvider {
+    client: LotusClient;
+    constructor(client: LotusClient);
+    release(): Promise<any>;
+    /**
+     * get balance for address
+     * @param address
+     */
+    getBalance(address: string): Promise<any>;
+    /**
+     * get nonce for address.  Note that this method may not be atomic. Use MpoolPushMessage instead.
+     * @param address
+     */
+    getNonce(address: string): Promise<number>;
+    /**
+     * send signed message
+     * @param msg
+     */
+    sendSignedMessage(msg: SignedMessage): Promise<Cid>;
+    /**
+      * estimate gas fee cap
+      * @param message
+      * @param nblocksincl
+      */
+    estimateMessageGasFeeCap(message: Message, nblocksincl: number): Promise<string>;
+    /**
+    * estimate gas limit, it fails if message fails to execute.
+    * @param message
+    */
+    estimateMessageGasLimit(message: Message): Promise<number>;
+    /**
+    * estimate gas to succesufully send message, and have it likely be included in the next nblocksincl blocks
+    * @param nblocksincl
+    * @param sender
+    * @param gasLimit
+    */
+    estimateMessageGasPremium(nblocksincl: number, sender: string, gasLimit: number): Promise<string>;
+    /**
+     * estimate gas to succesufully send message, and have it included in the next 10 blocks
+     * @param message
+     */
+    estimateMessageGas(message: Message): Promise<Message>;
+    /**
+     * prepare a message for signing, add defaults, and populate nonce and gas related parameters if not provided
+     * @param message
+     */
+    createMessage(message: MessagePartial): Promise<Message>;
+    /**
+     * call back on chain head updates.
+     * @param cb
+     * @returns interval id
+     */
+    chainNotify(cb: (headChange: HeadChange[]) => void): Promise<void>;
+    /**
+     * returns the current head of the chain
+     */
+    getHead(): Promise<TipSet>;
+    /**
+     * returns the block specified by the given CID
+     * @param blockCid
+     */
+    getBlock(blockCid: Cid): Promise<BlockHeader>;
+    /**
+     * returns messages stored in the specified block.
+     * @param blockCid
+     */
+    getBlockMessages(blockCid: Cid): Promise<BlockMessages>;
+    /**
+     * returns receipts for messages in parent tipset of the specified block
+     * @param blockCid
+     */
+    getParentReceipts(blockCid: Cid): Promise<MessageReceipt[]>;
+    /**
+     * returns messages stored in parent tipset of the specified block.
+     * @param blockCid
+     */
+    getParentMessages(blockCid: Cid): Promise<WrappedMessage[]>;
+    /**
+     * looks back for a tipset at the specified epoch.
+     * @param epochNumber
+     */
+    getTipSetByHeight(epochNumber: number): Promise<TipSet>;
+    /**
+     * reads ipld nodes referenced by the specified CID from chain blockstore and returns raw bytes.
+     * @param cid
+     */
+    readObj(cid: Cid): Promise<string>;
+    /**
+     * checks if a given CID exists in the chain blockstore
+     * @param cid
+     */
+    hasObj(cid: Cid): Promise<boolean>;
+    /**
+     * returns statistics about the graph referenced by 'obj'.
+     *
+     * @remarks
+     * If 'base' is also specified, then the returned stat will be a diff between the two objects.
+     */
+    statObj(obj: Cid, base?: Cid): Promise<ObjStat>;
+    /**
+     * Returns the genesis tipset.
+     * @param tipSet
+     */
+    getGenesis(): Promise<TipSet>;
+    /**
+     * Computes weight for the specified tipset.
+     * @param tipSetKey
+     */
+    getTipSetWeight(tipSetKey?: TipSetKey): Promise<string>;
+    /**
+     * reads a message referenced by the specified CID from the chain blockstore
+     * @param messageCid
+     */
+    getMessage(messageCid: Cid): Promise<Message>;
+    /**
+     * Returns a set of revert/apply operations needed to get from
+     * @param from
+     * @param to
+     */
+    getPath(from: TipSetKey, to: TipSetKey): Promise<HeadChange[]>;
+    /**
+     * returns the current status of the lotus sync system.
+     */
+    state(): Promise<SyncState>;
+    /**
+     * returns a channel streaming incoming, potentially not yet synced block headers.
+     * @param cb
+     */
+    incomingBlocks(cb: (blockHeader: BlockHeader) => void): Promise<void>;
+    /**
+     * get all mpool messages
+     * @param tipSetKey
+     */
+    getMpoolPending(tipSetKey: TipSetKey): Promise<[SignedMessage]>;
+    /**
+     * returns a list of pending messages for inclusion in the next block
+     * @param tipSetKey
+     * @param ticketQuality
+     */
+    sub(cb: (data: MpoolUpdate) => void): Promise<void>;
+    /**
+     * returns a signed StorageAsk from the specified miner.
+     * @param peerId
+     * @param miner
+     */
+    queryAsk(peerId: PeerID, miner: Address): Promise<StorageAsk>;
+    /**
+     * returns the indicated actor's nonce and balance
+     * @param address
+     * @param tipSetKey
+     */
+    getActor(address: string, tipSetKey?: TipSetKey): Promise<Actor>;
+    /**
+     * returns the indicated actor's state
+     * @param address
+     * @param tipSetKey
+     */
+    readState(address: string, tipSetKey?: TipSetKey): Promise<ActorState>;
+    /**
+     * looks back and returns all messages with a matching to or from address, stopping at the given height.
+     * @param filter
+     * @param tipSetKey
+     * @param toHeight
+     */
+    listMessages(filter: {
+        To?: string;
+        From?: string;
+    }, tipSetKey?: TipSetKey, toHeight?: number): Promise<Cid[]>;
+    /**
+     * returns the name of the network the node is synced to
+     */
+    networkName(): Promise<NetworkName>;
+    /**
+     * returns info about the given miner's sectors
+     * @param address
+     * @param tipSetKey
+     */
+    minerSectors(address: string, tipSetKey?: TipSetKey): Promise<SectorOnChainInfo[]>;
+    /**
+     * returns info about sectors that a given miner is actively proving.
+     * @param address
+     * @param tipSetKey
+     */
+    minerActiveSectors(address: string, tipSetKey?: TipSetKey): Promise<SectorOnChainInfo[]>;
+    /**
+     * calculates the deadline at some epoch for a proving period and returns the deadline-related calculations.
+     * @param address
+     * @param tipSetKey
+     */
+    minerProvingDeadline(address: string, tipSetKey?: TipSetKey): Promise<DeadlineInfo>;
+    /**
+     * returns the power of the indicated miner
+     * @param address
+     * @param tipSetKey
+     */
+    minerPower(address: string, tipSetKey?: TipSetKey): Promise<MinerPower>;
+    /**
+     * returns info about the indicated miner
+     * @param address
+     * @param tipSetKey
+     */
+    minerInfo(address: string, tipSetKey?: TipSetKey): Promise<MinerInfo>;
+    /**
+     * returns all the proving deadlines for the given miner
+     * @param address
+     * @param tipSetKey
+     */
+    minerDeadlines(address: string, tipSetKey?: TipSetKey): Promise<Deadline[]>;
+    /**
+     * Loads miner partitions for the specified miner and deadline
+     * @param address
+     * @param idx
+     * @param tipSetKey
+     */
+    minerPartitions(address: string, idx?: number, tipSetKey?: TipSetKey): Promise<Partition[]>;
+    /**
+     * Returns a bitfield indicating the faulty sectors of the given miner
+     * @param address
+     * @param tipSetKey
+     */
+    minerFaults(address: string, tipSetKey?: TipSetKey): Promise<BitField>;
+    /**
+     * returns all non-expired Faults that occur within lookback epochs of the given tipset
+     * @param epoch
+     * @param tipSetKey
+     */
+    allMinerFaults(epoch: ChainEpoch, tipSetKey?: TipSetKey): Promise<Fault[]>;
+    /**
+     * returns a bitfield indicating the recovering sectors of the given miner
+     * @param address
+     * @param tipSetKey
+     */
+    minerRecoveries(address: string, tipSetKey?: TipSetKey): Promise<BitField>;
+    /**
+     * returns the precommit deposit for the specified miner's sector
+     * @param address
+     * @param sectorPreCommitInfo
+     * @param tipSetKey
+     */
+    minerPreCommitDepositForPower(address: string, sectorPreCommitInfo: SectorPreCommitInfo, tipSetKey?: TipSetKey): Promise<string>;
+    /**
+     * returns the initial pledge collateral for the specified miner's sector
+     * @param address
+     * @param sectorPreCommitInfo
+     * @param tipSetKey
+     */
+    minerInitialPledgeCollateral(address: string, sectorPreCommitInfo: SectorPreCommitInfo, tipSetKey?: TipSetKey): Promise<string>;
+    /**
+     * returns the portion of a miner's balance that can be withdrawn or spent
+     * @param address
+     * @param tipSetKey
+     */
+    minerAvailableBalance(address: string, tipSetKey?: TipSetKey): Promise<string>;
+    /**
+     * returns the PreCommit info for the specified miner's sector
+     * @param address
+     * @param sector
+     * @param tipSetKey
+     */
+    sectorPreCommitInfo(address: string, sector: SectorNumber, tipSetKey?: TipSetKey): Promise<SectorPreCommitOnChainInfo>;
+    /**
+     * StateSectorGetInfo returns the on-chain info for the specified miner's sector
+     * @param address
+     * @param sector
+     * @param tipSetKey
+     *
+     * @remarks
+     * NOTE: returned Expiration may not be accurate in some cases, use StateSectorExpiration to get accurate expiration epoch
+     */
+    sectorGetInfo(address: string, sector: SectorNumber, tipSetKey?: TipSetKey): Promise<SectorOnChainInfo>;
+    /**
+     * returns epoch at which given sector will expire
+     * @param address
+     * @param sector
+     * @param tipSetKey
+     */
+    sectorExpiration(address: string, sector: SectorNumber, tipSetKey?: TipSetKey): Promise<SectorExpiration>;
+    /**
+     * finds deadline/partition with the specified sector
+     * @param address
+     * @param sector
+     * @param tipSetKey
+     */
+    sectorPartition(address: string, sector: SectorNumber, tipSetKey?: TipSetKey): Promise<SectorLocation>;
+    /**
+     * searches for a message in the chain and returns its receipt and the tipset where it was executed
+     * @param cid
+     */
+    searchMsg(cid: Cid): Promise<MsgLookup>;
+    /**
+     * returns the addresses of every miner that has claimed power in the Power Actor
+     * @param tipSetKey
+     */
+    listMiners(tipSetKey?: TipSetKey): Promise<Address[]>;
+    /**
+     * returns the addresses of every actor in the state
+     * @param tipSetKey
+     */
+    listActors(tipSetKey?: TipSetKey): Promise<Address[]>;
+    /**
+     * looks up the Escrow and Locked balances of the given address in the Storage Market
+     * @param address
+     * @param tipSetKey
+     */
+    marketBalance(address: Address, tipSetKey?: TipSetKey): Promise<MarketBalance>;
+    /**
+     * returns the Escrow and Locked balances of every participant in the Storage Market
+     * @param tipSetKey
+     */
+    marketParticipants(tipSetKey?: TipSetKey): Promise<{
+        [k: string]: MarketBalance;
+    }>;
+    /**
+     * returns information about every deal in the Storage Market
+     * @param tipSetKey
+     */
+    marketDeals(tipSetKey?: TipSetKey): Promise<{
+        [k: string]: MarketDeal;
+    }>;
+    /**
+     * returns information about the indicated deal
+     * @param dealId
+     * @param tipSetKey
+     */
+    marketStorageDeal(dealId: DealID, tipSetKey?: TipSetKey): Promise<MarketDeal>;
+    /**
+     * retrieves the ID address of the given address
+     * @param address
+     * @param tipSetKey
+     */
+    lookupId(address: Address, tipSetKey?: TipSetKey): Promise<Address>;
+    /**
+     * returns the public key address of the given ID address
+     * @param address
+     * @param tipSetKey
+     */
+    accountKey(address: Address, tipSetKey?: TipSetKey): Promise<Address>;
+    /**
+     * returns all the actors whose states change between the two given state CIDs
+     * @param cid1
+     * @param cid2
+     */
+    changedActors(cid1?: Cid, cid2?: Cid): Promise<{
+        [k: string]: Actor;
+    }>;
+    /**
+     * returns the message receipt for the given message
+     * @param cid
+     * @param tipSetKey
+     */
+    getReceipt(cid: Cid, tipSetKey?: TipSetKey): Promise<MessageReceipt>;
+    /**
+     * returns the number of sectors in a miner's sector set and proving set
+     * @param address
+     * @param tipSetKey
+     */
+    minerSectorCount(address: Address, tipSetKey?: TipSetKey): Promise<MinerSectors>;
+    /**
+    * returns the vesting details of a given multisig.
+    * @param address
+    * @param tipSetKey
+    */
+    msigGetVestingSchedule(address: string, tipSetKey: TipSetKey): Promise<MsigVesting>;
+    /**
+     * returns the portion of a multisig's balance that can be withdrawn or spent
+     * @param address
+     * @param tipSetKey
+     */
+    msigGetAvailableBalance(address: string, tipSetKey: TipSetKey): Promise<string>;
+    /**
+     * returns the amount of FIL that vested in a multisig in a certain period.
+     * @param address
+     * @param startEpoch
+     * @param endEpoch
+     */
+    msigGetVested(address: string, startEpoch: TipSetKey, endEpoch: TipSetKey): Promise<string>;
+}
+
 declare class BeaconEntry {
     Round: number;
     Data: [];
@@ -186,13 +564,11 @@ declare interface Connector {
     on(event: 'connected' | 'disconnected', listener: (...args: any[]) => void): this;
 }
 
-/**
- * DataCap is an integer number of bytes.
- *
- * @remarks
- * This can be replaced in the future due to policy changes
- */
-declare type DataCap = StoragePower;
+declare class DataCIDSize {
+    PayloadSize: number;
+    PieceSize: PaddedPieceSize;
+    PieceCID: Cid;
+}
 
 /**
  * DataRef is a reference for how data will be transferred for a given storage deal
@@ -325,6 +701,7 @@ declare class DealInfo {
     Duration: number;
     DealID: DealID;
     CreationTime: string;
+    Verified: boolean;
 }
 
 declare class DealProposal {
@@ -433,121 +810,6 @@ export declare class HttpJsonRpcConnector extends EventEmitter implements Connec
     private _headers;
 }
 
-export declare class HttpJsonRpcWalletProvider implements WalletProvider {
-    private conn;
-    constructor(connector: Connector);
-    release(): Promise<any>;
-    /**
-     * create new wallet
-     * @param type
-     */
-    newAccount(type?: number): Promise<string>;
-    /**
-     * get nonce for address.  Note that this method may not be atomic. Use MpoolPushMessage instead.
-     * @param address
-     */
-    getNonce(address: string): Promise<number>;
-    /**
-     * get wallet list
-     */
-    getAccounts(): Promise<string[]>;
-    /**
-     * get balance for address
-     * @param address
-     */
-    getBalance(address: string): Promise<any>;
-    /**
-     * delete address from lotus
-     * @param address
-     */
-    deleteWallet(address: string): Promise<any>;
-    /**
-    * check if address is in keystore
-    * @param address
-    */
-    hasWallet(address: string): Promise<any>;
-    /**
-     * set default address
-     * @param address
-     */
-    setDefaultAccount(address: string): Promise<undefined>;
-    /**
-     * walletExport returns the private key of an address in the wallet.
-     * @param address
-     */
-    walletExport(address: string): Promise<KeyInfo>;
-    /**
-     * walletImport returns the private key of an address in the wallet.
-     * @param keyInfo
-     */
-    walletImport(keyInfo: KeyInfo): Promise<string>;
-    /**
-     * get default address
-     */
-    getDefaultAccount(): Promise<string>;
-    /**
-     * send message, signed with default lotus wallet
-     *
-     * @remarks
-     * MpoolPushMessage atomically assigns a nonce, signs, and pushes a message
-     * to mempool.
-     * maxFee is only used when GasFeeCap/GasPremium fields aren't specified
-     * When maxFee is set to 0, MpoolPushMessage will guess appropriate fee
-     * based on current chain conditions
-     * @param msg
-     */
-    sendMessage(msg: Message): Promise<SignedMessage>;
-    /**
-     * send signed message
-     * @param msg
-     */
-    sendSignedMessage(msg: SignedMessage): Promise<Cid>;
-    /**
-    * estimate gas fee cap
-    * @param message
-    * @param nblocksincl
-    */
-    estimateMessageGasFeeCap(message: Message, nblocksincl: number): Promise<string>;
-    /**
-    * estimate gas limit, it fails if message fails to execute.
-    * @param message
-    */
-    estimateMessageGasLimit(message: Message): Promise<number>;
-    /**
-    * estimate gas to succesufully send message, and have it likely be included in the next nblocksincl blocks
-    * @param nblocksincl
-    * @param sender
-    * @param gasLimit
-    */
-    estimateMessageGasPremium(nblocksincl: number, sender: string, gasLimit: number): Promise<string>;
-    /**
-     * estimate gas to succesufully send message, and have it included in the next 10 blocks
-     * @param message
-     */
-    estimateMessageGas(message: Message): Promise<Message>;
-    /**
-     * prepare a message for signing, add defaults, and populate nonce and gas related parameters if not provided
-     * @param message
-     */
-    createMessage(message: MessagePartial): Promise<Message>;
-    /**
-     * sign message
-     * @param msg
-     */
-    signMessage(msg: Message): Promise<SignedMessage>;
-    /**
-     * sign raw message
-     * @param data
-     */
-    sign(data: string | ArrayBuffer): Promise<Signature>;
-    /**
-     * verify message signature
-     * @param data
-     * @param sign
-     */
-    verify(address: string, data: string | ArrayBuffer, sign: Signature): Promise<boolean>;
-}
-
 /**
  * ID is a libp2p peer identity
  */
@@ -567,8 +829,10 @@ declare class ImportRes {
 }
 
 declare class InvocResult {
+    MsgCid: Cid;
     Msg: Message;
     MsgRct: MessageReceipt;
+    GasCost: MsgGasCost;
     ExecutionTrace: ExecutionTrace;
     Error: string;
     Duration: number;
@@ -603,6 +867,11 @@ declare class JsonRpcChainMethodGroup {
      * @param cid
      */
     readObj(cid: Cid): Promise<string>;
+    /**
+     * deletes node referenced by the given CID
+     * @param cid
+     */
+    deleteObj(cid: Cid): Promise<string>;
     /**
      * returns messages stored in the specified block.
      * @param blockCid
@@ -682,9 +951,9 @@ declare class JsonRpcChainMethodGroup {
      * @param nroots
      * @param tipSetKey
      *
-     * @remarks The exported chain data includes the header chain from the given tipset back to genesis, the entire genesis state, and the most recent 'nroots' state trees.
+     * @remarks The exported chain data includes the header chain from the given tipset back to genesis, the entire genesis state, and the most recent 'nroots' state trees. If oldmsgskip is set, messages from before the requested roots are also not included.
      */
-    export(nroots: ChainEpoch, tipSetKey: TipSetKey): Promise<any>;
+    export(nroots: ChainEpoch, oldmsgskip: boolean, tipSetKey: TipSetKey): Promise<any>;
 }
 
 /**
@@ -784,6 +1053,26 @@ declare class JsonRpcClientMethodGroup {
      */
     retrieveWithEvents(order: RetrievalOrder, ref: FileRef, cb: (data: RetrievalEvent) => void): Promise<void>;
     dataTransferUpdates(cb: (data: DataTransferChannel) => void): Promise<void>;
+    /**
+     * returns deal status given a code
+     * @param code
+     */
+    getDealStatus(code: number): Promise<string>;
+    /**
+     * attempts to restart a data transfer with the given transfer ID and other peer
+     * @param transferId
+     * @param otherPeer
+     * @param isInitiator
+     */
+    restartDataTransfer(transferId: TransferID, otherPeer: PeerID, isInitiator: boolean): Promise<void>;
+    /**
+     * cancels a data transfer with the given transfer ID and other peer
+     * @param transferId
+     * @param otherPeer
+     * @param isInitiator
+     */
+    cancelDataTransfer(transferId: TransferID, otherPeer: PeerID, isInitiator: boolean): Promise<void>;
+    dealPieceCID(rootCid: Cid): Promise<DataCIDSize>;
 }
 
 declare class JsonRpcCommonMethodGroup {
@@ -809,6 +1098,34 @@ declare type JsonRpcConnectionOptions = {
     url: string;
     token?: string;
 };
+
+declare class JsonRpcGasMethodGroup {
+    private conn;
+    constructor(conn: Connector);
+    /**
+   * estimate gas fee cap
+   * @param message
+   * @param nblocksincl
+   */
+    feeCap(message: Message, nblocksincl: number): Promise<string>;
+    /**
+    * estimate gas limit, it fails if message fails to execute.
+    * @param message
+    */
+    gasLimit(message: Message): Promise<number>;
+    /**
+    * estimate gas to succesufully send message, and have it likely be included in the next nblocksincl blocks
+    * @param nblocksincl
+    * @param sender
+    * @param gasLimit
+    */
+    gasPremium(nblocksincl: number, sender: string, gasLimit: number): Promise<string>;
+    /**
+     * estimate gas to succesufully send message, and have it included in the next 10 blocks
+     * @param message
+     */
+    messageGas(message: Message): Promise<Message>;
+}
 
 declare class JsonRpcMinerMethodGroup {
     private conn;
@@ -863,6 +1180,48 @@ declare class JsonRpcMPoolMethodGroup {
      * @param ticketQuality
      */
     sub(cb: (data: MpoolUpdate) => void): Promise<void>;
+    /**
+     * get nonce for address.  Note that this method may not be atomic. Use MpoolPushMessage instead.
+     * @param address
+     */
+    getNonce(address: string): Promise<number>;
+    /**
+     * send message, signed with default lotus wallet
+     *
+     * @remarks
+     * MpoolPushMessage atomically assigns a nonce, signs, and pushes a message
+     * to mempool.
+     * maxFee is only used when GasFeeCap/GasPremium fields aren't specified
+     * When maxFee is set to 0, MpoolPushMessage will guess appropriate fee
+     * based on current chain conditions
+     * @param msg
+     */
+    pushMessage(msg: Message): Promise<SignedMessage>;
+    /**
+     * send signed message
+     * @param msg
+     */
+    push(msg: SignedMessage): Promise<Cid>;
+    /**
+     * pushes a signed message to mempool from untrusted sources.
+     * @param message
+     */
+    pushUntrusted(message: SignedMessage): Promise<Cid>;
+    /**
+     * batch pushes a signed message to mempool.
+     * @param messages
+     */
+    batchPush(messages: SignedMessage[]): Promise<Cid[]>;
+    /**
+     * batch pushes a signed message to mempool from untrusted sources
+     * @param messages
+     */
+    batchPushUntrusted(messages: SignedMessage[]): Promise<Cid[]>;
+    /**
+     * batch pushes a unsigned message to mempool
+     * @param messages
+     */
+    batchPushMessage(messages: Message[]): Promise<SignedMessage[]>;
 }
 
 /**
@@ -905,6 +1264,13 @@ declare class JsonRpcMsigMethodGroup {
      */
     propose(address: string, recipientAddres: string, value: string, senderAddressOfProposeMsg: string, methodToCallInProposeMsg: number, paramsToIncludeInProposeMsg: []): Promise<Cid>;
     /**
+     * approves a previously-proposed multisig message by transaction ID
+     * @param address
+     * @param proposedTransactionId
+     * @param signerAddress
+     */
+    approve(address: string, proposedTransactionId: number, signerAddress: string): Promise<Cid>;
+    /**
      * approves a previously-proposed multisig message
      * @param address
      * @param proposedMessageId
@@ -915,7 +1281,7 @@ declare class JsonRpcMsigMethodGroup {
      * @param methodToCallInProposeMsg
      * @param paramsToIncludeInProposeMsg
      */
-    approve(address: string, proposedMessageId: number, proposerAddress: string, recipientAddres: string, value: string, senderAddressOfApproveMsg: string, methodToCallInProposeMsg: number, paramsToIncludeInProposeMsg: []): Promise<Cid>;
+    approveTxnHash(address: string, proposedMessageId: number, proposerAddress: string, recipientAddres: string, value: string, senderAddressOfApproveMsg: string, methodToCallInProposeMsg: number, paramsToIncludeInProposeMsg: []): Promise<Cid>;
     /**
      * cancels a previously-proposed multisig message
      * @param address
@@ -981,7 +1347,23 @@ declare class JsonRpcMsigMethodGroup {
      * @param oldSignerAddress
      * @param newSignerAddress
      */
-    multiSigSwapCancel(address: string, senderAddressOfCancelMsg: string, proposedMessageId: number, oldSignerAddress: string, newSignerAddress: string): Promise<Cid>;
+    swapCancel(address: string, senderAddressOfCancelMsg: string, proposedMessageId: number, oldSignerAddress: string, newSignerAddress: string): Promise<Cid>;
+    /**
+     * returns the vesting details of a given multisig.
+     * @param address
+     * @param tipSetKey
+     */
+    getVestingSchedule(address: string, tipSetKey: TipSetKey): Promise<MsigVesting>;
+    /**
+     * proposes the removal of a signer from the multisig.
+     * @param msigAddress
+     * @param proposerAddress
+     * @param toRemoveAddress
+     * @param decrease
+     *
+     * @remarks It accepts the multisig to make the change on, the proposer address to send the message from, the address to be removed, and a boolean indicating whether or not the signing threshold should be lowered by one along with the address removal.
+     */
+    removeSigner(msigAddress: Address, proposerAddress: Address, toRemoveAddress: Address, decrease: boolean): Promise<Cid>;
 }
 
 declare class JsonRpcNetMethodGroup {
@@ -1101,23 +1483,6 @@ declare class JsonRpcPaychMethodGroup {
     voucherSubmit(address: string, signedVoucher: SignedVoucher, secret: any, proof: any): Promise<Cid>;
 }
 
-export declare class LotusClient {
-    conn: Connector;
-    chain: JsonRpcChainMethodGroup;
-    state: JsonRpcStateMethodGroup;
-    auth: JsonRpcAuthMethodGroup;
-    client: JsonRpcClientMethodGroup;
-    common: JsonRpcCommonMethodGroup;
-    miner: JsonRpcMinerMethodGroup;
-    paych: JsonRpcPaychMethodGroup;
-    mpool: JsonRpcMPoolMethodGroup;
-    net: JsonRpcNetMethodGroup;
-    msig: JsonRpcMsigMethodGroup;
-    sync: JsonRpcSyncMethodGroup;
-    constructor(connector: Connector);
-    release(): Promise<any>;
-}
-
 /**
  * The State methods are used to query, inspect, and interact with chain state.
  *
@@ -1133,7 +1498,9 @@ declare class JsonRpcStateMethodGroup {
      */
     stateCall(message: Message, tipSetKey?: TipSet): Promise<InvocResult>;
     /**
-     * returns the result of executing the indicated message, assuming it was executed in the indicated tipset
+     * replays a given message, assuming it was included in a block in the specified tipset. If no tipset key is provided, the appropriate tipset is looked up.
+     * @param tipSetKey
+     * @param cid
      */
     stateReplay(tipSetKey: TipSetKey, cid: Cid): Promise<InvocResult>;
     /**
@@ -1154,10 +1521,7 @@ declare class JsonRpcStateMethodGroup {
      * @param tipSetKey
      * @param toHeight
      */
-    listMessages(filter: {
-        To?: string;
-        From?: string;
-    }, tipSetKey?: TipSetKey, toHeight?: number): Promise<Cid[]>;
+    listMessages(match: MessageMatch, tipSetKey?: TipSetKey, toHeight?: number): Promise<Cid[]>;
     /**
      * returns the name of the network the node is synced to
      */
@@ -1286,6 +1650,13 @@ declare class JsonRpcStateMethodGroup {
      */
     waitMsg(cid: Cid, confidence: number): Promise<MsgLookup>;
     /**
+     * looks back up to limit epochs in the chain for a message. If not found, it blocks until the message arrives on chain, and gets to the indicated confidence depth.
+     * @param cid
+     * @param confidence
+     * @param limit
+     */
+    waitMsgLimited(cid: Cid, confidence: number, limit: ChainEpoch): Promise<MsgLookup>;
+    /**
      * returns the addresses of every miner that has claimed power in the Power Actor
      * @param tipSetKey
      */
@@ -1371,7 +1742,7 @@ declare class JsonRpcStateMethodGroup {
      * @remarks
      * Returns nil if there is no entry in the data cap table for the address.
      */
-    verifiedClientStatus(address: Address, tipSetKey?: TipSetKey): Promise<DataCap | null>;
+    verifiedClientStatus(address: Address, tipSetKey?: TipSetKey): Promise<StoragePower>;
     /**
      * returns the min and max collateral a storage provider can issue
      * @param size
@@ -1384,6 +1755,37 @@ declare class JsonRpcStateMethodGroup {
      * @param tipSetKey
      */
     circulatingSupply(tipSetKey?: TipSetKey): Promise<CirculatingSupply>;
+    /**
+     * returns an approximation of the circulating supply of Filecoin at the given tipset.
+     *
+     * @param tipSetKey
+     *
+     * @remarks This is the value reported by the runtime interface to actors code.
+     */
+    vmCirculatingSupply(tipSetKey?: TipSetKey): Promise<CirculatingSupply>;
+    /**
+     * returns the data cap for the given address.
+     * @param address
+     * @param tipSetKey
+     */
+    verifierStatus(address: Address, tipSetKey?: TipSetKey): Promise<StoragePower | null>;
+    /**
+     * returns the network version at the given tipset
+     * @param tipSetKey
+     */
+    networkVersion(tipSetKey?: TipSetKey): Promise<NetworkVersion>;
+    /**
+     * returns the address of the Verified Registry's root key
+     * @param tipSetKey
+     */
+    verifiedRegistryRootKey(tipSetKey?: TipSetKey): Promise<Address>;
+    /**
+     * checks if a sector is allocated
+     * @param address
+     * @param sectorNumber
+     * @param tipSetKey
+     */
+    minerSectorAllocated(address: Address, sectorNumber: SectorNumber, tipSetKey?: TipSetKey): Promise<boolean>;
 }
 
 /**
@@ -1407,6 +1809,10 @@ declare class JsonRpcSyncMethodGroup {
      */
     markBad(blockCid: Cid): Promise<void>;
     /**
+     * purges bad block cache, making it possible to sync to chains previously marked as bad
+     */
+    unmarkAllBad(): Promise<void>;
+    /**
      * unmarks a block as bad, making it possible to be validated and synced again.
      * @param blockCid
      */
@@ -1426,6 +1832,80 @@ declare class JsonRpcSyncMethodGroup {
      * @param cb
      */
     incomingBlocks(cb: (blockHeader: BlockHeader) => void): Promise<void>;
+    /**
+     * indicates whether the provided tipset is valid or not
+     * @param tipSetKey
+     */
+    validateTipset(tipSetKey: TipSetKey): Promise<boolean>;
+}
+
+declare class JsonRpcWalletMethodGroup {
+    private conn;
+    constructor(conn: Connector);
+    /**
+     * creates a new address in the wallet with the given sigType.
+     * @param type
+     */
+    new(type?: NewAddressType): Promise<string>;
+    /**
+     * get wallet list
+     */
+    list(): Promise<string[]>;
+    /**
+     * get balance for address
+     * @param address
+     */
+    balance(address: string): Promise<any>;
+    /**
+     * delete address from lotus
+     * @param address
+     */
+    delete(address: string): Promise<any>;
+    /**
+    * check if address is in keystore
+    * @param address
+    */
+    has(address: string): Promise<any>;
+    /**
+     * set default address
+     * @param address
+     */
+    setDefault(address: string): Promise<undefined>;
+    /**
+     * walletExport returns the private key of an address in the wallet.
+     * @param address
+     */
+    export(address: string): Promise<KeyInfo>;
+    /**
+     * walletImport returns the private key of an address in the wallet.
+     * @param keyInfo
+     */
+    import(keyInfo: KeyInfo): Promise<string>;
+    /**
+     * get default address
+     */
+    getDefaultAddress(): Promise<string>;
+    /**
+     * sign message
+     * @param msg
+     */
+    signMessage(msg: Message): Promise<SignedMessage>;
+    /**
+     * sign raw message
+     * @param data
+     */
+    sign(data: string | ArrayBuffer): Promise<Signature>;
+    /**
+     * verify message signature
+     * @param data
+     * @param sign
+     */
+    verify(address: string, data: string | ArrayBuffer, sign: Signature): Promise<boolean>;
+    /**
+     * validates whether a given string can be decoded as a well-formed address
+     * @param address
+     */
+    validateAddress(address: string): Promise<Address>;
 }
 
 /**
@@ -1447,6 +1927,7 @@ declare class Keystore {
     hdIndex: number;
     encPrivKeys: any;
     addresses: string[];
+    private defaultAddressIndex;
     serialize(): string;
     deserialize(keystore: string): void;
     init(mnemonic: string, pwDerivedKey: Uint8Array, hdPathString: string, salt: string): void;
@@ -1461,35 +1942,171 @@ declare class Keystore {
     private _decryptKey;
     private deriveKeyFromPasswordAndSalt;
     private generateNewAddress;
+    newAddress(n: number, password: string): Promise<void>;
+    deleteAddress(address: string, password: string): Promise<void>;
     private _generatePrivKeys;
     getPrivateKey(address: string, password: string): Promise<string>;
+    getDefaultAddress(): Promise<string>;
+    setDefaultAddress(address: string): Promise<void>;
+    getAddresses(): Promise<string[]>;
+    hasAddress(address: string): Promise<boolean>;
     generateRandomSeed(extraEntropy?: any): string;
     _concatAndSha256: (entropyBuf0: any, entropyBuf1: any) => Buffer;
 }
 
-export declare class LightWalletProvider extends HttpJsonRpcWalletProvider {
+export declare class LightWalletProvider extends BaseWalletProvider implements WalletProviderInterface, MultisigProviderInterface {
     keystore: Keystore;
     private hdPathString;
     private signer;
-    constructor(connector: Connector);
+    private pwdCallback;
+    constructor(client: LotusClient, pwdCallback: Function, path?: string);
+    newAddress(): Promise<string>;
+    deleteAddress(address: string): Promise<void>;
+    hasAddress(address: string): Promise<boolean>;
+    exportPrivateKey(address: string): Promise<KeyInfo>;
+    getAddresses(): Promise<string[]>;
+    getDefaultAddress(): Promise<string>;
+    setDefaultAddress(address: string): Promise<void>;
+    sendMessage(msg: Message): Promise<SignedMessage>;
+    signMessage(msg: Message): Promise<SignedMessage>;
+    sign(data: string | ArrayBuffer): Promise<Signature>;
+    verify(address: string, data: string | ArrayBuffer, sign: Signature): Promise<boolean>;
+    /**
+     * creates a multisig wallet
+     * @param requiredNumberOfSenders
+     * @param approvingAddresses
+     * @param unlockDuration
+     * @param initialBalance
+     * @param senderAddressOfCreateMsg
+     */
+    msigCreate(requiredNumberOfSenders: number, approvingAddresses: string[], startEpoch: ChainEpoch, unlockDuration: ChainEpoch, initialBalance: string, senderAddressOfCreateMsg: string): Promise<Cid>;
+    /**
+     * proposes a multisig message
+     * @param address
+     * @param recipientAddres
+     * @param value
+     * @param senderAddressOfProposeMsg
+     */
+    msigProposeTransfer(address: string, recipientAddres: string, value: string, senderAddressOfProposeMsg: string): Promise<Cid>;
+    /**
+     * approves a previously-proposed multisig message by transaction ID
+     * @param address
+     * @param proposedTransactionId
+     * @param signerAddress
+     */
+    msigApproveTransfer(address: string, proposedTransactionId: number, signerAddress: string): Promise<Cid>;
+    /**
+     * approves a previously-proposed multisig message
+     * @param address
+     * @param proposedMessageId
+     * @param proposerAddress
+     * @param recipientAddres
+     * @param value
+     * @param senderAddressOfApproveMsg
+     */
+    msigApproveTransferTxHash(address: string, proposedMessageId: number, proposerAddress: string, recipientAddres: string, value: string, senderAddressOfApproveMsg: string): Promise<Cid>;
+    /**
+     * cancels a previously-proposed multisig message
+     * @param address
+     * @param proposedMessageId
+     * @param proposerAddress
+     * @param recipientAddres
+     * @param value
+     * @param senderAddressOfCancelMsg
+     */
+    msigCancelTransfer(address: string, senderAddressOfCancelMsg: string, proposedMessageId: number, recipientAddres: string, value: string): Promise<Cid>;
+    /**
+     * proposes adding a signer in the multisig
+     * @param address
+     * @param senderAddressOfProposeMsg
+     * @param newSignerAddress
+     * @param increaseNumberOfRequiredSigners
+     */
+    msigProposeAddSigner(address: string, senderAddressOfProposeMsg: string, newSignerAddress: string, increaseNumberOfRequiredSigners: boolean): Promise<Cid>;
+    /**
+     * approves a previously proposed AddSigner message
+     * @param address
+     * @param senderAddressOfApproveMsg
+     * @param proposedMessageId
+     * @param proposerAddress
+     * @param newSignerAddress
+     * @param increaseNumberOfRequiredSigners
+     */
+    msigApproveAddSigner(address: string, senderAddressOfApproveMsg: string, proposedMessageId: number, proposerAddress: string, newSignerAddress: string, increaseNumberOfRequiredSigners: boolean): Promise<Cid>;
+    /**
+     * cancels a previously proposed AddSigner message
+     * @param address
+     * @param senderAddressOfCancelMsg
+     * @param proposedMessageId
+     * @param newSignerAddress
+     * @param increaseNumberOfRequiredSigners
+     */
+    msigCancelAddSigner(address: string, senderAddressOfCancelMsg: string, proposedMessageId: number, newSignerAddress: string, increaseNumberOfRequiredSigners: boolean): Promise<Cid>;
+    /**
+     * proposes swapping 2 signers in the multisig
+     * @param address
+     * @param senderAddressOfProposeMsg
+     * @param oldSignerAddress
+     * @param newSignerAddress
+     */
+    msigProposeSwapSigner(address: string, senderAddressOfProposeMsg: string, oldSignerAddress: string, newSignerAddress: string): Promise<Cid>;
+    /**
+     * approves a previously proposed SwapSigner
+     * @param address
+     * @param senderAddressOfApproveMsg
+     * @param proposedMessageId
+     * @param proposerAddress
+     * @param oldSignerAddress
+     * @param newSignerAddress
+     */
+    msigApproveSwapSigner(address: string, senderAddressOfApproveMsg: string, proposedMessageId: number, proposerAddress: string, oldSignerAddress: string, newSignerAddress: string): Promise<Cid>;
+    /**
+     * cancels a previously proposed SwapSigner message
+     * @param address
+     * @param senderAddressOfCancelMsg
+     * @param proposedMessageId
+     * @param oldSignerAddress
+     * @param newSignerAddress
+     */
+    msigCancelSwapSigner(address: string, senderAddressOfCancelMsg: string, proposedMessageId: number, oldSignerAddress: string, newSignerAddress: string): Promise<Cid>;
+    /**
+     * proposes removing a signer from the multisig
+     * @param address
+     * @param senderAddressOfProposeMsg
+     * @param addressToRemove
+     * @param decreaseNumberOfRequiredSigners
+     */
+    msigProposeRemoveSigner(address: string, senderAddressOfProposeMsg: string, addressToRemove: string, decreaseNumberOfRequiredSigners: boolean): Promise<Cid>;
+    /**
+     * approves a previously proposed RemoveSigner message
+     * @param address
+     * @param senderAddressOfApproveMsg
+     * @param proposedMessageId
+     * @param proposerAddress
+     * @param addressToRemove
+     * @param decreaseNumberOfRequiredSigners
+     */
+    msigApproveRemoveSigner(address: string, senderAddressOfApproveMsg: string, proposedMessageId: number, proposerAddress: string, addressToRemove: string, decreaseNumberOfRequiredSigners: boolean): Promise<Cid>;
+    /**
+     * cancels a previously proposed RemoveSigner message
+     * @param address
+     * @param senderAddressOfApproveMsg
+     * @param proposedMessageId
+     * @param addressToRemove
+     * @param decreaseNumberOfRequiredSigners
+     */
+    msigCancelRemoveSigner(address: string, senderAddressOfCancelMsg: string, proposedMessageId: number, addressToRemove: string, decreaseNumberOfRequiredSigners: boolean): Promise<Cid>;
     createLightWallet(password: string): Promise<string>;
     recoverLightWallet(mnemonic: string, password: string): Promise<void>;
     loadLightWallet(encryptedWallet: string): void;
     prepareToSave(): string;
-    getAccounts(): Promise<string[]>;
-    getDefaultAccount(): Promise<string>;
-    sendMessage(msg: Message, password?: string): Promise<SignedMessage>;
-    signMessage(msg: Message, password?: string): Promise<SignedMessage>;
-    sign(data: string | ArrayBuffer): Promise<Signature>;
     getSigner(): LightWalletSigner;
-    verify(address: string, data: string | ArrayBuffer, sign: Signature): Promise<boolean>;
 }
 
 export declare class LightWalletSigner implements Signer {
     private keystore;
     constructor(keystore: Keystore);
     sign(message: Message, password?: string): Promise<SignedMessage>;
-    getDefaultAccount(): Promise<string>;
     private messageToSigner;
 }
 
@@ -1497,6 +2114,214 @@ declare class Loc {
     File: string;
     Line: number;
     Function: string;
+}
+
+export declare class LotusClient {
+    conn: Connector;
+    chain: JsonRpcChainMethodGroup;
+    state: JsonRpcStateMethodGroup;
+    auth: JsonRpcAuthMethodGroup;
+    client: JsonRpcClientMethodGroup;
+    common: JsonRpcCommonMethodGroup;
+    miner: JsonRpcMinerMethodGroup;
+    paych: JsonRpcPaychMethodGroup;
+    mpool: JsonRpcMPoolMethodGroup;
+    net: JsonRpcNetMethodGroup;
+    msig: JsonRpcMsigMethodGroup;
+    sync: JsonRpcSyncMethodGroup;
+    gasEstimate: JsonRpcGasMethodGroup;
+    wallet: JsonRpcWalletMethodGroup;
+    constructor(connector: Connector);
+    release(): Promise<any>;
+}
+
+export declare class LotusWalletProvider extends BaseWalletProvider implements WalletProviderInterface, MultisigProviderInterface {
+    constructor(client: LotusClient);
+    /**
+     * create new wallet
+     * @param type
+     */
+    newAddress(type?: NewAddressType): Promise<string>;
+    /**
+     * delete address from lotus
+     * @param address
+     */
+    deleteAddress(address: string): Promise<any>;
+    /**
+     * get wallet list
+     */
+    getAddresses(): Promise<string[]>;
+    /**
+     * check if address is in keystore
+     * @param address
+     */
+    hasAddress(address: string): Promise<boolean>;
+    /**
+     * set default address
+     * @param address
+     */
+    setDefaultAddress(address: string): Promise<undefined>;
+    /**
+     * get default address
+     */
+    getDefaultAddress(): Promise<string>;
+    /**
+     * walletExport returns the private key of an address in the wallet.
+     * @param address
+     */
+    exportPrivateKey(address: string): Promise<KeyInfo>;
+    /**
+    * send message, signed with default lotus wallet
+    * @param msg
+    */
+    sendMessage(msg: Message): Promise<SignedMessage>;
+    /**
+     * sign message
+     * @param msg
+     */
+    signMessage(msg: Message): Promise<SignedMessage>;
+    /**
+     * sign raw message
+     * @param data
+     */
+    sign(data: string | ArrayBuffer): Promise<Signature>;
+    /**
+     * verify message signature
+     * @param data
+     * @param sign
+     */
+    verify(address: string, data: string | ArrayBuffer, sign: Signature): Promise<boolean>;
+    /**
+     * creates a multisig wallet
+     * @param requiredNumberOfSenders
+     * @param approvingAddresses
+     * @param startEpoch
+     * @param unlockDuration
+     * @param initialBalance
+     * @param senderAddressOfCreateMsg
+     */
+    msigCreate(requiredNumberOfSenders: number, approvingAddresses: string[], startEpoch: ChainEpoch, unlockDuration: ChainEpoch, initialBalance: string, senderAddressOfCreateMsg: string): Promise<Cid>;
+    /**
+     * proposes a multisig message
+     * @param address
+     * @param recipientAddres
+     * @param value
+     * @param senderAddressOfProposeMsg
+     */
+    msigProposeTransfer(address: string, recipientAddres: string, value: string, senderAddressOfProposeMsg: string): Promise<Cid>;
+    /**
+     * approves a previously-proposed multisig message by transaction ID
+     * @param address
+     * @param proposedTransactionId
+     * @param signerAddress
+     */
+    msigApproveTransfer(address: string, proposedTransactionId: number, signerAddress: string): Promise<Cid>;
+    /**
+     * approves a previously-proposed multisig message
+     * @param address
+     * @param proposedMessageId
+     * @param proposerAddress
+     * @param recipientAddres
+     * @param value
+     * @param senderAddressOfApproveMsg
+     */
+    msigApproveTransferTxHash(address: string, proposedMessageId: number, proposerAddress: string, recipientAddres: string, value: string, senderAddressOfApproveMsg: string): Promise<Cid>;
+    /**
+     * cancels a previously-proposed multisig message
+     * @param address
+     * @param proposedMessageId
+     * @param proposerAddress
+     * @param recipientAddres
+     * @param value
+     * @param senderAddressOfCancelMsg
+     */
+    msigCancelTransfer(address: string, senderAddressOfCancelMsg: string, proposedMessageId: number, recipientAddres: string, value: string): Promise<Cid>;
+    /**
+     * proposes adding a signer in the multisig
+     * @param address
+     * @param senderAddressOfProposeMsg
+     * @param newSignerAddress
+     * @param increaseNumberOfRequiredSigners
+     */
+    msigProposeAddSigner(address: string, senderAddressOfProposeMsg: string, newSignerAddress: string, increaseNumberOfRequiredSigners: boolean): Promise<Cid>;
+    /**
+     * approves a previously proposed AddSigner message
+     * @param address
+     * @param senderAddressOfApproveMsg
+     * @param proposedMessageId
+     * @param proposerAddress
+     * @param newSignerAddress
+     * @param increaseNumberOfRequiredSigners
+     */
+    msigApproveAddSigner(address: string, senderAddressOfApproveMsg: string, proposedMessageId: number, proposerAddress: string, newSignerAddress: string, increaseNumberOfRequiredSigners: boolean): Promise<Cid>;
+    /**
+     * cancels a previously proposed AddSigner message
+     * @param address
+     * @param senderAddressOfCancelMsg
+     * @param proposedMessageId
+     * @param newSignerAddress
+     * @param increaseNumberOfRequiredSigners
+     */
+    msigCancelAddSigner(address: string, senderAddressOfCancelMsg: string, proposedMessageId: number, newSignerAddress: string, increaseNumberOfRequiredSigners: boolean): Promise<Cid>;
+    /**
+     * proposes swapping 2 signers in the multisig
+     * @param address
+     * @param senderAddressOfProposeMsg
+     * @param oldSignerAddress
+     * @param newSignerAddress
+     */
+    msigProposeSwapSigner(address: string, senderAddressOfProposeMsg: string, oldSignerAddress: string, newSignerAddress: string): Promise<Cid>;
+    /**
+     * approves a previously proposed SwapSigner
+     * @param address
+     * @param senderAddressOfApproveMsg
+     * @param proposedMessageId
+     * @param proposerAddress
+     * @param oldSignerAddress
+     * @param newSignerAddress
+     */
+    msigApproveSwapSigner(address: string, senderAddressOfApproveMsg: string, proposedMessageId: number, proposerAddress: string, oldSignerAddress: string, newSignerAddress: string): Promise<Cid>;
+    /**
+     * cancels a previously proposed SwapSigner message
+     * @param address
+     * @param senderAddressOfCancelMsg
+     * @param proposedMessageId
+     * @param oldSignerAddress
+     * @param newSignerAddress
+     */
+    msigCancelSwapSigner(address: string, senderAddressOfCancelMsg: string, proposedMessageId: number, oldSignerAddress: string, newSignerAddress: string): Promise<Cid>;
+    /**
+      * proposes removing a signer from the multisig
+      * @param address
+      * @param senderAddressOfProposeMsg
+      * @param addressToRemove
+      * @param decreaseNumberOfRequiredSigners
+      */
+    msigProposeRemoveSigner(address: string, senderAddressOfProposeMsg: string, addressToRemove: string, decreaseNumberOfRequiredSigners: boolean): Promise<Cid>;
+    /**
+     * approves a previously proposed RemoveSigner message
+     * @param address
+     * @param senderAddressOfApproveMsg
+     * @param proposedMessageId
+     * @param proposerAddress
+     * @param addressToRemove
+     * @param decreaseNumberOfRequiredSigners
+     */
+    msigApproveRemoveSigner(address: string, senderAddressOfApproveMsg: string, proposedMessageId: number, proposerAddress: string, addressToRemove: string, decreaseNumberOfRequiredSigners: boolean): Promise<Cid>;
+    /**
+     * cancels a previously proposed RemoveSigner message
+     * @param address
+     * @param senderAddressOfApproveMsg
+     * @param proposedMessageId
+     * @param addressToRemove
+     * @param decreaseNumberOfRequiredSigners
+     */
+    msigCancelRemoveSigner(address: string, senderAddressOfCancelMsg: string, proposedMessageId: number, addressToRemove: string, decreaseNumberOfRequiredSigners: boolean): Promise<Cid>;
+    /**
+     * walletImport returns the private key of an address in the wallet.
+     * @param keyInfo
+     */
+    walletImport(keyInfo: KeyInfo): Promise<string>;
 }
 
 declare class MarketBalance {
@@ -1525,6 +2350,11 @@ declare class Message {
     GasPremium: BigNumber;
     Method: number;
     Params: string;
+}
+
+declare class MessageMatch {
+    To?: Address;
+    From?: Address;
 }
 
 declare class MessagePartial {
@@ -1565,16 +2395,21 @@ export declare class MetamaskSnapHelper {
     installFilecoinSnap(): Promise<any>;
 }
 
-export declare class MetamaskWalletProvider extends HttpJsonRpcWalletProvider {
+export declare class MetamaskWalletProvider extends BaseWalletProvider implements WalletProviderInterface {
     private signer;
-    constructor(connector: Connector, filecoinApi: FilecoinSnapApi);
-    getAccounts(): Promise<string[]>;
-    getDefaultAccount(): Promise<string>;
+    constructor(client: LotusClient, filecoinApi: FilecoinSnapApi);
+    newAddress(): Promise<string>;
+    deleteAddress(address: string): Promise<any>;
+    hasAddress(address: string): Promise<any>;
+    exportPrivateKey(address: string): Promise<KeyInfo>;
+    getAddresses(): Promise<string[]>;
+    getDefaultAddress(): Promise<string>;
+    setDefaultAddress(address: string): Promise<undefined>;
     sendMessage(msg: Message): Promise<SignedMessage>;
     signMessage(msg: Message): Promise<SignedMessage>;
     sign(data: string | ArrayBuffer): Promise<Signature>;
-    getSigner(): MetamaskSigner;
     verify(address: string, data: string | ArrayBuffer, sign: Signature): Promise<boolean>;
+    getSigner(): MetamaskSigner;
 }
 
 declare class MinerInfo {
@@ -1632,6 +2467,7 @@ declare class MinerInfo {
 declare class MinerPower {
     MinerPower: Claim;
     TotalPower: Claim;
+    HasMinPower: boolean;
 }
 
 declare class MinerSectors {
@@ -1657,31 +2493,172 @@ declare class MiningBaseInfo {
     SectorSize: number;
     PrevBeaconEntry: BeaconEntry;
     BeaconEntries: BeaconEntry[];
-    HasMinPower: boolean;
+    EligibleForMining: boolean;
 }
 
 export declare class MnemonicSigner implements Signer {
     private mnemonic;
     private password;
+    private privKeys;
+    addresses: string[];
+    private defaultAddressIndex;
+    private hdIndex;
     private path;
     constructor(mnemonic: string | StringGetter, password: string | StringGetter, path?: string);
+    initAddresses(): Promise<void>;
+    getAddresses(): Promise<string[]>;
+    newAddress(n: number): Promise<void>;
+    deleteAddress(address: string): Promise<void>;
+    getPrivateKey(address: string): Promise<any>;
+    getDefaultAddress(): Promise<string>;
+    setDefaultAddress(address: string): Promise<void>;
+    hasAddress(address: string): Promise<boolean>;
     sign(message: Message): Promise<SignedMessage>;
-    getDefaultAccount(): Promise<string>;
     private getPassword;
-    private getMenmonic;
+    private getMnemonic;
     private messageToSigner;
 }
 
-export declare class MnemonicWalletProvider extends HttpJsonRpcWalletProvider {
+export declare class MnemonicWalletProvider extends BaseWalletProvider implements WalletProviderInterface, MultisigProviderInterface {
     private signer;
-    constructor(connector: Connector, mnemonic: string | StringGetter, password: string | StringGetter, path?: string);
-    getAccounts(): Promise<string[]>;
-    getDefaultAccount(): Promise<string>;
+    constructor(client: LotusClient, mnemonic: string | StringGetter, path?: string);
+    newAddress(): Promise<string>;
+    deleteAddress(address: string): Promise<any>;
+    hasAddress(address: string): Promise<boolean>;
+    exportPrivateKey(address: string): Promise<KeyInfo>;
+    getAddresses(): Promise<string[]>;
+    getDefaultAddress(): Promise<string>;
+    setDefaultAddress(address: string): Promise<void>;
     sendMessage(msg: Message): Promise<SignedMessage>;
     signMessage(msg: Message): Promise<SignedMessage>;
     sign(data: string | ArrayBuffer): Promise<Signature>;
-    getSigner(): MnemonicSigner;
     verify(address: string, data: string | ArrayBuffer, sign: Signature): Promise<boolean>;
+    getSigner(): MnemonicSigner;
+    /**
+     * creates a multisig wallet
+     * @param requiredNumberOfSenders
+     * @param approvingAddresses
+     * @param startEpoch
+     * @param unlockDuration
+     * @param initialBalance
+     * @param senderAddressOfCreateMsg
+     */
+    msigCreate(requiredNumberOfSenders: number, approvingAddresses: string[], startEpoch: ChainEpoch, unlockDuration: ChainEpoch, initialBalance: string, senderAddressOfCreateMsg: string): Promise<Cid>;
+    /**
+     * proposes a multisig message
+     * @param address
+     * @param recipientAddres
+     * @param value
+     * @param senderAddressOfProposeMsg
+     */
+    msigProposeTransfer(address: string, recipientAddres: string, value: string, senderAddressOfProposeMsg: string): Promise<Cid>;
+    /**
+     * approves a previously-proposed multisig message by transaction ID
+     * @param address
+     * @param proposedTransactionId
+     * @param signerAddress
+     */
+    msigApproveTransfer(address: string, proposedTransactionId: number, signerAddress: string): Promise<Cid>;
+    /**
+     * approves a previously-proposed multisig message
+     * @param address
+     * @param proposedMessageId
+     * @param proposerAddress
+     * @param recipientAddres
+     * @param value
+     * @param senderAddressOfApproveMsg
+     */
+    msigApproveTransferTxHash(address: string, proposedMessageId: number, proposerAddress: string, recipientAddres: string, value: string, senderAddressOfApproveMsg: string): Promise<Cid>;
+    /**
+     * cancels a previously-proposed multisig message
+     * @param address
+     * @param senderAddressOfCancelMsg
+     * @param proposedMessageId
+     * @param recipientAddres
+     * @param value
+     */
+    msigCancelTransfer(address: string, senderAddressOfCancelMsg: string, proposedMessageId: number, recipientAddres: string, value: string): Promise<Cid>;
+    /**
+     * proposes adding a signer in the multisig
+     * @param address
+     * @param senderAddressOfProposeMsg
+     * @param newSignerAddress
+     * @param increaseNumberOfRequiredSigners
+     */
+    msigProposeAddSigner(address: string, senderAddressOfProposeMsg: string, newSignerAddress: string, increaseNumberOfRequiredSigners: boolean): Promise<Cid>;
+    /**
+     * approves a previously proposed AddSigner message
+     * @param address
+     * @param senderAddressOfApproveMsg
+     * @param proposedMessageId
+     * @param proposerAddress
+     * @param newSignerAddress
+     * @param increaseNumberOfRequiredSigners
+     */
+    msigApproveAddSigner(address: string, senderAddressOfApproveMsg: string, proposedMessageId: number, proposerAddress: string, newSignerAddress: string, increaseNumberOfRequiredSigners: boolean): Promise<Cid>;
+    /**
+     * cancels a previously proposed AddSigner message
+     * @param address
+     * @param senderAddressOfCancelMsg
+     * @param proposedMessageId
+     * @param newSignerAddress
+     * @param increaseNumberOfRequiredSigners
+     */
+    msigCancelAddSigner(address: string, senderAddressOfCancelMsg: string, proposedMessageId: number, newSignerAddress: string, increaseNumberOfRequiredSigners: boolean): Promise<Cid>;
+    /**
+     * proposes swapping 2 signers in the multisig
+     * @param address
+     * @param senderAddressOfProposeMsg
+     * @param oldSignerAddress
+     * @param newSignerAddress
+     */
+    msigProposeSwapSigner(address: string, senderAddressOfProposeMsg: string, oldSignerAddress: string, newSignerAddress: string): Promise<Cid>;
+    /**
+     * approves a previously proposed SwapSigner
+     * @param address
+     * @param senderAddressOfApproveMsg
+     * @param proposedMessageId
+     * @param proposerAddress
+     * @param oldSignerAddress
+     * @param newSignerAddress
+     */
+    msigApproveSwapSigner(address: string, senderAddressOfApproveMsg: string, proposedMessageId: number, proposerAddress: string, oldSignerAddress: string, newSignerAddress: string): Promise<Cid>;
+    /**
+     * cancels a previously proposed SwapSigner message
+     * @param address
+     * @param senderAddressOfCancelMsg
+     * @param proposedMessageId
+     * @param oldSignerAddress
+     * @param newSignerAddress
+     */
+    msigCancelSwapSigner(address: string, senderAddressOfCancelMsg: string, proposedMessageId: number, oldSignerAddress: string, newSignerAddress: string): Promise<Cid>;
+    /**
+     * proposes removing a signer from the multisig
+     * @param address
+     * @param senderAddressOfProposeMsg
+     * @param addressToRemove
+     * @param decreaseNumberOfRequiredSigners
+     */
+    msigProposeRemoveSigner(address: string, senderAddressOfProposeMsg: string, addressToRemove: string, decreaseNumberOfRequiredSigners: boolean): Promise<Cid>;
+    /**
+     * approves a previously proposed RemoveSigner message
+     * @param address
+     * @param senderAddressOfApproveMsg
+     * @param proposedMessageId
+     * @param proposerAddress
+     * @param addressToRemove
+     * @param decreaseNumberOfRequiredSigners
+     */
+    msigApproveRemoveSigner(address: string, senderAddressOfApproveMsg: string, proposedMessageId: number, proposerAddress: string, addressToRemove: string, decreaseNumberOfRequiredSigners: boolean): Promise<Cid>;
+    /**
+     * cancels a previously proposed RemoveSigner message
+     * @param address
+     * @param senderAddressOfApproveMsg
+     * @param proposedMessageId
+     * @param addressToRemove
+     * @param decreaseNumberOfRequiredSigners
+     */
+    msigCancelRemoveSigner(address: string, senderAddressOfCancelMsg: string, proposedMessageId: number, addressToRemove: string, decreaseNumberOfRequiredSigners: boolean): Promise<Cid>;
 }
 
 declare class ModVerifyParams {
@@ -1704,6 +2681,17 @@ declare class MpoolUpdate {
     Message: SignedMessage;
 }
 
+declare class MsgGasCost {
+    Message: Cid;
+    GasUsed: TokenAmount;
+    BaseFeeBurn: TokenAmount;
+    OverEstimationBurn: TokenAmount;
+    MinerPenalty: TokenAmount;
+    MinerTip: TokenAmount;
+    Refund: TokenAmount;
+    TotalCost: TokenAmount;
+}
+
 declare class MsgLookup {
     /**
      * @remarks
@@ -1716,6 +2704,12 @@ declare class MsgLookup {
     Height: ChainEpoch;
 }
 
+declare class MsigVesting {
+    InitialBalance: TokenAmount;
+    StartEpoch: ChainEpoch;
+    UnlockDuration: ChainEpoch;
+}
+
 /**
  * multiaddr is the data type representing a Multiaddr
  */
@@ -1723,12 +2717,37 @@ declare type Multiaddr = string;
 
 declare type Multiaddrs = any;
 
+declare interface MultisigProviderInterface {
+    msigCreate(requiredNumberOfSenders: number, approvingAddresses: string[], startEpoch: ChainEpoch, unlockDuration: ChainEpoch, initialBalance: string, senderAddressOfCreateMsg: string): Promise<Cid>;
+    msigProposeTransfer(address: string, recipientAddres: string, value: string, senderAddressOfProposeMsg: string): Promise<Cid>;
+    msigApproveTransfer(address: string, proposedTransactionId: number, signerAddress: string): Promise<Cid>;
+    msigApproveTransferTxHash(address: string, proposedMessageId: number, proposerAddress: string, recipientAddres: string, value: string, senderAddressOfApproveMsg: string): Promise<Cid>;
+    msigCancelTransfer(address: string, senderAddressOfCancelMsg: string, proposedMessageId: number, recipientAddres: string, value: string, methodToCallInProposeMsg: number): Promise<Cid>;
+    msigProposeAddSigner(address: string, senderAddressOfProposeMsg: string, newSignerAddress: string, increaseNumberOfRequiredSigners: boolean): Promise<Cid>;
+    msigApproveAddSigner(address: string, senderAddressOfApproveMsg: string, proposedMessageId: number, proposerAddress: string, newSignerAddress: string, increaseNumberOfRequiredSigners: boolean): Promise<Cid>;
+    msigCancelAddSigner(address: string, senderAddressOfCancelMsg: string, proposedMessageId: number, newSignerAddress: string, increaseNumberOfRequiredSigners: boolean): Promise<Cid>;
+    msigProposeSwapSigner(address: string, senderAddressOfProposeMsg: string, oldSignerAddress: string, newSignerAddress: string): Promise<Cid>;
+    msigApproveSwapSigner(address: string, senderAddressOfApproveMsg: string, proposedMessageId: number, proposerAddress: string, oldSignerAddress: string, newSignerAddress: string): Promise<Cid>;
+    msigCancelSwapSigner(address: string, senderAddressOfCancelMsg: string, proposedMessageId: number, oldSignerAddress: string, newSignerAddress: string): Promise<Cid>;
+    msigProposeRemoveSigner(address: string, senderAddressOfProposeMsg: string, addressToRemove: string, decreaseNumberOfRequiredSigners: boolean): Promise<Cid>;
+    msigApproveRemoveSigner(address: string, senderAddressOfApproveMsg: string, proposedMessageId: number, proposerAddress: string, addressToRemove: string, decreaseNumberOfRequiredSigners: boolean): Promise<Cid>;
+    msigCancelRemoveSigner(address: string, senderAddressOfCancelMsg: string, proposedMessageId: number, addressToRemove: string, decreaseNumberOfRequiredSigners: boolean): Promise<Cid>;
+}
+
 declare class NatInfo {
     Reachability: Reachability;
     PublicAddr: string;
 }
 
 declare type NetworkName = string;
+
+declare type NetworkVersion = number;
+
+declare enum NewAddressType {
+    BLS = "bls",
+    SECP256K1 = "secp256k1",
+    SECP256K1_LEDGER = "secp256k1-ledger"
+}
 
 declare class ObjStat {
     Size: number;
@@ -2149,10 +3168,17 @@ declare class VoucherSpec {
     Extra: ModVerifyParams;
 }
 
-declare interface WalletProvider {
-    getAccounts(): Promise<string[]>;
-    signMessage(msg: Message, password?: string): Promise<SignedMessage>;
-    sign(data: string, password?: string): Promise<Signature>;
+declare interface WalletProviderInterface {
+    newAddress(): Promise<string>;
+    deleteAddress(address: string): Promise<void>;
+    getAddresses(): Promise<string[]>;
+    hasAddress(address: string): Promise<any>;
+    setDefaultAddress(address: string): Promise<void>;
+    getDefaultAddress(): Promise<string>;
+    exportPrivateKey(address: string): Promise<KeyInfo>;
+    sendMessage(msg: Message): Promise<SignedMessage>;
+    signMessage(msg: Message): Promise<SignedMessage>;
+    sign(data: string): Promise<Signature>;
     verify(address: string, data: string | ArrayBuffer, sign: Signature): Promise<boolean>;
 }
 

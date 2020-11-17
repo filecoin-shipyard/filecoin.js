@@ -14,11 +14,13 @@ Constructs a new instance of the `LightWalletProvider` class
 <b>Signature:</b>
 
 ```typescript
-constructor(connector: Connector);
+constructor(client: LotusClient, pwdCallback: Function, path?: string);
 ```
 
 ## Parameters
 
 |  Parameter | Type | Description |
 |  --- | --- | --- |
-|  connector | Connector |  |
+|  client | [LotusClient](./filecoin.js.lotusclient.md) |  |
+|  pwdCallback | Function |  |
+|  path | string |  |

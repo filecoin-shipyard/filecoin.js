@@ -14,12 +14,12 @@ Constructs a new instance of the `MetamaskWalletProvider` class
 <b>Signature:</b>
 
 ```typescript
-constructor(connector: Connector, filecoinApi: FilecoinSnapApi);
+constructor(client: LotusClient, filecoinApi: FilecoinSnapApi);
 ```
 
 ## Parameters
 
 |  Parameter | Type | Description |
 |  --- | --- | --- |
-|  connector | Connector |  |
+|  client | [LotusClient](./filecoin.js.lotusclient.md) |  |
 |  filecoinApi | FilecoinSnapApi |  |

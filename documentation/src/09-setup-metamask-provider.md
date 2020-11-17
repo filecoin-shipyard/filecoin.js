@@ -21,11 +21,11 @@ To simplify the actual snap install we built a helper which does the work for yo
 (async () => {
     let metamaskAddress;
     const connector = new FilecoinJs.HttpJsonRpcConnector({ url: __LOTUS_RPC_ENDPOINT__, token: __LOTUS_AUTH_TOKEN__ });
-
+    const lotusClient = new FilecoinJs.LotusClient(httpConnector);
     const metamaskHelper = new FilecoinJs.MetamaskSnapHelper({ url: __LOTUS_RPC_ENDPOINT__, token: __LOTUS_AUTH_TOKEN__ });
     const err = await metamaskHelper.installFilecoinSnap();
 
-    const metamaskWalletProvider = new FilecoinJs.MetamaskWalletProvider(connector, metamaskHelper.filecoinApi)
+    const metamaskWalletProvider = new FilecoinJs.MetamaskWalletProvider(lotusClient, metamaskHelper.filecoinApi)
 
     try {
         metamaskAddress = await metamaskWalletProvider.getDefaultAccount();

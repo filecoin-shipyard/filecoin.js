@@ -47,6 +47,9 @@
       "payment-channels": {
         "title": "Payment channels"
       },
+      "multisig-wallet": {
+        "title": "Multisig Wallets"
+      },
       "state-methods": {
         "title": "State methods"
       },
@@ -80,134 +83,29 @@
       "api/filecoin.js.httpjsonrpcconnector.url": {
         "title": "HttpJsonRpcConnector.url property"
       },
-      "api/filecoin.js.httpjsonrpcwalletprovider._constructor_": {
-        "title": "HttpJsonRpcWalletProvider.(constructor)"
-      },
-      "api/filecoin.js.httpjsonrpcwalletprovider.createmessage": {
-        "title": "HttpJsonRpcWalletProvider.createMessage() method"
-      },
-      "api/filecoin.js.httpjsonrpcwalletprovider.deletewallet": {
-        "title": "HttpJsonRpcWalletProvider.deleteWallet() method"
-      },
-      "api/filecoin.js.httpjsonrpcwalletprovider.estimatemessagegas": {
-        "title": "HttpJsonRpcWalletProvider.estimateMessageGas() method"
-      },
-      "api/filecoin.js.httpjsonrpcwalletprovider.estimatemessagegasfeecap": {
-        "title": "HttpJsonRpcWalletProvider.estimateMessageGasFeeCap() method"
-      },
-      "api/filecoin.js.httpjsonrpcwalletprovider.estimatemessagegaslimit": {
-        "title": "HttpJsonRpcWalletProvider.estimateMessageGasLimit() method"
-      },
-      "api/filecoin.js.httpjsonrpcwalletprovider.estimatemessagegaspremium": {
-        "title": "HttpJsonRpcWalletProvider.estimateMessageGasPremium() method"
-      },
-      "api/filecoin.js.httpjsonrpcwalletprovider.getaccounts": {
-        "title": "HttpJsonRpcWalletProvider.getAccounts() method"
-      },
-      "api/filecoin.js.httpjsonrpcwalletprovider.getbalance": {
-        "title": "HttpJsonRpcWalletProvider.getBalance() method"
-      },
-      "api/filecoin.js.httpjsonrpcwalletprovider.getdefaultaccount": {
-        "title": "HttpJsonRpcWalletProvider.getDefaultAccount() method"
-      },
-      "api/filecoin.js.httpjsonrpcwalletprovider.getnonce": {
-        "title": "HttpJsonRpcWalletProvider.getNonce() method"
-      },
-      "api/filecoin.js.httpjsonrpcwalletprovider.haswallet": {
-        "title": "HttpJsonRpcWalletProvider.hasWallet() method"
-      },
-      "api/filecoin.js.httpjsonrpcwalletprovider": {
-        "title": "HttpJsonRpcWalletProvider class"
-      },
-      "api/filecoin.js.httpjsonrpcwalletprovider.newaccount": {
-        "title": "HttpJsonRpcWalletProvider.newAccount() method"
-      },
-      "api/filecoin.js.httpjsonrpcwalletprovider.release": {
-        "title": "HttpJsonRpcWalletProvider.release() method"
-      },
-      "api/filecoin.js.httpjsonrpcwalletprovider.sendmessage": {
-        "title": "HttpJsonRpcWalletProvider.sendMessage() method"
-      },
-      "api/filecoin.js.httpjsonrpcwalletprovider.sendsignedmessage": {
-        "title": "HttpJsonRpcWalletProvider.sendSignedMessage() method"
-      },
-      "api/filecoin.js.httpjsonrpcwalletprovider.setdefaultaccount": {
-        "title": "HttpJsonRpcWalletProvider.setDefaultAccount() method"
-      },
-      "api/filecoin.js.httpjsonrpcwalletprovider.sign": {
-        "title": "HttpJsonRpcWalletProvider.sign() method"
-      },
-      "api/filecoin.js.httpjsonrpcwalletprovider.signmessage": {
-        "title": "HttpJsonRpcWalletProvider.signMessage() method"
-      },
-      "api/filecoin.js.httpjsonrpcwalletprovider.verify": {
-        "title": "HttpJsonRpcWalletProvider.verify() method"
-      },
-      "api/filecoin.js.httpjsonrpcwalletprovider.walletexport": {
-        "title": "HttpJsonRpcWalletProvider.walletExport() method"
-      },
-      "api/filecoin.js.httpjsonrpcwalletprovider.walletimport": {
-        "title": "HttpJsonRpcWalletProvider.walletImport() method"
-      },
-      "api/filecoin.js.jsonrpcprovider._constructor_": {
-        "title": "LotusClient.(constructor)"
-      },
-      "api/filecoin.js.jsonrpcprovider.auth": {
-        "title": "LotusClient.auth property"
-      },
-      "api/filecoin.js.jsonrpcprovider.chain": {
-        "title": "LotusClient.chain property"
-      },
-      "api/filecoin.js.jsonrpcprovider.client": {
-        "title": "LotusClient.client property"
-      },
-      "api/filecoin.js.jsonrpcprovider.common": {
-        "title": "LotusClient.common property"
-      },
-      "api/filecoin.js.jsonrpcprovider.conn": {
-        "title": "LotusClient.conn property"
-      },
-      "api/filecoin.js.jsonrpcprovider": {
-        "title": "LotusClient class"
-      },
-      "api/filecoin.js.jsonrpcprovider.miner": {
-        "title": "LotusClient.miner property"
-      },
-      "api/filecoin.js.jsonrpcprovider.mpool": {
-        "title": "LotusClient.mpool property"
-      },
-      "api/filecoin.js.jsonrpcprovider.msig": {
-        "title": "LotusClient.msig property"
-      },
-      "api/filecoin.js.jsonrpcprovider.net": {
-        "title": "LotusClient.net property"
-      },
-      "api/filecoin.js.jsonrpcprovider.paych": {
-        "title": "LotusClient.paych property"
-      },
-      "api/filecoin.js.jsonrpcprovider.release": {
-        "title": "LotusClient.release() method"
-      },
-      "api/filecoin.js.jsonrpcprovider.state": {
-        "title": "LotusClient.state property"
-      },
-      "api/filecoin.js.jsonrpcprovider.sync": {
-        "title": "LotusClient.sync property"
-      },
       "api/filecoin.js.lightwalletprovider._constructor_": {
         "title": "LightWalletProvider.(constructor)"
       },
       "api/filecoin.js.lightwalletprovider.createlightwallet": {
         "title": "LightWalletProvider.createLightWallet() method"
       },
-      "api/filecoin.js.lightwalletprovider.getaccounts": {
-        "title": "LightWalletProvider.getAccounts() method"
+      "api/filecoin.js.lightwalletprovider.deleteaddress": {
+        "title": "LightWalletProvider.deleteAddress() method"
       },
-      "api/filecoin.js.lightwalletprovider.getdefaultaccount": {
-        "title": "LightWalletProvider.getDefaultAccount() method"
+      "api/filecoin.js.lightwalletprovider.exportprivatekey": {
+        "title": "LightWalletProvider.exportPrivateKey() method"
+      },
+      "api/filecoin.js.lightwalletprovider.getaddresses": {
+        "title": "LightWalletProvider.getAddresses() method"
+      },
+      "api/filecoin.js.lightwalletprovider.getdefaultaddress": {
+        "title": "LightWalletProvider.getDefaultAddress() method"
       },
       "api/filecoin.js.lightwalletprovider.getsigner": {
         "title": "LightWalletProvider.getSigner() method"
+      },
+      "api/filecoin.js.lightwalletprovider.hasaddress": {
+        "title": "LightWalletProvider.hasAddress() method"
       },
       "api/filecoin.js.lightwalletprovider.keystore": {
         "title": "LightWalletProvider.keystore property"
@@ -218,6 +116,51 @@
       "api/filecoin.js.lightwalletprovider": {
         "title": "LightWalletProvider class"
       },
+      "api/filecoin.js.lightwalletprovider.msigapproveaddsigner": {
+        "title": "LightWalletProvider.msigApproveAddSigner() method"
+      },
+      "api/filecoin.js.lightwalletprovider.msigapproveremovesigner": {
+        "title": "LightWalletProvider.msigApproveRemoveSigner() method"
+      },
+      "api/filecoin.js.lightwalletprovider.msigapproveswapsigner": {
+        "title": "LightWalletProvider.msigApproveSwapSigner() method"
+      },
+      "api/filecoin.js.lightwalletprovider.msigapprovetransfer": {
+        "title": "LightWalletProvider.msigApproveTransfer() method"
+      },
+      "api/filecoin.js.lightwalletprovider.msigapprovetransfertxhash": {
+        "title": "LightWalletProvider.msigApproveTransferTxHash() method"
+      },
+      "api/filecoin.js.lightwalletprovider.msigcanceladdsigner": {
+        "title": "LightWalletProvider.msigCancelAddSigner() method"
+      },
+      "api/filecoin.js.lightwalletprovider.msigcancelremovesigner": {
+        "title": "LightWalletProvider.msigCancelRemoveSigner() method"
+      },
+      "api/filecoin.js.lightwalletprovider.msigcancelswapsigner": {
+        "title": "LightWalletProvider.msigCancelSwapSigner() method"
+      },
+      "api/filecoin.js.lightwalletprovider.msigcanceltransfer": {
+        "title": "LightWalletProvider.msigCancelTransfer() method"
+      },
+      "api/filecoin.js.lightwalletprovider.msigcreate": {
+        "title": "LightWalletProvider.msigCreate() method"
+      },
+      "api/filecoin.js.lightwalletprovider.msigproposeaddsigner": {
+        "title": "LightWalletProvider.msigProposeAddSigner() method"
+      },
+      "api/filecoin.js.lightwalletprovider.msigproposeremovesigner": {
+        "title": "LightWalletProvider.msigProposeRemoveSigner() method"
+      },
+      "api/filecoin.js.lightwalletprovider.msigproposeswapsigner": {
+        "title": "LightWalletProvider.msigProposeSwapSigner() method"
+      },
+      "api/filecoin.js.lightwalletprovider.msigproposetransfer": {
+        "title": "LightWalletProvider.msigProposeTransfer() method"
+      },
+      "api/filecoin.js.lightwalletprovider.newaddress": {
+        "title": "LightWalletProvider.newAddress() method"
+      },
       "api/filecoin.js.lightwalletprovider.preparetosave": {
         "title": "LightWalletProvider.prepareToSave() method"
       },
@@ -226,6 +169,9 @@
       },
       "api/filecoin.js.lightwalletprovider.sendmessage": {
         "title": "LightWalletProvider.sendMessage() method"
+      },
+      "api/filecoin.js.lightwalletprovider.setdefaultaddress": {
+        "title": "LightWalletProvider.setDefaultAddress() method"
       },
       "api/filecoin.js.lightwalletprovider.sign": {
         "title": "LightWalletProvider.sign() method"
@@ -239,14 +185,146 @@
       "api/filecoin.js.lightwalletsigner._constructor_": {
         "title": "LightWalletSigner.(constructor)"
       },
-      "api/filecoin.js.lightwalletsigner.getdefaultaccount": {
-        "title": "LightWalletSigner.getDefaultAccount() method"
-      },
       "api/filecoin.js.lightwalletsigner": {
         "title": "LightWalletSigner class"
       },
       "api/filecoin.js.lightwalletsigner.sign": {
         "title": "LightWalletSigner.sign() method"
+      },
+      "api/filecoin.js.lotusclient._constructor_": {
+        "title": "LotusClient.(constructor)"
+      },
+      "api/filecoin.js.lotusclient.auth": {
+        "title": "LotusClient.auth property"
+      },
+      "api/filecoin.js.lotusclient.chain": {
+        "title": "LotusClient.chain property"
+      },
+      "api/filecoin.js.lotusclient.client": {
+        "title": "LotusClient.client property"
+      },
+      "api/filecoin.js.lotusclient.common": {
+        "title": "LotusClient.common property"
+      },
+      "api/filecoin.js.lotusclient.conn": {
+        "title": "LotusClient.conn property"
+      },
+      "api/filecoin.js.lotusclient.gasestimate": {
+        "title": "LotusClient.gasEstimate property"
+      },
+      "api/filecoin.js.lotusclient": {
+        "title": "LotusClient class"
+      },
+      "api/filecoin.js.lotusclient.miner": {
+        "title": "LotusClient.miner property"
+      },
+      "api/filecoin.js.lotusclient.mpool": {
+        "title": "LotusClient.mpool property"
+      },
+      "api/filecoin.js.lotusclient.msig": {
+        "title": "LotusClient.msig property"
+      },
+      "api/filecoin.js.lotusclient.net": {
+        "title": "LotusClient.net property"
+      },
+      "api/filecoin.js.lotusclient.paych": {
+        "title": "LotusClient.paych property"
+      },
+      "api/filecoin.js.lotusclient.release": {
+        "title": "LotusClient.release() method"
+      },
+      "api/filecoin.js.lotusclient.state": {
+        "title": "LotusClient.state property"
+      },
+      "api/filecoin.js.lotusclient.sync": {
+        "title": "LotusClient.sync property"
+      },
+      "api/filecoin.js.lotusclient.wallet": {
+        "title": "LotusClient.wallet property"
+      },
+      "api/filecoin.js.lotuswalletprovider._constructor_": {
+        "title": "LotusWalletProvider.(constructor)"
+      },
+      "api/filecoin.js.lotuswalletprovider.deleteaddress": {
+        "title": "LotusWalletProvider.deleteAddress() method"
+      },
+      "api/filecoin.js.lotuswalletprovider.exportprivatekey": {
+        "title": "LotusWalletProvider.exportPrivateKey() method"
+      },
+      "api/filecoin.js.lotuswalletprovider.getaddresses": {
+        "title": "LotusWalletProvider.getAddresses() method"
+      },
+      "api/filecoin.js.lotuswalletprovider.getdefaultaddress": {
+        "title": "LotusWalletProvider.getDefaultAddress() method"
+      },
+      "api/filecoin.js.lotuswalletprovider.hasaddress": {
+        "title": "LotusWalletProvider.hasAddress() method"
+      },
+      "api/filecoin.js.lotuswalletprovider": {
+        "title": "LotusWalletProvider class"
+      },
+      "api/filecoin.js.lotuswalletprovider.msigapproveaddsigner": {
+        "title": "LotusWalletProvider.msigApproveAddSigner() method"
+      },
+      "api/filecoin.js.lotuswalletprovider.msigapproveremovesigner": {
+        "title": "LotusWalletProvider.msigApproveRemoveSigner() method"
+      },
+      "api/filecoin.js.lotuswalletprovider.msigapproveswapsigner": {
+        "title": "LotusWalletProvider.msigApproveSwapSigner() method"
+      },
+      "api/filecoin.js.lotuswalletprovider.msigapprovetransfer": {
+        "title": "LotusWalletProvider.msigApproveTransfer() method"
+      },
+      "api/filecoin.js.lotuswalletprovider.msigapprovetransfertxhash": {
+        "title": "LotusWalletProvider.msigApproveTransferTxHash() method"
+      },
+      "api/filecoin.js.lotuswalletprovider.msigcanceladdsigner": {
+        "title": "LotusWalletProvider.msigCancelAddSigner() method"
+      },
+      "api/filecoin.js.lotuswalletprovider.msigcancelremovesigner": {
+        "title": "LotusWalletProvider.msigCancelRemoveSigner() method"
+      },
+      "api/filecoin.js.lotuswalletprovider.msigcancelswapsigner": {
+        "title": "LotusWalletProvider.msigCancelSwapSigner() method"
+      },
+      "api/filecoin.js.lotuswalletprovider.msigcanceltransfer": {
+        "title": "LotusWalletProvider.msigCancelTransfer() method"
+      },
+      "api/filecoin.js.lotuswalletprovider.msigcreate": {
+        "title": "LotusWalletProvider.msigCreate() method"
+      },
+      "api/filecoin.js.lotuswalletprovider.msigproposeaddsigner": {
+        "title": "LotusWalletProvider.msigProposeAddSigner() method"
+      },
+      "api/filecoin.js.lotuswalletprovider.msigproposeremovesigner": {
+        "title": "LotusWalletProvider.msigProposeRemoveSigner() method"
+      },
+      "api/filecoin.js.lotuswalletprovider.msigproposeswapsigner": {
+        "title": "LotusWalletProvider.msigProposeSwapSigner() method"
+      },
+      "api/filecoin.js.lotuswalletprovider.msigproposetransfer": {
+        "title": "LotusWalletProvider.msigProposeTransfer() method"
+      },
+      "api/filecoin.js.lotuswalletprovider.newaddress": {
+        "title": "LotusWalletProvider.newAddress() method"
+      },
+      "api/filecoin.js.lotuswalletprovider.sendmessage": {
+        "title": "LotusWalletProvider.sendMessage() method"
+      },
+      "api/filecoin.js.lotuswalletprovider.setdefaultaddress": {
+        "title": "LotusWalletProvider.setDefaultAddress() method"
+      },
+      "api/filecoin.js.lotuswalletprovider.sign": {
+        "title": "LotusWalletProvider.sign() method"
+      },
+      "api/filecoin.js.lotuswalletprovider.signmessage": {
+        "title": "LotusWalletProvider.signMessage() method"
+      },
+      "api/filecoin.js.lotuswalletprovider.verify": {
+        "title": "LotusWalletProvider.verify() method"
+      },
+      "api/filecoin.js.lotuswalletprovider.walletimport": {
+        "title": "LotusWalletProvider.walletImport() method"
       },
       "api/filecoin.js": {
         "title": "filecoin.js package"
@@ -281,20 +359,35 @@
       "api/filecoin.js.metamaskwalletprovider._constructor_": {
         "title": "MetamaskWalletProvider.(constructor)"
       },
-      "api/filecoin.js.metamaskwalletprovider.getaccounts": {
-        "title": "MetamaskWalletProvider.getAccounts() method"
+      "api/filecoin.js.metamaskwalletprovider.deleteaddress": {
+        "title": "MetamaskWalletProvider.deleteAddress() method"
       },
-      "api/filecoin.js.metamaskwalletprovider.getdefaultaccount": {
-        "title": "MetamaskWalletProvider.getDefaultAccount() method"
+      "api/filecoin.js.metamaskwalletprovider.exportprivatekey": {
+        "title": "MetamaskWalletProvider.exportPrivateKey() method"
+      },
+      "api/filecoin.js.metamaskwalletprovider.getaddresses": {
+        "title": "MetamaskWalletProvider.getAddresses() method"
+      },
+      "api/filecoin.js.metamaskwalletprovider.getdefaultaddress": {
+        "title": "MetamaskWalletProvider.getDefaultAddress() method"
       },
       "api/filecoin.js.metamaskwalletprovider.getsigner": {
         "title": "MetamaskWalletProvider.getSigner() method"
       },
+      "api/filecoin.js.metamaskwalletprovider.hasaddress": {
+        "title": "MetamaskWalletProvider.hasAddress() method"
+      },
       "api/filecoin.js.metamaskwalletprovider": {
         "title": "MetamaskWalletProvider class"
       },
+      "api/filecoin.js.metamaskwalletprovider.newaddress": {
+        "title": "MetamaskWalletProvider.newAddress() method"
+      },
       "api/filecoin.js.metamaskwalletprovider.sendmessage": {
         "title": "MetamaskWalletProvider.sendMessage() method"
+      },
+      "api/filecoin.js.metamaskwalletprovider.setdefaultaddress": {
+        "title": "MetamaskWalletProvider.setDefaultAddress() method"
       },
       "api/filecoin.js.metamaskwalletprovider.sign": {
         "title": "MetamaskWalletProvider.sign() method"
@@ -308,11 +401,35 @@
       "api/filecoin.js.mnemonicsigner._constructor_": {
         "title": "MnemonicSigner.(constructor)"
       },
-      "api/filecoin.js.mnemonicsigner.getdefaultaccount": {
-        "title": "MnemonicSigner.getDefaultAccount() method"
+      "api/filecoin.js.mnemonicsigner.addresses": {
+        "title": "MnemonicSigner.addresses property"
+      },
+      "api/filecoin.js.mnemonicsigner.deleteaddress": {
+        "title": "MnemonicSigner.deleteAddress() method"
+      },
+      "api/filecoin.js.mnemonicsigner.getaddresses": {
+        "title": "MnemonicSigner.getAddresses() method"
+      },
+      "api/filecoin.js.mnemonicsigner.getdefaultaddress": {
+        "title": "MnemonicSigner.getDefaultAddress() method"
+      },
+      "api/filecoin.js.mnemonicsigner.getprivatekey": {
+        "title": "MnemonicSigner.getPrivateKey() method"
+      },
+      "api/filecoin.js.mnemonicsigner.hasaddress": {
+        "title": "MnemonicSigner.hasAddress() method"
+      },
+      "api/filecoin.js.mnemonicsigner.initaddresses": {
+        "title": "MnemonicSigner.initAddresses() method"
       },
       "api/filecoin.js.mnemonicsigner": {
         "title": "MnemonicSigner class"
+      },
+      "api/filecoin.js.mnemonicsigner.newaddress": {
+        "title": "MnemonicSigner.newAddress() method"
+      },
+      "api/filecoin.js.mnemonicsigner.setdefaultaddress": {
+        "title": "MnemonicSigner.setDefaultAddress() method"
       },
       "api/filecoin.js.mnemonicsigner.sign": {
         "title": "MnemonicSigner.sign() method"
@@ -320,20 +437,77 @@
       "api/filecoin.js.mnemonicwalletprovider._constructor_": {
         "title": "MnemonicWalletProvider.(constructor)"
       },
-      "api/filecoin.js.mnemonicwalletprovider.getaccounts": {
-        "title": "MnemonicWalletProvider.getAccounts() method"
+      "api/filecoin.js.mnemonicwalletprovider.deleteaddress": {
+        "title": "MnemonicWalletProvider.deleteAddress() method"
       },
-      "api/filecoin.js.mnemonicwalletprovider.getdefaultaccount": {
-        "title": "MnemonicWalletProvider.getDefaultAccount() method"
+      "api/filecoin.js.mnemonicwalletprovider.exportprivatekey": {
+        "title": "MnemonicWalletProvider.exportPrivateKey() method"
+      },
+      "api/filecoin.js.mnemonicwalletprovider.getaddresses": {
+        "title": "MnemonicWalletProvider.getAddresses() method"
+      },
+      "api/filecoin.js.mnemonicwalletprovider.getdefaultaddress": {
+        "title": "MnemonicWalletProvider.getDefaultAddress() method"
       },
       "api/filecoin.js.mnemonicwalletprovider.getsigner": {
         "title": "MnemonicWalletProvider.getSigner() method"
       },
+      "api/filecoin.js.mnemonicwalletprovider.hasaddress": {
+        "title": "MnemonicWalletProvider.hasAddress() method"
+      },
       "api/filecoin.js.mnemonicwalletprovider": {
         "title": "MnemonicWalletProvider class"
       },
+      "api/filecoin.js.mnemonicwalletprovider.msigapproveaddsigner": {
+        "title": "MnemonicWalletProvider.msigApproveAddSigner() method"
+      },
+      "api/filecoin.js.mnemonicwalletprovider.msigapproveremovesigner": {
+        "title": "MnemonicWalletProvider.msigApproveRemoveSigner() method"
+      },
+      "api/filecoin.js.mnemonicwalletprovider.msigapproveswapsigner": {
+        "title": "MnemonicWalletProvider.msigApproveSwapSigner() method"
+      },
+      "api/filecoin.js.mnemonicwalletprovider.msigapprovetransfer": {
+        "title": "MnemonicWalletProvider.msigApproveTransfer() method"
+      },
+      "api/filecoin.js.mnemonicwalletprovider.msigapprovetransfertxhash": {
+        "title": "MnemonicWalletProvider.msigApproveTransferTxHash() method"
+      },
+      "api/filecoin.js.mnemonicwalletprovider.msigcanceladdsigner": {
+        "title": "MnemonicWalletProvider.msigCancelAddSigner() method"
+      },
+      "api/filecoin.js.mnemonicwalletprovider.msigcancelremovesigner": {
+        "title": "MnemonicWalletProvider.msigCancelRemoveSigner() method"
+      },
+      "api/filecoin.js.mnemonicwalletprovider.msigcancelswapsigner": {
+        "title": "MnemonicWalletProvider.msigCancelSwapSigner() method"
+      },
+      "api/filecoin.js.mnemonicwalletprovider.msigcanceltransfer": {
+        "title": "MnemonicWalletProvider.msigCancelTransfer() method"
+      },
+      "api/filecoin.js.mnemonicwalletprovider.msigcreate": {
+        "title": "MnemonicWalletProvider.msigCreate() method"
+      },
+      "api/filecoin.js.mnemonicwalletprovider.msigproposeaddsigner": {
+        "title": "MnemonicWalletProvider.msigProposeAddSigner() method"
+      },
+      "api/filecoin.js.mnemonicwalletprovider.msigproposeremovesigner": {
+        "title": "MnemonicWalletProvider.msigProposeRemoveSigner() method"
+      },
+      "api/filecoin.js.mnemonicwalletprovider.msigproposeswapsigner": {
+        "title": "MnemonicWalletProvider.msigProposeSwapSigner() method"
+      },
+      "api/filecoin.js.mnemonicwalletprovider.msigproposetransfer": {
+        "title": "MnemonicWalletProvider.msigProposeTransfer() method"
+      },
+      "api/filecoin.js.mnemonicwalletprovider.newaddress": {
+        "title": "MnemonicWalletProvider.newAddress() method"
+      },
       "api/filecoin.js.mnemonicwalletprovider.sendmessage": {
         "title": "MnemonicWalletProvider.sendMessage() method"
+      },
+      "api/filecoin.js.mnemonicwalletprovider.setdefaultaddress": {
+        "title": "MnemonicWalletProvider.setDefaultAddress() method"
       },
       "api/filecoin.js.mnemonicwalletprovider.sign": {
         "title": "MnemonicWalletProvider.sign() method"

@@ -28,72 +28,78 @@ export interface WalletProviderInterface {
   }
 
   export interface MultisigProviderInterface {
-    createMultisig(requiredNumberOfSenders: number,
+    msigCreate(requiredNumberOfSenders: number,
       approvingAddresses: string[],
+      startEpoch: ChainEpoch,
       unlockDuration: ChainEpoch,
       initialBalance: string,
-      senderAddressOfCreateMsg: string,
-      gasPrice: string): Promise<Cid>;
+      senderAddressOfCreateMsg: string): Promise<Cid>;
 
-    proposeTransfer(address: string,
+    msigProposeTransfer(address: string,
       recipientAddres: string,
       value: string,
-      senderAddressOfProposeMsg: string,
-      methodToCallInProposeMsg: number,
-      paramsToIncludeInProposeMsg: []): Promise<Cid>;
-    approveTransfer(address: string,
+      senderAddressOfProposeMsg: string): Promise<Cid>;
+    msigApproveTransfer(address: string,
       proposedTransactionId: number,
       signerAddress: string): Promise<Cid>;
-    approveTransferTxHash(address: string,
+    msigApproveTransferTxHash(address: string,
       proposedMessageId: number,
       proposerAddress: string,
       recipientAddres: string,
       value: string,
-      senderAddressOfApproveMsg: string,
-      methodToCallInProposeMsg: number,
-      paramsToIncludeInProposeMsg: []): Promise<Cid>;
-    cancelTransfer(address: string,
+      senderAddressOfApproveMsg: string): Promise<Cid>;
+    msigCancelTransfer(address: string,
+      senderAddressOfCancelMsg: string,
       proposedMessageId: number,
-      proposerAddress: string,
       recipientAddres: string,
       value: string,
-      senderAddressOfCancelMsg: string,
-      methodToCallInProposeMsg: number,
-      paramsToIncludeInProposeMsg: []): Promise<Cid>;
+      methodToCallInProposeMsg: number): Promise<Cid>;
 
-    proposeAddSigner(address: string,
+    msigProposeAddSigner(address: string,
       senderAddressOfProposeMsg: string,
       newSignerAddress: string,
       increaseNumberOfRequiredSigners: boolean): Promise<Cid>;
-    approveAddSigner(address: string,
+    msigApproveAddSigner(address: string,
       senderAddressOfApproveMsg: string,
       proposedMessageId: number,
       proposerAddress: string,
       newSignerAddress: string,
       increaseNumberOfRequiredSigners: boolean): Promise<Cid>;
-    cancelAddSigner(address: string,
+    msigCancelAddSigner(address: string,
       senderAddressOfCancelMsg: string,
       proposedMessageId: number,
       newSignerAddress: string,
       increaseNumberOfRequiredSigners: boolean): Promise<Cid>;
 
-    proposeSwapSigner(address: string,
+    msigProposeSwapSigner(address: string,
       senderAddressOfProposeMsg: string,
       oldSignerAddress: string,
       newSignerAddress: string): Promise<Cid>;
-    approveSwapSigner(address: string,
+    msigApproveSwapSigner(address: string,
       senderAddressOfApproveMsg: string,
       proposedMessageId: number,
       proposerAddress: string,
       oldSignerAddress: string,
       newSignerAddress: string): Promise<Cid>;
-    cancelSwapSigner(address: string,
+    msigCancelSwapSigner(address: string,
       senderAddressOfCancelMsg: string,
       proposedMessageId: number,
       oldSignerAddress: string,
       newSignerAddress: string): Promise<Cid>;
 
-    proposeRemoveSigner(): Promise<Cid>;
-    approveRemoveSigner(): Promise<Cid>;
-    cancelRemoveSigner(): Promise<Cid>;
+    msigProposeRemoveSigner(address: string,
+      senderAddressOfProposeMsg: string,
+      addressToRemove: string,
+      decreaseNumberOfRequiredSigners: boolean): Promise<Cid>;
+    msigApproveRemoveSigner(address: string,
+      senderAddressOfApproveMsg: string,
+      proposedMessageId: number,
+      proposerAddress: string,
+      addressToRemove: string,
+      decreaseNumberOfRequiredSigners: boolean): Promise<Cid>;
+    msigCancelRemoveSigner(address: string,
+      senderAddressOfCancelMsg: string,
+      proposedMessageId: number,
+      addressToRemove: string,
+      decreaseNumberOfRequiredSigners: boolean): Promise<Cid>;
   }

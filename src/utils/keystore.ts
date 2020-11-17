@@ -4,7 +4,7 @@ import Mnemonic from 'bitcore-mnemonic';
 import Nacl from 'tweetnacl';
 import NaclUtil from 'tweetnacl-util';
 import ScryptAsync from 'scrypt-async';
-import * as filecoin_signer from '@zondax/filecoin-signing-tools/js';
+import * as filecoin_signer from '@zondax/filecoin-signing-tools';
 
 export class Keystore {
     public salt!: string;

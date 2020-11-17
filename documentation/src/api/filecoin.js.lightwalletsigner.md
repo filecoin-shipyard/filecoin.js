@@ -26,5 +26,4 @@ export declare class LightWalletSigner implements Signer
 
 |  Method | Modifiers | Description |
 |  --- | --- | --- |
-|  [getDefaultAccount()](./filecoin.js.lightwalletsigner.getdefaultaccount.md) |  |  |
 |  [sign(message, password)](./filecoin.js.lightwalletsigner.sign.md) |  |  |

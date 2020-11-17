@@ -12,24 +12,31 @@ hide_title: true
 <b>Signature:</b>
 
 ```typescript
-export declare class MetamaskWalletProvider extends HttpJsonRpcWalletProvider 
+export declare class MetamaskWalletProvider extends BaseWalletProvider implements WalletProviderInterface 
 ```
-<b>Extends:</b> [HttpJsonRpcWalletProvider](./filecoin.js.httpjsonrpcwalletprovider.md)
+<b>Extends:</b> BaseWalletProvider
+
+<b>Implements:</b> WalletProviderInterface
 
 ## Constructors
 
 |  Constructor | Modifiers | Description |
 |  --- | --- | --- |
-|  [(constructor)(connector, filecoinApi)](./filecoin.js.metamaskwalletprovider._constructor_.md) |  | Constructs a new instance of the <code>MetamaskWalletProvider</code> class |
+|  [(constructor)(client, filecoinApi)](./filecoin.js.metamaskwalletprovider._constructor_.md) |  | Constructs a new instance of the <code>MetamaskWalletProvider</code> class |
 
 ## Methods
 
 |  Method | Modifiers | Description |
 |  --- | --- | --- |
-|  [getAccounts()](./filecoin.js.metamaskwalletprovider.getaccounts.md) |  |  |
-|  [getDefaultAccount()](./filecoin.js.metamaskwalletprovider.getdefaultaccount.md) |  |  |
+|  [deleteAddress(address)](./filecoin.js.metamaskwalletprovider.deleteaddress.md) |  |  |
+|  [exportPrivateKey(address)](./filecoin.js.metamaskwalletprovider.exportprivatekey.md) |  |  |
+|  [getAddresses()](./filecoin.js.metamaskwalletprovider.getaddresses.md) |  |  |
+|  [getDefaultAddress()](./filecoin.js.metamaskwalletprovider.getdefaultaddress.md) |  |  |
 |  [getSigner()](./filecoin.js.metamaskwalletprovider.getsigner.md) |  |  |
+|  [hasAddress(address)](./filecoin.js.metamaskwalletprovider.hasaddress.md) |  |  |
+|  [newAddress()](./filecoin.js.metamaskwalletprovider.newaddress.md) |  |  |
 |  [sendMessage(msg)](./filecoin.js.metamaskwalletprovider.sendmessage.md) |  |  |
+|  [setDefaultAddress(address)](./filecoin.js.metamaskwalletprovider.setdefaultaddress.md) |  |  |
 |  [sign(data)](./filecoin.js.metamaskwalletprovider.sign.md) |  |  |
 |  [signMessage(msg)](./filecoin.js.metamaskwalletprovider.signmessage.md) |  |  |
 |  [verify(address, data, sign)](./filecoin.js.metamaskwalletprovider.verify.md) |  |  |

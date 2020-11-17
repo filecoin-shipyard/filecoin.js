@@ -13,10 +13,10 @@ hide_title: true
 |  Class | Description |
 |  --- | --- |
 |  [HttpJsonRpcConnector](./filecoin.js.httpjsonrpcconnector.md) |  |
-|  [HttpJsonRpcWalletProvider](./filecoin.js.httpjsonrpcwalletprovider.md) |  |
-|  [LotusClient](./filecoin.js.jsonrpcprovider.md) |  |
 |  [LightWalletProvider](./filecoin.js.lightwalletprovider.md) |  |
 |  [LightWalletSigner](./filecoin.js.lightwalletsigner.md) |  |
+|  [LotusClient](./filecoin.js.lotusclient.md) |  |
+|  [LotusWalletProvider](./filecoin.js.lotuswalletprovider.md) |  |
 |  [MetamaskSigner](./filecoin.js.metamasksigner.md) |  |
 |  [MetamaskSnapHelper](./filecoin.js.metamasksnaphelper.md) |  |
 |  [MetamaskWalletProvider](./filecoin.js.metamaskwalletprovider.md) |  |

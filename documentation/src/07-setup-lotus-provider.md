@@ -67,14 +67,15 @@ proxyServer.listen(8000);
 
 Node JavaScript/TypeScript:
 ```javascript
-import { HttpJsonRpcConnector, HttpJsonRpcWalletProvider } from 'filecoin.js';
+import { HttpJsonRpcConnector,LotusWalletProvider } from 'filecoin.js';
 
 (async () => {
 
   const connector = new HttpJsonRpcConnector({ url: __LOTUS_RPC_ENDPOINT__, token: __LOTUS_AUTH_TOKEN__ });
-  const walletProvider = new HttpJsonRpcWalletProvider(connector);
+  const lotusClient = new LotusClient(connector);
+  const walletProvider = new LotusWalletProvider(lotusClient);
 
-  const myAddress = await walletProvider.getDefaultAccount();
+  const myAddress = await walletProvider.getDefaultAddress();
 
 })().then().catch();
 ```
@@ -87,9 +88,10 @@ Browser:
 (async () => {
 
   const connector = new FilecoinJs.HttpJsonRpcConnector({ url: __LOTUS_RPC_ENDPOINT__, token: __LOTUS_AUTH_TOKEN__ });
-  const walletProvider = new FilecoinJs.HttpJsonRpcWalletProvider(connector);
+  const lotusClient = new LotusClient(connector);
+  const walletProvider = new LotusWalletProvider(lotusClient);
 
-  const myAddress = await walletProvider.getDefaultAccount();
+  const myAddress = await walletProvider.getDefaultAddress();
 
 })().then().catch();
 </script>

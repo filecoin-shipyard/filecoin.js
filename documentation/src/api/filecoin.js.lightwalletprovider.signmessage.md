@@ -12,7 +12,7 @@ hide_title: true
 <b>Signature:</b>
 
 ```typescript
-signMessage(msg: Message, password?: string): Promise<SignedMessage>;
+signMessage(msg: Message): Promise<SignedMessage>;
 ```
 
 ## Parameters
@@ -20,7 +20,6 @@ signMessage(msg: Message, password?: string): Promise<SignedMessage>;
 |  Parameter | Type | Description |
 |  --- | --- | --- |
 |  msg | Message |  |
-|  password | string |  |
 
 <b>Returns:</b>
 
