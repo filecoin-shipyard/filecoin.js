@@ -2,6 +2,10 @@ A JavaScript (and TypeScript) library for interacting with the [Filecoin's](http
 
 :warning: The library is currently in ALPHA: things will not work or work incorectly, will break and the API will change! :warning:
 
+## Documentation
+
+Visit the [Docs](https://filecoin-shipyard.github.io/filecoin.js/) site.
+
 ## Installing
 
 Node:
