@@ -4,7 +4,7 @@ A JavaScript (and TypeScript) library for interacting with the [Filecoin's](http
 
 ## Documentation
 
-Visit the [Docs](https://filecoin-shipyard.github.io/filecoin.js/) site.
+Visit the [Filecoin JS Docs](https://filecoin-shipyard.github.io/filecoin.js/).
 
 ## Installing
 
