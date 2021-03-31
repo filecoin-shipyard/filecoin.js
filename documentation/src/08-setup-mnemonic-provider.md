@@ -23,7 +23,7 @@ import { HttpJsonRpcConnector, MnemonicWalletProvider } from 'filecoin.js';
     hdDerivationPath
   );
 
-  const myAddress = await walletProvider.getDefaultAccount();
+  const myAddress = await walletProvider.getDefaultAddress();
   console.log(myAddress);
   // f1zx43cf6qb6rd...
 
@@ -48,7 +48,7 @@ Browser:
     hdDerivationPath
   );
 
-  const myAddress = await walletProvider.getDefaultAccount();
+  const myAddress = await walletProvider.getDefaultAddress();
   console.log(myAddress);
   // f1zx43cf6qb6rd...
 

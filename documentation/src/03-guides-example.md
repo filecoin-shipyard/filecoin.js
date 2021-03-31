@@ -13,7 +13,7 @@ import { HttpJsonRpcConnector, LotusClient } from 'filecoin.js';
 
 (async () => {
 
-  const connector = new HttpJsonRpcConnector({ url: __LOTUS_RPC_ENDPOINT__, token: __LOTUS_AUTH_TOKEN__ });
+  const httpConnector = new HttpJsonRpcConnector({ url: __LOTUS_HTTP_RPC_ENDPOINT__, token: __LOTUS_AUTH_TOKEN__ });
 
   const lotusClient = new LotusClient(httpConnector);
   const version = await lotusClient.common.version();
@@ -29,7 +29,7 @@ Browser:
 <script type="text/javascript">
 (async () => {
 
-  const connector = new FilecoinJs.HttpJsonRpcConnector({ url: __LOTUS_RPC_ENDPOINT__, token: __LOTUS_AUTH_TOKEN__ });
+  const httpConnector = new FilecoinJs.HttpJsonRpcConnector({ url: __LOTUS_HTTP_RPC_ENDPOINT__, token: __LOTUS_AUTH_TOKEN__ });
 
   const lotusClient = new FilecoinJs.LotusClient(httpConnector);
   const version = await lotusClient.common.version();
