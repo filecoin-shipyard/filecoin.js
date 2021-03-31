@@ -27,8 +27,9 @@ To simplify the actual snap install we built a helper which does the work for yo
 
     const metamaskWalletProvider = new FilecoinJs.MetamaskWalletProvider(lotusClient, metamaskHelper.filecoinApi)
 
+    let metamaskAddress
     try {
-        metamaskAddress = await metamaskWalletProvider.getDefaultAccount();
+        metamaskAddress = await metamaskWalletProvider.getDefaultAddress();
     } catch (e) {
         console.log('metamask error',e);
     }
