@@ -1,3 +1,11 @@
+# filecoin.js
+
+## Status
+
+This repository is in a **standby** state. It is not being actively maintained or kept in sync with the libraries it depends on. It may be archived in the near future. If you are interested in updating or maintaining this library, please open an issue or pull request for discussion.
+
+---
+
 A JavaScript (and TypeScript) library for interacting with the [Filecoin's](https://filecoin.io) [Lotus](https://github.com/filecoin-project/lotus) node, with support for external signers.
 
 :warning: The library is currently in ALPHA: things will not work or work incorectly, will break and the API will change! :warning:
