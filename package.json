@@ -1,6 +1,6 @@
 {
-  "name": "filecoin.js",
-  "version": "0.0.3-alpha",
+  "name": "@truffle/filecoin.js",
+  "version": "0.0.1",
   "description": "A JavaScript/TypeScript client library for Filecoin.io's Lotus",
   "main": "builds/dist/index.js",
   "types": "builds/dist/index.d.ts",
