@@ -1,5 +1,9 @@
 # filecoin.js
 
+## Publishing this package
+
+Before publishing you will probably need to perform an `npm run build` and `npm run bundle`, otherwise the package will get published without its built files.
+
 ## Status
 
 This repository is in a **standby** state. It is not being actively maintained or kept in sync with the libraries it depends on. It may be archived in the near future. If you are interested in updating or maintaining this library, please open an issue or pull request for discussion.
