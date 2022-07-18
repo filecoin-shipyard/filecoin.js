@@ -40,12 +40,12 @@ class HomeSplash extends React.Component {
       <SplashContainer>
           <ProjectTitle />
           <PromoSection>
-      <h2>Status</h2>
-<div>
-      This repository is in a standby state. It is not being actively maintained or kept in sync with the libraries it depends on. It may be archived in the near future. If you are interested in updating or maintaining this library, please open an issue or pull request for discussion.
-The <a href="https://github.com/filecoin-shipyard/js-lotus-client">js-lotus-client</a> suite of libraries may be used to implement some of the features that were intended to be developed here and is under more active maintenance.
-  </div>          
-      <Button href={docUrl('introduction')}>Documentation</Button>
+            <h2>Status</h2>
+            <div>
+              This repository is in a standby state. It is not being actively maintained or kept in sync with the libraries it depends on. It may be archived in the near future. If you are interested in updating or maintaining this library, please open an issue or pull request for discussion.
+              The <a href="https://github.com/filecoin-shipyard/js-lotus-client">js-lotus-client</a> suite of libraries may be used to implement some of the features that were intended to be developed here and is under more active maintenance.
+            </div>           
+            <Button href={docUrl('introduction')}>Documentation</Button>
             <Button href={docUrl('api/filecoin.js')}>API Reference</Button>
             <Button href={repoUrl}>GitHub</Button>
           </PromoSection>
