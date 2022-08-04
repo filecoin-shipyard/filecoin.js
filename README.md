@@ -2,15 +2,11 @@
 
 ## Status
 
-This repository is in a **standby** state. It is not being actively maintained or kept in sync with the libraries it depends on. It may be archived in the near future. If you are interested in updating or maintaining this library, please open an issue or pull request for discussion.
-
-The [js-lotus-client](https://github.com/filecoin-shipyard/js-lotus-client) suite of libraries may be used to implement some of the features that were intended to be developed here and is under more active maintenance.
+This repository is currently being updated and will be further updated to support the coming Filecoin VM. Learn more at [fvm.filecoin.io](https://fvm.filecoin.io)
 
 ---
 
 A JavaScript (and TypeScript) library for interacting with the [Filecoin's](https://filecoin.io) [Lotus](https://github.com/filecoin-project/lotus) node, with support for external signers.
-
-:warning: The library is currently in ALPHA: things will not work or work incorectly, will break and the API will change! :warning:
 
 ## Documentation
 
