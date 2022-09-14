@@ -23,7 +23,15 @@ class HomeSplash extends React.Component {
     const PromoSection = props => (
       <div className="section promoSection">
         <div className="promoRow">
-          <div className="pluginRowBlock">{props.children}</div>
+          <div className="statusText">
+            {"This repository is currently being updated and will be further updated to support the coming Filecoin VM. Learn more at "}
+            <a href="https://fvm.filecoin.io" rel="noreferrer noopener" target="_blank">fvm.filecoin.io</a>
+          </div>
+          <div className="pluginRowBlock">
+            <Button href={docUrl('introduction')}>Documentation</Button>
+            <Button href={docUrl('api/filecoin.js')}>API Reference</Button>
+            <Button href={repoUrl}>GitHub</Button>
+          </div>
         </div>
       </div>
     );
@@ -38,18 +46,8 @@ class HomeSplash extends React.Component {
 
     return (
       <SplashContainer>
-          <ProjectTitle />
-          <PromoSection>
-            <h2 style={{color: "white"}}>Status</h2>
-            <div style={{color: "white"}}>
-              As of September 2022, work has resumed to update this project. If you are interested in updating or maintaining this project, please open an issue or pull request for discussion.
-              <br/>
-              The <a href="https://github.com/filecoin-shipyard/js-lotus-client">js-lotus-client</a> suite of libraries may be used to implement some of the features that were intended to be developed here and is under more active maintenance.
-            </div>
-            <Button href={docUrl('introduction')}>Documentation</Button>
-            <Button href={docUrl('api/filecoin.js')}>API Reference</Button>
-            <Button href={repoUrl}>GitHub</Button>
-          </PromoSection>
+        <ProjectTitle />
+        <PromoSection />
       </SplashContainer>
     );
   }

@@ -34,6 +34,17 @@ a {
   padding: 8px;
 }
 
+.homeContainer .statusText {
+  margin: 0 0 24px;
+  font-size: 16px;
+  color: white;
+}
+
+.homeContainer .statusText a {
+  text-decoration: underline;
+  color: white;
+}
+
 .homeContainer .promoSection .button {
   border: 1px solid #fff;
   border-radius: 6px;
