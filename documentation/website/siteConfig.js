@@ -43,9 +43,7 @@ const siteConfig = {
   headerLinks: [
     {doc: 'introduction', label: 'Documentation'},
     {doc: 'api/filecoin.js', label: 'API Reference'},
-    {page: 'help', label: 'Help'},
-    {href: 'https://www.github.com', label: "GitHub"},
-    {blog: true, label: 'Blog'},
+    {href: 'https://filecoin-shipyard.github.io', label: "GitHub"},
   ],
 
   // If you have users set above, you add it here:
