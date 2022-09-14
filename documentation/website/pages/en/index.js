@@ -42,7 +42,7 @@ class HomeSplash extends React.Component {
           <PromoSection>
             <h2 style={{color: "white"}}>Status</h2>
             <div style={{color: "white"}}>
-              This project is in a standby state. It is not being actively maintained or kept in sync with the libraries it depends on. It may be archived in the near future. If you are interested in updating or maintaining this project, please open an issue or pull request for discussion.
+              As of September 2022, work has resumed to update this project. If you are interested in updating or maintaining this project, please open an issue or pull request for discussion.
               <br/>
               The <a href="https://github.com/filecoin-shipyard/js-lotus-client">js-lotus-client</a> suite of libraries may be used to implement some of the features that were intended to be developed here and is under more active maintenance.
             </div>

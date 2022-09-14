@@ -552,9 +552,7 @@
     "links": {
       "Documentation": "Documentation",
       "API Reference": "API Reference",
-      "Help": "Help",
-      "GitHub": "GitHub",
-      "Blog": "Blog"
+      "GitHub": "GitHub"
     },
     "categories": {
       "Getting started": "Getting started",
