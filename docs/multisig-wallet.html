@@ -1,0 +1,271 @@
+<!DOCTYPE html><html lang="en"><head><meta charSet="utf-8"/><meta http-equiv="X-UA-Compatible" content="IE=edge"/><title>Multisig Wallets · Filecoin.js</title><meta name="viewport" content="width=device-width"/><meta name="generator" content="Docusaurus"/><meta name="description" content="# Multisig Wallets"/><meta name="docsearch:language" content="en"/><meta property="og:title" content="Multisig Wallets · Filecoin.js"/><meta property="og:type" content="website"/><meta property="og:url" content="https://filecoin-shipyard.github.io/filecoin.js/"/><meta property="og:description" content="# Multisig Wallets"/><meta property="og:image" content="https://filecoin-shipyard.github.io/filecoin.js/img/undraw_online.svg"/><meta name="twitter:card" content="summary"/><meta name="twitter:image" content="https://filecoin-shipyard.github.io/filecoin.js/img/undraw_tweetstorm.svg"/><link rel="shortcut icon" href="/filecoin.js/img/favicon.ico"/><link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/vs2015.min.css"/><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,400i,700"/><script type="text/javascript" src="https://buttons.github.io/buttons.js"></script><script src="/filecoin.js/js/scrollSpy.js"></script><link rel="stylesheet" href="/filecoin.js/css/main.css"/><script src="/filecoin.js/js/codetabs.js"></script></head><body class="sideNavVisible separateOnPageNav"><div class="fixedHeaderContainer"><div class="headerWrapper wrapper"><header><a href="/filecoin.js/"><img class="logo" src="/filecoin.js/img/logo.svg" alt="Filecoin.js"/><h2 class="headerTitleWithLogo">Filecoin.js</h2></a><div class="navigationWrapper navigationSlider"><nav class="slidingNav"><ul class="nav-site nav-site-internal"><li class="siteNavGroupActive"><a href="/filecoin.js/docs/introduction" target="_self">Documentation</a></li><li class=""><a href="/filecoin.js/docs/api/filecoin.js" target="_self">API Reference</a></li><li class=""><a href="https://filecoin-shipyard.github.io" target="_self">GitHub</a></li></ul></nav></div></header></div></div><div class="navPusher"><div class="docMainWrapper wrapper"><div class="docsNavContainer" id="docsNav"><nav class="toc"><div class="toggleNav"><section class="navWrapper wrapper"><div class="navBreadcrumb wrapper"><div class="navToggle" id="navToggler"><div class="hamburger-menu"><div class="line1"></div><div class="line2"></div><div class="line3"></div></div></div><h2><i>›</i><span>Extra</span></h2><div class="tocToggler" id="tocToggler"><i class="icon-toc"></i></div></div><div class="navGroups"><div class="navGroup"><h3 class="navGroupCategoryTitle">Getting started</h3><ul class=""><li class="navListItem"><a class="navItem" href="/filecoin.js/docs/introduction">Introduction</a></li><li class="navListItem"><a class="navItem" href="/filecoin.js/docs/installing">Adding Filecoin.js</a></li><li class="navListItem"><a class="navItem" href="/filecoin.js/docs/guides-example">Guides example</a></li><li class="navListItem"><a class="navItem" href="/filecoin.js/docs/ws-vs-http">WS vs HTTP</a></li></ul></div><div class="navGroup"><h3 class="navGroupCategoryTitle">Setup Wallet Providers</h3><ul class=""><li class="navListItem"><a class="navItem" href="/filecoin.js/docs/setup-lotus-provider">Setup lotus provider</a></li><li class="navListItem"><a class="navItem" href="/filecoin.js/docs/setup-mnemonic-provider">Setup mnemonic provider</a></li><li class="navListItem"><a class="navItem" href="/filecoin.js/docs/setup-metamask-provider">Setup metamask provider</a></li></ul></div><div class="navGroup"><h3 class="navGroupCategoryTitle">Using a provider</h3><ul class=""><li class="navListItem"><a class="navItem" href="/filecoin.js/docs/send-message">Send message</a></li><li class="navListItem"><a class="navItem" href="/filecoin.js/docs/sign-message">Sign message</a></li><li class="navListItem"><a class="navItem" href="/filecoin.js/docs/verify-message">Verify message</a></li><li class="navListItem"><a class="navItem" href="/filecoin.js/docs/check-if-mined">Check if message is mined</a></li></ul></div><div class="navGroup"><h3 class="navGroupCategoryTitle">Extra</h3><ul class=""><li class="navListItem"><a class="navItem" href="/filecoin.js/docs/payment-channels">Payment channels</a></li><li class="navListItem"><a class="navItem" href="/filecoin.js/docs/state-methods">State methods</a></li><li class="navListItem navListItemActive"><a class="navItem" href="/filecoin.js/docs/multisig-wallet">Multisig Wallets</a></li></ul></div><div class="navGroup"><h3 class="navGroupCategoryTitle">Contributing</h3><ul class=""><li class="navListItem"><a class="navItem" href="/filecoin.js/docs/how-to-contribute">How to contribute</a></li><li class="navListItem"><a class="navItem" href="/filecoin.js/docs/development-workflow">Development workflow</a></li></ul></div></div></section></div><script>
+            var coll = document.getElementsByClassName('collapsible');
+            var checkActiveCategory = true;
+            for (var i = 0; i < coll.length; i++) {
+              var links = coll[i].nextElementSibling.getElementsByTagName('*');
+              if (checkActiveCategory){
+                for (var j = 0; j < links.length; j++) {
+                  if (links[j].classList.contains('navListItemActive')){
+                    coll[i].nextElementSibling.classList.toggle('hide');
+                    coll[i].childNodes[1].classList.toggle('rotate');
+                    checkActiveCategory = false;
+                    break;
+                  }
+                }
+              }
+
+              coll[i].addEventListener('click', function() {
+                var arrow = this.childNodes[1];
+                arrow.classList.toggle('rotate');
+                var content = this.nextElementSibling;
+                content.classList.toggle('hide');
+              });
+            }
+
+            document.addEventListener('DOMContentLoaded', function() {
+              createToggler('#navToggler', '#docsNav', 'docsSliderActive');
+              createToggler('#tocToggler', 'body', 'tocActive');
+
+              var headings = document.querySelector('.toc-headings');
+              headings && headings.addEventListener('click', function(event) {
+                var el = event.target;
+                while(el !== headings){
+                  if (el.tagName === 'A') {
+                    document.body.classList.remove('tocActive');
+                    break;
+                  } else{
+                    el = el.parentNode;
+                  }
+                }
+              }, false);
+
+              function createToggler(togglerSelector, targetSelector, className) {
+                var toggler = document.querySelector(togglerSelector);
+                var target = document.querySelector(targetSelector);
+
+                if (!toggler) {
+                  return;
+                }
+
+                toggler.onclick = function(event) {
+                  event.preventDefault();
+
+                  target.classList.toggle(className);
+                };
+              }
+            });
+        </script></nav></div><div class="container mainContainer docsContainer"><div class="wrapper"><div class="post"><header class="postHeader"></header><article><div><span><h1><a class="anchor" aria-hidden="true" id="multisig-wallets"></a><a href="#multisig-wallets" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Multisig Wallets</h1>
+<p>Multi-signature, or multisig, is a wallet configuration that requires at least two keys to authorize a transaction. You can specify the list of signers and the number of required signatures to approve a proposal when you create a multisig wallet. You can alter the signers list after creating the wallet by adding or removing addresses or by swaping an old address with a new one.</p>
+<p>The multisig wallets can be programmed to release funds linearly by specifying a StartEpoch from which the funds are available and the UnlockDuration which controls the duration of the vesting period.</p>
+<p>The MnemonicWalletProvider and LightWalletProvider implement all the functions listed below. The LotusWalletProvider has a few differences because it calls directly the lotus api and at the time of this writing (12 nov 2020) some things are not yet fully implemented. In msigCreate the startEpoch is hardcoded to 0 in the api call, and msigApproveRemoveSigner and msigCancelRemoveSigner are not implemented yet.</p>
+<p>The operations you can propose are: transfer, add signer, swap signer and remove signer. The signers in the list can approve the proposal, and when the treshold is met the action is executed. The signer that initiated the operation can cancel it.</p>
+<p>You can find the multisig actor code <a href="https://github.com/filecoin-project/specs-actors/blob/master/actors/builtin/multisig/multisig_actor.go">here</a>.</p>
+<p>General</p>
+<pre><code class="hljs css language-javascript">    msigGetVestingSchedule(
+        address: string,
+        <span class="hljs-attr">tipSetKey</span>: TipSetKey,
+    ): <span class="hljs-built_in">Promise</span> &lt; MsigVesting &gt;
+
+    msigGetAvailableBalance(
+        address: string,
+        <span class="hljs-attr">tipSetKey</span>: TipSetKey
+    ): <span class="hljs-built_in">Promise</span> &lt; string &gt;
+
+    msigGetVested(
+        address: string,
+        <span class="hljs-attr">startEpoch</span>: TipSetKey,
+        <span class="hljs-attr">endEpoch</span>: TipSetKey
+    ): <span class="hljs-built_in">Promise</span> &lt; string &gt;
+</code></pre>
+<p>Create multisig wallet</p>
+<pre><code class="hljs css language-javascript">    msigCreate(
+        requiredNumberOfSenders: number,
+        <span class="hljs-attr">approvingAddresses</span>: string[],
+        <span class="hljs-attr">startEpoch</span>: ChainEpoch,
+        <span class="hljs-attr">unlockDuration</span>: ChainEpoch,
+        <span class="hljs-attr">initialBalance</span>: string,
+        <span class="hljs-attr">senderAddressOfCreateMsg</span>: string
+    ): <span class="hljs-built_in">Promise</span> &lt; Cid &gt;
+</code></pre>
+<p>Transfer funds</p>
+<pre><code class="hljs css language-javascript">    msigProposeTransfer(
+        address: string,
+        <span class="hljs-attr">recipientAddres</span>: string,
+        <span class="hljs-attr">value</span>: string,
+        <span class="hljs-attr">senderAddressOfProposeMsg</span>: string
+    ): <span class="hljs-built_in">Promise</span> &lt; Cid &gt;
+
+    msigApproveTransferTxHash(
+        address: string,
+        <span class="hljs-attr">proposedMessageId</span>: number,
+        <span class="hljs-attr">proposerAddress</span>: string,
+        <span class="hljs-attr">recipientAddres</span>: string,
+        <span class="hljs-attr">value</span>: string,
+        <span class="hljs-attr">senderAddressOfApproveMsg</span>: string
+    ): <span class="hljs-built_in">Promise</span> &lt; Cid &gt;
+
+    msigCancelTransfer(
+        address: string,
+        <span class="hljs-attr">senderAddressOfCancelMsg</span>: string,
+        <span class="hljs-attr">proposedMessageId</span>: number,
+        <span class="hljs-attr">recipientAddres</span>: string,
+        <span class="hljs-attr">value</span>: string,
+        <span class="hljs-attr">methodToCallInProposeMsg</span>: number
+    ): <span class="hljs-built_in">Promise</span> &lt; Cid &gt;
+</code></pre>
+<p>Add signer</p>
+<pre><code class="hljs css language-javascript">    msigProposeAddSigner(
+        address: string,
+        <span class="hljs-attr">senderAddressOfProposeMsg</span>: string,
+        <span class="hljs-attr">newSignerAddress</span>: string,
+        <span class="hljs-attr">increaseNumberOfRequiredSigners</span>: boolean
+    ): <span class="hljs-built_in">Promise</span> &lt; Cid &gt;
+
+    msigApproveAddSigner(
+        address: string,
+        <span class="hljs-attr">senderAddressOfApproveMsg</span>: string,
+        <span class="hljs-attr">proposedMessageId</span>: number,
+        <span class="hljs-attr">proposerAddress</span>: string,
+        <span class="hljs-attr">newSignerAddress</span>: string,
+        <span class="hljs-attr">increaseNumberOfRequiredSigners</span>: boolean
+    ): <span class="hljs-built_in">Promise</span> &lt; Cid &gt;
+
+    msigCancelAddSigner(
+        address: string,
+        <span class="hljs-attr">senderAddressOfCancelMsg</span>: string,
+        <span class="hljs-attr">proposedMessageId</span>: number,
+        <span class="hljs-attr">newSignerAddress</span>: string,
+        <span class="hljs-attr">increaseNumberOfRequiredSigners</span>: boolean
+    ): <span class="hljs-built_in">Promise</span> &lt; Cid &gt;
+</code></pre>
+<p>Swap signer</p>
+<pre><code class="hljs css language-javascript">    msigProposeSwapSigner(
+        address: string,
+        <span class="hljs-attr">senderAddressOfProposeMsg</span>: string,
+        <span class="hljs-attr">oldSignerAddress</span>: string,
+        <span class="hljs-attr">newSignerAddress</span>: string
+    ): <span class="hljs-built_in">Promise</span> &lt; Cid &gt;
+
+    msigApproveSwapSigner(
+        address: string,
+        <span class="hljs-attr">senderAddressOfApproveMsg</span>: string,
+        <span class="hljs-attr">proposedMessageId</span>: number,
+        <span class="hljs-attr">proposerAddress</span>: string,
+        <span class="hljs-attr">oldSignerAddress</span>: string,
+        <span class="hljs-attr">newSignerAddress</span>: string
+    ): <span class="hljs-built_in">Promise</span> &lt; Cid &gt;
+
+    msigCancelSwapSigner(
+        address: string,
+        <span class="hljs-attr">senderAddressOfCancelMsg</span>: string,
+        <span class="hljs-attr">proposedMessageId</span>: number,
+        <span class="hljs-attr">oldSignerAddress</span>: string,
+        <span class="hljs-attr">newSignerAddress</span>: string
+    ): <span class="hljs-built_in">Promise</span> &lt; Cid &gt;
+</code></pre>
+<p>Remove signer</p>
+<pre><code class="hljs css language-javascript">    msigProposeRemoveSigner(
+        address: string,
+        <span class="hljs-attr">senderAddressOfProposeMsg</span>: string,
+        <span class="hljs-attr">addressToRemove</span>: string,
+        <span class="hljs-attr">decreaseNumberOfRequiredSigners</span>: boolean
+    ): <span class="hljs-built_in">Promise</span> &lt; Cid &gt;
+
+    msigApproveRemoveSigner(
+        address: string,
+        <span class="hljs-attr">senderAddressOfApproveMsg</span>: string,
+        <span class="hljs-attr">proposedMessageId</span>: number,
+        <span class="hljs-attr">proposerAddress</span>: string,
+        <span class="hljs-attr">addressToRemove</span>: string,
+        <span class="hljs-attr">decreaseNumberOfRequiredSigners</span>: boolean
+    ): <span class="hljs-built_in">Promise</span> &lt; Cid &gt;
+
+    msigCancelRemoveSigner(
+        address: string,
+        <span class="hljs-attr">senderAddressOfCancelMsg</span>: string,
+        <span class="hljs-attr">proposedMessageId</span>: number,
+        <span class="hljs-attr">addressToRemove</span>: string,
+        <span class="hljs-attr">decreaseNumberOfRequiredSigners</span>: boolean
+    ): <span class="hljs-built_in">Promise</span> &lt; Cid &gt;
+</code></pre>
+<p>Examples</p>
+<pre><code class="hljs css language-javascript"><span class="hljs-comment">// init wallet provider and create multisig wallet</span>
+<span class="hljs-keyword">const</span> httpConnector = <span class="hljs-keyword">new</span> HttpJsonRpcConnector({
+    __LOTUS_RPC_ENDPOINT__,
+    <span class="hljs-attr">token</span>: __LOTUS_AUTH_TOKEN__
+});
+<span class="hljs-keyword">const</span> lotusClient = <span class="hljs-keyword">new</span> LotusClient(httpConnector);
+<span class="hljs-keyword">const</span> mnemonicWalletProvider = <span class="hljs-keyword">new</span> MnemonicWalletProvider(lotusClient, testMnemonic);
+
+<span class="hljs-keyword">const</span> noOfRequiredSigners = <span class="hljs-number">2</span>;
+<span class="hljs-keyword">const</span> signerAdresses = ...
+const msigWalletCreator = ...
+
+const multisigCid = <span class="hljs-keyword">await</span> mnemonicWalletProvider.msigCreate(noOfRequiredSigners, signerAdresses, startEpoch, unlockDuration, initialBalance, msigWalletCreator);
+<span class="hljs-keyword">const</span> receipt = <span class="hljs-keyword">await</span> lotusClient.state.waitMsg(multisigCid, <span class="hljs-number">0</span>);
+<span class="hljs-comment">// you can retrieve the address of the newly created multisig wallet from the receipt of the create wallet message</span>
+<span class="hljs-keyword">const</span> multisigAddress = receipt.ReturnDec.RobustAddress;
+<span class="hljs-keyword">const</span> balance = <span class="hljs-keyword">await</span> mnemonicWalletProvider.msigGetAvailableBalance(multisigAddress, []);
+
+
+<span class="hljs-comment">// propose transfer</span>
+<span class="hljs-keyword">const</span> initTransferCid = <span class="hljs-keyword">await</span> mnemonicWalletProvider.msigProposeTransfer(multisigAddress, receiverAddress, amountToTransfer, proposerAddress);
+<span class="hljs-keyword">const</span> receiptTransferPropose = <span class="hljs-keyword">await</span> lotusClient.state.waitMsg(initTransferCid, <span class="hljs-number">0</span>);
+<span class="hljs-comment">// you can get the transaction id of a propose operation from the receipt of the propose message</span>
+<span class="hljs-keyword">const</span> txnID = receiptTransferStart.ReturnDec.TxnID;
+
+<span class="hljs-comment">// approve transfer</span>
+<span class="hljs-keyword">const</span> approveTransferCid = <span class="hljs-keyword">await</span> mnemonicWalletProvider.msigApproveTransferTxHash(multisigAddress, txnID, proposerAddress, receiverAddress, amountToTransfer, approverAddress);
+<span class="hljs-keyword">const</span> receiptTransferApprove = <span class="hljs-keyword">await</span> lotusClient.state.waitMsg(approveTransferCid, <span class="hljs-number">0</span>);
+
+<span class="hljs-comment">// cancel transfer - this message can only be sent by the sender of the initial proposal</span>
+<span class="hljs-keyword">const</span> cancelTransferCid = <span class="hljs-keyword">await</span> mnemonicWalletProvider.msigCancelTransfer(multisigAddress, proposerAddress, txnID, mnemonicAddress, amountToTransfer);
+<span class="hljs-keyword">const</span> receiptTransferCancel = <span class="hljs-keyword">await</span> lotusClient.state.waitMsg(cancelTransferCid, <span class="hljs-number">0</span>);
+
+
+<span class="hljs-comment">// propose add signer</span>
+<span class="hljs-keyword">const</span> initAddProposeCid = <span class="hljs-keyword">await</span> mnemonicWalletProvider.msigProposeAddSigner(multisigAddress, proposerAddress, addressToAdd, increaseNumberOfRequiredSigners);
+<span class="hljs-keyword">const</span> receiptAddProposeCid = <span class="hljs-keyword">await</span> lotusClient.state.waitMsg(initAddProposeCid, <span class="hljs-number">0</span>);
+<span class="hljs-comment">// you can get the transaction id of a propose operation from the receipt of the propose message</span>
+<span class="hljs-keyword">const</span> txnID = receiptAddProposeCid.ReturnDec.TxnID;
+
+<span class="hljs-comment">// approve add signer</span>
+<span class="hljs-keyword">const</span> approveAddCid = <span class="hljs-keyword">await</span> mnemonicWalletProvider.msigApproveAddSigner(multisigAddress, approverAddress, txnID, proposerAddress, addressToAdd, increaseNumberOfRequiredSigners);
+<span class="hljs-keyword">const</span> receiptAddApprove = <span class="hljs-keyword">await</span> lotusClient.state.waitMsg(approveAddCid, <span class="hljs-number">0</span>);
+
+<span class="hljs-comment">// cancel add signer - this message can only be sent by the sender of the initial proposal</span>
+<span class="hljs-keyword">const</span> cancelAddCid = <span class="hljs-keyword">await</span> mnemonicWalletProvider.msigCancelAddSigner(multisigAddress, proposerAddress, txnID, addressToAdd, increaseNumberOfRequiredSigners);
+<span class="hljs-keyword">const</span> receiptAddCancel = <span class="hljs-keyword">await</span> lotusClient.state.waitMsg(cancelAddCid, <span class="hljs-number">0</span>);
+
+
+<span class="hljs-comment">// propose swap signer</span>
+<span class="hljs-keyword">const</span> initSwapProposeCid = <span class="hljs-keyword">await</span> mnemonicWalletProvider.msigProposeSwapSigner(multisigAddress, aproposerAddress, addressToSwapOut, addressToSwapIn);
+<span class="hljs-keyword">const</span> receiptSwapProposeCid = <span class="hljs-keyword">await</span> lotusClient.state.waitMsg(initSwapProposeCid, <span class="hljs-number">0</span>);
+<span class="hljs-comment">// you can get the transaction id of a propose operation from the receipt of the propose message</span>
+<span class="hljs-keyword">const</span> txnID = receiptSwapProposeCid.ReturnDec.TxnID;
+
+<span class="hljs-comment">// approve swap signer</span>
+<span class="hljs-keyword">const</span> approveSwapCid = <span class="hljs-keyword">await</span> mnemonicWalletProvider.msigApproveSwapSigner(multisigAddress, approverAddress, txnID, proposerAddress, addressToSwapOut, addressToSwapIn);
+<span class="hljs-keyword">const</span> receiptSwapApprove = <span class="hljs-keyword">await</span> lotusClient.state.waitMsg(approveSwapCid, <span class="hljs-number">0</span>);
+
+<span class="hljs-comment">// cancel swap signer - this message can only be sent by the sender of the initial proposal</span>
+<span class="hljs-keyword">const</span> cancelSwapCid = <span class="hljs-keyword">await</span> mnemonicWalletProvider.msigCancelSwapSigner(multisigAddress, proposerAddress, txnID, addressToSwapOut, addressToSwapIn);
+<span class="hljs-keyword">const</span> receiptSwapCancel = <span class="hljs-keyword">await</span> lotusClient.state.waitMsg(cancelSwapCid, <span class="hljs-number">0</span>);
+
+
+<span class="hljs-comment">// propose remove signer</span>
+<span class="hljs-keyword">const</span> initRemoveProposeCid = <span class="hljs-keyword">await</span> mnemonicWalletProvider.msigProposeRemoveSigner(multisigAddress, proposerAddress, addressToRemove, decreaseNumberOfSigners);
+<span class="hljs-keyword">const</span> receiptRemoveProposeCid = <span class="hljs-keyword">await</span> lotusClient.state.waitMsg(initRemoveProposeCid, <span class="hljs-number">0</span>);
+<span class="hljs-comment">// you can get the transaction id of a propose operation from the receipt of the propose message</span>
+<span class="hljs-keyword">const</span> txnID = receiptRemoveProposeCid.ReturnDec.TxnID;
+assert.strictEqual(txnID, <span class="hljs-number">0</span>, <span class="hljs-string">'error initiating add proposal'</span>);
+
+<span class="hljs-comment">// approve remove signer</span>
+<span class="hljs-keyword">const</span> approveRemoveCid = <span class="hljs-keyword">await</span> mnemonicWalletProvider.msigApproveRemoveSigner(multisigAddress, approverAddress, txnID, proposerAddress, addressToRemove, decreaseNumberOfSigners);
+<span class="hljs-keyword">const</span> receiptRemoveApprove = <span class="hljs-keyword">await</span> lotusClient.state.waitMsg(approveRemoveCid, <span class="hljs-number">0</span>);
+
+<span class="hljs-comment">// cancel remove signer - this message can only be sent by the sender of the initial proposal</span>
+<span class="hljs-keyword">const</span> cancelRemoveCid = <span class="hljs-keyword">await</span> mnemonicWalletProvider.msigCancelRemoveSigner(multisigAddress, proposerAddress, txnID, addressToRemove, decreaseNumberOfSigners);
+<span class="hljs-keyword">const</span> receiptRemoveCancel = <span class="hljs-keyword">await</span> lotusClient.state.waitMsg(cancelRemoveCid, <span class="hljs-number">0</span>);
+</code></pre>
+</span></div></article></div><div class="docs-prevnext"><a class="docs-prev button" href="/filecoin.js/docs/state-methods"><span class="arrow-prev">← </span><span>State methods</span></a><a class="docs-next button" href="/filecoin.js/docs/how-to-contribute"><span>How to contribute</span><span class="arrow-next"> →</span></a></div></div></div><nav class="onPageNav"></nav></div><footer class="nav-footer" id="footer"><section class="sitemap"><div><h5>Docs</h5><a href="/filecoin.js/docs/en/introduction">Getting Started</a><a href="/filecoin.js/docs/en/api/filecoin.js">API Reference</a></div><div><h5>Community</h5><a href="https://filecoin.io/slack" target="_blank" rel="noreferrer noopener">Slack</a></div><div><h5>More</h5><a href="/filecoin.js/blog">Blog</a><a href="https://github.com/filecoin-shipyard/filecoin.js">GitHub</a><a class="github-button" href="https://github.com/filecoin-shipyard/filecoin.js" data-icon="octicon-star" data-count-href="/facebook/docusaurus/stargazers" data-show-count="true" data-count-aria-label="# stargazers on GitHub" aria-label="Star this project on GitHub">Star</a></div></section><section class="copyright">Copyright © 2022 Filecoin</section></footer></div></body></html>
