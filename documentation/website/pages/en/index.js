@@ -23,8 +23,9 @@ class HomeSplash extends React.Component {
     const PromoSection = props => (
       <div className="section promoSection">
         <div className="promoRow">
-          <div>
-            This repository is currently being updated and will be further updated to support the coming Filecoin VM. Learn more at fvm.filecoin.io
+          <div className="statusText">
+            {"This repository is currently being updated and will be further updated to support the coming Filecoin VM. Learn more at "}
+            <a href="https://fvm.filecoin.io" rel="noreferrer noopener" target="_blank">fvm.filecoin.io</a>
           </div>
           <div className="pluginRowBlock">
             <Button href={docUrl('introduction')}>Documentation</Button>
@@ -46,8 +47,7 @@ class HomeSplash extends React.Component {
     return (
       <SplashContainer>
         <ProjectTitle />
-        <PromoSection>
-        </PromoSection>
+        <PromoSection />
       </SplashContainer>
     );
   }
