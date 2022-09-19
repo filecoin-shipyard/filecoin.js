@@ -1191,6 +1191,15 @@ export class MsigVesting {
 
 export type NetworkVersion = number;
 
+export class MessagePrototype {
+	Message!: Message;
+	ValidNonce!: boolean;
+}
+
+export class MessageCheckStatus {
+	Cid!: Cid;
+	CheckStatus!: any;
+}
 
 export class MessageMatch {
   To?: Address;
