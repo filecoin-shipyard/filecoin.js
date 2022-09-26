@@ -73,6 +73,8 @@ while ! nc -z 127.0.0.1 7777 </dev/null; do sleep 5; done
 
 faucet="http://127.0.0.1:7777"
 addr1=\$(lotus wallet new bls)
+lotus wallet set-default \$addr1
+
 addr2=\$(lotus wallet new secp256k1)
 addr3=\$(lotus wallet new secp256k1)
 
