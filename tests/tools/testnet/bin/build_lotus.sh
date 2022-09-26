@@ -27,7 +27,10 @@ deps=(printf paste jq python nc)
 #lotus_git_sha="4f45c623a5896637a9239d16b1836fdb635bb8f9" #master top 31 aug
 #lotus_git_sha="636810daa5e63a6ec132d78993d028a41f179276" #v0.8.1
 #lotus_git_sha="a6b2180756db71574b385ef3c357f2b943252e78" #v0.10.0
-lotus_git_sha="d4cdc6d3340b8496c9f98e2d0daed8d1bd9b271e" #v1.1.2
+# lotus_git_sha="d4cdc6d3340b8496c9f98e2d0daed8d1bd9b271e" #v1.1.2
+lotus_git_sha="8db6a939c1e5c00bdaa79882685a78607825a2c7" #v1.17.1
+
+
 
 copy_binaries_from_dir=""
 other_args=()
@@ -59,11 +62,9 @@ cat > "${base_dir}/scripts/build.bash" <<EOF
 #!/usr/bin/env bash
 set -xe
 
-if [[ ! -z "${copy_binaries_from_dir}" ]]; then
-    pushd ${copy_binaries_from_dir}
-    cp lotus lotus-miner lotus-shed lotus-seed lotus-fountain ${base_dir}/bin/
-    popd
-fi
+export LOTUS_SKIP_GENESIS_CHECK=_yes_
+export CGO_CFLAGS_ALLOW="-D__BLST_PORTABLE__"
+export CGO_CFLAGS="-D__BLST_PORTABLE__"
 
 if [[ ! -z "${lotus_git_sha}" ]]; then
     git clone https://github.com/filecoin-project/lotus.git "${base_dir}/build"
@@ -72,7 +73,7 @@ if [[ ! -z "${lotus_git_sha}" ]]; then
     SCRIPTDIR="\$( cd "\$( dirname "\${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
     pushd \$SCRIPTDIR/../build
     pwd
-    make clean deps debug lotus-shed lotus-fountain
+    make 2k
     cp lotus lotus-miner lotus-shed lotus-seed lotus-fountain ${base_dir}/bin/
     popd
 fi

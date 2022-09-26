@@ -72,16 +72,20 @@ lotus net connect \$(cat ${base_dir}/.bootstrap-miner-multiaddr)
 while ! nc -z 127.0.0.1 7777 </dev/null; do sleep 5; done
 
 faucet="http://127.0.0.1:7777"
-owner=\$(lotus wallet new bls)
-msg_cid=\$(curl -D - -XPOST -F "sectorSize=2048" -F "address=\$owner" \$faucet/send | tail -1)
+addr1=\$(lotus wallet new bls)
+addr2=\$(lotus wallet new secp256k1)
+addr3=\$(lotus wallet new secp256k1)
+
+source ${base_dir}/scripts/env-bootstrap.bash
+minerAddress=\$(lotus wallet list | cut -d " " -f 1 | sed -e "s/^Address//" | tr -d '\n')
+
+msg_cid=\$(lotus send --from \$minerAddress \$addr1 100)
 lotus state wait-msg \$msg_cid
 
-owner=\$(lotus wallet new secp256k1)
-msg_cid=\$(curl -D - -XPOST -F "sectorSize=2048" -F "address=\$owner" \$faucet/send | tail -1)
+msg_cid=\$(lotus send --from \$minerAddress \$addr2 100)
 lotus state wait-msg \$msg_cid
 
-owner=\$(lotus wallet new secp256k1)
-msg_cid=\$(curl -D - -XPOST -F "sectorSize=2048" -F "address=\$owner" \$faucet/send | tail -1)
+msg_cid=\$(lotus send --from \$minerAddress \$addr3 100)
 lotus state wait-msg \$msg_cid
 EOF
 
