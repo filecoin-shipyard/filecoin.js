@@ -1,5 +1,5 @@
 import { Connector } from '../../connectors/Connector';
-import { Cid, Message, MpoolConfig, MpoolUpdate, SignedMessage, TipSetKey } from '../Types';
+import { Address, Cid, Message, MessageCheckStatus, MessagePrototype, MpoolConfig, MpoolUpdate, SignedMessage, TipSetKey } from '../Types';
 import { WsJsonRpcConnector } from '../../index';
 
 /**
@@ -137,6 +137,34 @@ export class JsonRpcMPoolMethodGroup {
    */
   public async batchPushMessage(messages: Message[]): Promise<SignedMessage[]> {
     const ret = await this.conn.request({ method: 'Filecoin.MpoolBatchPushMessage', params: [messages] });
+    return ret;
+  }
+
+  /**
+   * Performs logical checks on a batch of messages
+   * @param msgPrototype 
+   */
+  public async checkMessages(msgPrototype: MessagePrototype[]): Promise<MessageCheckStatus> {
+    const ret = await this.conn.request({ method: 'Filecoin.MpoolCheckMessages', params: [msgPrototype] });
+    return ret;
+  }
+
+  
+  /**
+   * Performs logical checks for all pending messages from a given address
+   * @param address 
+   */
+  public async checkPendingMessages(address: Address[]): Promise<MessageCheckStatus> {
+    const ret = await this.conn.request({ method: 'Filecoin.MpoolCheckPendingMessages', params: [address] });
+    return ret;
+  }
+
+  /**
+   * Performs logical checks on pending messages with replacement
+   * @param msg 
+   */
+   public async checkReplaceMessages(msg: Message[]): Promise<MessageCheckStatus> {
+    const ret = await this.conn.request({ method: 'Filecoin.MpoolCheckReplaceMessages', params: [msg] });
     return ret;
   }
 }
