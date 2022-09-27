@@ -90,7 +90,12 @@ describe('State', function () {
     const messages = await provider.state.listMessages({
       To: 't01000',
     });
-    const message = await provider.chain.getMessage(messages[1]);
+    let i = 0;
+    let message;
+    do {
+      message = await provider.chain.getMessage(messages[i]);
+      i++;
+    } while (message.Method == 5);
     const result = await provider.state.stateCall(message);
     const valid = !!result.ExecutionTrace && !!result.Msg && !!result.MsgRct;
     assert.strictEqual(valid, true, 'failed to run message');
