@@ -1,10 +1,26 @@
-import { ChainEpoch, Cid, KeyInfo, Message, MethodMultisig, NewAddressType, Signature, SignedMessage } from '../Types';
+import {
+  ChainEpoch,
+  Cid,
+  KeyInfo,
+  Message,
+  MethodMultisig,
+  NewAddressType,
+  Signature,
+  SignedMessage,
+} from '../Types';
 import { BaseWalletProvider } from './BaseWalletProvider';
-import { MultisigProviderInterface, WalletProviderInterface } from "../ProviderInterfaces";
+import {
+  MultisigProviderInterface,
+  WalletProviderInterface,
+} from '../ProviderInterfaces';
 import { LotusClient } from '../..';
+import BigNumber from 'bignumber.js';
+import fs from 'fs';
+import cbor from 'ipld-dag-cbor';
 
-export class LotusWalletProvider extends BaseWalletProvider implements WalletProviderInterface, MultisigProviderInterface {
-
+export class LotusWalletProvider
+  extends BaseWalletProvider
+  implements WalletProviderInterface, MultisigProviderInterface {
   constructor(client: LotusClient) {
     super(client);
   }
@@ -14,7 +30,9 @@ export class LotusWalletProvider extends BaseWalletProvider implements WalletPro
    * create new wallet
    * @param type
    */
-  public async newAddress(type: NewAddressType = NewAddressType.SECP256K1): Promise<string> {
+  public async newAddress(
+    type: NewAddressType = NewAddressType.SECP256K1,
+  ): Promise<string> {
     const ret = await this.client.wallet.new(type);
     return ret as string;
   }
@@ -72,11 +90,11 @@ export class LotusWalletProvider extends BaseWalletProvider implements WalletPro
   }
 
   /**
-  * send message, signed with default lotus wallet
-  * @param msg
-  */
+   * send message, signed with default lotus wallet
+   * @param msg
+   */
   public async sendMessage(msg: Message): Promise<SignedMessage> {
-    const ret = await this.client.mpool.pushMessage(msg)
+    const ret = await this.client.mpool.pushMessage(msg);
     return ret as SignedMessage;
   }
 
@@ -103,7 +121,11 @@ export class LotusWalletProvider extends BaseWalletProvider implements WalletPro
    * @param data
    * @param sign
    */
-  public async verify(address: string, data: string | ArrayBuffer, sign: Signature): Promise<boolean> {
+  public async verify(
+    address: string,
+    data: string | ArrayBuffer,
+    sign: Signature,
+  ): Promise<boolean> {
     const ret = await this.client.wallet.verify(address, data, sign);
     return ret as boolean;
   }
@@ -126,7 +148,14 @@ export class LotusWalletProvider extends BaseWalletProvider implements WalletPro
     initialBalance: string,
     senderAddressOfCreateMsg: string,
   ): Promise<Cid> {
-    const ret = await this.client.msig.create(requiredNumberOfSenders, approvingAddresses, unlockDuration, initialBalance, senderAddressOfCreateMsg, '0');
+    const ret = await this.client.msig.create(
+      requiredNumberOfSenders,
+      approvingAddresses,
+      unlockDuration,
+      initialBalance,
+      senderAddressOfCreateMsg,
+      '0',
+    );
     return ret;
   }
 
@@ -141,9 +170,16 @@ export class LotusWalletProvider extends BaseWalletProvider implements WalletPro
     address: string,
     recipientAddres: string,
     value: string,
-    senderAddressOfProposeMsg: string
+    senderAddressOfProposeMsg: string,
   ): Promise<Cid> {
-    const ret = await this.client.msig.propose(address, recipientAddres, value, senderAddressOfProposeMsg, 0, []);
+    const ret = await this.client.msig.propose(
+      address,
+      recipientAddres,
+      value,
+      senderAddressOfProposeMsg,
+      0,
+      [],
+    );
     return ret;
   }
 
@@ -158,7 +194,11 @@ export class LotusWalletProvider extends BaseWalletProvider implements WalletPro
     proposedTransactionId: number,
     signerAddress: string,
   ): Promise<Cid> {
-    const ret = await this.client.msig.approve(address, proposedTransactionId, signerAddress);
+    const ret = await this.client.msig.approve(
+      address,
+      proposedTransactionId,
+      signerAddress,
+    );
     return ret;
   }
 
@@ -177,9 +217,18 @@ export class LotusWalletProvider extends BaseWalletProvider implements WalletPro
     proposerAddress: string,
     recipientAddres: string,
     value: string,
-    senderAddressOfApproveMsg: string
+    senderAddressOfApproveMsg: string,
   ): Promise<Cid> {
-    const ret = await this.client.msig.approveTxnHash(address, proposedMessageId, proposerAddress, recipientAddres, value, senderAddressOfApproveMsg, 0, []);
+    const ret = await this.client.msig.approveTxnHash(
+      address,
+      proposedMessageId,
+      proposerAddress,
+      recipientAddres,
+      value,
+      senderAddressOfApproveMsg,
+      0,
+      [],
+    );
     return ret;
   }
 
@@ -199,7 +248,16 @@ export class LotusWalletProvider extends BaseWalletProvider implements WalletPro
     recipientAddres: string,
     value: string,
   ): Promise<Cid> {
-    const ret = await this.client.msig.cancel(address, proposedMessageId, senderAddressOfCancelMsg, recipientAddres, value, senderAddressOfCancelMsg, 0, []);
+    const ret = await this.client.msig.cancel(
+      address,
+      proposedMessageId,
+      senderAddressOfCancelMsg,
+      recipientAddres,
+      value,
+      senderAddressOfCancelMsg,
+      0,
+      [],
+    );
     return ret;
   }
 
@@ -216,7 +274,12 @@ export class LotusWalletProvider extends BaseWalletProvider implements WalletPro
     newSignerAddress: string,
     increaseNumberOfRequiredSigners: boolean,
   ): Promise<Cid> {
-    const ret = await this.client.msig.addPropose(address, senderAddressOfProposeMsg, newSignerAddress, increaseNumberOfRequiredSigners);
+    const ret = await this.client.msig.addPropose(
+      address,
+      senderAddressOfProposeMsg,
+      newSignerAddress,
+      increaseNumberOfRequiredSigners,
+    );
     return ret;
   }
 
@@ -235,9 +298,16 @@ export class LotusWalletProvider extends BaseWalletProvider implements WalletPro
     proposedMessageId: number,
     proposerAddress: string,
     newSignerAddress: string,
-    increaseNumberOfRequiredSigners: boolean
+    increaseNumberOfRequiredSigners: boolean,
   ): Promise<Cid> {
-    const ret = await this.client.msig.addApprove(address, senderAddressOfApproveMsg, proposedMessageId, proposerAddress, newSignerAddress, increaseNumberOfRequiredSigners);
+    const ret = await this.client.msig.addApprove(
+      address,
+      senderAddressOfApproveMsg,
+      proposedMessageId,
+      proposerAddress,
+      newSignerAddress,
+      increaseNumberOfRequiredSigners,
+    );
     return ret;
   }
 
@@ -254,9 +324,15 @@ export class LotusWalletProvider extends BaseWalletProvider implements WalletPro
     senderAddressOfCancelMsg: string,
     proposedMessageId: number,
     newSignerAddress: string,
-    increaseNumberOfRequiredSigners: boolean
+    increaseNumberOfRequiredSigners: boolean,
   ): Promise<Cid> {
-    const ret = await this.client.msig.addCancel(address, senderAddressOfCancelMsg, proposedMessageId, newSignerAddress, increaseNumberOfRequiredSigners);
+    const ret = await this.client.msig.addCancel(
+      address,
+      senderAddressOfCancelMsg,
+      proposedMessageId,
+      newSignerAddress,
+      increaseNumberOfRequiredSigners,
+    );
     return ret;
   }
 
@@ -273,7 +349,12 @@ export class LotusWalletProvider extends BaseWalletProvider implements WalletPro
     oldSignerAddress: string,
     newSignerAddress: string,
   ): Promise<Cid> {
-    const ret = await this.client.msig.swapPropose(address, senderAddressOfProposeMsg, oldSignerAddress, newSignerAddress);
+    const ret = await this.client.msig.swapPropose(
+      address,
+      senderAddressOfProposeMsg,
+      oldSignerAddress,
+      newSignerAddress,
+    );
     return ret;
   }
 
@@ -294,7 +375,14 @@ export class LotusWalletProvider extends BaseWalletProvider implements WalletPro
     oldSignerAddress: string,
     newSignerAddress: string,
   ): Promise<Cid> {
-    const ret = await this.client.msig.swapApprove(address, senderAddressOfApproveMsg, proposedMessageId, proposerAddress, oldSignerAddress, newSignerAddress);
+    const ret = await this.client.msig.swapApprove(
+      address,
+      senderAddressOfApproveMsg,
+      proposedMessageId,
+      proposerAddress,
+      oldSignerAddress,
+      newSignerAddress,
+    );
     return ret;
   }
 
@@ -313,26 +401,37 @@ export class LotusWalletProvider extends BaseWalletProvider implements WalletPro
     oldSignerAddress: string,
     newSignerAddress: string,
   ): Promise<Cid> {
-    const ret = await this.client.msig.swapCancel(address, senderAddressOfCancelMsg, proposedMessageId, oldSignerAddress, newSignerAddress);
+    const ret = await this.client.msig.swapCancel(
+      address,
+      senderAddressOfCancelMsg,
+      proposedMessageId,
+      oldSignerAddress,
+      newSignerAddress,
+    );
     return ret;
   }
 
   /**
-    * proposes removing a signer from the multisig
-    * @param address
-    * @param senderAddressOfProposeMsg
-    * @param addressToRemove
-    * @param decreaseNumberOfRequiredSigners
-    */
+   * proposes removing a signer from the multisig
+   * @param address
+   * @param senderAddressOfProposeMsg
+   * @param addressToRemove
+   * @param decreaseNumberOfRequiredSigners
+   */
   public async msigProposeRemoveSigner(
     address: string,
     senderAddressOfProposeMsg: string,
     addressToRemove: string,
     decreaseNumberOfRequiredSigners: boolean,
   ): Promise<Cid> {
-    const ret = await this.client.msig.removeSigner(address, senderAddressOfProposeMsg, addressToRemove, decreaseNumberOfRequiredSigners);
+    const ret = await this.client.msig.removeSigner(
+      address,
+      senderAddressOfProposeMsg,
+      addressToRemove,
+      decreaseNumberOfRequiredSigners,
+    );
     return ret;
-  };
+  }
 
   /**
    * approves a previously proposed RemoveSigner message
@@ -343,15 +442,16 @@ export class LotusWalletProvider extends BaseWalletProvider implements WalletPro
    * @param addressToRemove
    * @param decreaseNumberOfRequiredSigners
    */
-  public async msigApproveRemoveSigner(address: string,
+  public async msigApproveRemoveSigner(
+    address: string,
     senderAddressOfApproveMsg: string,
     proposedMessageId: number,
     proposerAddress: string,
     addressToRemove: string,
-    decreaseNumberOfRequiredSigners: boolean): Promise<Cid> {
-
+    decreaseNumberOfRequiredSigners: boolean,
+  ): Promise<Cid> {
     return undefined as any;
-  };
+  }
 
   /**
    * cancels a previously proposed RemoveSigner message
@@ -361,14 +461,92 @@ export class LotusWalletProvider extends BaseWalletProvider implements WalletPro
    * @param addressToRemove
    * @param decreaseNumberOfRequiredSigners
    */
-  public async msigCancelRemoveSigner(address: string,
+  public async msigCancelRemoveSigner(
+    address: string,
     senderAddressOfCancelMsg: string,
     proposedMessageId: number,
     addressToRemove: string,
-    decreaseNumberOfRequiredSigners: boolean): Promise<Cid> {
-
+    decreaseNumberOfRequiredSigners: boolean,
+  ): Promise<Cid> {
     return undefined as any;
-  };
+  }
+
+  //Actor functions
+  /**
+   * create new wallet
+   * @param actorAddress
+   * @param methodNumber
+   */
+  public async actorInvokeMethod(
+    actorAddress: string,
+    methodNumber: number,
+  ): Promise<Cid> {
+    const defaultAddress = await this.client.wallet.getDefaultAddress();
+
+    let invokeMethodMessage: Message = {
+      To: actorAddress,
+      From: defaultAddress,
+      Value: new BigNumber(0),
+      GasLimit: 0,
+      GasFeeCap: new BigNumber(0),
+      GasPremium: new BigNumber(0),
+      Method: methodNumber,
+      Params: '',
+      Version: 0,
+      Nonce: await this.getNonce(defaultAddress),
+    };
+
+    invokeMethodMessage = await this.estimateMessageGas(invokeMethodMessage);
+
+    const signedInvokeMethodMessage = await this.client.wallet.signMessage(
+      invokeMethodMessage,
+    );
+    const ret = await this.sendSignedMessage(signedInvokeMethodMessage);
+    return ret;
+  }
+
+  /**
+   * create new wallet
+   * @param actorAddress
+   * @param methodNumber
+   */
+  public async actorInstallActorMethod(): Promise<Cid> {
+    const data = fs.readFileSync(
+      './tests/tools/testnet/compiled-actors/actor.wasm',
+      {
+        encoding: 'utf8',
+        flag: 'r',
+      },
+    );
+
+    const serializedMsgParams = cbor.util.serialize({ Code: data });
+    const buff = Buffer.from(serializedMsgParams);
+
+    const defaultAddress = await this.client.wallet.getDefaultAddress();
+
+    let installActorMessage: Message = {
+      To: 't01',
+      From: defaultAddress,
+      Value: new BigNumber(0),
+      GasLimit: 0,
+      GasFeeCap: new BigNumber(0),
+      GasPremium: new BigNumber(0),
+      Method: 3,
+      Params: buff.toString('base64'),
+      Version: 0,
+      Nonce: await this.getNonce(defaultAddress),
+    };
+
+    installActorMessage = await this.estimateMessageGas(installActorMessage);
+
+    // const signedInvokeMethodMessage = await this.client.wallet.signMessage(
+    //   installActorMessage,
+    // );
+    // const ret = await this.sendSignedMessage(signedInvokeMethodMessage);
+    // return ret;
+    return { '/': '' };
+  }
+
   // Own functions
   /**
    * walletImport returns the private key of an address in the wallet.

@@ -75,7 +75,10 @@ faucet="http://127.0.0.1:7777"
 addr1=\$(lotus wallet new bls)
 lotus wallet set-default \$addr1
 
-addr2=\$(lotus wallet new secp256k1)
+echo "7b2254797065223a22736563703235366b31222c22507269766174654b6579223a224c6b535763365377742b5668784d4546786b31795656597a584d345630724e467a4f4577562b2b61714b6f3d227d" > p.key
+lotus wallet import p.key
+addr2="t1qb2e3jnlmqa43hp2iww3ms3nsblmr726g7suati"
+
 addr3=\$(lotus wallet new secp256k1)
 
 source ${base_dir}/scripts/env-bootstrap.bash

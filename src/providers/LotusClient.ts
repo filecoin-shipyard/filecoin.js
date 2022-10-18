@@ -12,8 +12,7 @@ import { JsonRpcMsigMethodGroup } from './method-groups/msig';
 import { JsonRpcSyncMethodGroup } from './method-groups/sync';
 import { JsonRpcGasMethodGroup } from './method-groups/gasEstimate';
 import { JsonRpcWalletMethodGroup } from './method-groups/wallet';
-
-
+import { JsonRpcActorMethodGroup } from './method-groups/actor';
 
 export class LotusClient {
   public conn: Connector;
@@ -30,8 +29,7 @@ export class LotusClient {
   public sync: JsonRpcSyncMethodGroup;
   public gasEstimate: JsonRpcGasMethodGroup;
   public wallet: JsonRpcWalletMethodGroup;
-
-
+  public actor: JsonRpcActorMethodGroup;
 
   constructor(connector: Connector) {
     this.conn = connector;
@@ -50,6 +48,7 @@ export class LotusClient {
     this.sync = new JsonRpcSyncMethodGroup(this.conn);
     this.gasEstimate = new JsonRpcGasMethodGroup(this.conn);
     this.wallet = new JsonRpcWalletMethodGroup(this.conn);
+    this.actor = new JsonRpcActorMethodGroup(this.conn);
   }
 
   public async release() {

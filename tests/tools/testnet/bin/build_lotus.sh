@@ -31,7 +31,8 @@ deps=(printf paste jq python nc)
 
 # lotus_git_sha="8db6a939c1e5c00bdaa79882685a78607825a2c7" #v1.17.1
 
-lotus_git_sha="5cafa81fab8f1f16ce4fa36d9a170ef919b9f409" #v1.17.1 fvm copper
+# lotus_git_sha="5cafa81fab8f1f16ce4fa36d9a170ef919b9f409" #v1.17.1 fvm copper
+lotus_git_sha="38891f32749ad3af93fb35e2f5fcadca21d77207"
 
 
 copy_binaries_from_dir=""
