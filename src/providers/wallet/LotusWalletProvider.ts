@@ -480,8 +480,13 @@ export class LotusWalletProvider
   public async actorInvokeMethod(
     actorAddress: string,
     methodNumber: number,
+    params: any[] = [],
   ): Promise<Cid> {
     const defaultAddress = await this.client.wallet.getDefaultAddress();
+    const serializedParams = params.length
+      ? cbor.util.serialize(params)
+      : Buffer.from([]);
+    const buff = Buffer.from(serializedParams);
 
     let invokeMethodMessage: Message = {
       To: actorAddress,
@@ -491,7 +496,7 @@ export class LotusWalletProvider
       GasFeeCap: new BigNumber(0),
       GasPremium: new BigNumber(0),
       Method: methodNumber,
-      Params: '',
+      Params: 'Bv3eAw==', //buff.toString('base64'),
       Version: 0,
       Nonce: await this.getNonce(defaultAddress),
     };

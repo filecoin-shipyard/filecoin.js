@@ -1,4 +1,4 @@
-const abi = [
+export const abi = [
   {
     inputs: [
       {
@@ -129,16 +129,3 @@ const abi = [
     type: 'function',
   },
 ];
-
-const { ethers } = require('ethers');
-
-let provider = ethers.getDefaultProvider('http://localhost:8000/rpc/v0');
-
-let contractAddress = '0xFF000000000000000000000000000000000003Ee';
-
-let contract = new ethers.Contract(contractAddress, abi, provider);
-
-contract.name().then((r) => console.log(r));
-contract
-  .getBalance('0xff000000000000000000000000000000000003ea')
-  .then((r) => console.log(r.toString()));

@@ -27,12 +27,16 @@ deps=(printf paste jq python nc)
 #lotus_git_sha="4f45c623a5896637a9239d16b1836fdb635bb8f9" #master top 31 aug
 #lotus_git_sha="636810daa5e63a6ec132d78993d028a41f179276" #v0.8.1
 #lotus_git_sha="a6b2180756db71574b385ef3c357f2b943252e78" #v0.10.0
-# lotus_git_sha="d4cdc6d3340b8496c9f98e2d0daed8d1bd9b271e" #v1.1.2
+#lotus_git_sha="d4cdc6d3340b8496c9f98e2d0daed8d1bd9b271e" #v1.1.2
 
-# lotus_git_sha="8db6a939c1e5c00bdaa79882685a78607825a2c7" #v1.17.1
+#lotus_git_sha="8db6a939c1e5c00bdaa79882685a78607825a2c7" #v1.17.1
 
-# lotus_git_sha="5cafa81fab8f1f16ce4fa36d9a170ef919b9f409" #v1.17.1 fvm copper
-lotus_git_sha="38891f32749ad3af93fb35e2f5fcadca21d77207"
+#lotus_git_sha="5cafa81fab8f1f16ce4fa36d9a170ef919b9f409" #v1.17.1 fvm copper
+#lotus_git_sha="38891f32749ad3af93fb35e2f5fcadca21d77207"
+#lotus_git_sha="4758f8907016162ee205d47ce2a69eb0c10736c7"
+
+lotus_git_sha="bd10bdf99a977fa0f4c538984cf9e3fb84533b0a" #v18
+
 
 
 copy_binaries_from_dir=""
@@ -77,7 +81,7 @@ if [[ ! -z "${lotus_git_sha}" ]]; then
     pushd \$SCRIPTDIR/../build
     pwd
     make 2k
-    cp lotus lotus-miner lotus-shed lotus-seed lotus-fountain ${base_dir}/bin/
+    cp lotus lotus-miner lotus-shed lotus-seed ${base_dir}/bin/
     popd
 fi
 EOF

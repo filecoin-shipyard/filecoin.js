@@ -32,6 +32,8 @@ HOME="${base_dir}" lotus-seed pre-seal --sector-size 2048 --num-sectors 2 --mine
 lotus-seed genesis new "${base_dir}/localnet.json"
 lotus-seed genesis add-miner "${base_dir}/localnet.json" "\$LOTUS_GENESIS_SECTORS/pre-seal-${genesis_miner_addr}.json"
 jq '.Accounts[0].Balance = "50000000000000000000000"' "${base_dir}/localnet.json" > "${base_dir}/localnet.json.tmp" && mv "${base_dir}/localnet.json.tmp" "${base_dir}/localnet.json"
+
+lotus-seed genesis set-vrk --account t1qb2e3jnlmqa43hp2iww3ms3nsblmr726g7suati "${base_dir}/localnet.json"
 EOF
 
 cat > "${base_dir}/scripts/create_miner.bash" <<EOF
@@ -52,7 +54,7 @@ while [ "\$wallet" = "" ]; do
   wallet=\$(lotus wallet list)
 done
 
-lotus-fountain run --from=\$wallet
+
 EOF
 
 cat > "${base_dir}/scripts/hit_faucet.bash" <<EOF
@@ -69,28 +71,25 @@ while ! nc -z 127.0.0.1 ${bootstrap_miner_port} </dev/null; do sleep 5; done
 while [ ! -f ${base_dir}/.bootstrap-miner-multiaddr ]; do sleep 5; done
 lotus net connect \$(cat ${base_dir}/.bootstrap-miner-multiaddr)
 
-while ! nc -z 127.0.0.1 7777 </dev/null; do sleep 5; done
-
-faucet="http://127.0.0.1:7777"
 addr1=\$(lotus wallet new bls)
-lotus wallet set-default \$addr1
 
 echo "7b2254797065223a22736563703235366b31222c22507269766174654b6579223a224c6b535763365377742b5668784d4546786b31795656597a584d345630724e467a4f4577562b2b61714b6f3d227d" > p.key
 lotus wallet import p.key
 addr2="t1qb2e3jnlmqa43hp2iww3ms3nsblmr726g7suati"
+lotus wallet set-default \$addr2
 
 addr3=\$(lotus wallet new secp256k1)
 
 source ${base_dir}/scripts/env-bootstrap.bash
 minerAddress=\$(lotus wallet list | cut -d " " -f 1 | sed -e "s/^Address//" | tr -d '\n')
 
-msg_cid=\$(lotus send --from \$minerAddress \$addr1 100)
+msg_cid=\$(lotus send --from \$minerAddress \$addr1 1000)
 lotus state wait-msg \$msg_cid
 
-msg_cid=\$(lotus send --from \$minerAddress \$addr2 100)
+msg_cid=\$(lotus send --from \$minerAddress \$addr2 1000)
 lotus state wait-msg \$msg_cid
 
-msg_cid=\$(lotus send --from \$minerAddress \$addr3 100)
+msg_cid=\$(lotus send --from \$minerAddress \$addr3 1000)
 lotus state wait-msg \$msg_cid
 EOF
 

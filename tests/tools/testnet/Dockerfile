@@ -17,8 +17,8 @@ RUN . "$NVM_DIR/nvm.sh" && nvm install v14.7.0
 ENV PATH="/usr/local/versions/node/v14.7.0/bin:${PATH}"
 
 #install go
-RUN wget  https://dl.google.com/go/go1.18.linux-amd64.tar.gz
-RUN tar -xvf go1.18.linux-amd64.tar.gz
+RUN wget  https://dl.google.com/go/go1.18.1.linux-amd64.tar.gz
+RUN tar -xvf go1.18.1.linux-amd64.tar.gz
 RUN mv go /usr/local
 ENV PATH="/usr/local/go/bin:${PATH}"
 

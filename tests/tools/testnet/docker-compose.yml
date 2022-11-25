@@ -4,12 +4,14 @@ version: '3'
 # this achieves 2 things: 1) ignore host's node_modules (if present);
 # 2) keep node_modules persistent between docker-compose up runs
 # @see https://stackoverflow.com/questions/29181032/add-a-volume-to-docker-but-exclude-a-sub-folder
+
+# smoothop/filecoin.js-testing-framework:v1.18.prerelease
 volumes:
   filecoin_js_node_modules_volume:
 services:
   filecoin_js_infra:
     container_name: 'filecoin_js_infra'
-    image: smoothop/filecoin.js-testing-framework:v1.17.2
+    image: smoothop/filecoin.js-testing-framework:v1.18.0
     ports:
       - 8000:8000
       - 4502:4502
