@@ -1,14 +1,32 @@
-import { Message, SignedMessage, Signature, KeyInfo, DEFAULT_HD_PATH, TEST_DEFAULT_HD_PATH, MethodMultisig, Cid, ChainEpoch, MethodInit } from "../Types";
-import { BaseWalletProvider } from "./BaseWalletProvider";
-import { MultisigProviderInterface, WalletProviderInterface } from "../ProviderInterfaces";
-import { Keystore } from "../../utils/keystore";
-import { LightWalletSigner } from "../../signers/LightWalletSigner";
-import { LotusClient } from "../..";
-import { addressAsBytes } from "@zondax/filecoin-signing-tools"
-import cbor from "ipld-dag-cbor";
-import cid from "cids";
-import BigNumber from "bignumber.js";
-import { createApproveMessage, createCancelMessage, createProposeMessage } from "../../utils/msig";
+import {
+  Message,
+  SignedMessage,
+  Signature,
+  KeyInfo,
+  DEFAULT_HD_PATH,
+  TEST_DEFAULT_HD_PATH,
+  MethodMultisig,
+  Cid,
+  ChainEpoch,
+  MethodInit,
+} from '../Types';
+import { BaseWalletProvider } from './BaseWalletProvider';
+import {
+  MultisigProviderInterface,
+  WalletProviderInterface,
+} from '../ProviderInterfaces';
+import { Keystore } from '../../utils/keystore';
+import { LightWalletSigner } from '../../signers/LightWalletSigner';
+import { LotusClient } from '../..';
+import { addressAsBytes } from '@zondax/filecoin-signing-tools';
+import cbor from 'ipld-dag-cbor';
+import cid from 'cids';
+import BigNumber from 'bignumber.js';
+import {
+  createApproveMessage,
+  createCancelMessage,
+  createProposeMessage,
+} from '../../utils/msig';
 
 interface LighWalletOptions {
   encKeystore?: string;
@@ -17,23 +35,28 @@ interface LighWalletOptions {
   password?: string;
 }
 
-export class LightWalletProvider extends BaseWalletProvider implements WalletProviderInterface, MultisigProviderInterface {
-
+export class LightWalletProvider
+  extends BaseWalletProvider
+  implements WalletProviderInterface, MultisigProviderInterface {
   public keystore!: Keystore;
   private hdPathString = DEFAULT_HD_PATH;
   private signer!: LightWalletSigner;
   private pwdCallback: Function;
 
-  constructor(client: LotusClient, pwdCallback: Function, path: string = DEFAULT_HD_PATH,) {
+  constructor(
+    client: LotusClient,
+    pwdCallback: Function,
+    path: string = DEFAULT_HD_PATH,
+  ) {
     super(client);
     this.pwdCallback = pwdCallback;
     if (path === 'test' || !path) this.hdPathString = TEST_DEFAULT_HD_PATH;
   }
 
   public async newAddress(): Promise<string> {
-    await this.keystore.newAddress(1, this.pwdCallback())
+    await this.keystore.newAddress(1, this.pwdCallback());
     const addresses = await this.getAddresses();
-    return addresses[addresses.length -1];
+    return addresses[addresses.length - 1];
   }
 
   public async deleteAddress(address: string): Promise<void> {
@@ -61,11 +84,13 @@ export class LightWalletProvider extends BaseWalletProvider implements WalletPro
   }
 
   public async setDefaultAddress(address: string): Promise<void> {
-    this.keystore.setDefaultAddress(address)
+    this.keystore.setDefaultAddress(address);
   }
 
   public async sendMessage(msg: Message): Promise<SignedMessage> {
-    const signedMessage: SignedMessage | undefined = await this.signMessage(msg);
+    const signedMessage: SignedMessage | undefined = await this.signMessage(
+      msg,
+    );
     if (signedMessage) {
       await this.sendSignedMessage(signedMessage);
       return signedMessage as SignedMessage;
@@ -83,7 +108,11 @@ export class LightWalletProvider extends BaseWalletProvider implements WalletPro
   }
 
   //todo
-  public async verify(address: string, data: string | ArrayBuffer, sign: Signature): Promise<boolean> {
+  public async verify(
+    address: string,
+    data: string | ArrayBuffer,
+    sign: Signature,
+  ): Promise<boolean> {
     return undefined as any;
   }
 
@@ -105,27 +134,31 @@ export class LightWalletProvider extends BaseWalletProvider implements WalletPro
     senderAddressOfCreateMsg: string,
   ): Promise<Cid> {
     const addresses: any[] = [];
-    approvingAddresses.forEach(address => {
+    approvingAddresses.forEach((address) => {
       addresses.push(addressAsBytes(address));
     });
-    const constructorParams = [addresses, requiredNumberOfSenders, unlockDuration, startEpoch];
+    const constructorParams = [
+      addresses,
+      requiredNumberOfSenders,
+      unlockDuration,
+      startEpoch,
+    ];
     const serializedConstructorParams = cbor.util.serialize(constructorParams);
 
-    const MultisigActorCodeID = new cid('bafkqadtgnfwc6mrpnv2wy5djonuwo');
+    const MultisigActorCodeID = new cid(
+      'bafk2bzaced4gcxjwy6garxwfw6y5a2k4jewj4t5nzopjy4qwnimhjtnsgo3ss',
+    );
 
-    const execParams = [
-      MultisigActorCodeID,
-      serializedConstructorParams,
-    ];
+    const execParams = [MultisigActorCodeID, serializedConstructorParams];
     const serializedParams = cbor.util.serialize(execParams);
     const buff = Buffer.from(serializedParams);
 
     let messageWithoutGasParams = {
       From: senderAddressOfCreateMsg,
-      To: "t01",
+      To: 't01',
       Value: new BigNumber(initialBalance),
       Method: MethodInit.Exec,
-      Params: buff.toString('base64')
+      Params: buff.toString('base64'),
     };
 
     const message = await this.createMessage(messageWithoutGasParams as any);
@@ -149,7 +182,14 @@ export class LightWalletProvider extends BaseWalletProvider implements WalletPro
     senderAddressOfProposeMsg: string,
   ): Promise<Cid> {
     const params: any[] = [];
-    const messageWithoutGasParams = await createProposeMessage(address, senderAddressOfProposeMsg, recipientAddres, value, 0, params)
+    const messageWithoutGasParams = await createProposeMessage(
+      address,
+      senderAddressOfProposeMsg,
+      recipientAddres,
+      value,
+      0,
+      params,
+    );
     const message = await this.createMessage(messageWithoutGasParams);
     const signedMessage = await this.signMessage(message);
     const msgCid = await this.sendSignedMessage(signedMessage);
@@ -197,7 +237,7 @@ export class LightWalletProvider extends BaseWalletProvider implements WalletPro
       recipientAddres,
       0,
       value,
-      []
+      [],
     );
 
     const message = await this.createMessage(messageWithoutGasParams as any);
@@ -223,7 +263,9 @@ export class LightWalletProvider extends BaseWalletProvider implements WalletPro
     recipientAddres: string,
     value: string,
   ): Promise<Cid> {
-    const proposerId = await this.client.state.lookupId(senderAddressOfCancelMsg);
+    const proposerId = await this.client.state.lookupId(
+      senderAddressOfCancelMsg,
+    );
 
     const messageWithoutGasParams = await createCancelMessage(
       address,
@@ -233,7 +275,7 @@ export class LightWalletProvider extends BaseWalletProvider implements WalletPro
       recipientAddres,
       0,
       value,
-      []
+      [],
     );
 
     const message = await this.createMessage(messageWithoutGasParams as any);
@@ -256,8 +298,18 @@ export class LightWalletProvider extends BaseWalletProvider implements WalletPro
     newSignerAddress: string,
     increaseNumberOfRequiredSigners: boolean,
   ): Promise<Cid> {
-    const params: any[] = [addressAsBytes(newSignerAddress), increaseNumberOfRequiredSigners];
-    const messageWithoutGasParams = await createProposeMessage(address, senderAddressOfProposeMsg, address, '0', MethodMultisig.AddSigner, params)
+    const params: any[] = [
+      addressAsBytes(newSignerAddress),
+      increaseNumberOfRequiredSigners,
+    ];
+    const messageWithoutGasParams = await createProposeMessage(
+      address,
+      senderAddressOfProposeMsg,
+      address,
+      '0',
+      MethodMultisig.AddSigner,
+      params,
+    );
     const message = await this.createMessage(messageWithoutGasParams);
     const signedMessage = await this.signMessage(message);
     const msgCid = await this.sendSignedMessage(signedMessage);
@@ -279,9 +331,12 @@ export class LightWalletProvider extends BaseWalletProvider implements WalletPro
     proposedMessageId: number,
     proposerAddress: string,
     newSignerAddress: string,
-    increaseNumberOfRequiredSigners: boolean
+    increaseNumberOfRequiredSigners: boolean,
   ): Promise<Cid> {
-    const values = [addressAsBytes(newSignerAddress), increaseNumberOfRequiredSigners];
+    const values = [
+      addressAsBytes(newSignerAddress),
+      increaseNumberOfRequiredSigners,
+    ];
     const proposerId = await this.client.state.lookupId(proposerAddress);
 
     const messageWithoutGasParams = await createApproveMessage(
@@ -292,8 +347,8 @@ export class LightWalletProvider extends BaseWalletProvider implements WalletPro
       address,
       MethodMultisig.AddSigner,
       '0',
-      values
-    )
+      values,
+    );
     const message = await this.createMessage(messageWithoutGasParams as any);
     const signedMessage = await this.signMessage(message);
     const msgCid = await this.sendSignedMessage(signedMessage);
@@ -314,10 +369,15 @@ export class LightWalletProvider extends BaseWalletProvider implements WalletPro
     senderAddressOfCancelMsg: string,
     proposedMessageId: number,
     newSignerAddress: string,
-    increaseNumberOfRequiredSigners: boolean
+    increaseNumberOfRequiredSigners: boolean,
   ): Promise<Cid> {
-    const values = [addressAsBytes(newSignerAddress), increaseNumberOfRequiredSigners];
-    const proposerId = await this.client.state.lookupId(senderAddressOfCancelMsg);
+    const values = [
+      addressAsBytes(newSignerAddress),
+      increaseNumberOfRequiredSigners,
+    ];
+    const proposerId = await this.client.state.lookupId(
+      senderAddressOfCancelMsg,
+    );
 
     const messageWithoutGasParams = await createCancelMessage(
       address,
@@ -327,8 +387,8 @@ export class LightWalletProvider extends BaseWalletProvider implements WalletPro
       address,
       MethodMultisig.AddSigner,
       '0',
-      values
-    )
+      values,
+    );
     const message = await this.createMessage(messageWithoutGasParams as any);
     const signedMessage = await this.signMessage(message);
     const msgCid = await this.sendSignedMessage(signedMessage);
@@ -349,9 +409,18 @@ export class LightWalletProvider extends BaseWalletProvider implements WalletPro
     oldSignerAddress: string,
     newSignerAddress: string,
   ): Promise<Cid> {
-
-    const params: any[] = [addressAsBytes(oldSignerAddress), addressAsBytes(newSignerAddress)];
-    const messageWithoutGasParams = await createProposeMessage(address, senderAddressOfProposeMsg, address, '0', MethodMultisig.SwapSigner, params)
+    const params: any[] = [
+      addressAsBytes(oldSignerAddress),
+      addressAsBytes(newSignerAddress),
+    ];
+    const messageWithoutGasParams = await createProposeMessage(
+      address,
+      senderAddressOfProposeMsg,
+      address,
+      '0',
+      MethodMultisig.SwapSigner,
+      params,
+    );
     const message = await this.createMessage(messageWithoutGasParams);
     const signedMessage = await this.signMessage(message);
     const msgCid = await this.sendSignedMessage(signedMessage);
@@ -376,7 +445,10 @@ export class LightWalletProvider extends BaseWalletProvider implements WalletPro
     oldSignerAddress: string,
     newSignerAddress: string,
   ): Promise<Cid> {
-    const values = [addressAsBytes(oldSignerAddress), addressAsBytes(newSignerAddress)];
+    const values = [
+      addressAsBytes(oldSignerAddress),
+      addressAsBytes(newSignerAddress),
+    ];
     const proposerId = await this.client.state.lookupId(proposerAddress);
 
     const messageWithoutGasParams = await createApproveMessage(
@@ -387,7 +459,7 @@ export class LightWalletProvider extends BaseWalletProvider implements WalletPro
       address,
       MethodMultisig.SwapSigner,
       '0',
-      values
+      values,
     );
 
     const message = await this.createMessage(messageWithoutGasParams as any);
@@ -412,8 +484,13 @@ export class LightWalletProvider extends BaseWalletProvider implements WalletPro
     oldSignerAddress: string,
     newSignerAddress: string,
   ): Promise<Cid> {
-    const values = [addressAsBytes(oldSignerAddress), addressAsBytes(newSignerAddress)];
-    const proposerId = await this.client.state.lookupId(senderAddressOfCancelMsg);
+    const values = [
+      addressAsBytes(oldSignerAddress),
+      addressAsBytes(newSignerAddress),
+    ];
+    const proposerId = await this.client.state.lookupId(
+      senderAddressOfCancelMsg,
+    );
 
     const messageWithoutGasParams = await createCancelMessage(
       address,
@@ -423,7 +500,7 @@ export class LightWalletProvider extends BaseWalletProvider implements WalletPro
       address,
       MethodMultisig.SwapSigner,
       '0',
-      values
+      values,
     );
 
     const message = await this.createMessage(messageWithoutGasParams as any);
@@ -446,13 +523,23 @@ export class LightWalletProvider extends BaseWalletProvider implements WalletPro
     addressToRemove: string,
     decreaseNumberOfRequiredSigners: boolean,
   ): Promise<Cid> {
-    const params: any[] = [addressAsBytes(addressToRemove), decreaseNumberOfRequiredSigners];
-    const messageWithoutGasParams = await createProposeMessage(address, senderAddressOfProposeMsg, address, '0', MethodMultisig.RemoveSigner, params)
+    const params: any[] = [
+      addressAsBytes(addressToRemove),
+      decreaseNumberOfRequiredSigners,
+    ];
+    const messageWithoutGasParams = await createProposeMessage(
+      address,
+      senderAddressOfProposeMsg,
+      address,
+      '0',
+      MethodMultisig.RemoveSigner,
+      params,
+    );
     const message = await this.createMessage(messageWithoutGasParams);
     const signedMessage = await this.signMessage(message);
     const msgCid = await this.sendSignedMessage(signedMessage);
     return msgCid;
-  };
+  }
 
   /**
    * approves a previously proposed RemoveSigner message
@@ -463,31 +550,36 @@ export class LightWalletProvider extends BaseWalletProvider implements WalletPro
    * @param addressToRemove
    * @param decreaseNumberOfRequiredSigners
    */
-  public async msigApproveRemoveSigner(address: string,
+  public async msigApproveRemoveSigner(
+    address: string,
     senderAddressOfApproveMsg: string,
     proposedMessageId: number,
     proposerAddress: string,
     addressToRemove: string,
-    decreaseNumberOfRequiredSigners: boolean): Promise<Cid> {
-      const values = [addressAsBytes(addressToRemove), decreaseNumberOfRequiredSigners];
-      const proposerId = await this.client.state.lookupId(proposerAddress);
+    decreaseNumberOfRequiredSigners: boolean,
+  ): Promise<Cid> {
+    const values = [
+      addressAsBytes(addressToRemove),
+      decreaseNumberOfRequiredSigners,
+    ];
+    const proposerId = await this.client.state.lookupId(proposerAddress);
 
-      const messageWithoutGasParams = await createApproveMessage(
-        address,
-        senderAddressOfApproveMsg,
-        proposedMessageId,
-        proposerId,
-        address,
-        MethodMultisig.RemoveSigner,
-        '0',
-        values
-      )
-      const message = await this.createMessage(messageWithoutGasParams as any);
-      const signedMessage = await this.signMessage(message);
-      const msgCid = await this.sendSignedMessage(signedMessage);
+    const messageWithoutGasParams = await createApproveMessage(
+      address,
+      senderAddressOfApproveMsg,
+      proposedMessageId,
+      proposerId,
+      address,
+      MethodMultisig.RemoveSigner,
+      '0',
+      values,
+    );
+    const message = await this.createMessage(messageWithoutGasParams as any);
+    const signedMessage = await this.signMessage(message);
+    const msgCid = await this.sendSignedMessage(signedMessage);
 
-      return msgCid;
-  };
+    return msgCid;
+  }
 
   /**
    * cancels a previously proposed RemoveSigner message
@@ -497,30 +589,37 @@ export class LightWalletProvider extends BaseWalletProvider implements WalletPro
    * @param addressToRemove
    * @param decreaseNumberOfRequiredSigners
    */
-  public async msigCancelRemoveSigner(address: string,
+  public async msigCancelRemoveSigner(
+    address: string,
     senderAddressOfCancelMsg: string,
     proposedMessageId: number,
     addressToRemove: string,
-    decreaseNumberOfRequiredSigners: boolean): Promise<Cid> {
-      const values = [addressAsBytes(addressToRemove), decreaseNumberOfRequiredSigners];
-      const proposerId = await this.client.state.lookupId(senderAddressOfCancelMsg);
+    decreaseNumberOfRequiredSigners: boolean,
+  ): Promise<Cid> {
+    const values = [
+      addressAsBytes(addressToRemove),
+      decreaseNumberOfRequiredSigners,
+    ];
+    const proposerId = await this.client.state.lookupId(
+      senderAddressOfCancelMsg,
+    );
 
-      const messageWithoutGasParams = await createCancelMessage(
-        address,
-        senderAddressOfCancelMsg,
-        proposedMessageId,
-        proposerId,
-        address,
-        MethodMultisig.RemoveSigner,
-        '0',
-        values
-      )
-      const message = await this.createMessage(messageWithoutGasParams as any);
-      const signedMessage = await this.signMessage(message);
-      const msgCid = await this.sendSignedMessage(signedMessage);
+    const messageWithoutGasParams = await createCancelMessage(
+      address,
+      senderAddressOfCancelMsg,
+      proposedMessageId,
+      proposerId,
+      address,
+      MethodMultisig.RemoveSigner,
+      '0',
+      values,
+    );
+    const message = await this.createMessage(messageWithoutGasParams as any);
+    const signedMessage = await this.signMessage(message);
+    const msgCid = await this.sendSignedMessage(signedMessage);
 
-      return msgCid;
-  };
+    return msgCid;
+  }
 
   // Own functions
   public async createLightWallet(password: string) {

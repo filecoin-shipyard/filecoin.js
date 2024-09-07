@@ -1,9 +1,49 @@
-import { Message, SignedMessage, Cid, MessagePartial, HeadChange, TipSet, BlockHeader, BlockMessages, MessageReceipt, WrappedMessage, ObjStat, TipSetKey, SyncState, MpoolUpdate, PeerID, Address, StorageAsk, Actor, ActorState, NetworkName, SectorOnChainInfo, DeadlineInfo, MinerPower, MinerInfo, Deadline, Partition, BitField, ChainEpoch, Fault, SectorPreCommitInfo, SectorNumber, SectorPreCommitOnChainInfo, SectorExpiration, SectorLocation, MsgLookup, MarketBalance, MarketDeal, DealID, MinerSectors, MsigVesting } from '../Types';
+import {
+  Message,
+  SignedMessage,
+  Cid,
+  MessagePartial,
+  HeadChange,
+  TipSet,
+  BlockHeader,
+  BlockMessages,
+  MessageReceipt,
+  WrappedMessage,
+  ObjStat,
+  TipSetKey,
+  SyncState,
+  MpoolUpdate,
+  PeerID,
+  Address,
+  StorageAsk,
+  Actor,
+  ActorState,
+  NetworkName,
+  SectorOnChainInfo,
+  DeadlineInfo,
+  MinerPower,
+  MinerInfo,
+  Deadline,
+  Partition,
+  BitField,
+  ChainEpoch,
+  Fault,
+  SectorPreCommitInfo,
+  SectorNumber,
+  SectorPreCommitOnChainInfo,
+  SectorExpiration,
+  SectorLocation,
+  MsgLookup,
+  MarketBalance,
+  MarketDeal,
+  DealID,
+  MinerSectors,
+  MsigVesting,
+} from '../Types';
 import BigNumber from 'bignumber.js';
 import { LotusClient } from '../..';
 
 export class BaseWalletProvider {
-
   public client: LotusClient;
 
   constructor(client: LotusClient) {
@@ -37,37 +77,48 @@ export class BaseWalletProvider {
    * @param msg
    */
   public async sendSignedMessage(msg: SignedMessage): Promise<Cid> {
-    const ret = await this.client.mpool.push(msg)
+    const ret = await this.client.mpool.push(msg);
     return ret as Cid;
   }
 
   /**
-    * estimate gas fee cap
-    * @param message
-    * @param nblocksincl
-    */
-  public async estimateMessageGasFeeCap(message: Message, nblocksincl: number): Promise<string> {
+   * estimate gas fee cap
+   * @param message
+   * @param nblocksincl
+   */
+  public async estimateMessageGasFeeCap(
+    message: Message,
+    nblocksincl: number,
+  ): Promise<string> {
     const ret = await this.client.gasEstimate.feeCap(message, nblocksincl);
     return ret as string;
   }
 
   /**
-  * estimate gas limit, it fails if message fails to execute.
-  * @param message
-  */
+   * estimate gas limit, it fails if message fails to execute.
+   * @param message
+   */
   public async estimateMessageGasLimit(message: Message): Promise<number> {
     const ret = await this.client.gasEstimate.gasLimit(message);
     return ret as number;
   }
 
   /**
-  * estimate gas to succesufully send message, and have it likely be included in the next nblocksincl blocks
-  * @param nblocksincl
-  * @param sender
-  * @param gasLimit
-  */
-  public async estimateMessageGasPremium(nblocksincl: number, sender: string, gasLimit: number): Promise<string> {
-    const ret = await this.client.gasEstimate.gasPremium(nblocksincl, sender, gasLimit);
+   * estimate gas to succesufully send message, and have it likely be included in the next nblocksincl blocks
+   * @param nblocksincl
+   * @param sender
+   * @param gasLimit
+   */
+  public async estimateMessageGasPremium(
+    nblocksincl: number,
+    sender: string,
+    gasLimit: number,
+  ): Promise<string> {
+    const ret = await this.client.gasEstimate.gasPremium(
+      nblocksincl,
+      sender,
+      gasLimit,
+    );
     return ret as string;
   }
 
@@ -96,7 +147,7 @@ export class BaseWalletProvider {
       Params: message.Params ? message.Params : '',
       Version: message.Version ? message.Version : 0,
       Nonce: message.Nonce ? message.Nonce : await this.getNonce(message.From),
-    }
+    };
 
     if (msg.GasLimit === 0) msg = await this.estimateMessageGas(msg);
 
@@ -282,7 +333,10 @@ export class BaseWalletProvider {
    * @param miner
    */
   public async queryAsk(peerId: PeerID, miner: Address): Promise<StorageAsk> {
-    const queryAsk: StorageAsk = await this.client.client.queryAsk(peerId, miner);
+    const queryAsk: StorageAsk = await this.client.client.queryAsk(
+      peerId,
+      miner,
+    );
     return queryAsk;
   }
 
@@ -293,7 +347,10 @@ export class BaseWalletProvider {
    * @param address
    * @param tipSetKey
    */
-  public async getActor(address: string, tipSetKey?: TipSetKey): Promise<Actor> {
+  public async getActor(
+    address: string,
+    tipSetKey?: TipSetKey,
+  ): Promise<Actor> {
     const data = await this.client.state.getActor(address, tipSetKey);
     return data as Actor;
   }
@@ -303,7 +360,10 @@ export class BaseWalletProvider {
    * @param address
    * @param tipSetKey
    */
-  public async readState(address: string, tipSetKey?: TipSetKey): Promise<ActorState> {
+  public async readState(
+    address: string,
+    tipSetKey?: TipSetKey,
+  ): Promise<ActorState> {
     const data = await this.client.state.readState(address, tipSetKey);
     return data as ActorState;
   }
@@ -314,8 +374,16 @@ export class BaseWalletProvider {
    * @param tipSetKey
    * @param toHeight
    */
-  public async listMessages(filter: { To?: string, From?: string }, tipSetKey?: TipSetKey, toHeight?: number): Promise<Cid[]> {
-    const messages: Cid[] = await this.client.state.listMessages(filter, tipSetKey, toHeight);
+  public async listMessages(
+    filter: { To?: string; From?: string },
+    tipSetKey?: TipSetKey,
+    toHeight?: number,
+  ): Promise<Cid[]> {
+    const messages: Cid[] = await this.client.state.listMessages(
+      filter,
+      tipSetKey,
+      toHeight,
+    );
     return messages ? messages : [];
   }
 
@@ -332,8 +400,14 @@ export class BaseWalletProvider {
    * @param address
    * @param tipSetKey
    */
-  public async minerSectors(address: string, tipSetKey?: TipSetKey): Promise<SectorOnChainInfo[]> {
-    const sectorsInfo: SectorOnChainInfo[] = await this.client.state.minerSectors(address, tipSetKey);
+  public async minerSectors(
+    address: string,
+    tipSetKey?: TipSetKey,
+  ): Promise<SectorOnChainInfo[]> {
+    const sectorsInfo: SectorOnChainInfo[] = await this.client.state.minerSectors(
+      address,
+      tipSetKey,
+    );
     return sectorsInfo;
   }
 
@@ -342,8 +416,14 @@ export class BaseWalletProvider {
    * @param address
    * @param tipSetKey
    */
-  public async minerActiveSectors(address: string, tipSetKey?: TipSetKey): Promise<SectorOnChainInfo[]> {
-    const activeSectors: SectorOnChainInfo[] = await this.minerActiveSectors(address, tipSetKey);
+  public async minerActiveSectors(
+    address: string,
+    tipSetKey?: TipSetKey,
+  ): Promise<SectorOnChainInfo[]> {
+    const activeSectors: SectorOnChainInfo[] = await this.minerActiveSectors(
+      address,
+      tipSetKey,
+    );
     return activeSectors;
   }
 
@@ -352,8 +432,14 @@ export class BaseWalletProvider {
    * @param address
    * @param tipSetKey
    */
-  public async minerProvingDeadline(address: string, tipSetKey?: TipSetKey): Promise<DeadlineInfo> {
-    const provingDeadline: DeadlineInfo = await this.client.state.minerProvingDeadline(address, tipSetKey);
+  public async minerProvingDeadline(
+    address: string,
+    tipSetKey?: TipSetKey,
+  ): Promise<DeadlineInfo> {
+    const provingDeadline: DeadlineInfo = await this.client.state.minerProvingDeadline(
+      address,
+      tipSetKey,
+    );
     return provingDeadline;
   }
 
@@ -362,8 +448,14 @@ export class BaseWalletProvider {
    * @param address
    * @param tipSetKey
    */
-  public async minerPower(address: string, tipSetKey?: TipSetKey): Promise<MinerPower> {
-    const power: MinerPower = await this.client.state.minerPower(address, tipSetKey);
+  public async minerPower(
+    address: string,
+    tipSetKey?: TipSetKey,
+  ): Promise<MinerPower> {
+    const power: MinerPower = await this.client.state.minerPower(
+      address,
+      tipSetKey,
+    );
     return power;
   }
 
@@ -372,8 +464,14 @@ export class BaseWalletProvider {
    * @param address
    * @param tipSetKey
    */
-  public async minerInfo(address: string, tipSetKey?: TipSetKey): Promise<MinerInfo> {
-    const minerInfo: MinerInfo = await this.client.state.minerInfo(address, tipSetKey);
+  public async minerInfo(
+    address: string,
+    tipSetKey?: TipSetKey,
+  ): Promise<MinerInfo> {
+    const minerInfo: MinerInfo = await this.client.state.minerInfo(
+      address,
+      tipSetKey,
+    );
     return minerInfo;
   }
 
@@ -382,8 +480,14 @@ export class BaseWalletProvider {
    * @param address
    * @param tipSetKey
    */
-  public async minerDeadlines(address: string, tipSetKey?: TipSetKey): Promise<Deadline[]> {
-    const minerDeadlines: Deadline[] = await this.client.state.minerDeadlines(address, tipSetKey);
+  public async minerDeadlines(
+    address: string,
+    tipSetKey?: TipSetKey,
+  ): Promise<Deadline[]> {
+    const minerDeadlines: Deadline[] = await this.client.state.minerDeadlines(
+      address,
+      tipSetKey,
+    );
     return minerDeadlines;
   }
 
@@ -393,8 +497,16 @@ export class BaseWalletProvider {
    * @param idx
    * @param tipSetKey
    */
-  public async minerPartitions(address: string, idx?: number, tipSetKey?: TipSetKey): Promise<Partition[]> {
-    const minerPartitions: Partition[] = await this.client.state.minerPartitions(address, idx, tipSetKey);
+  public async minerPartitions(
+    address: string,
+    idx?: number,
+    tipSetKey?: TipSetKey,
+  ): Promise<Partition[]> {
+    const minerPartitions: Partition[] = await this.client.state.minerPartitions(
+      address,
+      idx,
+      tipSetKey,
+    );
     return minerPartitions;
   }
 
@@ -403,8 +515,14 @@ export class BaseWalletProvider {
    * @param address
    * @param tipSetKey
    */
-  public async minerFaults(address: string, tipSetKey?: TipSetKey): Promise<BitField> {
-    const minerFaults: BitField = await this.client.state.minerFaults(address, tipSetKey);
+  public async minerFaults(
+    address: string,
+    tipSetKey?: TipSetKey,
+  ): Promise<BitField> {
+    const minerFaults: BitField = await this.client.state.minerFaults(
+      address,
+      tipSetKey,
+    );
     return minerFaults;
   }
 
@@ -414,8 +532,14 @@ export class BaseWalletProvider {
    * @param epoch
    * @param tipSetKey
    */
-  public async allMinerFaults(epoch: ChainEpoch, tipSetKey?: TipSetKey): Promise<Fault[]> {
-    const allFaults: Fault[] = await this.client.state.allMinerFaults(epoch, tipSetKey);
+  public async allMinerFaults(
+    epoch: ChainEpoch,
+    tipSetKey?: TipSetKey,
+  ): Promise<Fault[]> {
+    const allFaults: Fault[] = await this.client.state.allMinerFaults(
+      epoch,
+      tipSetKey,
+    );
     return allFaults;
   }
 
@@ -424,8 +548,14 @@ export class BaseWalletProvider {
    * @param address
    * @param tipSetKey
    */
-  public async minerRecoveries(address: string, tipSetKey?: TipSetKey): Promise<BitField> {
-    const recoveries: BitField = await this.client.state.minerRecoveries(address, tipSetKey);
+  public async minerRecoveries(
+    address: string,
+    tipSetKey?: TipSetKey,
+  ): Promise<BitField> {
+    const recoveries: BitField = await this.client.state.minerRecoveries(
+      address,
+      tipSetKey,
+    );
     return recoveries;
   }
 
@@ -436,8 +566,16 @@ export class BaseWalletProvider {
    * @param sectorPreCommitInfo
    * @param tipSetKey
    */
-  public async minerPreCommitDepositForPower(address: string, sectorPreCommitInfo: SectorPreCommitInfo, tipSetKey?: TipSetKey): Promise<string> {
-    const deposit: string = await this.client.state.minerPreCommitDepositForPower(address, sectorPreCommitInfo, tipSetKey);
+  public async minerPreCommitDepositForPower(
+    address: string,
+    sectorPreCommitInfo: SectorPreCommitInfo,
+    tipSetKey?: TipSetKey,
+  ): Promise<string> {
+    const deposit: string = await this.client.state.minerPreCommitDepositForPower(
+      address,
+      sectorPreCommitInfo,
+      tipSetKey,
+    );
     return deposit;
   }
 
@@ -447,8 +585,16 @@ export class BaseWalletProvider {
    * @param sectorPreCommitInfo
    * @param tipSetKey
    */
-  public async minerInitialPledgeCollateral(address: string, sectorPreCommitInfo: SectorPreCommitInfo, tipSetKey?: TipSetKey): Promise<string> {
-    const deposit: string = await this.client.state.minerInitialPledgeCollateral(address, sectorPreCommitInfo, tipSetKey);
+  public async minerInitialPledgeCollateral(
+    address: string,
+    sectorPreCommitInfo: SectorPreCommitInfo,
+    tipSetKey?: TipSetKey,
+  ): Promise<string> {
+    const deposit: string = await this.client.state.minerInitialPledgeCollateral(
+      address,
+      sectorPreCommitInfo,
+      tipSetKey,
+    );
     return deposit;
   }
 
@@ -457,8 +603,14 @@ export class BaseWalletProvider {
    * @param address
    * @param tipSetKey
    */
-  public async minerAvailableBalance(address: string, tipSetKey?: TipSetKey): Promise<string> {
-    const balance: string = await this.client.state.minerAvailableBalance(address, tipSetKey);
+  public async minerAvailableBalance(
+    address: string,
+    tipSetKey?: TipSetKey,
+  ): Promise<string> {
+    const balance: string = await this.client.state.minerAvailableBalance(
+      address,
+      tipSetKey,
+    );
     return balance;
   }
 
@@ -468,8 +620,16 @@ export class BaseWalletProvider {
    * @param sector
    * @param tipSetKey
    */
-  public async sectorPreCommitInfo(address: string, sector: SectorNumber, tipSetKey?: TipSetKey): Promise<SectorPreCommitOnChainInfo> {
-    const preCommitInfo: SectorPreCommitOnChainInfo = await this.client.state.sectorPreCommitInfo(address, sector, tipSetKey);
+  public async sectorPreCommitInfo(
+    address: string,
+    sector: SectorNumber,
+    tipSetKey?: TipSetKey,
+  ): Promise<SectorPreCommitOnChainInfo> {
+    const preCommitInfo: SectorPreCommitOnChainInfo = await this.client.state.sectorPreCommitInfo(
+      address,
+      sector,
+      tipSetKey,
+    );
     return preCommitInfo;
   }
 
@@ -482,8 +642,16 @@ export class BaseWalletProvider {
    * @remarks
    * NOTE: returned Expiration may not be accurate in some cases, use StateSectorExpiration to get accurate expiration epoch
    */
-  public async sectorGetInfo(address: string, sector: SectorNumber, tipSetKey?: TipSetKey): Promise<SectorOnChainInfo> {
-    const sectorInfo: SectorOnChainInfo = await this.client.state.sectorGetInfo(address, sector, tipSetKey);
+  public async sectorGetInfo(
+    address: string,
+    sector: SectorNumber,
+    tipSetKey?: TipSetKey,
+  ): Promise<SectorOnChainInfo> {
+    const sectorInfo: SectorOnChainInfo = await this.client.state.sectorGetInfo(
+      address,
+      sector,
+      tipSetKey,
+    );
     return sectorInfo;
   }
 
@@ -493,8 +661,16 @@ export class BaseWalletProvider {
    * @param sector
    * @param tipSetKey
    */
-  public async sectorExpiration(address: string, sector: SectorNumber, tipSetKey?: TipSetKey): Promise<SectorExpiration> {
-    const sectorExpiration: SectorExpiration = await this.client.state.sectorExpiration(address, sector, tipSetKey);
+  public async sectorExpiration(
+    address: string,
+    sector: SectorNumber,
+    tipSetKey?: TipSetKey,
+  ): Promise<SectorExpiration> {
+    const sectorExpiration: SectorExpiration = await this.client.state.sectorExpiration(
+      address,
+      sector,
+      tipSetKey,
+    );
     return sectorExpiration;
   }
 
@@ -504,8 +680,16 @@ export class BaseWalletProvider {
    * @param sector
    * @param tipSetKey
    */
-  public async sectorPartition(address: string, sector: SectorNumber, tipSetKey?: TipSetKey): Promise<SectorLocation> {
-    const sectorLocation: SectorLocation = await this.client.state.sectorPartition(address, sector, tipSetKey);
+  public async sectorPartition(
+    address: string,
+    sector: SectorNumber,
+    tipSetKey?: TipSetKey,
+  ): Promise<SectorLocation> {
+    const sectorLocation: SectorLocation = await this.client.state.sectorPartition(
+      address,
+      sector,
+      tipSetKey,
+    );
     return sectorLocation;
   }
 
@@ -541,8 +725,14 @@ export class BaseWalletProvider {
    * @param address
    * @param tipSetKey
    */
-  public async marketBalance(address: Address, tipSetKey?: TipSetKey): Promise<MarketBalance> {
-    const marketBalance: MarketBalance = await this.client.state.marketBalance(address, tipSetKey);
+  public async marketBalance(
+    address: Address,
+    tipSetKey?: TipSetKey,
+  ): Promise<MarketBalance> {
+    const marketBalance: MarketBalance = await this.client.state.marketBalance(
+      address,
+      tipSetKey,
+    );
     return marketBalance;
   }
 
@@ -550,8 +740,12 @@ export class BaseWalletProvider {
    * returns the Escrow and Locked balances of every participant in the Storage Market
    * @param tipSetKey
    */
-  public async marketParticipants(tipSetKey?: TipSetKey): Promise<{ [k: string]: MarketBalance }> {
-    const marketBalanceMap = await this.client.state.marketParticipants(tipSetKey);
+  public async marketParticipants(
+    tipSetKey?: TipSetKey,
+  ): Promise<{ [k: string]: MarketBalance }> {
+    const marketBalanceMap = await this.client.state.marketParticipants(
+      tipSetKey,
+    );
     return marketBalanceMap;
   }
 
@@ -559,7 +753,9 @@ export class BaseWalletProvider {
    * returns information about every deal in the Storage Market
    * @param tipSetKey
    */
-  public async marketDeals(tipSetKey?: TipSetKey): Promise<{ [k: string]: MarketDeal }> {
+  public async marketDeals(
+    tipSetKey?: TipSetKey,
+  ): Promise<{ [k: string]: MarketDeal }> {
     const marketDealsMap = await this.client.state.marketDeals(tipSetKey);
     return marketDealsMap;
   }
@@ -569,8 +765,14 @@ export class BaseWalletProvider {
    * @param dealId
    * @param tipSetKey
    */
-  public async marketStorageDeal(dealId: DealID, tipSetKey?: TipSetKey): Promise<MarketDeal> {
-    const marketDeal: MarketDeal = await this.client.state.marketStorageDeal(dealId, tipSetKey);
+  public async marketStorageDeal(
+    dealId: DealID,
+    tipSetKey?: TipSetKey,
+  ): Promise<MarketDeal> {
+    const marketDeal: MarketDeal = await this.client.state.marketStorageDeal(
+      dealId,
+      tipSetKey,
+    );
     return marketDeal;
   }
 
@@ -579,7 +781,10 @@ export class BaseWalletProvider {
    * @param address
    * @param tipSetKey
    */
-  public async lookupId(address: Address, tipSetKey?: TipSetKey): Promise<Address> {
+  public async lookupId(
+    address: Address,
+    tipSetKey?: TipSetKey,
+  ): Promise<Address> {
     const id: Address = await this.client.state.lookupId(address, tipSetKey);
     return id;
   }
@@ -589,7 +794,10 @@ export class BaseWalletProvider {
    * @param address
    * @param tipSetKey
    */
-  public async accountKey(address: Address, tipSetKey?: TipSetKey): Promise<Address> {
+  public async accountKey(
+    address: Address,
+    tipSetKey?: TipSetKey,
+  ): Promise<Address> {
     const key: Address = await this.client.state.accountKey(address, tipSetKey);
     return key;
   }
@@ -599,7 +807,10 @@ export class BaseWalletProvider {
    * @param cid1
    * @param cid2
    */
-  public async changedActors(cid1?: Cid, cid2?: Cid): Promise<{ [k: string]: Actor }> {
+  public async changedActors(
+    cid1?: Cid,
+    cid2?: Cid,
+  ): Promise<{ [k: string]: Actor }> {
     const actors = await this.client.state.changedActors(cid1, cid2);
     return actors;
   }
@@ -609,7 +820,10 @@ export class BaseWalletProvider {
    * @param cid
    * @param tipSetKey
    */
-  public async getReceipt(cid: Cid, tipSetKey?: TipSetKey): Promise<MessageReceipt> {
+  public async getReceipt(
+    cid: Cid,
+    tipSetKey?: TipSetKey,
+  ): Promise<MessageReceipt> {
     const receipt = await this.client.state.getReceipt(cid, tipSetKey);
     return receipt;
   }
@@ -619,23 +833,32 @@ export class BaseWalletProvider {
    * @param address
    * @param tipSetKey
    */
-  public async minerSectorCount(address: Address, tipSetKey?: TipSetKey): Promise<MinerSectors> {
-    const sectors = await this.client.state.minerSectorCount(address, tipSetKey);
+  public async minerSectorCount(
+    address: Address,
+    tipSetKey?: TipSetKey,
+  ): Promise<MinerSectors> {
+    const sectors = await this.client.state.minerSectorCount(
+      address,
+      tipSetKey,
+    );
     return sectors;
   }
 
   //Multisig wallet methods
 
   /**
-  * returns the vesting details of a given multisig.
-  * @param address
-  * @param tipSetKey
-  */
+   * returns the vesting details of a given multisig.
+   * @param address
+   * @param tipSetKey
+   */
   public async msigGetVestingSchedule(
     address: string,
     tipSetKey: TipSetKey,
   ): Promise<MsigVesting> {
-    const schedule = await this.client.msig.getVestingSchedule(address, tipSetKey);
+    const schedule = await this.client.msig.getVestingSchedule(
+      address,
+      tipSetKey,
+    );
     return schedule;
   }
 
@@ -644,7 +867,10 @@ export class BaseWalletProvider {
    * @param address
    * @param tipSetKey
    */
-  public async msigGetAvailableBalance(address: string, tipSetKey: TipSetKey): Promise<string> {
+  public async msigGetAvailableBalance(
+    address: string,
+    tipSetKey: TipSetKey,
+  ): Promise<string> {
     const ret = await this.client.msig.getAvailableBalance(address, tipSetKey);
     return ret;
   }
@@ -655,9 +881,12 @@ export class BaseWalletProvider {
    * @param startEpoch
    * @param endEpoch
    */
-  public async msigGetVested(address: string, startEpoch: TipSetKey, endEpoch: TipSetKey): Promise<string> {
+  public async msigGetVested(
+    address: string,
+    startEpoch: TipSetKey,
+    endEpoch: TipSetKey,
+  ): Promise<string> {
     const ret = await this.client.msig.getVested(address, startEpoch, endEpoch);
     return ret;
   }
 }
-
