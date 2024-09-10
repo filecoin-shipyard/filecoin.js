@@ -1203,6 +1203,16 @@ export class DataCIDSize {
   PieceCID!: Cid;
 }
 
+export type IpldObject = {
+	Cid: Cid;
+	Obj: any;
+}
+
+export type PruneOpts = {
+  MovingGC: boolean
+	RetainState: number
+}
+
 /**
  * Interface to be implemented by all providers.
  *
