@@ -137,6 +137,74 @@ describe("Chain methods", function() {
     await provider.release();
   });
 
+  it("should get tipset [http]", async function() {
+    const provider = new LotusClient(httpConnector);
+    const tipSetKey = await provider.chain.getTipSetByHeight(10);
+    await provider.chain.getTipSet([tipSetKey.Cids[0]]);
+  });
+
+  it("should get tipset [ws]", async function() {
+    const provider = new LotusClient(wsConnector);
+    const tipSetKey = await provider.chain.getTipSetByHeight(10);
+    await provider.chain.getTipSet([tipSetKey.Cids[0]]);
+    await provider.release();
+  });
+
+  it("should check tipset after height [http]", async function() {
+    const con = new LotusClient(httpConnector);
+    const tipSet = await con.chain.getTipSetAfterHeight(1);
+    assert.strictEqual(typeof tipSet.Height === "number", true, "invalid tipset after height");
+  });
+
+  it("should check tipset after height [ws]", async function() {
+    const provider = new LotusClient(wsConnector);
+    const tipSet = await provider.chain.getTipSetAfterHeight(1);
+    assert.strictEqual(typeof tipSet.Height === "number", true, "invalid tipset after height");
+    await provider.release();
+  });
+
+  it("should get gas fee cap [http]", async function() {
+    const con = new LotusClient(httpConnector);
+    const messages = await con.state.listMessages({
+      To: 't01000'
+    });
+    const message = await con.chain.getMessage(messages[0]);
+    const cap = await con.chain.gasEstimateFeeCap(message, 0);
+    assert.strictEqual(typeof cap === "string", true, "invalid gas fee cap");
+  });
+
+  it("should get gas fee cap [ws]", async function() {
+    const provider = new LotusClient(wsConnector);
+    const messages = await provider.state.listMessages({
+      To: 't01000'
+    });
+    const message = await provider.chain.getMessage(messages[0]);
+    const cap = await provider.chain.gasEstimateFeeCap(message, 0);
+    assert.strictEqual(typeof cap === "string", true, "invalid gas fee cap");
+    await provider.release();
+  });
+
+  it("should get estimate gas limit [http]", async function() {
+    const con = new LotusClient(httpConnector);
+    const messages = await con.state.listMessages({
+      To: 't01000'
+    });
+    const message = await con.chain.getMessage(messages[0]);
+    const cap = await con.chain.gasEstimateGasLimit(message);
+    assert.strictEqual(typeof cap === "number", true, "invalid estimate gas limit");
+  });
+
+  it("should get estimate gas limit [ws]", async function() {
+    const provider = new LotusClient(wsConnector);
+    const messages = await provider.state.listMessages({
+      To: 't01000'
+    });
+    const message = await provider.chain.getMessage(messages[0]);
+    const cap = await provider.chain.gasEstimateGasLimit(message);
+    assert.strictEqual(typeof cap === "number", true, "invalid estimate gas limit");
+    await provider.release();
+  });
+
   // This test fails in the current testnet setup with the following error: RPC Error: method 'Filecoin.ChainExport' not supported in this mode (no out channel support)
   // it("export chain", async () => {
   //   const provider = new LotusClient(httpConnector);

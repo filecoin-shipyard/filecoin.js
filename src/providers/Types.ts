@@ -1191,6 +1191,15 @@ export class MsigVesting {
 
 export type NetworkVersion = number;
 
+export class MessagePrototype {
+	Message!: Message;
+	ValidNonce!: boolean;
+}
+
+export class MessageCheckStatus {
+	Cid!: Cid;
+	CheckStatus!: any;
+}
 
 export class MessageMatch {
   To?: Address;
@@ -1201,6 +1210,16 @@ export class DataCIDSize {
   PayloadSize!: number;
   PieceSize!: PaddedPieceSize;
   PieceCID!: Cid;
+}
+
+export type IpldObject = {
+	Cid: Cid;
+	Obj: any;
+}
+
+export type PruneOpts = {
+  MovingGC: boolean
+	RetainState: number
 }
 
 /**
