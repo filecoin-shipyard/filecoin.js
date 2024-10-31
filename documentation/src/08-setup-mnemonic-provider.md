@@ -5,10 +5,15 @@ hide_title: true
 ---
 
 # Setup mnemonic provider
+
 Node JavaScript/TypeScript:
 
 ```javascript
-import { HttpJsonRpcConnector, MnemonicWalletProvider } from 'filecoin.js';
+import {
+  HttpJsonRpcConnector,
+  LotusClient,
+  MnemonicWalletProvider,
+} from 'filecoin.js';
 
 (async () => {
 
@@ -27,7 +32,7 @@ import { HttpJsonRpcConnector, MnemonicWalletProvider } from 'filecoin.js';
   console.log(myAddress);
   // f1zx43cf6qb6rd...
 
-})().then().catch();
+})();
 ```
 
 Browser:

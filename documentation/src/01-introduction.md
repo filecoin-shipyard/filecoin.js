@@ -4,9 +4,9 @@ title: Introduction
 hide_title: true
 ---
 
-# Introduction
+## Introduction
 
-## What is Filecoin.js
+### What is Filecoin.js
 
 The filecoin.js library aims to be a complete library for interacting with local or remote Filecoin nodes.
 
