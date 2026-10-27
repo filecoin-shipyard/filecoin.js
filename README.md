@@ -1,13 +1,14 @@
 # filecoin.js
 
-![Project Status](https://img.shields.io/badge/status-No%20longer%20maintained-red?style=for-the-badge)
+![Project Status](https://img.shields.io/badge/status-Deprecated-red?style=for-the-badge)
 [![GitHub last commit](https://img.shields.io/github/last-commit/filecoin-shipyard/filecoin.js?style=for-the-badge)](https://github.com/data-preservation-programs/spade/graphs/commit-activity)
 
 ## Status
 
-Unfortunately this project has not seen any meaningful activities since November 2020 and is deemed unmaintained. If you are a user of this project and would like to become a maintainer, please reach out to [@smagdali](https://github.com/smagdali).
-
-~~This repository is currently being updated and will be further updated to support the coming Filecoin VM. Learn more at [fvm.filecoin.io](https://fvm.filecoin.io)~~
+> [!WARNING]
+> **This project is deprecated and no longer maintained.**
+>
+> Please use [**filecoin**](https://github.com/hugomrdias/filecoin), the Filecoin JavaScript Standard Library, instead.
 
 ---
 
